@@ -70,7 +70,7 @@
 
     /* Bottom Nav */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: var(--nav-bg); border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; align-items: center; z-index: 200; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: var(--text-muted); text-decoration: none; font-size: 10px; font-weight: 600; cursor: pointer; border: none; background: transparent; flex: 1; padding: 8px 0; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: var(--text-muted); text-decoration: none; font-size: 9px; font-weight: 600; cursor: pointer; border: none; background: transparent; flex: 1; padding: 8px 0; }
     .nav-item.active { color: var(--accent); }
     .nav-icon { font-size: 18px; }
   </style>
@@ -94,7 +94,7 @@
   <div class="container">
     <div id="adBanner"></div>
 
-    <!-- Home Page -->
+    <!-- ১. Home Page -->
     <div id="pageHome" class="view-page active">
       <div class="tabs">
         <button class="tab-btn active" onclick="switchCategory('font', this)">🔤 ফন্ট</button>
@@ -104,7 +104,37 @@
       <div class="grid" id="resourceGrid"></div>
     </div>
 
-    <!-- Leaderboard Page -->
+    <!-- ২. Watch Ads Page -->
+    <div id="pageAds" class="view-page">
+      <div class="stat-card">
+        <span style="font-size:36px;">📺</span>
+        <h2 style="font-size:18px; margin: 8px 0;">বিজ্ঞাপন দেখে ফ্রি কয়েন নিন</h2>
+        <p style="font-size:12px; color:var(--text-muted); line-height:1.5;">বিজ্ঞাপন ওপেন করে ১৫ সেকেন্ড সময় অপেক্ষা করুন। সময় শেষ হলে ফ্রি কয়েন জমা হবে।</p>
+        <div class="stat-number" id="adLimitDisplay">10/10</div>
+        <p style="font-size:12px; color:var(--text-muted);">আজকের অবশিষ্ট বিজ্ঞাপন সংখ্যা</p>
+      </div>
+
+      <div class="stat-card" style="text-align: left;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+          <span style="font-size:13px; color:var(--text-muted);">প্রতি বিজ্ঞাপনে রিওয়ার্ড:</span>
+          <span style="font-weight:bold; color:var(--gold);">+৫ 🪙 কয়েন</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+          <span style="font-size:13px; color:var(--text-muted);">বাধ্যতামূলক অপেক্ষার সময়:</span>
+          <span style="font-weight:bold; color:var(--accent);">১৫ সেকেন্ড</span>
+        </div>
+
+        <button class="action-btn" id="btnStartAd" onclick="startWatchingAd()">
+          🌐 ১. বিজ্ঞাপন ওপেন করুন
+        </button>
+
+        <button class="action-btn" id="btnClaimAd" style="margin-top:10px; background:#334155; color:#94a3b8;" disabled onclick="claimAdReward()">
+          ⏳ অপেক্ষা করুন (১৫ সে.)
+        </button>
+      </div>
+    </div>
+
+    <!-- ৩. Leaderboard Page -->
     <div id="pageLeaderboard" class="view-page">
       <div class="stat-card">
         <h3 style="font-size:16px; margin-bottom:5px;">🏆 সেরা ব্যবহারকারী</h3>
@@ -113,7 +143,7 @@
       <div id="leaderboardList"><p style="text-align:center; color:#94a3b8; padding:20px;">লোড হচ্ছে...</p></div>
     </div>
 
-    <!-- Refer Page -->
+    <!-- ৪. Refer Page -->
     <div id="pageRefer" class="view-page">
       <div class="stat-card">
         <span style="font-size:32px;">🎁</span>
@@ -126,7 +156,7 @@
       <button class="action-btn" onclick="shareReferralLink()">🚀 রেফারেল লিংক শেয়ার করুন</button>
     </div>
 
-    <!-- Profile Page -->
+    <!-- ৫. Profile Page -->
     <div id="pageProfile" class="view-page">
       <div class="stat-card">
         <div class="user-avatar" id="profAvatar" style="width:60px; height:60px; font-size:24px; margin: 0 auto 10px auto;">U</div>
@@ -144,6 +174,7 @@
   <!-- Bottom Nav -->
   <div class="bottom-nav">
     <button class="nav-item active" onclick="switchNav('pageHome', this)"><span class="nav-icon">🏠</span><span>হোম</span></button>
+    <button class="nav-item" onclick="switchNav('pageAds', this)"><span class="nav-icon">📺</span><span>অ্যাড দেখে কয়েন</span></button>
     <button class="nav-item" onclick="switchNav('pageLeaderboard', this)"><span class="nav-icon">🏆</span><span>লিডারবোর্ড</span></button>
     <button class="nav-item" onclick="switchNav('pageRefer', this)"><span class="nav-icon">👥</span><span>রেফার</span></button>
     <button class="nav-item" onclick="switchNav('pageProfile', this)"><span class="nav-icon">👤</span><span>প্রোফাইল</span></button>
@@ -158,9 +189,23 @@
     const DB_BASE = "https://premium-resources-default-rtdb.firebaseio.com";
 
     const user = tg?.initDataUnsafe?.user || { id: 7481264433, first_name: "Adom Ali", username: "mdadomali320" };
-    let userData = { coins: 50, refers: 0 };
+    let userData = { coins: 50, refers: 0, daily_ads: {} };
     let allResources = {};
+    let activeAdData = { link: "https://t.me/PLPStoreBD0", text: "আমাদের অফিসিয়াল চ্যানেলে জয়েন করুন!" };
     let currentCategory = 'font';
+
+    // নিরাপদ অ্যাড ট্র্যাকিং ও অ্যান্টি-চিট ভ্যারিয়েবল
+    let adCountdown = 15;
+    let adInterval = null;
+    let adStartTime = 0;
+    let isAdRunning = false;
+    const AD_LIMIT = 10;
+    const AD_REWARD = 5;
+
+    function getTodayKey() {
+      const now = new Date();
+      return `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+    }
 
     async function initApp() {
       const initial = user.first_name ? user.first_name[0].toUpperCase() : 'U';
@@ -175,9 +220,11 @@
       try {
         const res = await fetch(`${DB_BASE}/users/${user.id}.json`);
         const data = await res.json();
-        if (data) { userData = data; } 
-        else {
-          userData = { name: user.first_name, username: user.username || "", coins: 20, refers: 0 };
+        if (data) { 
+          userData = data; 
+          if (!userData.daily_ads) userData.daily_ads = {};
+        } else {
+          userData = { name: user.first_name, username: user.username || "", coins: 20, refers: 0, daily_ads: {} };
           await fetch(`${DB_BASE}/users/${user.id}.json`, { method: 'PUT', body: JSON.stringify(userData) });
         }
       } catch (e) { console.error(e); }
@@ -193,6 +240,11 @@
       document.getElementById('referCount').innerText = userData.refers || 0;
       document.getElementById('profTotalRef').innerText = userData.refers || 0;
       document.getElementById('referLinkText').innerText = `https://t.me/${BOT_USERNAME}?start=ref_${user.id}`;
+      
+      const today = getTodayKey();
+      const viewed = userData.daily_ads[today] || 0;
+      const remaining = Math.max(0, AD_LIMIT - viewed);
+      document.getElementById('adLimitDisplay').innerText = `${remaining}/${AD_LIMIT}`;
     }
 
     async function loadActiveAd() {
@@ -200,10 +252,91 @@
         const res = await fetch(`${DB_BASE}/active_ad.json`);
         const ad = await res.json();
         if (ad && ad.text && ad.link) {
+          activeAdData = ad;
           document.getElementById('adBanner').innerHTML = `
             <a href="${ad.link}" target="_blank" class="ad-card">📢 <b>বিজ্ঞাপন:</b> ${ad.text} <span style="color:var(--accent);">(ক্লিক)</span></a>`;
         }
       } catch (e) {}
+    }
+
+    /* নিরাপদ অ্যাড ওয়াচ সিস্টেম */
+    function startWatchingAd() {
+      const today = getTodayKey();
+      const viewed = userData.daily_ads[today] || 0;
+      if (viewed >= AD_LIMIT) {
+        alert("⚠️ আজকের বিজ্ঞাপন দেখার লিমিট শেষ! আগামীকাল আবার দেখতে পারবেন।");
+        return;
+      }
+
+      // ১. বিজ্ঞাপন নতুন ট্যাবে ওপেন
+      window.open(activeAdData.link, '_blank');
+
+      // ২. অ্যান্টি-চিট টাইম রেকর্ড ও টাইমার অন
+      isAdRunning = true;
+      adStartTime = Date.now();
+      adCountdown = 15;
+
+      const claimBtn = document.getElementById('btnClaimAd');
+      claimBtn.disabled = true;
+      claimBtn.style.background = "#334155";
+      claimBtn.style.color = "#94a3b8";
+
+      clearInterval(adInterval);
+      adInterval = setInterval(() => {
+        adCountdown--;
+        if (adCountdown > 0) {
+          claimBtn.innerText = `⏳ অপেক্ষা করুন (${adCountdown} সে.)`;
+        } else {
+          clearInterval(adInterval);
+          claimBtn.disabled = false;
+          claimBtn.style.background = "var(--gold)";
+          claimBtn.style.color = "#000";
+          claimBtn.innerText = `🎉 +${AD_REWARD} কয়েন সংগ্রহ করুন!`;
+        }
+      }, 1000);
+    }
+
+    async function claimAdReward() {
+      const timeSpent = (Date.now() - adStartTime) / 1000;
+
+      // ইউজার যাতে ১৫ সেকেন্ডের আগে দাবি করতে না পারে
+      if (!isAdRunning || timeSpent < 14) {
+        alert("❌ আপনি সম্পূর্ণ সময় বিজ্ঞাপনটি দেখেননি! ১৫ সেকেন্ড অপেক্ষা করা বাধ্যতামূলক।");
+        resetAdButtons();
+        return;
+      }
+
+      isAdRunning = false;
+      const today = getTodayKey();
+      const viewed = (userData.daily_ads[today] || 0) + 1;
+      userData.daily_ads[today] = viewed;
+      userData.coins = (userData.coins || 0) + AD_REWARD;
+
+      updateUI();
+
+      const claimBtn = document.getElementById('btnClaimAd');
+      claimBtn.disabled = true;
+      claimBtn.style.background = "#334155";
+      claimBtn.style.color = "#94a3b8";
+      claimBtn.innerText = "✅ কয়েন সফলভাবে যোগ হয়েছে!";
+
+      try {
+        await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await fetch(`${DB_BASE}/users/${user.id}/daily_ads/${today}.json`, { method: 'PUT', body: JSON.stringify(viewed) });
+        alert(`🎉 অভিনন্দন! সম্পূর্ণ সময় বিজ্ঞাপন দেখার জন্য +${AD_REWARD} কয়েন যোগ হয়েছে।`);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function resetAdButtons() {
+      isAdRunning = false;
+      clearInterval(adInterval);
+      const claimBtn = document.getElementById('btnClaimAd');
+      claimBtn.disabled = true;
+      claimBtn.style.background = "#334155";
+      claimBtn.style.color = "#94a3b8";
+      claimBtn.innerText = "⏳ অপেক্ষা করুন (১৫ সে.)";
     }
 
     async function fetchResources() {
@@ -233,6 +366,7 @@
       }
       keys.forEach(k => {
         const item = allResources[k];
+        const btnLabel = item.type === 'plp' ? 'লিংক নিন 🔗' : 'ফাইল নিন ⚡';
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
@@ -241,7 +375,7 @@
             <div class="card-title">${item.name}</div>
             <div class="card-meta">
               <span class="price-tag">🪙 ${item.coins}</span>
-              <button class="btn-claim" onclick="claimResource('${k}', ${item.coins})">ইনবক্সে নিন ⚡</button>
+              <button class="btn-claim" onclick="claimResource('${k}', ${item.coins})">${btnLabel}</button>
             </div>
           </div>`;
         container.appendChild(card);
@@ -250,10 +384,10 @@
 
     async function claimResource(key, cost) {
       if ((userData.coins || 0) < cost) {
-        alert(`❌ পর্যাপ্ত কয়েন নেই! এই ফাইলের জন্য ${cost} কয়েন লাগবে।`);
+        alert(`❌ পর্যাপ্ত কয়েন নেই! এই রিসোর্সের জন্য ${cost} কয়েন লাগবে। অ্যাড দেখে বা বন্ধুদের রেফার করে কয়েন বাড়িয়ে নিন।`);
         return;
       }
-      if (confirm(`আপনি কি ${cost} কয়েন দিয়ে ফাইলটি ইনবক্সে নিতে চান?`)) {
+      if (confirm(`আপনি কি ${cost} কয়েন দিয়ে রিসোর্সটি নিতে চান?`)) {
         userData.coins -= cost;
         updateUI();
         await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
