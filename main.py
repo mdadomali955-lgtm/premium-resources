@@ -1,0 +1,73 @@
+import telebot
+import requests
+
+BOT_TOKEN = "8815920877:AAGoSTAtxPHWvEzmwfLobQYCDGe0tcyGc9U"
+ADMIN_ID = 7481264433
+FIREBASE_URL = "https://premium-resources-default-rtdb.firebaseio.com/resources.json"
+
+bot = telebot.TeleBot(BOT_TOKEN)
+admin_temp_data = {}
+
+@bot.message_handler(commands=['start'])
+def start_cmd(message):
+    bot.reply_to(message, "👋 স্বাগতম! রিসোর্স বট সক্রিয় আছে।\n\nনতুন রিসোর্স যোগ করতে /add কমান্ড দিন।")
+
+@bot.message_handler(commands=['add'])
+def start_add_resource(message):
+    if message.from_user.id != ADMIN_ID:
+        bot.reply_to(message, "❌ আপনি এই কমান্ড ব্যবহারের অনুমতিপ্রাপ্ত নন।")
+        return
+    
+    admin_temp_data[message.from_user.id] = {}
+    bot.reply_to(message, "📦 নতুন রিসোর্স যোগ করা হচ্ছে!\n\nক্যাটাগরি বেছে নিন:\nলিখুন `font` অথবা `plp`", parse_mode="Markdown")
+    bot.register_next_step_handler(message, get_category)
+
+def get_category(message):
+    cat = message.text.lower().strip()
+    if cat not in ['font', 'plp']:
+        bot.reply_to(message, "ভুল ইনপুট! শুধু `font` অথবা `plp` লিখে পাঠান।")
+        return
+    admin_temp_data[message.from_user.id]['type'] = cat
+    bot.reply_to(message, f"✅ ক্যাটাগরি: {cat.upper()}\n\nএবার রিসোর্সের নাম লিখে পাঠান:")
+    bot.register_next_step_handler(message, get_name)
+
+def get_name(message):
+    admin_temp_data[message.from_user.id]['name'] = message.text.strip()
+    bot.reply_to(message, "🪙 এই রিসোর্সের জন্য কত কয়েন লাগবে? (যেমন: 10):")
+    bot.register_next_step_handler(message, get_coins)
+
+def get_coins(message):
+    try:
+        coins = int(message.text.strip())
+        admin_temp_data[message.from_user.id]['coins'] = coins
+        bot.reply_to(message, "🖼️ এবার থাম্বনেইলের ছবি পাঠান:")
+        bot.register_next_step_handler(message, get_image)
+    except ValueError:
+        bot.reply_to(message, "কয়েন অবশ্যই সংখ্যায় হতে হবে। আবার লিখুন:")
+        bot.register_next_step_handler(message, get_coins)
+
+def get_image(message):
+    if not message.photo:
+        bot.reply_to(message, "অনুগ্রহ করে একটি ছবি পাঠান।")
+        return
+
+    file_id = message.photo[-1].file_id
+    file_info = bot.get_file(file_id)
+    img_url = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
+
+    admin_temp_data[message.from_user.id]['image'] = img_url
+    bot.reply_to(message, "🔗 এবার মূল ফাইলের ডাউনলোড লিঙ্ক দিন:")
+    bot.register_next_step_handler(message, get_download_link)
+
+def get_download_link(message):
+    admin_temp_data[message.from_user.id]['download_url'] = message.text.strip()
+    resource = admin_temp_data[message.from_user.id]
+    
+    res = requests.post(FIREBASE_URL, json=resource)
+    if res.status_code == 200:
+        bot.reply_to(message, f"🎉 সফল হয়েছে!\n\n📌 নাম: {resource['name']}\n📁 ক্যাটাগরি: {resource['type'].upper()}\n🪙 কয়েন: {resource['coins']}\n\n✅ মিনি অ্যাপে সরাসরি যুক্ত হয়ে গেছে!")
+    else:
+        bot.reply_to(message, "❌ ফায়ারবেসে তথ্য সংরক্ষণ করা যায়নি।")
+
+print("Admin Bot is running...")
+bot.infinity_polling()
