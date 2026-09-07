@@ -1,335 +1,78 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>প্রিমিয়াম রিসোর্স - Mini App</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-      background: #0b132b; 
-      color: #ffffff; 
-      padding-bottom: 75px; 
-    }
+import telebot
+import requests
 
-    /* টপ হেডার */
-    .header { 
-      background: #1c2541; 
-      padding: 16px; 
-      text-align: center; 
-      border-bottom: 1px solid #3a506b; 
-    }
-    .header h2 { 
-      font-size: 18px; 
-      color: #48cae4; 
-    }
+# আপনার বট টোকেন
+BOT_TOKEN = "8815920877:AAGoSTAtxPHWvEzmwfLobQYCDGe0tcyGc9U"
 
-    /* মূল কন্টেইনার */
-    .container { padding: 15px; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+# আপনার টেলিগ্রাম আইডি
+ADMIN_ID = 7481264433
 
-    /* রিসোর্স গ্রিড লেআউট */
-    .grid { 
-      display: grid; 
-      grid-template-columns: 1fr 1fr; 
-      gap: 12px; 
-    }
-    .card { 
-      background: #1c2541; 
-      border-radius: 12px; 
-      padding: 10px; 
-      text-align: center; 
-      border: 1px solid #3a506b; 
-    }
-    .card img { 
-      width: 100%; 
-      height: 110px; 
-      object-fit: cover; 
-      border-radius: 8px; 
-      margin-bottom: 8px; 
-    }
-    .card h4 { 
-      font-size: 14px; 
-      margin-bottom: 6px; 
-      white-space: nowrap; 
-      overflow: hidden; 
-      text-overflow: ellipsis; 
-    }
-    .badge { 
-      display: inline-block; 
-      background: #e63946; 
-      color: #fff; 
-      font-size: 11px; 
-      padding: 3px 8px; 
-      border-radius: 6px; 
-      margin-bottom: 8px; 
-    }
-    .btn-download { 
-      background: #00b4d8; 
-      color: #000; 
-      border: none; 
-      padding: 8px 10px; 
-      border-radius: 6px; 
-      font-weight: bold; 
-      width: 100%; 
-      cursor: pointer; 
-    }
+# ফায়ারবেস ডাটাবেজ লিঙ্ক
+FIREBASE_URL = "https://premium-resources-default-rtdb.firebaseio.com/resources.json"
 
-    /* প্রোফাইল কার্ড */
-    .profile-card { 
-      background: #1c2541; 
-      border-radius: 14px; 
-      padding: 20px; 
-      text-align: center; 
-      border: 1px solid #3a506b; 
-      margin-bottom: 15px; 
-    }
-    .avatar { 
-      width: 70px; 
-      height: 70px; 
-      background: #48cae4; 
-      color: #000; 
-      border-radius: 50%; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      font-size: 24px; 
-      font-weight: bold; 
-      margin: 0 auto 10px; 
-    }
-    .balance-box { 
-      background: #0b132b; 
-      border: 1px dashed #48cae4; 
-      border-radius: 10px; 
-      padding: 12px; 
-      margin: 15px 0; 
-    }
-    .balance-box h3 { 
-      color: #ffd166; 
-      font-size: 22px; 
-    }
-    .ref-box { 
-      background: #0b132b; 
-      border-radius: 8px; 
-      padding: 10px; 
-      margin-top: 10px; 
-      word-break: break-all; 
-      font-size: 13px; 
-      border: 1px solid #3a506b; 
-    }
-    .btn-copy { 
-      background: #06d6a0; 
-      color: #000; 
-      border: none; 
-      padding: 10px; 
-      border-radius: 8px; 
-      width: 100%; 
-      font-weight: bold; 
-      margin-top: 10px; 
-      cursor: pointer; 
-    }
+bot = telebot.TeleBot(BOT_TOKEN)
+admin_temp_data = {}
 
-    /* টাস্ক ও রিওয়ার্ড */
-    .task-card { 
-      background: #1c2541; 
-      padding: 15px; 
-      border-radius: 10px; 
-      border-left: 4px solid #ffd166; 
-      margin-bottom: 12px; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-    }
-    .task-btn { 
-      background: #ffd166; 
-      color: #000; 
-      border: none; 
-      padding: 8px 12px; 
-      border-radius: 6px; 
-      font-weight: bold; 
-      cursor: pointer; 
-    }
+@bot.message_handler(commands=['start'])
+def start_cmd(message):
+    bot.reply_to(message, "👋 স্বাগতম! রিসোর্স বট সক্রিয় আছে।\n\nআপনি যদি অ্যাডমিন হন, নতুন রিসোর্স যোগ করতে /add লিখুন।")
 
-    /* নিচের ফিক্সড ন্যাভিগেশন বার */
-    .bottom-nav { 
-      position: fixed; 
-      bottom: 0; 
-      left: 0; 
-      right: 0; 
-      height: 60px; 
-      background: #1c2541; 
-      display: flex; 
-      justify-content: space-around; 
-      align-items: center; 
-      border-top: 1px solid #3a506b; 
-      z-index: 1000;
-    }
-    .nav-item { 
-      color: #8d99ae; 
-      text-align: center; 
-      font-size: 11px; 
-      cursor: pointer; 
-      text-decoration: none; 
-      border: none; 
-      background: none; 
-    }
-    .nav-item.active { 
-      color: #48cae4; 
-      font-weight: bold; 
-    }
-    .nav-icon { 
-      font-size: 20px; 
-      display: block; 
-      margin-bottom: 2px; 
-    }
-  </style>
-</head>
-<body>
+@bot.message_handler(commands=['add'])
+def start_add_resource(message):
+    if message.from_user.id != ADMIN_ID:
+        bot.reply_to(message, "❌ আপনি এই কমান্ড ব্যবহারের অনুমতিপ্রাপ্ত নন।")
+        return
+    
+    admin_temp_data[message.from_user.id] = {}
+    bot.reply_to(message, "📦 নতুন রিসোর্স যোগ করা হচ্ছে!\n\nক্যাটাগরি বেছে নিন:\nলিখুন `font` অথবা `plp`", parse_mode="Markdown")
+    bot.register_next_step_handler(message, get_category)
 
-  <!-- টপ হেডার -->
-  <div class="header">
-    <h2 id="header-title">💎 প্রিমিয়াম রিসোর্স</h2>
-  </div>
+def get_category(message):
+    cat = message.text.lower().strip()
+    if cat not in ['font', 'plp']:
+        bot.reply_to(message, "ভুল ইনপুট! শুধু `font` অথবা `plp` লিখে পাঠান।")
+        return
+    admin_temp_data[message.from_user.id]['type'] = cat
+    bot.reply_to(message, f"✅ ক্যাটাগরি: {cat.upper()}\n\nএবার রিসোর্সের নাম লিখুন (যেমন: আলিনুর অর্ধাঙ্গী):")
+    bot.register_next_step_handler(message, get_name)
 
-  <div class="container">
-    <!-- ১. ফন্ট সেকশন -->
-    <div id="tab-fonts" class="tab-content active">
-      <div class="grid">
-        <div class="card">
-          <img src="https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=300" alt="Font">
-          <h4>আলিনুর অর্ধাঙ্গী</h4>
-          <span class="badge">১০ কয়েন</span>
-          <button class="btn-download" onclick="requestResource('font_0')">ইনবক্সে নিন ⚡</button>
-        </div>
-        <div class="card">
-          <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=300" alt="Font">
-          <h4>শরীফ লিপি</h4>
-          <span class="badge">১০ কয়েন</span>
-          <button class="btn-download" onclick="requestResource('font_1')">ইনবক্সে নিন ⚡</button>
-        </div>
-      </div>
-    </div>
+def get_name(message):
+    admin_temp_data[message.from_user.id]['name'] = message.text.strip()
+    bot.reply_to(message, "🪙 এই রিসোর্সের জন্য কত কয়েন লাগবে? (সংখ্যা দিন, যেমন: 10):")
+    bot.register_next_step_handler(message, get_coins)
 
-    <!-- ২. PLP প্রজেক্ট সেকশন -->
-    <div id="tab-plp" class="tab-content">
-      <div class="grid">
-        <div class="card">
-          <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300" alt="PLP">
-          <h4>মাহফিল পোস্টার PLP</h4>
-          <span class="badge">১০ কয়েন</span>
-          <button class="btn-download" onclick="requestResource('plp_0')">ইনবক্সে নিন ⚡</button>
-        </div>
-        <div class="card">
-          <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=300" alt="PLP">
-          <h4>ঈদ মোবারক ব্যানার</h4>
-          <span class="badge">১০ কয়েন</span>
-          <button class="btn-download" onclick="requestResource('plp_1')">ইনবক্সে নিন ⚡</button>
-        </div>
-      </div>
-    </div>
+def get_coins(message):
+    try:
+        coins = int(message.text.strip())
+        admin_temp_data[message.from_user.id]['coins'] = coins
+        bot.reply_to(message, "🖼️ এবার প্রিভিউ থাম্বনেইলের ছবি পাঠান:")
+        bot.register_next_step_handler(message, get_image)
+    except ValueError:
+        bot.reply_to(message, "কয়েন অবশ্যই সংখ্যায় হতে হবে। আবার লিখুন:")
+        bot.register_next_step_handler(message, get_coins)
 
-    <!-- ৩. টাস্ক ও অ্যাড সেকশন -->
-    <div id="tab-tasks" class="tab-content">
-      <div class="task-card">
-        <div>
-          <h4>বিজ্ঞাপন দেখুন</h4>
-          <p style="font-size: 12px; color: #8d99ae;">প্রতি অ্যাডে +৫ কয়েন পাবেন</p>
-        </div>
-        <button class="task-btn" onclick="openAdTask()">শুরু করুন 📺</button>
-      </div>
-      <div class="task-card">
-        <div>
-          <h4>ডেইলি চেক-ইন</h4>
-          <p style="font-size: 12px; color: #8d99ae;">প্রতিদিন ফ্রি +২ কয়েন</p>
-        </div>
-        <button class="task-btn" onclick="openDailyBonus()">সংগ্রহ করুন ✨</button>
-      </div>
-    </div>
+def get_image(message):
+    if not message.photo:
+        bot.reply_to(message, "অনুগ্রহ করে একটি ছবি পাঠান।")
+        return
 
-    <!-- ৪. প্রোফাইল ও রেফার সেকশন -->
-    <div id="tab-profile" class="tab-content">
-      <div class="profile-card">
-        <div class="avatar" id="avatar-letter">U</div>
-        <h3 id="user-display-name">ব্যবহারকারী</h3>
-        <p style="font-size: 12px; color: #8d99ae;" id="user-display-id">ID: 00000000</p>
-        
-        <div class="balance-box">
-          <p style="font-size: 13px; color: #8d99ae;">বর্তমান ব্যালেন্স</p>
-          <h3 id="profile-coins">🪙 ১০ কয়েন</h3>
-        </div>
+    file_id = message.photo[-1].file_id
+    file_info = bot.get_file(file_id)
+    img_url = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
 
-        <p style="font-size: 13px; margin-bottom: 5px;">👥 সফল রেফারেল: <b id="profile-refs" style="color: #06d6a0;">০/২০ জন</b></p>
-        <p style="font-size: 11px; color: #8d99ae;">(২০ জন রেফার করলেই আজীবনের জন্য সব ফ্রি)</p>
+    admin_temp_data[message.from_user.id]['image'] = img_url
+    bot.reply_to(message, "🔗 এবার মূল ফাইলের ডাউনলোড লিঙ্ক পাঠিয়ে দিন:")
+    bot.register_next_step_handler(message, get_download_link)
 
-        <div class="ref-box" id="ref-link-text">https://t.me/PLPStoreAIBot?start=ref_0</div>
-        <button class="btn-copy" onclick="copyReferralLink()">📋 রেফারেল লিঙ্ক কপি করুন</button>
-      </div>
-    </div>
-  </div>
+def get_download_link(message):
+    admin_temp_data[message.from_user.id]['download_url'] = message.text.strip()
+    resource = admin_temp_data[message.from_user.id]
+    
+    res = requests.post(FIREBASE_URL, json=resource)
+    if res.status_code == 200:
+        bot.reply_to(message, f"🎉 সফল হয়েছে!\n\n📌 নাম: {resource['name']}\n📁 ক্যাটাগরি: {resource['type'].upper()}\n🪙 কয়েন: {resource['coins']}\n\n✅ মিনি অ্যাপে সরাসরি যুক্ত হয়ে গেছে!")
+    else:
+        bot.reply_to(message, "❌ ফায়ারবেসে তথ্য সংরক্ষণ করা যায়নি।")
 
-  <!-- নিচের নেভিগেশন বার -->
-  <div class="bottom-nav">
-    <button class="nav-item active" onclick="switchTab('fonts', '💎 প্রিমিয়াম রিসোর্স - ফন্ট', this)">
-      <span class="nav-icon">🔤</span>ফন্ট
-    </button>
-    <button class="nav-item" onclick="switchTab('plp', '💎 প্রিমিয়াম রিসোর্স - PLP', this)">
-      <span class="nav-icon">📁</span>PLP
-    </button>
-    <button class="nav-item" onclick="switchTab('tasks', '🎯 রিওয়ার্ড ও টাস্ক', this)">
-      <span class="nav-icon">📺</span>টাস্ক
-    </button>
-    <button class="nav-item" onclick="switchTab('profile', '👤 আমার প্রোফাইল', this)">
-      <span class="nav-icon">👤</span>প্রোফাইল
-    </button>
-  </div>
-
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-
-    // মূল বটের ইউজারনেম
-    const MAIN_BOT_USERNAME = "PLPStoreAIBot"; 
-
-    const user = tg.initDataUnsafe?.user;
-    if (user) {
-      document.getElementById('user-display-name').innerText = user.first_name || "ডিজাইনার";
-      document.getElementById('avatar-letter').innerText = (user.first_name || "U")[0].toUpperCase();
-      document.getElementById('user-display-id').innerText = `ID: ${user.id}`;
-      document.getElementById('ref-link-text').innerText = `https://t.me/${MAIN_BOT_USERNAME}?start=ref_${user.id}`;
-    }
-
-    function switchTab(tabId, title, btn) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-      
-      document.getElementById(`tab-${tabId}`).classList.add('active');
-      btn.classList.add('active');
-      document.getElementById('header-title').innerText = title;
-    }
-
-    function requestResource(itemKey) {
-      tg.openTelegramLink(`https://t.me/${MAIN_BOT_USERNAME}?start=app_${itemKey}`);
-      tg.close();
-    }
-
-    function openAdTask() {
-      tg.openTelegramLink(`https://t.me/${MAIN_BOT_USERNAME}?start=watch_ad`);
-      tg.close();
-    }
-
-    function openDailyBonus() {
-      tg.openTelegramLink(`https://t.me/${MAIN_BOT_USERNAME}?start=claim_bonus`);
-      tg.close();
-    }
-
-    function copyReferralLink() {
-      const link = document.getElementById('ref-link-text').innerText;
-      navigator.clipboard.writeText(link);
-      tg.showAlert("✅ আপনার রেফারেল লিঙ্ক কপি হয়েছে!\nবন্ধুদের ইনভাইট পাঠিয়ে ২০ রেফারে আজীবন ফ্রি লাইফটাইম ভিআইপি নিন।");
-    }
-  </script>
-</body>
-</html>
+print("Admin Bot is running...")
+bot.infinity_polling()
