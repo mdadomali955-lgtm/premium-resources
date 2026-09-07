@@ -11,215 +11,73 @@
       --card-bg: #151d30;
       --card-border: #1e293b;
       --accent: #38bdf8;
-      --accent-hover: #0284c7;
       --gold: #facc15;
       --text: #f8fafc;
       --text-muted: #94a3b8;
       --nav-bg: #0f172a;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background-color: var(--bg-color); color: var(--text); padding-bottom: 75px; overflow-x: hidden; }
 
-    /* টপ প্রোফাইল বার */
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 16px;
-      background: var(--card-bg);
-      border-bottom: 1px solid var(--card-border);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
+    /* Top Bar */
+    .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--card-bg); border-bottom: 1px solid var(--card-border); position: sticky; top: 0; z-index: 100; }
     .user-info { display: flex; align-items: center; gap: 10px; }
     .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: #000; font-weight: bold; display: flex; align-items: center; justify-content: center; font-size: 15px; }
     .user-meta { display: flex; flex-direction: column; }
     .user-name { font-size: 14px; font-weight: 600; }
     .user-tag { font-size: 11px; color: var(--text-muted); }
-    .balance-pill {
-      background: rgba(250, 204, 21, 0.12);
-      border: 1px solid rgba(250, 204, 21, 0.3);
-      padding: 6px 12px;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-weight: 700;
-      color: var(--gold);
-      font-size: 14px;
-    }
+    .balance-pill { background: rgba(250, 204, 21, 0.12); border: 1px solid rgba(250, 204, 21, 0.3); padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 5px; font-weight: 700; color: var(--gold); font-size: 14px; }
 
     .container { padding: 14px; }
 
-    /* অ্যাড ব্যানার */
+    /* Ad Banner */
     #adBanner { margin-bottom: 15px; }
-    .ad-card {
-      display: block;
-      background: linear-gradient(135deg, #1e293b, #0f172a);
-      border: 1px solid var(--accent);
-      padding: 12px;
-      border-radius: 12px;
-      text-decoration: none;
-      color: var(--text);
-      text-align: center;
-      font-size: 13px;
-      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
-    }
+    .ad-card { display: block; background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid var(--accent); padding: 12px; border-radius: 12px; text-decoration: none; color: var(--text); text-align: center; font-size: 13px; box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15); }
 
-    /* ট্যাব ক্যাটাগরি */
+    /* Tabs */
     .tabs { display: flex; gap: 10px; margin-bottom: 15px; }
-    .tab-btn {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      border-radius: 10px;
-      background: var(--card-bg);
-      color: var(--text-muted);
-      font-weight: 600;
-      font-size: 13px;
-      cursor: pointer;
-      border: 1px solid var(--card-border);
-      transition: all 0.2s;
-    }
-    .tab-btn.active {
-      background: var(--accent);
-      color: #0b0f19;
-      border-color: var(--accent);
-      font-weight: 700;
-    }
+    .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 10px; background: var(--card-bg); color: var(--text-muted); font-weight: 600; font-size: 13px; cursor: pointer; border: 1px solid var(--card-border); transition: all 0.2s; }
+    .tab-btn.active { background: var(--accent); color: #0b0f19; border-color: var(--accent); font-weight: 700; }
 
-    /* রিসোর্স গ্রিড */
+    /* Grid */
     .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .card {
-      background: var(--card-bg);
-      border-radius: 14px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      border: 1px solid var(--card-border);
-    }
+    .card { background: var(--card-bg); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--card-border); }
     .card img { width: 100%; height: 115px; object-fit: cover; background: #1e293b; }
     .card-body { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
     .card-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; line-height: 1.3; color: #fff; }
     .card-meta { display: flex; align-items: center; justify-content: space-between; }
     .price-tag { font-size: 12px; color: var(--gold); font-weight: bold; }
-    .btn-claim {
-      background: var(--accent);
-      color: #0b0f19;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-    }
+    .btn-claim { background: var(--accent); color: #0b0f19; border: none; padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
 
-    /* ভিউ পেজ কনটেইনার */
+    /* Pages */
     .view-page { display: none; }
     .view-page.active { display: block; }
 
-    /* রেফারেল ও প্রোফাইল কার্ড */
-    .stat-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      padding: 16px;
-      border-radius: 14px;
-      margin-bottom: 12px;
-      text-align: center;
-    }
+    /* Stat Cards */
+    .stat-card { background: var(--card-bg); border: 1px solid var(--card-border); padding: 16px; border-radius: 14px; margin-bottom: 12px; text-align: center; }
     .stat-number { font-size: 26px; font-weight: bold; color: var(--gold); margin: 6px 0; }
-    .refer-link-box {
-      background: #0b0f19;
-      border: 1px dashed var(--card-border);
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 12px;
-      word-break: break-all;
-      margin: 12px 0;
-      color: var(--accent);
-    }
-    .action-btn {
-      width: 100%;
-      background: var(--accent);
-      color: #0b0f19;
-      padding: 12px;
-      font-size: 14px;
-      font-weight: bold;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
+    .refer-link-box { background: #0b0f19; border: 1px dashed var(--card-border); padding: 10px; border-radius: 8px; font-size: 12px; word-break: break-all; margin: 12px 0; color: var(--accent); }
+    .action-btn { width: 100%; background: var(--accent); color: #0b0f19; padding: 12px; font-size: 14px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
-    /* লিডারবোর্ড তালিকা */
-    .rank-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      padding: 12px 14px;
-      border-radius: 10px;
-      margin-bottom: 8px;
-    }
+    /* Leaderboard */
+    .rank-item { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); border: 1px solid var(--card-border); padding: 12px 14px; border-radius: 10px; margin-bottom: 8px; }
     .rank-user { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; }
-    .rank-badge {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background: #334155;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: bold;
-    }
+    .rank-badge { width: 26px; height: 26px; border-radius: 50%; background: #334155; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; }
     .rank-1 { background: #facc15; color: #000; }
     .rank-2 { background: #cbd5e1; color: #000; }
     .rank-3 { background: #d97706; color: #fff; }
 
-    /* বটম নেভিগেশন বার */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 60px;
-      background: var(--nav-bg);
-      border-top: 1px solid var(--card-border);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 200;
-    }
-    .nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      background: transparent;
-      flex: 1;
-      padding: 8px 0;
-    }
+    /* Bottom Nav */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: var(--nav-bg); border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; align-items: center; z-index: 200; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: var(--text-muted); text-decoration: none; font-size: 10px; font-weight: 600; cursor: pointer; border: none; background: transparent; flex: 1; padding: 8px 0; }
     .nav-item.active { color: var(--accent); }
     .nav-icon { font-size: 18px; }
   </style>
 </head>
 <body>
 
-  <!-- টপ বার -->
+  <!-- Top Bar -->
   <div class="top-bar">
     <div class="user-info">
       <div class="user-avatar" id="uAvatar">U</div>
@@ -234,10 +92,9 @@
   </div>
 
   <div class="container">
-    <!-- অ্যাড ব্যানার -->
     <div id="adBanner"></div>
 
-    <!-- ১. হোম পেজ (রিসোর্স সমূহ) -->
+    <!-- Home Page -->
     <div id="pageHome" class="view-page active">
       <div class="tabs">
         <button class="tab-btn active" onclick="switchCategory('font', this)">🔤 ফন্ট</button>
@@ -247,77 +104,49 @@
       <div class="grid" id="resourceGrid"></div>
     </div>
 
-    <!-- ২. লিডারবোর্ড পেজ -->
+    <!-- Leaderboard Page -->
     <div id="pageLeaderboard" class="view-page">
       <div class="stat-card">
         <h3 style="font-size:16px; margin-bottom:5px;">🏆 সেরা ব্যবহারকারী</h3>
-        <p style="font-size:12px; color:var(--text-muted);">সর্বাধিক রেফার ও কয়েন সংগ্রহকারী শীর্ষ সদস্যবৃন্দ</p>
+        <p style="font-size:12px; color:var(--text-muted);">সর্বাধিক কয়েন সংগ্রহকারী শীর্ষ সদস্যবৃন্দ</p>
       </div>
-      <div id="leaderboardList">
-        <p style="text-align:center; color:#94a3b8; padding:20px;">লোড হচ্ছে...</p>
-      </div>
+      <div id="leaderboardList"><p style="text-align:center; color:#94a3b8; padding:20px;">লোড হচ্ছে...</p></div>
     </div>
 
-    <!-- ৩. রেফারেল পেজ -->
+    <!-- Refer Page -->
     <div id="pageRefer" class="view-page">
       <div class="stat-card">
         <span style="font-size:32px;">🎁</span>
         <h2 style="font-size:18px; margin: 8px 0;">বন্ধুদের আমন্ত্রণ জানান!</h2>
-        <p style="font-size:12px; color:var(--text-muted); line-height:1.4;">প্রতি সফল রেফারে আপনি পাবেন <b>১০ টি কয়েন</b>। যত খুশি রেফার করুন এবং ফ্রিতে প্রিমিয়াম রিসোর্স নিন!</p>
+        <p style="font-size:12px; color:var(--text-muted); line-height:1.4;">প্রতি সফল রেফারে আপনি পাবেন <b>১০ টি কয়েন</b>।</p>
         <div class="stat-number" id="referCount">0</div>
         <p style="font-size:12px; color:var(--text-muted);">আপনার সফল রেফার সংখ্যা</p>
       </div>
-
-      <div class="refer-link-box" id="referLinkText">https://t.me/mdadomali320_bot?start=ref_id</div>
-
-      <button class="action-btn" onclick="shareReferralLink()">
-        🚀 রেফারেল লিংক শেয়ার করুন
-      </button>
+      <div class="refer-link-box" id="referLinkText">লোড হচ্ছে...</div>
+      <button class="action-btn" onclick="shareReferralLink()">🚀 রেফারেল লিংক শেয়ার করুন</button>
     </div>
 
-    <!-- ৪. প্রোফাইল পেজ -->
+    <!-- Profile Page -->
     <div id="pageProfile" class="view-page">
       <div class="stat-card">
         <div class="user-avatar" id="profAvatar" style="width:60px; height:60px; font-size:24px; margin: 0 auto 10px auto;">U</div>
         <h2 id="profName" style="font-size:17px;">ইউজার</h2>
         <p id="profTag" style="font-size:12px; color:var(--text-muted); margin-bottom:15px;">@username</p>
-        
         <div style="display:flex; justify-content:space-around; border-top:1px solid var(--card-border); padding-top:12px;">
-          <div>
-            <div style="font-size:18px; font-weight:bold; color:var(--gold);" id="profCoins">0</div>
-            <div style="font-size:11px; color:var(--text-muted);">বর্তমান কয়েন</div>
-          </div>
-          <div>
-            <div style="font-size:18px; font-weight:bold; color:var(--accent);" id="profTotalRef">0</div>
-            <div style="font-size:11px; color:var(--text-muted);">মোট রেফার</div>
-          </div>
+          <div><div style="font-size:18px; font-weight:bold; color:var(--gold);" id="profCoins">0</div><div style="font-size:11px; color:var(--text-muted);">কয়েন</div></div>
+          <div><div style="font-size:18px; font-weight:bold; color:var(--accent);" id="profTotalRef">0</div><div style="font-size:11px; color:var(--text-muted);">রেফার</div></div>
         </div>
       </div>
-
-      <button class="action-btn" style="background:#1e293b; color:#38bdf8; border:1px solid var(--accent); margin-top:10px;" onclick="openBotChat()">
-        💬 যেকোনো প্রয়োজনে বট হেল্পলাইনে কথা বলুন
-      </button>
+      <button class="action-btn" style="background:#1e293b; color:#38bdf8; border:1px solid var(--accent); margin-top:10px;" onclick="openSupport()">💬 হেল্পলাইন ও সাপোর্ট</button>
     </div>
   </div>
 
-  <!-- বটম ন্যাভিগেশন বার -->
+  <!-- Bottom Nav -->
   <div class="bottom-nav">
-    <button class="nav-item active" onclick="switchNav('pageHome', this)">
-      <span class="nav-icon">🏠</span>
-      <span>হোম</span>
-    </button>
-    <button class="nav-item" onclick="switchNav('pageLeaderboard', this)">
-      <span class="nav-icon">🏆</span>
-      <span>লিডারবোর্ড</span>
-    </button>
-    <button class="nav-item" onclick="switchNav('pageRefer', this)">
-      <span class="nav-icon">👥</span>
-      <span>রেফার</span>
-    </button>
-    <button class="nav-item" onclick="switchNav('pageProfile', this)">
-      <span class="nav-icon">👤</span>
-      <span>প্রোফাইল</span>
-    </button>
+    <button class="nav-item active" onclick="switchNav('pageHome', this)"><span class="nav-icon">🏠</span><span>হোম</span></button>
+    <button class="nav-item" onclick="switchNav('pageLeaderboard', this)"><span class="nav-icon">🏆</span><span>লিডারবোর্ড</span></button>
+    <button class="nav-item" onclick="switchNav('pageRefer', this)"><span class="nav-icon">👥</span><span>রেফার</span></button>
+    <button class="nav-item" onclick="switchNav('pageProfile', this)"><span class="nav-icon">👤</span><span>প্রোফাইল</span></button>
   </div>
 
   <script>
@@ -325,40 +154,37 @@
     if (tg) { tg.ready(); tg.expand(); }
 
     const BOT_USERNAME = "mdadomali320_bot";
+    const SUPPORT_URL = "https://t.me/PLPSTOREAI";
     const DB_BASE = "https://premium-resources-default-rtdb.firebaseio.com";
 
-    // ইউজার ইনফরমেশন
     const user = tg?.initDataUnsafe?.user || { id: 7481264433, first_name: "Adom Ali", username: "mdadomali320" };
     let userData = { coins: 50, refers: 0 };
     let allResources = {};
     let currentCategory = 'font';
 
-    // ১. ইউজার ইনিশিয়ালাইজেশন
-    async function initUser() {
-      // টপ বার ও প্রোফাইল ডাটা সেট
+    async function initApp() {
       const initial = user.first_name ? user.first_name[0].toUpperCase() : 'U';
       document.getElementById('uAvatar').innerText = initial;
       document.getElementById('profAvatar').innerText = initial;
       document.getElementById('uName').innerText = user.first_name || "ইউজার";
       document.getElementById('profName').innerText = user.first_name || "ইউজার";
-      document.getElementById('uTag').innerText = user.username ? `@${user.username}` : `ID: ${user.id}`;
-      document.getElementById('profTag').innerText = user.username ? `@${user.username}` : `ID: ${user.id}`;
+      const tag = user.username ? `@${user.username}` : `ID: ${user.id}`;
+      document.getElementById('uTag').innerText = tag;
+      document.getElementById('profTag').innerText = tag;
 
-      // ফায়ারবেস থেকে ইউজার রেকর্ড ফেচ
       try {
         const res = await fetch(`${DB_BASE}/users/${user.id}.json`);
         const data = await res.json();
-        if (data) {
-          userData = data;
-        } else {
-          // নতুন ইউজার হলে ডাটাবেজে তৈরি হবে
+        if (data) { userData = data; } 
+        else {
           userData = { name: user.first_name, username: user.username || "", coins: 20, refers: 0 };
           await fetch(`${DB_BASE}/users/${user.id}.json`, { method: 'PUT', body: JSON.stringify(userData) });
         }
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (e) { console.error(e); }
+      
       updateUI();
+      loadActiveAd();
+      fetchResources();
     }
 
     function updateUI() {
@@ -366,34 +192,26 @@
       document.getElementById('profCoins').innerText = userData.coins || 0;
       document.getElementById('referCount').innerText = userData.refers || 0;
       document.getElementById('profTotalRef').innerText = userData.refers || 0;
-      const refLink = `https://t.me/${BOT_USERNAME}?start=ref_${user.id}`;
-      document.getElementById('referLinkText').innerText = refLink;
+      document.getElementById('referLinkText').innerText = `https://t.me/${BOT_USERNAME}?start=ref_${user.id}`;
     }
 
-    // ২. অ্যাক্টিভ বিজ্ঞাপন লোড
     async function loadActiveAd() {
       try {
         const res = await fetch(`${DB_BASE}/active_ad.json`);
         const ad = await res.json();
         if (ad && ad.text && ad.link) {
           document.getElementById('adBanner').innerHTML = `
-            <a href="${ad.link}" target="_blank" class="ad-card">
-              📢 <b>বিজ্ঞাপন:</b> ${ad.text} <span style="color: var(--accent); font-weight: bold;">(ক্লিক করুন)</span>
-            </a>
-          `;
+            <a href="${ad.link}" target="_blank" class="ad-card">📢 <b>বিজ্ঞাপন:</b> ${ad.text} <span style="color:var(--accent);">(ক্লিক)</span></a>`;
         }
       } catch (e) {}
     }
 
-    // ৩. রিসোর্স সমূহ লোড
     async function fetchResources() {
       try {
         const res = await fetch(`${DB_BASE}/resources.json`);
         allResources = await res.json() || {};
         renderResources();
-      } catch (e) {
-        document.getElementById('loading').innerText = "ডাটা লোড হয়নি!";
-      }
+      } catch (e) { document.getElementById('loading').innerText = "ডাটা লোড হয়নি!"; }
     }
 
     function switchCategory(cat, el) {
@@ -407,112 +225,80 @@
       const container = document.getElementById('resourceGrid');
       document.getElementById('loading').style.display = 'none';
       container.innerHTML = '';
-
       const keys = Object.keys(allResources).filter(k => allResources[k].type === currentCategory);
 
       if (keys.length === 0) {
-        container.innerHTML = '<p style="grid-column: span 2; text-align: center; color: #64748b; padding: 40px 0;">কোনো রিসোর্স পাওয়া যায়নি</p>';
+        container.innerHTML = '<p style="grid-column: span 2; text-align: center; color: #64748b; padding: 40px 0;">রিসোর্স পাওয়া যায়নি</p>';
         return;
       }
-
       keys.forEach(k => {
         const item = allResources[k];
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
-          <img src="${item.image || 'https://via.placeholder.com/150'}" alt="${item.name}">
+          <img src="${item.image || 'https://via.placeholder.com/150'}" alt="img">
           <div class="card-body">
             <div class="card-title">${item.name}</div>
             <div class="card-meta">
               <span class="price-tag">🪙 ${item.coins}</span>
               <button class="btn-claim" onclick="claimResource('${k}', ${item.coins})">ইনবক্সে নিন ⚡</button>
             </div>
-          </div>
-        `;
+          </div>`;
         container.appendChild(card);
       });
     }
 
-    // ৪. ফাইল ক্লেইম ও কয়েন কাটার ফাংশন
     async function claimResource(key, cost) {
       if ((userData.coins || 0) < cost) {
-        alert(`❌ আপনার পর্যাপ্ত কয়েন নেই! এই ফাইলের জন্য ${cost} টি কয়েন লাগবে। বন্ধুদের রেফার করে কয়েন বাড়িয়ে নিন।`);
+        alert(`❌ পর্যাপ্ত কয়েন নেই! এই ফাইলের জন্য ${cost} কয়েন লাগবে।`);
         return;
       }
-
       if (confirm(`আপনি কি ${cost} কয়েন দিয়ে ফাইলটি ইনবক্সে নিতে চান?`)) {
         userData.coins -= cost;
         updateUI();
-        // ফায়ারবেসে কয়েন আপডেট
         await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
         
-        // টেলিগ্রাম বটে ফাইল ডেলিভারি
         const botUrl = `https://t.me/${BOT_USERNAME}?start=get_${key}`;
-        if (tg && tg.openTelegramLink) {
-          tg.openTelegramLink(botUrl);
-        } else {
-          window.open(botUrl, '_blank');
-        }
+        if (tg && tg.openTelegramLink) tg.openTelegramLink(botUrl);
+        else window.open(botUrl, '_blank');
       }
     }
 
-    // ৫. লিডারবোর্ড লোড
     async function loadLeaderboard() {
       try {
         const res = await fetch(`${DB_BASE}/users.json`);
         const users = await res.json() || {};
         const sorted = Object.values(users).sort((a, b) => (b.coins || 0) - (a.coins || 0)).slice(0, 10);
-        
         let html = '';
         sorted.forEach((u, idx) => {
           const badgeClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : '';
-          html += `
-            <div class="rank-item">
-              <div class="rank-user">
-                <div class="rank-badge ${badgeClass}">${idx + 1}</div>
-                <div>${u.name || 'ইউজার'}</div>
-              </div>
-              <div style="font-weight:bold; color:var(--gold);">🪙 ${u.coins || 0}</div>
-            </div>
-          `;
+          html += `<div class="rank-item"><div class="rank-user"><div class="rank-badge ${badgeClass}">${idx + 1}</div><div>${u.name || 'ইউজার'}</div></div><div style="font-weight:bold; color:var(--gold);">🪙 ${u.coins || 0}</div></div>`;
         });
-        document.getElementById('leaderboardList').innerHTML = html || '<p style="text-align:center; color:#94a3b8;">কোনো ডাটা পাওয়া যায়নি</p>';
+        document.getElementById('leaderboardList').innerHTML = html || '<p style="text-align:center; color:#94a3b8;">ডাটা নেই</p>';
       } catch (e) {}
     }
 
-    // ৬. নেভিগেশন সুইচ
     function switchNav(pageId, btn) {
       document.querySelectorAll('.view-page').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.bottom-nav .nav-item').forEach(b => b.classList.remove('active'));
-      
       document.getElementById(pageId).classList.add('active');
       btn.classList.add('active');
-
       if (pageId === 'pageLeaderboard') loadLeaderboard();
     }
 
-    // শেয়ার ফাংশন
     function shareReferralLink() {
-      const shareText = `💎 এই প্রিমিয়াম রিসোর্স অ্যাপটিতে জয়েন করে ফ্রিতে আনলিমিটেড প্রিমিয়াম ফন্ট এবং PLP ফাইল ডাউনলোড করে নিন! এখনই যুক্ত হোন:`;
-      const refLink = `https://t.me/${BOT_USERNAME}?start=ref_${user.id}`;
-      const fullUrl = `https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent(shareText)}`;
-      if (tg && tg.openTelegramLink) {
-        tg.openTelegramLink(fullUrl);
-      } else {
-        window.open(fullUrl, '_blank');
-      }
+      const shareText = `💎 এই প্রিমিয়াম রিসোর্স অ্যাপটিতে জয়েন করে ফ্রিতে আনলিমিটেড প্রিমিয়াম ফন্ট এবং PLP ফাইল ডাউনলোড করে নিন!`;
+      const fullUrl = `https://t.me/share/url?url=${encodeURIComponent(`https://t.me/${BOT_USERNAME}?start=ref_${user.id}`)}&text=${encodeURIComponent(shareText)}`;
+      if (tg && tg.openTelegramLink) tg.openTelegramLink(fullUrl);
+      else window.open(fullUrl, '_blank');
     }
 
-    function openBotChat() {
-      if (tg && tg.openTelegramLink) {
-        tg.openTelegramLink(`https://t.me/${BOT_USERNAME}`);
-      }
+    function openSupport() {
+      if (tg && tg.openTelegramLink) tg.openTelegramLink(SUPPORT_URL);
+      else window.open(SUPPORT_URL, '_blank');
     }
 
-    // রান
-    initUser();
-    loadActiveAd();
-    fetchResources();
+    initApp();
   </script>
 </body>
 </html>
