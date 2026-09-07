@@ -1,78 +1,111 @@
-import telebot
-import requests
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Resources</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #0f172a; color: #f8fafc; padding: 15px; }
+    header { text-align: center; margin-bottom: 20px; }
+    h1 { font-size: 20px; color: #38bdf8; margin-bottom: 5px; }
+    .tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+    .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; background: #1e293b; color: #94a3b8; font-weight: bold; cursor: pointer; }
+    .tab-btn.active { background: #38bdf8; color: #0f172a; }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .card { background: #1e293b; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; border: 1px solid #334155; }
+    .card img { width: 100%; height: 110px; object-fit: cover; background: #334155; }
+    .card-content { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
+    .card-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; line-height: 1.3; }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; }
+    .coins { font-size: 12px; color: #facc15; font-weight: bold; }
+    .btn-get { background: #38bdf8; color: #0f172a; border: none; padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
+    #loading { text-align: center; padding: 40px; color: #94a3b8; font-size: 14px; }
+  </style>
+</head>
+<body>
 
-# আপনার বট টোকেন
-BOT_TOKEN = "8815920877:AAGoSTAtxPHWvEzmwfLobQYCDGe0tcyGc9U"
+  <header>
+    <h1>💎 প্রিমিয়াম রিসোর্স</h1>
+    <p style="font-size: 12px; color: #94a3b8;">পছন্দের ফন্ট ও PLP সংগ্রহ করুন</p>
+  </header>
 
-# আপনার টেলিগ্রাম আইডি
-ADMIN_ID = 7481264433
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('font')">🔤 ফন্ট</button>
+    <button class="tab-btn" onclick="switchTab('plp')">🎨 PLP ফাইল</button>
+  </div>
 
-# ফায়ারবেস ডাটাবেজ লিঙ্ক
-FIREBASE_URL = "https://premium-resources-default-rtdb.firebaseio.com/resources.json"
+  <div id="loading">লোড হচ্ছে...</div>
+  <div class="grid" id="resourceGrid"></div>
 
-bot = telebot.TeleBot(BOT_TOKEN)
-admin_temp_data = {}
+  <script>
+    const tg = window.Telegram?.WebApp;
+    if (tg) { tg.ready(); tg.expand(); }
 
-@bot.message_handler(commands=['start'])
-def start_cmd(message):
-    bot.reply_to(message, "👋 স্বাগতম! রিসোর্স বট সক্রিয় আছে।\n\nআপনি যদি অ্যাডমিন হন, নতুন রিসোর্স যোগ করতে /add লিখুন।")
+    const FIREBASE_URL = "https://premium-resources-default-rtdb.firebaseio.com/resources.json";
+    let allResources = {};
+    let currentTab = 'font';
 
-@bot.message_handler(commands=['add'])
-def start_add_resource(message):
-    if message.from_user.id != ADMIN_ID:
-        bot.reply_to(message, "❌ আপনি এই কমান্ড ব্যবহারের অনুমতিপ্রাপ্ত নন।")
-        return
-    
-    admin_temp_data[message.from_user.id] = {}
-    bot.reply_to(message, "📦 নতুন রিসোর্স যোগ করা হচ্ছে!\n\nক্যাটাগরি বেছে নিন:\nলিখুন `font` অথবা `plp`", parse_mode="Markdown")
-    bot.register_next_step_handler(message, get_category)
+    async function fetchResources() {
+      try {
+        const res = await fetch(FIREBASE_URL);
+        const data = await res.json();
+        allResources = data || {};
+        renderResources();
+      } catch (e) {
+        document.getElementById('loading').innerText = "ডাটা লোড হতে সমস্যা হয়েছে!";
+      }
+    }
 
-def get_category(message):
-    cat = message.text.lower().strip()
-    if cat not in ['font', 'plp']:
-        bot.reply_to(message, "ভুল ইনপুট! শুধু `font` অথবা `plp` লিখে পাঠান।")
-        return
-    admin_temp_data[message.from_user.id]['type'] = cat
-    bot.reply_to(message, f"✅ ক্যাটাগরি: {cat.upper()}\n\nএবার রিসোর্সের নাম লিখুন (যেমন: আলিনুর অর্ধাঙ্গী):")
-    bot.register_next_step_handler(message, get_name)
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      renderResources();
+    }
 
-def get_name(message):
-    admin_temp_data[message.from_user.id]['name'] = message.text.strip()
-    bot.reply_to(message, "🪙 এই রিসোর্সের জন্য কত কয়েন লাগবে? (সংখ্যা দিন, যেমন: 10):")
-    bot.register_next_step_handler(message, get_coins)
+    function renderResources() {
+      const container = document.getElementById('resourceGrid');
+      const loading = document.getElementById('loading');
+      container.innerHTML = '';
+      loading.style.display = 'none';
 
-def get_coins(message):
-    try:
-        coins = int(message.text.strip())
-        admin_temp_data[message.from_user.id]['coins'] = coins
-        bot.reply_to(message, "🖼️ এবার প্রিভিউ থাম্বনেইলের ছবি পাঠান:")
-        bot.register_next_step_handler(message, get_image)
-    except ValueError:
-        bot.reply_to(message, "কয়েন অবশ্যই সংখ্যায় হতে হবে। আবার লিখুন:")
-        bot.register_next_step_handler(message, get_coins)
+      const keys = Object.keys(allResources).filter(k => allResources[k].type === currentTab);
 
-def get_image(message):
-    if not message.photo:
-        bot.reply_to(message, "অনুগ্রহ করে একটি ছবি পাঠান।")
-        return
+      if (keys.length === 0) {
+        container.innerHTML = '<p style="grid-column: span 2; text-align: center; color: #64748b; padding: 30px;">কোনো রিসোর্স পাওয়া যায়নি</p>';
+        return;
+      }
 
-    file_id = message.photo[-1].file_id
-    file_info = bot.get_file(file_id)
-    img_url = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
+      keys.forEach(k => {
+        const item = allResources[k];
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${item.image || 'https://via.placeholder.com/150'}" alt="${item.name}">
+          <div class="card-content">
+            <div class="card-title">${item.name}</div>
+            <div class="card-footer">
+              <span class="coins">🪙 ${item.coins}</span>
+              <button class="btn-get" onclick="downloadItem('${k}')">ডাউনলোড</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
 
-    admin_temp_data[message.from_user.id]['image'] = img_url
-    bot.reply_to(message, "🔗 এবার মূল ফাইলের ডাউনলোড লিঙ্ক পাঠিয়ে দিন:")
-    bot.register_next_step_handler(message, get_download_link)
+    function downloadItem(itemKey) {
+      // টেলিগ্রাম বটে সরাসরি ফাইল নেওয়ার লিঙ্ক
+      if (tg) {
+        tg.openTelegramLink(`https://t.me/mdadomali320_bot?start=get_${itemKey}`);
+      } else {
+        window.open(`https://t.me/mdadomali320_bot?start=get_${itemKey}`, '_blank');
+      }
+    }
 
-def get_download_link(message):
-    admin_temp_data[message.from_user.id]['download_url'] = message.text.strip()
-    resource = admin_temp_data[message.from_user.id]
-    
-    res = requests.post(FIREBASE_URL, json=resource)
-    if res.status_code == 200:
-        bot.reply_to(message, f"🎉 সফল হয়েছে!\n\n📌 নাম: {resource['name']}\n📁 ক্যাটাগরি: {resource['type'].upper()}\n🪙 কয়েন: {resource['coins']}\n\n✅ মিনি অ্যাপে সরাসরি যুক্ত হয়ে গেছে!")
-    else:
-        bot.reply_to(message, "❌ ফায়ারবেসে তথ্য সংরক্ষণ করা যায়নি।")
-
-print("Admin Bot is running...")
-bot.infinity_polling()
+    fetchResources();
+  </script>
+</body>
+</html>
