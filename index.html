@@ -21,15 +21,16 @@
       --text: #f8fafc;
       --text-muted: #94a3b8;
       --nav-bg: rgba(3, 7, 18, 0.85);
+      --green: #22c55e;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background: var(--bg-gradient); min-height: 100vh; color: var(--text); padding-bottom: 80px; overflow-x: hidden; }
+    body { background: var(--bg-gradient); min-height: 100vh; color: var(--text); padding-bottom: 85px; overflow-x: hidden; }
 
     /* VIP Top Bar */
     .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: rgba(3, 7, 18, 0.6); backdrop-filter: blur(12px); border-bottom: 1px solid var(--card-border); position: sticky; top: 0; z-index: 100; }
     .user-info { display: flex; align-items: center; gap: 12px; }
-    .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #38bdf8, #6366f1); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 0 10px var(--accent-glow); }
+    .user-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #38bdf8, #6366f1); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 0 10px var(--accent-glow); border: 2px solid rgba(255,255,255,0.2); }
     .user-meta { display: flex; flex-direction: column; }
     .user-name { font-size: 14px; font-weight: 700; color: #fff; }
     .user-badge { font-size: 10px; color: var(--gold); font-weight: bold; letter-spacing: 0.5px; }
@@ -37,10 +38,23 @@
 
     .container { padding: 16px; }
 
+    /* নোটিশ বোর্ড */
+    .notice-card { background: rgba(56, 189, 248, 0.1); border: 1px solid var(--card-border); border-radius: 12px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; margin-bottom: 14px; font-size: 12px; color: var(--accent); }
+
+    /* লাইভ স্ট্যাটাস বার */
+    .live-stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: rgba(15, 23, 42, 0.85); border: 1px solid var(--card-border); border-radius: 12px; padding: 10px; margin-bottom: 16px; text-align: center; }
+    .live-stat-item { display: flex; flex-direction: column; gap: 2px; }
+    .live-stat-val { font-size: 13px; font-weight: 800; color: var(--accent); }
+    .live-stat-lbl { font-size: 9px; color: var(--text-muted); }
+
     /* Daily Check-in Card */
     .daily-card { background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9)); border: 1px solid rgba(250, 204, 21, 0.4); border-radius: 14px; padding: 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; backdrop-filter: blur(8px); }
     .daily-btn { background: linear-gradient(135deg, #facc15, #eab308); color: #020617; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 800; font-size: 12px; cursor: pointer; }
     .daily-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
+
+    /* সার্চ বার */
+    .search-box { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--card-bg); color: #fff; font-size: 13px; margin-bottom: 14px; outline: none; }
+    .search-box:focus { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
 
     /* Tabs */
     .tabs { display: flex; gap: 10px; margin-bottom: 16px; }
@@ -51,12 +65,23 @@
     .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
     .card { background: var(--card-bg); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--card-border); backdrop-filter: blur(10px); transition: transform 0.2s; }
     .card:active { transform: scale(0.98); }
-    .card img { width: 100%; height: 125px; object-fit: cover; background: #0f172a; }
+    .card img { width: 100%; height: 125px; object-fit: cover; background: #0f172a; cursor: pointer; }
     .card-body { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; gap: 8px; }
     .card-title { font-size: 13px; font-weight: 700; line-height: 1.3; color: #f8fafc; }
     .card-meta { display: flex; align-items: center; justify-content: space-between; }
     .price-tag { font-size: 13px; color: var(--gold); font-weight: 800; }
     .btn-claim { background: linear-gradient(135deg, #38bdf8, #0ea5e9); color: #020617; border: none; padding: 7px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; }
+
+    /* লাকি স্পিনার সেকশন */
+    .wheel-container { position: relative; width: 220px; height: 220px; margin: 20px auto; display: flex; align-items: center; justify-content: center; }
+    .wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid var(--gold); background: conic-gradient(#0284c7 0deg 60deg, #1e293b 60deg 120deg, #facc15 120deg 180deg, #0284c7 180deg 240deg, #1e293b 240deg 300deg, #38bdf8 300deg 360deg); transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); box-shadow: 0 0 20px rgba(250, 204, 21, 0.3); }
+    .wheel-arrow { position: absolute; top: -12px; width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 22px solid #ef4444; z-index: 10; }
+
+    /* Modal Image Preview */
+    .preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+    .preview-modal.active { display: flex; }
+    .preview-modal img { max-width: 100%; max-height: 80vh; border-radius: 12px; border: 1px solid var(--accent); }
+    .preview-close { position: absolute; top: 20px; right: 20px; font-size: 30px; color: #fff; cursor: pointer; }
 
     /* Pages */
     .view-page { display: none; }
@@ -69,19 +94,20 @@
 
     /* Bottom Nav */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: var(--nav-bg); backdrop-filter: blur(16px); border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; align-items: center; z-index: 200; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--text-muted); font-size: 10px; font-weight: 700; border: none; background: transparent; flex: 1; cursor: pointer; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--text-muted); font-size: 9px; font-weight: 700; border: none; background: transparent; flex: 1; cursor: pointer; }
     .nav-item.active { color: var(--accent); }
-    .nav-icon { font-size: 19px; }
+    .nav-icon { font-size: 18px; }
   </style>
 </head>
 <body>
 
+  <!-- শীর্ষ বার -->
   <div class="top-bar">
     <div class="user-info">
       <div class="user-avatar" id="uAvatar">U</div>
       <div class="user-meta">
         <span class="user-name" id="uName">VIP সদস্য</span>
-        <span class="user-badge">⭐ VIP মেম্বার</span>
+        <span class="user-badge" id="uBadge">⭐ BRONZE VIP</span>
       </div>
     </div>
     <div class="balance-pill">🪙 <span id="uCoins">0</span></div>
@@ -89,9 +115,34 @@
 
   <div class="container">
     
-    <!-- ১. হোম পেজ (PLP আগে থাকবে) -->
+    <!-- ডাইনামিক নোটিশ বার -->
+    <div class="notice-card" id="noticeBox">
+      <span>📢</span>
+      <span id="noticeText">স্বাগতম! নতুন প্রিমিয়াম PLP ও ফন্ট যুক্ত করা হয়েছে।</span>
+    </div>
+
+    <!-- লাইভ কাউন্টার বার -->
+    <div class="live-stats-bar">
+      <div class="live-stat-item">
+        <span class="live-stat-val" id="statVisits">0</span>
+        <span class="live-stat-lbl">👥 মোট ভিজিটর</span>
+      </div>
+      <div class="live-stat-item">
+        <span class="live-stat-val" id="statAdsWatched">0</span>
+        <span class="live-stat-lbl">📺 অ্যাড ভিউ</span>
+      </div>
+      <div class="live-stat-item">
+        <span class="live-stat-val" id="statClaims">0</span>
+        <span class="live-stat-lbl">🎁 সফল ক্লেইম</span>
+      </div>
+      <div class="live-stat-item">
+        <span class="live-stat-val" id="statRefers">0</span>
+        <span class="live-stat-lbl">🤝 মোট রেফার</span>
+      </div>
+    </div>
+
+    <!-- ১. হোম পেজ (রিসোর্স ও সার্চ) -->
     <div id="pageHome" class="view-page active">
-      <!-- ডেইলি রিওয়ার্ড কার্ড -->
       <div class="daily-card">
         <div>
           <h4 style="font-size: 13px; font-weight: bold; color: #fff;">🎁 দৈনিক ফ্রি রিওয়ার্ড</h4>
@@ -99,6 +150,9 @@
         </div>
         <button class="daily-btn" id="btnDailyCheck" onclick="claimDailyReward()">ক্লেইম করুন</button>
       </div>
+
+      <!-- ইনস্ট্যান্ট সার্চ -->
+      <input type="text" class="search-box" id="searchInput" placeholder="🔍 কাঙ্ক্ষিত ফাইল বা ফন্টের নাম লিখুন..." oninput="handleSearch()">
 
       <div class="tabs">
         <button class="tab-btn active" onclick="switchCategory('plp', this)">🎨 PLP ফাইল</button>
@@ -108,14 +162,29 @@
       <div class="grid" id="resourceGrid"></div>
     </div>
 
-    <!-- ২. অ্যাড দেখে কয়েন -->
+    <!-- ২. লাকি হুইল স্পিন পেজ -->
+    <div id="pageSpin" class="view-page">
+      <div class="stat-card">
+        <h2>🎡 লাকি স্পিন ও উইন</h2>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">চাকা ঘুরিয়ে জিতে নিন ১ থেকে ১৫ পর্যন্ত কয়েন!</p>
+        
+        <div class="wheel-container">
+          <div class="wheel-arrow"></div>
+          <div class="wheel" id="wheelEl"></div>
+        </div>
+
+        <button class="action-btn" id="btnSpin" onclick="playLuckySpin()">🎯 স্পিন করুন (দৈনিক ১ বার)</button>
+      </div>
+    </div>
+
+    <!-- ৩. অ্যাড দেখে কয়েন -->
     <div id="pageAds" class="view-page">
       <div class="stat-card">
         <span style="font-size:38px;">💎</span>
         <h2 style="font-size:18px; margin: 8px 0;">বিজ্ঞাপন দেখে কয়েন সংগ্রহ</h2>
         <p style="font-size:12px; color:var(--text-muted);">সম্পূর্ণ বিজ্ঞাপনটি দেখলে আপনার ওয়ালেটে ৫টি কয়েন যোগ হবে।</p>
         <div class="stat-number" id="adLimitDisplay">20/20</div>
-        <p style="font-size:11px; color:var(--text-muted);">দৈনিক অবশিষ্ট সীমা</p>
+        <p style="font-size:11px; color:var(--text-muted);">আজকের অবশিষ্ট সীমা</p>
       </div>
 
       <div class="stat-card" style="text-align: left;">
@@ -125,7 +194,7 @@
       </div>
     </div>
 
-    <!-- ৩. লিডারবোর্ড -->
+    <!-- ৪. লিডারবোর্ড -->
     <div id="pageLeaderboard" class="view-page">
       <div class="stat-card">
         <h3 style="font-size:16px;">🏆 শীর্ষ VIP ব্যবহারকারী</h3>
@@ -134,7 +203,7 @@
       <div id="leaderboardList"></div>
     </div>
 
-    <!-- ৪. রেফারেল পেজ -->
+    <!-- ৫. রেফারেল পেজ -->
     <div id="pageRefer" class="view-page">
       <div class="stat-card">
         <span style="font-size:34px;">🤝</span>
@@ -149,27 +218,46 @@
       <button class="action-btn" onclick="shareReferralLink()">🚀 রেফার লিংক শেয়ার করুন</button>
     </div>
 
-    <!-- ৫. প্রোফাইল -->
+    <!-- ৬. প্রোফাইল ও লেভেল -->
     <div id="pageProfile" class="view-page">
       <div class="stat-card">
         <div class="user-avatar" id="profAvatar" style="width:65px; height:65px; font-size:24px; margin: 0 auto 10px auto;">U</div>
         <h2 id="profName" style="font-size:18px;">VIP User</h2>
-        <p id="profTag" style="font-size:12px; color:var(--text-muted); margin-bottom:15px;">@user</p>
-        <div style="display:flex; justify-content:space-around; border-top:1px solid var(--card-border); padding-top:14px;">
-          <div><div style="font-size:18px; font-weight:bold; color:var(--gold);" id="profCoins">0</div><div style="font-size:11px; color:var(--text-muted);">কয়েন</div></div>
-          <div><div style="font-size:18px; font-weight:bold; color:var(--accent);" id="profTotalRef">0</div><div style="font-size:11px; color:var(--text-muted);">রেফার</div></div>
+        <p id="profTag" style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">@user</p>
+        <span style="background:rgba(250,204,21,0.15); color:var(--gold); padding:4px 10px; border-radius:12px; font-size:11px; font-weight:800;" id="profRank">BRONZE VIP</span>
+        
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; border-top:1px solid var(--card-border); padding-top:14px; margin-top:15px;">
+          <div>
+            <div style="font-size:16px; font-weight:bold; color:var(--gold);" id="profCoins">0</div>
+            <div style="font-size:10px; color:var(--text-muted);">কয়েন</div>
+          </div>
+          <div>
+            <div style="font-size:16px; font-weight:bold; color:var(--accent);" id="profTotalRef">0</div>
+            <div style="font-size:10px; color:var(--text-muted);">সফল রেফার</div>
+          </div>
+          <div>
+            <div style="font-size:16px; font-weight:bold; color:var(--green);" id="profTotalAds">0</div>
+            <div style="font-size:10px; color:var(--text-muted);">দেখা অ্যাড</div>
+          </div>
         </div>
       </div>
-      <button class="action-btn" style="background:rgba(30,41,59,0.8); color:var(--accent); border:1px solid var(--accent);" onclick="openSupport()">💬 হেল্পলাইন ও সাপোর্ট</button>
+      <button class="action-btn" style="background:rgba(30,41,59,0.8); color:var(--accent); border:1px solid var(--accent);" onclick="openSupport()">💬 হেল্পলাইন ও সাপোর্ট গ্রুপ</button>
     </div>
 
+  </div>
+
+  <!-- ইমেজ জুম প্রিভিউ মোডাল -->
+  <div class="preview-modal" id="imageModal" onclick="closePreview()">
+    <span class="preview-close">&times;</span>
+    <img id="modalImg" src="" alt="preview">
   </div>
 
   <!-- বটম ন্যাভিগেশন -->
   <div class="bottom-nav">
     <button class="nav-item active" onclick="switchNav('pageHome', this)"><span class="nav-icon">💎</span><span>রিসোর্স</span></button>
-    <button class="nav-item" onclick="switchNav('pageAds', this)"><span class="nav-icon">📺</span><span>অ্যাড দেখে আয়</span></button>
-    <button class="nav-item" onclick="switchNav('pageLeaderboard', this)"><span class="nav-icon">🏆</span><span>লিডারবোর্ড</span></button>
+    <button class="nav-item" onclick="switchNav('pageSpin', this)"><span class="nav-icon">🎡</span><span>স্পিন</span></button>
+    <button class="nav-item" onclick="switchNav('pageAds', this)"><span class="nav-icon">📺</span><span>টাস্ক</span></button>
+    <button class="nav-item" onclick="switchNav('pageLeaderboard', this)"><span class="nav-icon">🏆</span><span>র‍্যাংক</span></button>
     <button class="nav-item" onclick="switchNav('pageRefer', this)"><span class="nav-icon">👥</span><span>রেফার</span></button>
     <button class="nav-item" onclick="switchNav('pageProfile', this)"><span class="nav-icon">👤</span><span>প্রোফাইল</span></button>
   </div>
@@ -179,13 +267,14 @@
     if (tg) { tg.ready(); tg.expand(); }
 
     const BOT_USERNAME = "PLPStoreOfficialBot";
-    const SUPPORT_URL = "https://t.me/PLPStoreBD0";
+    const SUPPORT_URL = "https://t.me/PLPSTOREAI";
     const DB_BASE = "https://premium-resources-default-rtdb.firebaseio.com";
 
     const user = tg?.initDataUnsafe?.user || { id: 7481264433, first_name: "Adom Ali", username: "mdadomali320" };
-    let userData = { coins: 20, refers: 0, daily_ads: {}, last_checkin: "", claimed_count: 0 };
+    let userData = { coins: 20, refers: 0, daily_ads: {}, last_checkin: "", last_spin: "", claimed_count: 0, total_ads_watched: 0 };
     let allResources = {};
-    let currentCategory = 'plp'; // PLP আগে থাকবে
+    let currentCategory = 'plp';
+    let currentWheelRotation = 0;
 
     const AD_LIMIT = 20;
     const AD_REWARD = 5;
@@ -193,6 +282,14 @@
     function getTodayKey() {
       const d = new Date();
       return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+    }
+
+    // ভিআইপি র‍্যাঙ্ক ক্যালকুলেশন
+    function getVipRank(coins) {
+      if (coins >= 200) return "👑 DIAMOND VIP";
+      if (coins >= 100) return "🥇 GOLD VIP";
+      if (coins >= 50) return "🥈 SILVER VIP";
+      return "⭐ BRONZE VIP";
     }
 
     async function initApp() {
@@ -208,31 +305,72 @@
         const res = await fetch(`${DB_BASE}/users/${user.id}.json`);
         const data = await res.json();
         if (data) {
-          userData = Object.assign({ coins: 20, refers: 0, daily_ads: {}, claimed_count: 0 }, data);
+          userData = Object.assign({ coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0 }, data);
         } else {
-          userData = { name: user.first_name, username: user.username || "", coins: 20, refers: 0, daily_ads: {}, claimed_count: 0 };
+          userData = { name: user.first_name, username: user.username || "", coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0 };
           await fetch(`${DB_BASE}/users/${user.id}.json`, { method: 'PUT', body: JSON.stringify(userData) });
         }
       } catch (e) {}
 
+      trackVisit();
+      loadGlobalStats();
+      loadNotice();
       updateUI();
       checkDailyStatus();
+      checkSpinStatus();
       fetchResources();
     }
 
+    // ফায়ারবেস থেকে লাইভ নোটিশ লোড
+    async function loadNotice() {
+      try {
+        const res = await fetch(`${DB_BASE}/active_ad.json`);
+        const data = await res.json();
+        if (data && data.text) {
+          document.getElementById('noticeText').innerText = data.text;
+        }
+      } catch(e) {}
+    }
+
+    async function trackVisit() {
+      try {
+        const sRes = await fetch(`${DB_BASE}/stats/total_visits.json`);
+        let count = (await sRes.json()) || 0;
+        count += 1;
+        fetch(`${DB_BASE}/stats/total_visits.json`, { method: 'PUT', body: JSON.stringify(count) });
+        document.getElementById('statVisits').innerText = count;
+      } catch(e) {}
+    }
+
+    async function loadGlobalStats() {
+      try {
+        const res = await fetch(`${DB_BASE}/stats.json`);
+        const stats = (await res.json()) || {};
+        if (stats.total_visits) document.getElementById('statVisits').innerText = stats.total_visits;
+        document.getElementById('statAdsWatched').innerText = stats.total_ads || 0;
+        document.getElementById('statClaims').innerText = stats.total_claims || 0;
+        document.getElementById('statRefers').innerText = stats.total_refers || 0;
+      } catch(e) {}
+    }
+
     function updateUI() {
-      document.getElementById('uCoins').innerText = userData.coins || 0;
-      document.getElementById('profCoins').innerText = userData.coins || 0;
+      const coins = userData.coins || 0;
+      document.getElementById('uCoins').innerText = coins;
+      document.getElementById('profCoins').innerText = coins;
       document.getElementById('referCount').innerText = userData.refers || 0;
       document.getElementById('profTotalRef').innerText = userData.refers || 0;
+      document.getElementById('profTotalAds').innerText = userData.total_ads_watched || 0;
       document.getElementById('referLinkText').innerText = `https://t.me/${BOT_USERNAME}?start=ref_${user.id}`;
       
+      const rank = getVipRank(coins);
+      document.getElementById('uBadge').innerText = rank;
+      document.getElementById('profRank').innerText = rank;
+
       const today = getTodayKey();
       const viewed = userData.daily_ads?.[today] || 0;
       document.getElementById('adLimitDisplay').innerText = `${Math.max(0, AD_LIMIT - viewed)}/${AD_LIMIT}`;
     }
 
-    // ডেইলি ফ্রি রিওয়ার্ড
     function checkDailyStatus() {
       const today = getTodayKey();
       const btn = document.getElementById('btnDailyCheck');
@@ -256,7 +394,43 @@
       alert("🎉 দৈনিক বোনাস +৫ কয়েন আপনার অ্যাকাউন্টে যোগ হয়েছে!");
     }
 
-    // বাধ্যতামূলক Monetag অ্যাড ট্র্যাকিং
+    // লাকি স্পিনার লজিক
+    function checkSpinStatus() {
+      const today = getTodayKey();
+      const btn = document.getElementById('btnSpin');
+      if (userData.last_spin === today) {
+        btn.disabled = true;
+        btn.innerText = "আজকের স্পিন শেষ ✓";
+      }
+    }
+
+    async function playLuckySpin() {
+      const today = getTodayKey();
+      if (userData.last_spin === today) return;
+
+      const btn = document.getElementById('btnSpin');
+      btn.disabled = true;
+
+      const rewards = [2, 5, 8, 10, 12, 15];
+      const winCoin = rewards[Math.floor(Math.random() * rewards.length)];
+      
+      currentWheelRotation += 1800 + Math.floor(Math.random() * 360);
+      document.getElementById('wheelEl').style.transform = `rotate(${currentWheelRotation}deg)`;
+
+      setTimeout(async () => {
+        userData.coins = (userData.coins || 0) + winCoin;
+        userData.last_spin = today;
+        updateUI();
+        btn.innerText = "আজকের স্পিন শেষ ✓";
+
+        await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await fetch(`${DB_BASE}/users/${user.id}/last_spin.json`, { method: 'PUT', body: JSON.stringify(today) });
+
+        alert(`🎉 অভিনন্দন! আপনি স্পিন করে পেয়েছেন +${winCoin} কয়েন!`);
+      }, 4000);
+    }
+
+    // Monetag ভিডিও অ্যাড ট্র্যাকিং
     function watchVipAd() {
       const today = getTodayKey();
       const viewed = userData.daily_ads?.[today] || 0;
@@ -270,15 +444,24 @@
       btn.disabled = true;
 
       if (typeof show_11750504 === 'function') {
-        show_11750504().then(() => {
-          // অ্যাড পুরো দেখা শেষ হলে রিওয়ার্ড
+        show_11750504().then(async () => {
           userData.coins = (userData.coins || 0) + AD_REWARD;
+          userData.total_ads_watched = (userData.total_ads_watched || 0) + 1;
           if (!userData.daily_ads) userData.daily_ads = {};
           userData.daily_ads[today] = viewed + 1;
           updateUI();
 
           fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
           fetch(`${DB_BASE}/users/${user.id}/daily_ads/${today}.json`, { method: 'PUT', body: JSON.stringify(userData.daily_ads[today]) });
+          fetch(`${DB_BASE}/users/${user.id}/total_ads_watched.json`, { method: 'PUT', body: JSON.stringify(userData.total_ads_watched) });
+
+          try {
+            const aRes = await fetch(`${DB_BASE}/stats/total_ads.json`);
+            let tAds = (await aRes.json()) || 0;
+            tAds += 1;
+            fetch(`${DB_BASE}/stats/total_ads.json`, { method: 'PUT', body: JSON.stringify(tAds) });
+            document.getElementById('statAdsWatched').innerText = tAds;
+          } catch(e) {}
 
           alert(`🎉 অভিনন্দন! বিজ্ঞাপন শেষ হওয়ায় +${AD_REWARD} কয়েন যোগ হয়েছে!`);
           btn.innerText = "🎬 বিজ্ঞাপন দেখুন (+৫ কয়েন)";
@@ -310,22 +493,32 @@
       renderResources();
     }
 
-    function renderResources() {
+    function handleSearch() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      renderResources(query);
+    }
+
+    function renderResources(searchFilter = '') {
       const container = document.getElementById('resourceGrid');
       document.getElementById('loading').style.display = 'none';
       container.innerHTML = '';
-      const keys = Object.keys(allResources).filter(k => allResources[k].type === currentCategory);
+      
+      let keys = Object.keys(allResources).filter(k => allResources[k].type === currentCategory);
+      if (searchFilter) {
+        keys = keys.filter(k => allResources[k].name.toLowerCase().includes(searchFilter));
+      }
 
       if (keys.length === 0) {
-        container.innerHTML = '<p style="grid-column: span 2; text-align: center; color: #64748b; padding: 40px 0;">কোনো রিসোর্স নেই</p>';
+        container.innerHTML = '<p style="grid-column: span 2; text-align: center; color: #64748b; padding: 40px 0;">কোনো রিসোর্স পাওয়া যায়নি</p>';
         return;
       }
+
       keys.forEach(k => {
         const item = allResources[k];
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
-          <img src="${item.image || 'https://via.placeholder.com/150'}" alt="thumb">
+          <img src="${item.image || 'https://via.placeholder.com/150'}" alt="thumb" onclick="openPreview('${item.image}')">
           <div class="card-body">
             <div class="card-title">${item.name}</div>
             <div class="card-meta">
@@ -337,6 +530,17 @@
       });
     }
 
+    // ছবি প্রিভিউ মোডাল
+    function openPreview(imgSrc) {
+      if (!imgSrc) return;
+      document.getElementById('modalImg').src = imgSrc;
+      document.getElementById('imageModal').classList.add('active');
+    }
+
+    function closePreview() {
+      document.getElementById('imageModal').classList.remove('active');
+    }
+
     async function claimResource(key, cost) {
       if ((userData.coins || 0) < cost) {
         alert(`❌ পর্যাপ্ত কয়েন নেই! রিসোর্সটির জন্য ${cost} কয়েন প্রয়োজন।`);
@@ -344,8 +548,19 @@
       }
       if (confirm(`আপনি কি ${cost} কয়েন দিয়ে এই ফাইলটি নিতে চান?`)) {
         userData.coins -= cost;
+        userData.claimed_count = (userData.claimed_count || 0) + 1;
         updateUI();
-        await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+
+        fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        fetch(`${DB_BASE}/users/${user.id}/claimed_count.json`, { method: 'PUT', body: JSON.stringify(userData.claimed_count) });
+
+        try {
+          const cRes = await fetch(`${DB_BASE}/stats/total_claims.json`);
+          let tClaims = (await cRes.json()) || 0;
+          tClaims += 1;
+          fetch(`${DB_BASE}/stats/total_claims.json`, { method: 'PUT', body: JSON.stringify(tClaims) });
+          document.getElementById('statClaims').innerText = tClaims;
+        } catch(e) {}
 
         const botUrl = `https://t.me/${BOT_USERNAME}?start=get_${key}_from_${user.id}`;
         if (tg && tg.openTelegramLink) tg.openTelegramLink(botUrl);
@@ -360,8 +575,9 @@
         const sorted = Object.values(users).sort((a, b) => (b.coins || 0) - (a.coins || 0)).slice(0, 10);
         let html = '';
         sorted.forEach((u, idx) => {
-          html += `<div style="display:flex; justify-content:space-between; padding:12px; background:rgba(15,23,42,0.7); border:1px solid var(--card-border); border-radius:10px; margin-bottom:8px;">
-            <span>#${idx+1} ${u.name || 'VIP User'}</span>
+          const rank = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx+1}`;
+          html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:rgba(15,23,42,0.7); border:1px solid var(--card-border); border-radius:10px; margin-bottom:8px;">
+            <span>${rank} ${u.name || 'VIP User'}</span>
             <span style="color:var(--gold); font-weight:bold;">🪙 ${u.coins || 0}</span>
           </div>`;
         });
@@ -392,4 +608,4 @@
     initApp();
   </script>
 </body>
-</html>
+  </html>
