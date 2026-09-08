@@ -1,17 +1,35 @@
 import telebot
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 import requests
 
 BOT_TOKEN = "8815920877:AAGoSTAtxPHWvEzmwfLobQYCDGe0tcyGc9U"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
+WEB_APP_URL = "https://premium-resources.vercel.app"
 
 bot = telebot.TeleBot(BOT_TOKEN)
 admin_temp_data = {}
 
+# মিনি অ্যাপ খোলার বাটন তৈরির ফাংশন
+def get_main_keyboard():
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("🚀 প্রিমিয়াম রিসোর্স 💎", web_app=WebAppInfo(url=WEB_APP_URL)))
+    return markup
+
+# --- ০. ক্যানসেল হ্যান্ডলার (আটকে গেলে ছাড়ানোর জন্য) ---
+@bot.message_handler(commands=['cancel'])
+def cancel_cmd(message):
+    bot.clear_step_handler_by_chat_id(message.chat.id)
+    if message.from_user.id in admin_temp_data:
+        del admin_temp_data[message.from_user.id]
+    bot.reply_to(message, "❌ চলমান প্রক্রিয়া বাতিল করা হয়েছে। আপনি আবার নতুন করে শুরু করতে পারেন।", reply_markup=get_main_keyboard())
+
 # --- স্টার্ট ও ডেলিভারি হ্যান্ডলার ---
 @bot.message_handler(commands=['start'])
 def start_cmd(message):
+    # আগের কোনো অসম্পূর্ণ স্টেপ হ্যান্ডলার থাকলে তা ক্লিয়ার করে দেওয়া
+    bot.clear_step_handler_by_chat_id(message.chat.id)
+    
     args = message.text.split()
     user_id = message.from_user.id
     user_name = message.from_user.first_name
@@ -59,6 +77,7 @@ def start_cmd(message):
                 if item.get("download_link"):
                     markup = InlineKeyboardMarkup()
                     markup.add(InlineKeyboardButton("📥 সরাসরি ফাইল ডাউনলোড করুন", url=item["download_link"]))
+                    markup.add(InlineKeyboardButton("🚀 পুনরায় অ্যাপ খুলুন", web_app=WebAppInfo(url=WEB_APP_URL)))
                     
                     bot.send_message(
                         message.chat.id,
@@ -84,28 +103,36 @@ def start_cmd(message):
                         message.chat.id,
                         item["file_id"],
                         caption=caption_text,
-                        parse_mode="Markdown"
+                        parse_mode="Markdown",
+                        reply_markup=get_main_keyboard()
                     )
                     return
             else:
-                bot.send_message(message.chat.id, "❌ ফাইলটি ডাটাবেজে খুঁজে পাওয়া যায়নি।")
+                bot.send_message(message.chat.id, "❌ ফাইলটি ডাটাবেজে খুঁজে পাওয়া যায়নি।", reply_markup=get_main_keyboard())
                 return
         except Exception:
-            bot.send_message(message.chat.id, "❌ রিসোর্স ডেলিভারিতে সমস্যা দেখা দিয়েছে। পরে আবার চেষ্টা করুন।")
+            bot.send_message(message.chat.id, "❌ রিসোর্স ডেলিভারিতে সমস্যা দেখা দিয়েছে। পরে আবার চেষ্টা করুন।", reply_markup=get_main_keyboard())
             return
 
-    # সাধারণ স্বাগতম বার্তা
+    # সাধারণ স্বাগতম বার্তা (বাটনসহ)
     if user_id == ADMIN_ID:
-        bot.reply_to(
-            message,
+        bot.send_message(
+            message.chat.id,
             "👋 **অ্যাডমিন প্যানেল সক্রিয় আছে!**\n\n"
             "👑 *কমান্ডসমূহ:*\n"
             "▫️ /add - নতুন ফন্ট ফাইল বা PLP ড্রাইভ লিংক যুক্ত করুন\n"
-            "▫️ /setad - মিনি অ্যাপের ব্যানার বিজ্ঞাপন আপডেট করুন",
-            parse_mode="Markdown"
+            "▫️ /setad - মিনি অ্যাপের ব্যানার বিজ্ঞাপন আপডেট করুন\n"
+            "▫️ /cancel - যেকোনো চলমান কাজ বাতিল করুন\n\n"
+            "👇 অ্যাপ ওপেন করতে নিচের বাটনে চাপ দিন:",
+            parse_mode="Markdown",
+            reply_markup=get_main_keyboard()
         )
     else:
-        bot.reply_to(message, f"👋 হ্যালো {user_name}!\n\n💎 প্রিমিয়াম রিসোর্স অ্যাপে আপনাকে স্বাগতম। মিনি অ্যাপ ওপেন করে রিসোর্স সংগ্রহ করুন।")
+        bot.send_message(
+            message.chat.id,
+            f"👋 হ্যালো {user_name}!\n\n💎 প্রিমিয়াম রিসোর্স অ্যাপে আপনাকে স্বাগতম। নিচের বাটনে চাপ দিয়ে অ্যাপ ওপেন করুন:",
+            reply_markup=get_main_keyboard()
+        )
 
 # --- ১. অ্যাডমিন ব্যানার বিজ্ঞাপন সেট ---
 @bot.message_handler(commands=['setad'])
@@ -113,58 +140,71 @@ def set_ad_start(message):
     if message.from_user.id != ADMIN_ID:
         return
     admin_temp_data[message.from_user.id] = {}
-    bot.reply_to(message, "📢 বিজ্ঞাপনের শিরোনাম বা টেক্সট লিখে পাঠান:")
+    bot.reply_to(message, "📢 বিজ্ঞাপনের শিরোনাম বা টেক্সট লিখে পাঠান:\n(বাতিল করতে /cancel লিখুন)")
     bot.register_next_step_handler(message, get_ad_text)
 
 def get_ad_text(message):
+    if message.text and message.text.startswith('/'):
+        return cancel_cmd(message)
     admin_temp_data[message.from_user.id]['text'] = message.text.strip()
     bot.reply_to(message, "🔗 বিজ্ঞাপনের ক্লিক লিংকটি পাঠান (যেমন: https://...):")
     bot.register_next_step_handler(message, get_ad_link)
 
 def get_ad_link(message):
+    if message.text and message.text.startswith('/'):
+        return cancel_cmd(message)
     link = message.text.strip()
     ad_data = {
         "text": admin_temp_data[message.from_user.id]['text'],
         "link": link
     }
     requests.put(f"{FIREBASE_BASE}/active_ad.json", json=ad_data)
-    bot.reply_to(message, "✅ বিজ্ঞাপন সফলভাবে মিনি অ্যাপে সেট হয়েছে!")
+    bot.reply_to(message, "✅ বিজ্ঞাপন সফলভাবে মিনি অ্যাপে সেট হয়েছে!", reply_markup=get_main_keyboard())
 
-# --- ২. রিসোর্স আপলোড (PLP হলে ড্রাইভ লিংক, Font হলে ডকুমেন্ট) ---
+# --- ২. রিসোর্স আপলোড ---
 @bot.message_handler(commands=['add'])
 def add_resource_start(message):
     if message.from_user.id != ADMIN_ID:
         return
     admin_temp_data[message.from_user.id] = {}
-    bot.reply_to(message, "📦 ক্যাটাগরি নির্ধারণ করুন:\nশুধুমাত্র `font` অথবা `plp` লিখুন", parse_mode="Markdown")
+    bot.reply_to(message, "📦 ক্যাটাগরি নির্ধারণ করুন:\nশুধুমাত্র `font` অথবা `plp` লিখুন\n(বাতিল করতে /cancel লিখুন)", parse_mode="Markdown")
     bot.register_next_step_handler(message, get_category)
 
 def get_category(message):
-    cat = message.text.lower().strip()
+    if message.text and message.text.startswith('/'):
+        return cancel_cmd(message)
+    cat = (message.text or "").lower().strip()
     if cat not in ['font', 'plp']:
-        bot.reply_to(message, "ভুল ইনপুট! শুধু `font` অথবা `plp` লিখুন।")
+        bot.reply_to(message, "ভুল ইনপুট! শুধু `font` অথবা `plp` লিখুন (বাতিল করতে /cancel লিখুন):")
+        bot.register_next_step_handler(message, get_category)
         return
     admin_temp_data[message.from_user.id]['type'] = cat
     bot.reply_to(message, f"✅ ক্যাটাগরি: {cat.upper()}\n\nএবার রিসোর্সের নামটি লিখুন:")
     bot.register_next_step_handler(message, get_name)
 
 def get_name(message):
+    if message.text and message.text.startswith('/'):
+        return cancel_cmd(message)
     admin_temp_data[message.from_user.id]['name'] = message.text.strip()
     bot.reply_to(message, "🪙 এই রিসোর্স আনলক করতে ইউজারের কত কয়েন লাগবে? (যেমন: 10):")
     bot.register_next_step_handler(message, get_coins)
 
 def get_coins(message):
+    if message.text and message.text.startswith('/'):
+        return cancel_cmd(message)
     try:
         admin_temp_data[message.from_user.id]['coins'] = int(message.text.strip())
         bot.reply_to(message, "🖼️ এবার থাম্বনেইল ছবি পাঠান:")
         bot.register_next_step_handler(message, get_image)
     except ValueError:
-        bot.reply_to(message, "কয়েন সংখ্যায় দিন। আবার লিখুন:")
+        bot.reply_to(message, "কয়েন সংখ্যায় দিন (যেমন: 10)। আবার লিখুন:")
         bot.register_next_step_handler(message, get_coins)
 
 def get_image(message):
+    if message.text and message.text.startswith('/'):
+        return cancel_cmd(message)
     if not message.photo:
-        bot.reply_to(message, "একটি ছবি পাঠান:")
+        bot.reply_to(message, "একটি ছবি পাঠান (ফটো হিসেবে):")
         bot.register_next_step_handler(message, get_image)
         return
     
@@ -181,6 +221,8 @@ def get_image(message):
         bot.register_next_step_handler(message, get_font_file)
 
 def get_plp_link(message):
+    if message.text and message.text.startswith('/'):
+        return cancel_cmd(message)
     link = message.text.strip()
     if not link.startswith("http"):
         bot.reply_to(message, "❌ সঠিক URL পাঠান (যেমন: https://drive.google.com/...)")
@@ -190,6 +232,8 @@ def get_plp_link(message):
     save_resource_to_firebase(message)
 
 def get_font_file(message):
+    if message.text and message.text.startswith('/'):
+        return cancel_cmd(message)
     if not message.document:
         bot.reply_to(message, "❌ ডকুমেন্ট হিসেবে ফন্ট ফাইল পাঠান:")
         bot.register_next_step_handler(message, get_font_file)
@@ -208,10 +252,11 @@ def save_resource_to_firebase(message):
             f"📌 নাম: {resource['name']}\n"
             f"📁 ক্যাটাগরি: {resource['type'].upper()}\n"
             f"🪙 মূল্য: {resource['coins']} কয়েন\n\n"
-            f"✅ মিনি অ্যাপে লাইভ করা হয়েছে!"
+            f"✅ মিনি অ্যাপে লাইভ করা হয়েছে!",
+            reply_markup=get_main_keyboard()
         )
     else:
-        bot.reply_to(message, "❌ ফায়ারবেসে তথ্য সংরক্ষণ করা যায়নি।")
+        bot.reply_to(message, "❌ ফায়ারবেসে তথ্য সংরক্ষণ করা যায়নি।", reply_markup=get_main_keyboard())
 
 # --- ৩. সাপোর্ট মেসেজিং সিস্টেম ---
 @bot.message_handler(func=lambda message: message.reply_to_message is not None and message.from_user.id == ADMIN_ID)
