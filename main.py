@@ -2,18 +2,19 @@ import os
 import requests
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
-from flask import Flask
+from flask import Flask, jsonify
 from threading import Thread
 
 BOT_TOKEN = "8815920877:AAGoSTAtxPHWvEzmwfLobQYCDGe0tcyGc9U"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
 WEB_APP_URL = "https://premium-resources.vercel.app"
+CHANNEL_ID = "@PLPStoreBD0"  # অফিসিয়াল চ্যানেল ইউজারনেম
 
 bot = telebot.TeleBot(BOT_TOKEN)
 admin_temp_data = {}
 
-# --- UptimeRobot এর জন্য ওয়েব সার্ভার ---
+# --- UptimeRobot ও API এর জন্য ওয়েব সার্ভার ---
 app = Flask(__name__)
 
 @app.route('/')
@@ -23,6 +24,24 @@ def home():
 @app.route('/health')
 def health():
     return "OK", 200
+
+# --- চ্যানেল মেম্বারশিপ লাইভ ভেরিফিকেশন API ---
+@app.route('/verify-channel/<int:user_id>', methods=['GET'])
+def verify_channel_member(user_id):
+    try:
+        # টেলিগ্রামের নিজস্ব API দিয়ে ইউজার চ্যানেলে জয়েন আছে কি না তা যাচাই
+        member = bot.get_chat_member(chat_id=CHANNEL_ID, user_id=user_id)
+        if member.status in ['member', 'administrator', 'creator']:
+            res = jsonify({"joined": True})
+        else:
+            res = jsonify({"joined": False})
+    except Exception as e:
+        # কোনো সমস্যা হলে বা বট অ্যাডমিন না থাকলে
+        res = jsonify({"joined": False, "error": str(e)})
+    
+    # মিনি অ্যাপ থেকে যাতে সরাসরি রিকোয়েস্ট এক্সেপ্ট হয় (CORS Fix)
+    res.headers.add("Access-Control-Allow-Origin", "*")
+    return res, 200
 
 def run_server():
     port = int(os.environ.get("PORT", 8080))
@@ -87,7 +106,7 @@ def start_cmd(message):
 
     # মিনি অ্যাপ থেকে ফাইল/লিংক রিকোয়েস্ট হ্যান্ডলার
     if len(args) > 1 and args[1].startswith("get_"):
-        file_key = args[1].replace("get_", "")
+        file_key = args[1].replace("get_", "").split("_from_")[0]
         bot.send_message(message.chat.id, "⏳ আপনার রিসোর্সটি প্রস্তুত করা হচ্ছে...")
         
         try:
