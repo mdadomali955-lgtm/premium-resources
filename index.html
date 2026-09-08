@@ -191,21 +191,17 @@
       tg.expand(); 
     }
 
-    // বটের ইউজারনেম (বটফাদারে যেটি তৈরি করেছেন)
     const BOT_USERNAME = "PLPStoreOfficialBot";
-    // আপনার এডমিন টেলিগ্রাম আইডি
     const ADMIN_USERNAME = "mdadomali320";
     const SUPPORT_URL = "https://t.me/PLPStoreBD0";
     const DB_BASE = "https://premium-resources-default-rtdb.firebaseio.com";
 
-    // টেলিগ্রাম ইউজার ডেটা
     const user = tg?.initDataUnsafe?.user || { id: 7481264433, first_name: "Adom Ali", username: "mdadomali320" };
     let userData = { coins: 50, refers: 0, daily_ads: {} };
     let allResources = {};
     let activeAdData = { link: "https://t.me/PLPStoreBD0", text: "আমাদের অফিসিয়াল চ্যানেলে জয়েন করুন!" };
     let currentCategory = 'font';
 
-    // অ্যাড ট্র্যাকিং ভ্যারিয়েবল
     let adCountdown = 15;
     let adInterval = null;
     let adStartTime = 0;
@@ -270,7 +266,7 @@
       } catch (e) {}
     }
 
-    /* নিরাপদ অ্যাড ওয়াচ সিস্টেম */
+    /* নিরাপদ Monetag অ্যাড ওয়াচ সিস্টেম */
     function startWatchingAd() {
       const today = getTodayKey();
       const viewed = userData.daily_ads[today] || 0;
@@ -279,13 +275,12 @@
         return;
       }
 
-      // Monetag-এর ব্যানার/পপআপ বিজ্ঞাপন সক্রিয় করা
+      // Monetag SDK কল (মিনি অ্যাপের ভেতরেই পপ-আপ অ্যাড দেখাবে)
       if (typeof show_11750504 === 'function') {
-        show_11750504().catch(e => console.log(e));
+        show_11750504().catch(e => {
+          console.log("Monetag Ad log:", e);
+        });
       }
-
-      // ফায়ারবেসের একটিভ এড লিংক ওপেন করা
-      window.open(activeAdData.link, '_blank');
 
       isAdRunning = true;
       adStartTime = Date.now();
