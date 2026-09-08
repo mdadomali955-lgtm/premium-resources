@@ -22,6 +22,7 @@
       --text-muted: #94a3b8;
       --nav-bg: rgba(3, 7, 18, 0.85);
       --green: #22c55e;
+      --danger: #ef4444;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -37,6 +38,10 @@
     .balance-pill { background: rgba(250, 204, 21, 0.1); border: 1px solid rgba(250, 204, 21, 0.4); padding: 6px 14px; border-radius: 20px; display: flex; align-items: center; gap: 6px; font-weight: 800; color: var(--gold); font-size: 14px; box-shadow: 0 0 12px var(--gold-glow); }
 
     .container { padding: 16px; }
+
+    /* কাস্টম টোস্ট নোটিফিকেশন */
+    #toast { position: fixed; top: -60px; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.95); border: 1px solid var(--accent); color: #fff; padding: 10px 20px; border-radius: 30px; font-size: 12px; font-weight: 700; z-index: 2000; box-shadow: 0 4px 20px rgba(0,0,0,0.5); transition: top 0.3s ease; display: flex; align-items: center; gap: 8px; }
+    #toast.show { top: 20px; }
 
     /* নোটিশ বোর্ড */
     .notice-card { background: rgba(56, 189, 248, 0.1); border: 1px solid var(--card-border); border-radius: 12px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; margin-bottom: 14px; font-size: 12px; color: var(--accent); }
@@ -77,6 +82,11 @@
     .wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid var(--gold); background: conic-gradient(#0284c7 0deg 60deg, #1e293b 60deg 120deg, #facc15 120deg 180deg, #0284c7 180deg 240deg, #1e293b 240deg 300deg, #38bdf8 300deg 360deg); transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); box-shadow: 0 0 20px rgba(250, 204, 21, 0.3); }
     .wheel-arrow { position: absolute; top: -12px; width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 22px solid #ef4444; z-index: 10; }
 
+    /* স্ক্র্যাচ কার্ড কন্টেইনার */
+    .scratch-container { position: relative; width: 260px; height: 130px; margin: 15px auto; border-radius: 12px; overflow: hidden; border: 2px solid var(--gold); box-shadow: 0 0 15px var(--gold-glow); }
+    .scratch-reward { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0f172a; font-size: 18px; font-weight: 800; color: var(--gold); }
+    #scratchCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer; }
+
     /* Modal Image Preview */
     .preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
     .preview-modal.active { display: flex; }
@@ -92,6 +102,10 @@
     .refer-box { background: rgba(3, 7, 18, 0.6); border: 1px dashed var(--card-border); padding: 12px; border-radius: 10px; font-size: 12px; word-break: break-all; margin: 12px 0; color: var(--accent); }
     .action-btn { width: 100%; background: linear-gradient(135deg, #38bdf8, #0284c7); color: #020617; padding: 14px; font-size: 14px; font-weight: 800; border: none; border-radius: 12px; cursor: pointer; }
 
+    /* আনলক হিস্ট্রি লিস্ট */
+    .unlocked-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; text-align: left; }
+    .unlocked-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(30, 41, 59, 0.6); border: 1px solid var(--card-border); border-radius: 8px; font-size: 12px; }
+
     /* Bottom Nav */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: var(--nav-bg); backdrop-filter: blur(16px); border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; align-items: center; z-index: 200; }
     .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--text-muted); font-size: 9px; font-weight: 700; border: none; background: transparent; flex: 1; cursor: pointer; }
@@ -100,6 +114,9 @@
   </style>
 </head>
 <body>
+
+  <!-- টোস্ট নোটিফিকেশন বার -->
+  <div id="toast"><span id="toastIcon">⭐</span><span id="toastMsg">বার্তা</span></div>
 
   <!-- শীর্ষ বার -->
   <div class="top-bar">
@@ -162,18 +179,30 @@
       <div class="grid" id="resourceGrid"></div>
     </div>
 
-    <!-- ২. লাকি হুইল স্পিন পেজ -->
-    <div id="pageSpin" class="view-page">
+    <!-- ২. গেম জোন পেজ (হুইল স্পিন ও স্ক্র্যাচ কার্ড) -->
+    <div id="pageGames" class="view-page">
+      <!-- হুইল স্পিন -->
       <div class="stat-card">
-        <h2>🎡 লাকি স্পিন ও উইন</h2>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">চাকা ঘুরিয়ে জিতে নিন ১ থেকে ১৫ পর্যন্ত কয়েন!</p>
-        
+        <h2>🎡 লাকি স্পিন</h2>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">চাকা ঘুরিয়ে জিতে নিন ২ থেকে ১৫ কয়েন!</p>
         <div class="wheel-container">
           <div class="wheel-arrow"></div>
           <div class="wheel" id="wheelEl"></div>
         </div>
+        <button class="action-btn" id="btnSpin" onclick="playLuckySpin()">🎯 স্পিন করুন</button>
+      </div>
 
-        <button class="action-btn" id="btnSpin" onclick="playLuckySpin()">🎯 স্পিন করুন (দৈনিক ১ বার)</button>
+      <!-- স্ক্র্যাচ কার্ড -->
+      <div class="stat-card">
+        <h2>✨ দৈনিক স্ক্র্যাচ কার্ড</h2>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">কার্ডটি আঙুল দিয়ে ঘষে রিওয়ার্ড আনলক করুন</p>
+        <div class="scratch-container">
+          <div class="scratch-reward">
+            <span>🎁 অভিনন্দন!</span>
+            <span id="scratchCoinText">+০ কয়েন</span>
+          </div>
+          <canvas id="scratchCanvas" width="260" height="130"></canvas>
+        </div>
       </div>
     </div>
 
@@ -182,7 +211,7 @@
       <div class="stat-card">
         <span style="font-size:38px;">💎</span>
         <h2 style="font-size:18px; margin: 8px 0;">বিজ্ঞাপন দেখে কয়েন সংগ্রহ</h2>
-        <p style="font-size:12px; color:var(--text-muted);">সম্পূর্ণ বিজ্ঞাপনটি দেখলে আপনার ওয়ালেটে ৫টি কয়েন যোগ হবে।</p>
+        <p style="font-size:12px; color:var(--text-muted);">সম্পূর্ণ বিজ্ঞাপনটি দেখলে ওয়ালেটে ৫টি কয়েন যোগ হবে।</p>
         <div class="stat-number" id="adLimitDisplay">20/20</div>
         <p style="font-size:11px; color:var(--text-muted);">আজকের অবশিষ্ট সীমা</p>
       </div>
@@ -218,7 +247,7 @@
       <button class="action-btn" onclick="shareReferralLink()">🚀 রেফার লিংক শেয়ার করুন</button>
     </div>
 
-    <!-- ৬. প্রোফাইল ও লেভেল -->
+    <!-- ৬. প্রোফাইল ও আনলক হিস্ট্রি -->
     <div id="pageProfile" class="view-page">
       <div class="stat-card">
         <div class="user-avatar" id="profAvatar" style="width:65px; height:65px; font-size:24px; margin: 0 auto 10px auto;">U</div>
@@ -241,6 +270,15 @@
           </div>
         </div>
       </div>
+
+      <!-- আনলক করা ফাইলের তালিকা -->
+      <div class="stat-card">
+        <h3 style="font-size: 14px; text-align: left; margin-bottom: 8px;">📂 আমার আনলক করা ফাইলসমূহ</h3>
+        <div class="unlocked-list" id="unlockedItemsContainer">
+          <p style="color:var(--text-muted); font-size: 11px;">এখনও কোনো ফাইল ক্লেইম করেননি।</p>
+        </div>
+      </div>
+
       <button class="action-btn" style="background:rgba(30,41,59,0.8); color:var(--accent); border:1px solid var(--accent);" onclick="openSupport()">💬 হেল্পলাইন ও সাপোর্ট গ্রুপ</button>
     </div>
 
@@ -255,7 +293,7 @@
   <!-- বটম ন্যাভিগেশন -->
   <div class="bottom-nav">
     <button class="nav-item active" onclick="switchNav('pageHome', this)"><span class="nav-icon">💎</span><span>রিসোর্স</span></button>
-    <button class="nav-item" onclick="switchNav('pageSpin', this)"><span class="nav-icon">🎡</span><span>স্পিন</span></button>
+    <button class="nav-item" onclick="switchNav('pageGames', this)"><span class="nav-icon">🎮</span><span>গেমস</span></button>
     <button class="nav-item" onclick="switchNav('pageAds', this)"><span class="nav-icon">📺</span><span>টাস্ক</span></button>
     <button class="nav-item" onclick="switchNav('pageLeaderboard', this)"><span class="nav-icon">🏆</span><span>র‍্যাংক</span></button>
     <button class="nav-item" onclick="switchNav('pageRefer', this)"><span class="nav-icon">👥</span><span>রেফার</span></button>
@@ -271,20 +309,39 @@
     const DB_BASE = "https://premium-resources-default-rtdb.firebaseio.com";
 
     const user = tg?.initDataUnsafe?.user || { id: 7481264433, first_name: "Adom Ali", username: "mdadomali320" };
-    let userData = { coins: 20, refers: 0, daily_ads: {}, last_checkin: "", last_spin: "", claimed_count: 0, total_ads_watched: 0 };
+    let userData = { coins: 20, refers: 0, daily_ads: {}, last_checkin: "", last_spin: "", last_scratch: "", claimed_count: 0, total_ads_watched: 0, unlocked: {} };
     let allResources = {};
     let currentCategory = 'plp';
     let currentWheelRotation = 0;
+    let scratchCardReward = 0;
+    let scratchCardScratched = false;
 
     const AD_LIMIT = 20;
     const AD_REWARD = 5;
+
+    // টেলিগ্রাম ভাইব্রেশন ও হ্যাপটিক্স
+    function triggerHaptic(type = 'light') {
+      if (tg && tg.HapticFeedback) {
+        if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
+        else if (type === 'warning') tg.HapticFeedback.notificationOccurred('warning');
+        else tg.HapticFeedback.impactOccurred('medium');
+      }
+    }
+
+    // কাস্টম টোস্ট মেসেজ
+    function showToast(msg, icon = '💎') {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').innerText = msg;
+      document.getElementById('toastIcon').innerText = icon;
+      toast.classList.add('show');
+      setTimeout(() => { toast.classList.remove('show'); }, 3000);
+    }
 
     function getTodayKey() {
       const d = new Date();
       return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
     }
 
-    // ভিআইপি র‍্যাঙ্ক ক্যালকুলেশন
     function getVipRank(coins) {
       if (coins >= 200) return "👑 DIAMOND VIP";
       if (coins >= 100) return "🥇 GOLD VIP";
@@ -305,9 +362,9 @@
         const res = await fetch(`${DB_BASE}/users/${user.id}.json`);
         const data = await res.json();
         if (data) {
-          userData = Object.assign({ coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0 }, data);
+          userData = Object.assign({ coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, unlocked: {} }, data);
         } else {
-          userData = { name: user.first_name, username: user.username || "", coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0 };
+          userData = { name: user.first_name, username: user.username || "", coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, unlocked: {} };
           await fetch(`${DB_BASE}/users/${user.id}.json`, { method: 'PUT', body: JSON.stringify(userData) });
         }
       } catch (e) {}
@@ -318,10 +375,10 @@
       updateUI();
       checkDailyStatus();
       checkSpinStatus();
+      initScratchCard();
       fetchResources();
     }
 
-    // ফায়ারবেস থেকে লাইভ নোটিশ লোড
     async function loadNotice() {
       try {
         const res = await fetch(`${DB_BASE}/active_ad.json`);
@@ -369,6 +426,36 @@
       const today = getTodayKey();
       const viewed = userData.daily_ads?.[today] || 0;
       document.getElementById('adLimitDisplay').innerText = `${Math.max(0, AD_LIMIT - viewed)}/${AD_LIMIT}`;
+
+      renderUnlockedItems();
+    }
+
+    function renderUnlockedItems() {
+      const container = document.getElementById('unlockedItemsContainer');
+      const items = userData.unlocked || {};
+      const keys = Object.keys(items);
+      if (keys.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-muted); font-size: 11px;">এখনও কোনো ফাইল ক্লেইম করেননি।</p>';
+        return;
+      }
+      container.innerHTML = '';
+      keys.forEach(k => {
+        const it = items[k];
+        const div = document.createElement('div');
+        div.className = 'unlocked-item';
+        div.innerHTML = `
+          <span><b>${it.name}</b> (${it.type?.toUpperCase()})</span>
+          <button class="btn-claim" onclick="openClaimBot('${k}')">পুনরায় ফাইল নিন ⚡</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function openClaimBot(key) {
+      triggerHaptic();
+      const botUrl = `https://t.me/${BOT_USERNAME}?start=get_${key}_from_${user.id}`;
+      if (tg && tg.openTelegramLink) tg.openTelegramLink(botUrl);
+      else window.open(botUrl, '_blank');
     }
 
     function checkDailyStatus() {
@@ -381,6 +468,7 @@
     }
 
     async function claimDailyReward() {
+      triggerHaptic('success');
       const today = getTodayKey();
       if (userData.last_checkin === today) return;
 
@@ -391,10 +479,10 @@
 
       await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
       await fetch(`${DB_BASE}/users/${user.id}/last_checkin.json`, { method: 'PUT', body: JSON.stringify(today) });
-      alert("🎉 দৈনিক বোনাস +৫ কয়েন আপনার অ্যাকাউন্টে যোগ হয়েছে!");
+      showToast("দৈনিক বোনাস +৫ কয়েন যোগ হয়েছে!", "🎉");
     }
 
-    // লাকি স্পিনার লজিক
+    // লাকি স্পিনার
     function checkSpinStatus() {
       const today = getTodayKey();
       const btn = document.getElementById('btnSpin');
@@ -405,6 +493,7 @@
     }
 
     async function playLuckySpin() {
+      triggerHaptic();
       const today = getTodayKey();
       if (userData.last_spin === today) return;
 
@@ -418,6 +507,7 @@
       document.getElementById('wheelEl').style.transform = `rotate(${currentWheelRotation}deg)`;
 
       setTimeout(async () => {
+        triggerHaptic('success');
         userData.coins = (userData.coins || 0) + winCoin;
         userData.last_spin = today;
         updateUI();
@@ -426,16 +516,93 @@
         await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
         await fetch(`${DB_BASE}/users/${user.id}/last_spin.json`, { method: 'PUT', body: JSON.stringify(today) });
 
-        alert(`🎉 অভিনন্দন! আপনি স্পিন করে পেয়েছেন +${winCoin} কয়েন!`);
+        showToast(`স্পিন করে পেয়েছেন +${winCoin} কয়েন!`, "🎉");
       }, 4000);
+    }
+
+    // স্ক্র্যাচ কার্ড সিস্টেম
+    function initScratchCard() {
+      const canvas = document.getElementById('scratchCanvas');
+      const ctx = canvas.getContext('2d');
+      const today = getTodayKey();
+
+      if (userData.last_scratch === today) {
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('আজকের কার্ড ঘষা শেষ!', canvas.width / 2, canvas.height / 2 + 5);
+        return;
+      }
+
+      scratchCardReward = Math.floor(Math.random() * 7) + 3; // ৩ থেকে ৯ কয়েন
+      document.getElementById('scratchCoinText').innerText = `+${scratchCardReward} কয়েন`;
+
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = 'bold 14px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('ঘষে রিওয়ার্ড দেখুন ✨', canvas.width / 2, canvas.height / 2 + 5);
+
+      let isDrawing = false;
+      function scratch(e) {
+        if (!isDrawing || scratchCardScratched) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+        const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.beginPath();
+        ctx.arc(x, y, 16, 0, Math.PI * 2);
+        ctx.fill();
+
+        triggerHaptic('light');
+        checkScratchCompletion();
+      }
+
+      function checkScratchCompletion() {
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        let transparentPixels = 0;
+        for (let i = 3; i < imgData.data.length; i += 4) {
+          if (imgData.data[i] === 0) transparentPixels++;
+        }
+        if (transparentPixels > (imgData.data.length / 4) * 0.45 && !scratchCardScratched) {
+          scratchCardScratched = true;
+          canvas.style.display = 'none';
+          claimScratchReward();
+        }
+      }
+
+      canvas.addEventListener('mousedown', () => isDrawing = true);
+      canvas.addEventListener('mouseup', () => isDrawing = false);
+      canvas.addEventListener('mousemove', scratch);
+
+      canvas.addEventListener('touchstart', (e) => { isDrawing = true; scratch(e); });
+      canvas.addEventListener('touchend', () => isDrawing = false);
+      canvas.addEventListener('touchmove', scratch);
+    }
+
+    async function claimScratchReward() {
+      triggerHaptic('success');
+      const today = getTodayKey();
+      userData.coins = (userData.coins || 0) + scratchCardReward;
+      userData.last_scratch = today;
+      updateUI();
+
+      await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+      await fetch(`${DB_BASE}/users/${user.id}/last_scratch.json`, { method: 'PUT', body: JSON.stringify(today) });
+      showToast(`স্ক্র্যাচ থেকে পেয়েছেন +${scratchCardReward} কয়েন!`, "🎁");
     }
 
     // Monetag ভিডিও অ্যাড ট্র্যাকিং
     function watchVipAd() {
+      triggerHaptic();
       const today = getTodayKey();
       const viewed = userData.daily_ads?.[today] || 0;
       if (viewed >= AD_LIMIT) {
-        alert("⚠️ আজকের বিজ্ঞাপন দেখার সীমা শেষ!");
+        showToast("আজকের বিজ্ঞাপন সীমা শেষ!", "⚠️");
         return;
       }
 
@@ -445,6 +612,7 @@
 
       if (typeof show_11750504 === 'function') {
         show_11750504().then(async () => {
+          triggerHaptic('success');
           userData.coins = (userData.coins || 0) + AD_REWARD;
           userData.total_ads_watched = (userData.total_ads_watched || 0) + 1;
           if (!userData.daily_ads) userData.daily_ads = {};
@@ -463,16 +631,17 @@
             document.getElementById('statAdsWatched').innerText = tAds;
           } catch(e) {}
 
-          alert(`🎉 অভিনন্দন! বিজ্ঞাপন শেষ হওয়ায় +${AD_REWARD} কয়েন যোগ হয়েছে!`);
+          showToast(`বিজ্ঞাপন সম্পন্ন! +${AD_REWARD} কয়েন যোগ হয়েছে`, "🎉");
           btn.innerText = "🎬 বিজ্ঞাপন দেখুন (+৫ কয়েন)";
           btn.disabled = false;
         }).catch(e => {
-          alert("❌ আপনি বিজ্ঞাপনটি সম্পূর্ণ দেখেননি! কয়েন পেতে পুরো বিজ্ঞাপনটি দেখতে হবে।");
+          triggerHaptic('warning');
+          showToast("বিজ্ঞাপনটি সম্পূর্ণ দেখা হয়নি!", "❌");
           btn.innerText = "🎬 বিজ্ঞাপন দেখুন (+৫ কয়েন)";
           btn.disabled = false;
         });
       } else {
-        alert("বিজ্ঞাপন লোড হচ্ছে, কিছু সেকেন্ড পর আবার চাপ দিন।");
+        showToast("বিজ্ঞাপন লোড হচ্ছে, কিছু সেকেন্ড পর আবার চাপ দিন", "⏳");
         btn.innerText = "🎬 বিজ্ঞাপন দেখুন (+৫ কয়েন)";
         btn.disabled = false;
       }
@@ -487,6 +656,7 @@
     }
 
     function switchCategory(cat, el) {
+      triggerHaptic();
       currentCategory = cat;
       document.querySelectorAll('.tabs .tab-btn').forEach(b => b.classList.remove('active'));
       el.classList.add('active');
@@ -523,16 +693,16 @@
             <div class="card-title">${item.name}</div>
             <div class="card-meta">
               <span class="price-tag">🪙 ${item.coins}</span>
-              <button class="btn-claim" onclick="claimResource('${k}', ${item.coins})">${item.type === 'plp' ? 'লিংক নিন 🔗' : 'ফাইল নিন ⚡'}</button>
+              <button class="btn-claim" onclick="claimResource('${k}', ${item.coins}, '${item.name}', '${item.type}')">${item.type === 'plp' ? 'লিংক নিন 🔗' : 'ফাইল নিন ⚡'}</button>
             </div>
           </div>`;
         container.appendChild(card);
       });
     }
 
-    // ছবি প্রিভিউ মোডাল
     function openPreview(imgSrc) {
       if (!imgSrc) return;
+      triggerHaptic();
       document.getElementById('modalImg').src = imgSrc;
       document.getElementById('imageModal').classList.add('active');
     }
@@ -541,18 +711,24 @@
       document.getElementById('imageModal').classList.remove('active');
     }
 
-    async function claimResource(key, cost) {
+    async function claimResource(key, cost, name, type) {
+      triggerHaptic();
       if ((userData.coins || 0) < cost) {
-        alert(`❌ পর্যাপ্ত কয়েন নেই! রিসোর্সটির জন্য ${cost} কয়েন প্রয়োজন।`);
+        showToast(`পর্যাপ্ত কয়েন নেই! আরও ${cost - userData.coins} কয়েন প্রয়োজন।`, "❌");
         return;
       }
+
       if (confirm(`আপনি কি ${cost} কয়েন দিয়ে এই ফাইলটি নিতে চান?`)) {
+        triggerHaptic('success');
         userData.coins -= cost;
         userData.claimed_count = (userData.claimed_count || 0) + 1;
+        if (!userData.unlocked) userData.unlocked = {};
+        userData.unlocked[key] = { name: name, type: type, time: Date.now() };
         updateUI();
 
         fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
         fetch(`${DB_BASE}/users/${user.id}/claimed_count.json`, { method: 'PUT', body: JSON.stringify(userData.claimed_count) });
+        fetch(`${DB_BASE}/users/${user.id}/unlocked/${key}.json`, { method: 'PUT', body: JSON.stringify(userData.unlocked[key]) });
 
         try {
           const cRes = await fetch(`${DB_BASE}/stats/total_claims.json`);
@@ -562,9 +738,7 @@
           document.getElementById('statClaims').innerText = tClaims;
         } catch(e) {}
 
-        const botUrl = `https://t.me/${BOT_USERNAME}?start=get_${key}_from_${user.id}`;
-        if (tg && tg.openTelegramLink) tg.openTelegramLink(botUrl);
-        else window.open(botUrl, '_blank');
+        openClaimBot(key);
       }
     }
 
@@ -586,6 +760,7 @@
     }
 
     function switchNav(pageId, btn) {
+      triggerHaptic();
       document.querySelectorAll('.view-page').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.bottom-nav .nav-item').forEach(b => b.classList.remove('active'));
       document.getElementById(pageId).classList.add('active');
@@ -594,6 +769,7 @@
     }
 
     function shareReferralLink() {
+      triggerHaptic();
       const shareText = `💎 ভিআইপি ফন্ট এবং প্রিমিয়াম PLP প্রজেক্ট ফ্রিতে ডাউনলোড করুন এই অ্যাপ থেকে!`;
       const fullUrl = `https://t.me/share/url?url=${encodeURIComponent(`https://t.me/${BOT_USERNAME}?start=ref_${user.id}`)}&text=${encodeURIComponent(shareText)}`;
       if (tg && tg.openTelegramLink) tg.openTelegramLink(fullUrl);
@@ -601,6 +777,7 @@
     }
 
     function openSupport() {
+      triggerHaptic();
       if (tg && tg.openTelegramLink) tg.openTelegramLink(SUPPORT_URL);
       else window.open(SUPPORT_URL, '_blank');
     }
