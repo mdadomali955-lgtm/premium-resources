@@ -1,6 +1,9 @@
+import os
+import requests
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
-import requests
+from flask import Flask
+from threading import Thread
 
 BOT_TOKEN = "8815920877:AAGoSTAtxPHWvEzmwfLobQYCDGe0tcyGc9U"
 ADMIN_ID = 7481264433
@@ -9,6 +12,26 @@ WEB_APP_URL = "https://premium-resources.vercel.app"
 
 bot = telebot.TeleBot(BOT_TOKEN)
 admin_temp_data = {}
+
+# --- UptimeRobot এর জন্য ওয়েব সার্ভার ---
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Bot is running perfectly!", 200
+
+@app.route('/health')
+def health():
+    return "OK", 200
+
+def run_server():
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)
+
+def keep_alive():
+    t = Thread(target=run_server)
+    t.daemon = True
+    t.start()
 
 # মিনি অ্যাপ খোলার বাটন তৈরির ফাংশন
 def get_main_keyboard():
@@ -27,7 +50,6 @@ def cancel_cmd(message):
 # --- স্টার্ট ও ডেলিভারি হ্যান্ডলার ---
 @bot.message_handler(commands=['start'])
 def start_cmd(message):
-    # আগের কোনো অসম্পূর্ণ স্টেপ হ্যান্ডলার থাকলে তা ক্লিয়ার করে দেওয়া
     bot.clear_step_handler_by_chat_id(message.chat.id)
     
     args = message.text.split()
@@ -276,5 +298,7 @@ def forward_user_message_to_admin(message):
     bot.send_message(ADMIN_ID, user_info, parse_mode="Markdown")
     bot.reply_to(message, "✅ আপনার মেসেজটি সাপোর্ট টিমে পৌঁছেছে।")
 
-print("Premium Resource Delivery Bot is running...")
-bot.infinity_polling()
+if __name__ == "__main__":
+    keep_alive()
+    print("Premium Resource Delivery Bot is running with Web Server...")
+    bot.infinity_polling(skip_pending=True)
