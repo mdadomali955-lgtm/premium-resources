@@ -182,19 +182,26 @@
 
   <script>
     const tg = window.Telegram?.WebApp;
-    if (tg) { tg.ready(); tg.expand(); }
+    if (tg) { 
+      tg.ready(); 
+      tg.expand(); 
+    }
 
-    const BOT_USERNAME = "mdadomali320_bot";
-    const SUPPORT_URL = "https://t.me/PLPSTOREAI";
+    // বটের ইউজারনেম (বটফাদারে যেটি তৈরি করেছেন)
+    const BOT_USERNAME = "PLPStoreOfficialBot";
+    // আপনার এডমিন টেলিগ্রাম আইডি
+    const ADMIN_USERNAME = "mdadomali320";
+    const SUPPORT_URL = "https://t.me/PLPStoreBD0";
     const DB_BASE = "https://premium-resources-default-rtdb.firebaseio.com";
 
+    // টেলিগ্রাম ইউজার ডেটা
     const user = tg?.initDataUnsafe?.user || { id: 7481264433, first_name: "Adom Ali", username: "mdadomali320" };
     let userData = { coins: 50, refers: 0, daily_ads: {} };
     let allResources = {};
     let activeAdData = { link: "https://t.me/PLPStoreBD0", text: "আমাদের অফিসিয়াল চ্যানেলে জয়েন করুন!" };
     let currentCategory = 'font';
 
-    // নিরাপদ অ্যাড ট্র্যাকিং ও অ্যান্টি-চিট ভ্যারিয়েবল
+    // অ্যাড ট্র্যাকিং ভ্যারিয়েবল
     let adCountdown = 15;
     let adInterval = null;
     let adStartTime = 0;
@@ -268,10 +275,8 @@
         return;
       }
 
-      // ১. বিজ্ঞাপন নতুন ট্যাবে ওপেন
       window.open(activeAdData.link, '_blank');
 
-      // ২. অ্যান্টি-চিট টাইম রেকর্ড ও টাইমার অন
       isAdRunning = true;
       adStartTime = Date.now();
       adCountdown = 15;
@@ -299,7 +304,6 @@
     async function claimAdReward() {
       const timeSpent = (Date.now() - adStartTime) / 1000;
 
-      // ইউজার যাতে ১৫ সেকেন্ডের আগে দাবি করতে না পারে
       if (!isAdRunning || timeSpent < 14) {
         alert("❌ আপনি সম্পূর্ণ সময় বিজ্ঞাপনটি দেখেননি! ১৫ সেকেন্ড অপেক্ষা করা বাধ্যতামূলক।");
         resetAdButtons();
@@ -435,4 +439,4 @@
     initApp();
   </script>
 </body>
-</html>
+  </html>
