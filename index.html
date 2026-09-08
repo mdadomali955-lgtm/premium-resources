@@ -39,7 +39,7 @@
 
     .container { padding: 16px; }
 
-    /* কাস্টম টোস্ট নোটিফিকেশন */
+    /* টোস্ট নোটিফিকেশন */
     #toast { position: fixed; top: -60px; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.95); border: 1px solid var(--accent); color: #fff; padding: 10px 20px; border-radius: 30px; font-size: 12px; font-weight: 700; z-index: 2000; box-shadow: 0 4px 20px rgba(0,0,0,0.5); transition: top 0.3s ease; display: flex; align-items: center; gap: 8px; }
     #toast.show { top: 20px; }
 
@@ -57,7 +57,7 @@
     .daily-btn { background: linear-gradient(135deg, #facc15, #eab308); color: #020617; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 800; font-size: 12px; cursor: pointer; }
     .daily-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
 
-    /* সার্চ বার */
+    /* সার্চ বক্স */
     .search-box { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--card-bg); color: #fff; font-size: 13px; margin-bottom: 14px; outline: none; }
     .search-box:focus { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
 
@@ -77,12 +77,12 @@
     .price-tag { font-size: 13px; color: var(--gold); font-weight: 800; }
     .btn-claim { background: linear-gradient(135deg, #38bdf8, #0ea5e9); color: #020617; border: none; padding: 7px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; }
 
-    /* লাকি স্পিনার সেকশন */
-    .wheel-container { position: relative; width: 220px; height: 220px; margin: 20px auto; display: flex; align-items: center; justify-content: center; }
-    .wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid var(--gold); background: conic-gradient(#0284c7 0deg 60deg, #1e293b 60deg 120deg, #facc15 120deg 180deg, #0284c7 180deg 240deg, #1e293b 240deg 300deg, #38bdf8 300deg 360deg); transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); box-shadow: 0 0 20px rgba(250, 204, 21, 0.3); }
-    .wheel-arrow { position: absolute; top: -12px; width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 22px solid #ef4444; z-index: 10; }
+    /* ক্যানভাস হুইল স্পিন সেকশন */
+    .wheel-container { position: relative; width: 240px; height: 240px; margin: 20px auto; display: flex; align-items: center; justify-content: center; }
+    #wheelCanvas { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 20px rgba(250, 204, 21, 0.35); transition: transform 4s cubic-bezier(0.15, 0.9, 0.25, 1); }
+    .wheel-arrow { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 24px solid #ef4444; z-index: 20; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
 
-    /* স্ক্র্যাচ কার্ড কন্টেইনার */
+    /* স্ক্র্যাচ কার্ড সেকশন */
     .scratch-container { position: relative; width: 260px; height: 130px; margin: 15px auto; border-radius: 12px; overflow: hidden; border: 2px solid var(--gold); box-shadow: 0 0 15px var(--gold-glow); }
     .scratch-reward { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0f172a; font-size: 18px; font-weight: 800; color: var(--gold); }
     #scratchCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer; }
@@ -102,7 +102,10 @@
     .refer-box { background: rgba(3, 7, 18, 0.6); border: 1px dashed var(--card-border); padding: 12px; border-radius: 10px; font-size: 12px; word-break: break-all; margin: 12px 0; color: var(--accent); }
     .action-btn { width: 100%; background: linear-gradient(135deg, #38bdf8, #0284c7); color: #020617; padding: 14px; font-size: 14px; font-weight: 800; border: none; border-radius: 12px; cursor: pointer; }
 
-    /* আনলক হিস্ট্রি লিস্ট */
+    /* টাস্ক আইটেম */
+    .task-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(30, 41, 59, 0.6); border: 1px solid var(--card-border); border-radius: 10px; margin-bottom: 10px; }
+
+    /* আনলক হিস্ট্রি */
     .unlocked-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; text-align: left; }
     .unlocked-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(30, 41, 59, 0.6); border: 1px solid var(--card-border); border-radius: 8px; font-size: 12px; }
 
@@ -115,7 +118,7 @@
 </head>
 <body>
 
-  <!-- টোস্ট নোটিফিকেশন বার -->
+  <!-- কাস্টম টোস্ট নোটিফিকেশন বার -->
   <div id="toast"><span id="toastIcon">⭐</span><span id="toastMsg">বার্তা</span></div>
 
   <!-- শীর্ষ বার -->
@@ -132,13 +135,13 @@
 
   <div class="container">
     
-    <!-- ডাইনামিক নোটিশ বার -->
+    <!-- লাইভ নোটিশ বার -->
     <div class="notice-card" id="noticeBox">
       <span>📢</span>
       <span id="noticeText">স্বাগতম! নতুন প্রিমিয়াম PLP ও ফন্ট যুক্ত করা হয়েছে।</span>
     </div>
 
-    <!-- লাইভ কাউন্টার বার -->
+    <!-- গ্লোবাল লাইভ স্ট্যাটাস বার -->
     <div class="live-stats-bar">
       <div class="live-stat-item">
         <span class="live-stat-val" id="statVisits">0</span>
@@ -158,7 +161,7 @@
       </div>
     </div>
 
-    <!-- ১. হোম পেজ (রিসোর্স ও সার্চ) -->
+    <!-- ১. রিসোর্স হোম পেজ -->
     <div id="pageHome" class="view-page active">
       <div class="daily-card">
         <div>
@@ -168,7 +171,7 @@
         <button class="daily-btn" id="btnDailyCheck" onclick="claimDailyReward()">ক্লেইম করুন</button>
       </div>
 
-      <!-- ইনস্ট্যান্ট সার্চ -->
+      <!-- ইনস্ট্যান্ট লাইভ সার্চ বার -->
       <input type="text" class="search-box" id="searchInput" placeholder="🔍 কাঙ্ক্ষিত ফাইল বা ফন্টের নাম লিখুন..." oninput="handleSearch()">
 
       <div class="tabs">
@@ -179,26 +182,28 @@
       <div class="grid" id="resourceGrid"></div>
     </div>
 
-    <!-- ২. গেম জোন পেজ (হুইল স্পিন ও স্ক্র্যাচ কার্ড) -->
+    <!-- ২. গেম জোন পেজ (ক্যানভাস স্পিন ও স্ক্র্যাচ কার্ড) -->
     <div id="pageGames" class="view-page">
-      <!-- হুইল স্পিন -->
+      <!-- ক্যানভাস লাকি স্পিন -->
       <div class="stat-card">
-        <h2>🎡 লাকি স্পিন</h2>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">চাকা ঘুরিয়ে জিতে নিন ২ থেকে ১৫ কয়েন!</p>
+        <h2>🎡 লাকি হুইল স্পিন</h2>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">চাকা ঘুরিয়ে নিশ্চিত রিওয়ার্ড জিতে নিন!</p>
+        
         <div class="wheel-container">
           <div class="wheel-arrow"></div>
-          <div class="wheel" id="wheelEl"></div>
+          <canvas id="wheelCanvas" width="240" height="240"></canvas>
         </div>
+
         <button class="action-btn" id="btnSpin" onclick="playLuckySpin()">🎯 স্পিন করুন</button>
       </div>
 
-      <!-- স্ক্র্যাচ কার্ড -->
+      <!-- ভার্চুয়াল স্ক্র্যাচ কার্ড -->
       <div class="stat-card">
         <h2>✨ দৈনিক স্ক্র্যাচ কার্ড</h2>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">কার্ডটি আঙুল দিয়ে ঘষে রিওয়ার্ড আনলক করুন</p>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">কার্ডটি আঙুল দিয়ে ঘষে লুকানো কয়েন বের করুন</p>
         <div class="scratch-container">
           <div class="scratch-reward">
-            <span>🎁 অভিনন্দন!</span>
+            <span>🎁 সারপ্রাইজ রিওয়ার্ড</span>
             <span id="scratchCoinText">+০ কয়েন</span>
           </div>
           <canvas id="scratchCanvas" width="260" height="130"></canvas>
@@ -206,8 +211,20 @@
       </div>
     </div>
 
-    <!-- ৩. অ্যাড দেখে কয়েন -->
+    <!-- ৩. টাস্ক ও অ্যাড সেকশন -->
     <div id="pageAds" class="view-page">
+      <!-- চ্যানেল জয়েন টাস্ক -->
+      <div class="stat-card" style="text-align: left;">
+        <h3 style="font-size: 15px; margin-bottom: 8px;">🚀 স্পেশাল বোনাস টাস্ক</h3>
+        <div class="task-item">
+          <div>
+            <div style="font-size: 13px; font-weight: 700;">টেলিগ্রাম চ্যানেলে জয়েন</div>
+            <div style="font-size: 11px; color: var(--gold);">পুরস্কার: +১৫ কয়েন</div>
+          </div>
+          <button class="daily-btn" id="btnJoinChannel" onclick="claimChannelTask()">জয়েন করুন</button>
+        </div>
+      </div>
+
       <div class="stat-card">
         <span style="font-size:38px;">💎</span>
         <h2 style="font-size:18px; margin: 8px 0;">বিজ্ঞাপন দেখে কয়েন সংগ্রহ</h2>
@@ -271,7 +288,7 @@
         </div>
       </div>
 
-      <!-- আনলক করা ফাইলের তালিকা -->
+      <!-- আনলক করা ফাইলের সরাসরি লিস্ট -->
       <div class="stat-card">
         <h3 style="font-size: 14px; text-align: left; margin-bottom: 8px;">📂 আমার আনলক করা ফাইলসমূহ</h3>
         <div class="unlocked-list" id="unlockedItemsContainer">
@@ -284,13 +301,13 @@
 
   </div>
 
-  <!-- ইমেজ জুম প্রিভিউ মোডাল -->
+  <!-- ইমেজ প্রিভিউ মোডাল -->
   <div class="preview-modal" id="imageModal" onclick="closePreview()">
     <span class="preview-close">&times;</span>
     <img id="modalImg" src="" alt="preview">
   </div>
 
-  <!-- বটম ন্যাভিগেশন -->
+  <!-- বটম ন্যাভিগেশন বার -->
   <div class="bottom-nav">
     <button class="nav-item active" onclick="switchNav('pageHome', this)"><span class="nav-icon">💎</span><span>রিসোর্স</span></button>
     <button class="nav-item" onclick="switchNav('pageGames', this)"><span class="nav-icon">🎮</span><span>গেমস</span></button>
@@ -309,7 +326,7 @@
     const DB_BASE = "https://premium-resources-default-rtdb.firebaseio.com";
 
     const user = tg?.initDataUnsafe?.user || { id: 7481264433, first_name: "Adom Ali", username: "mdadomali320" };
-    let userData = { coins: 20, refers: 0, daily_ads: {}, last_checkin: "", last_spin: "", last_scratch: "", claimed_count: 0, total_ads_watched: 0, unlocked: {} };
+    let userData = { coins: 20, refers: 0, daily_ads: {}, last_checkin: "", last_spin: "", last_scratch: "", joined_channel: false, claimed_count: 0, total_ads_watched: 0, unlocked: {} };
     let allResources = {};
     let currentCategory = 'plp';
     let currentWheelRotation = 0;
@@ -319,7 +336,17 @@
     const AD_LIMIT = 20;
     const AD_REWARD = 5;
 
-    // টেলিগ্রাম ভাইব্রেশন ও হ্যাপটিক্স
+    // স্পিনের খোপ ও রিওয়ার্ড কনফিগারেশন
+    const spinRewards = [
+      { text: "+2 🪙", coins: 2, bg: "#0284c7" },
+      { text: "+5 🪙", coins: 5, bg: "#1e293b" },
+      { text: "+8 🪙", coins: 8, bg: "#f59e0b" },
+      { text: "+10 🪙", coins: 10, bg: "#0284c7" },
+      { text: "+12 🪙", coins: 12, bg: "#1e293b" },
+      { text: "+15 🪙", coins: 15, bg: "#eab308" }
+    ];
+
+    // হ্যাপটিক ফিডব্যাক
     function triggerHaptic(type = 'light') {
       if (tg && tg.HapticFeedback) {
         if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
@@ -328,7 +355,7 @@
       }
     }
 
-    // কাস্টম টোস্ট মেসেজ
+    // টোস্ট পপআপ
     function showToast(msg, icon = '💎') {
       const toast = document.getElementById('toast');
       document.getElementById('toastMsg').innerText = msg;
@@ -349,6 +376,40 @@
       return "⭐ BRONZE VIP";
     }
 
+    // ক্যানভাসে চাকা আঁকা
+    function drawWheel() {
+      const canvas = document.getElementById('wheelCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const numSegments = spinRewards.length;
+      const arc = (2 * Math.PI) / numSegments;
+      const radius = canvas.width / 2;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      spinRewards.forEach((seg, i) => {
+        const angle = i * arc;
+        ctx.beginPath();
+        ctx.fillStyle = seg.bg;
+        ctx.moveTo(radius, radius);
+        ctx.arc(radius, radius, radius, angle, angle + arc);
+        ctx.lineTo(radius, radius);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.save();
+        ctx.translate(radius, radius);
+        ctx.rotate(angle + arc / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 15px sans-serif";
+        ctx.fillText(seg.text, radius - 20, 5);
+        ctx.restore();
+      });
+    }
+
     async function initApp() {
       const initial = user.first_name ? user.first_name[0].toUpperCase() : 'U';
       document.getElementById('uAvatar').innerText = initial;
@@ -362,19 +423,21 @@
         const res = await fetch(`${DB_BASE}/users/${user.id}.json`);
         const data = await res.json();
         if (data) {
-          userData = Object.assign({ coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, unlocked: {} }, data);
+          userData = Object.assign({ coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, unlocked: {}, joined_channel: false }, data);
         } else {
-          userData = { name: user.first_name, username: user.username || "", coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, unlocked: {} };
+          userData = { name: user.first_name, username: user.username || "", coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, unlocked: {}, joined_channel: false };
           await fetch(`${DB_BASE}/users/${user.id}.json`, { method: 'PUT', body: JSON.stringify(userData) });
         }
       } catch (e) {}
 
+      drawWheel();
       trackVisit();
       loadGlobalStats();
       loadNotice();
       updateUI();
       checkDailyStatus();
       checkSpinStatus();
+      checkChannelTaskStatus();
       initScratchCard();
       fetchResources();
     }
@@ -482,7 +545,7 @@
       showToast("দৈনিক বোনাস +৫ কয়েন যোগ হয়েছে!", "🎉");
     }
 
-    // লাকি স্পিনার
+    // স্পিন টাস্ক
     function checkSpinStatus() {
       const today = getTodayKey();
       const btn = document.getElementById('btnSpin');
@@ -500,15 +563,21 @@
       const btn = document.getElementById('btnSpin');
       btn.disabled = true;
 
-      const rewards = [2, 5, 8, 10, 12, 15];
-      const winCoin = rewards[Math.floor(Math.random() * rewards.length)];
+      const winningIndex = Math.floor(Math.random() * spinRewards.length);
+      const selectedReward = spinRewards[winningIndex];
+
+      const numSegments = spinRewards.length;
+      const segDegree = 360 / numSegments;
       
-      currentWheelRotation += 1800 + Math.floor(Math.random() * 360);
-      document.getElementById('wheelEl').style.transform = `rotate(${currentWheelRotation}deg)`;
+      const targetRotation = 360 - (winningIndex * segDegree + segDegree / 2) - 90;
+      currentWheelRotation += 1800 + (targetRotation - (currentWheelRotation % 360));
+
+      const canvas = document.getElementById('wheelCanvas');
+      canvas.style.transform = `rotate(${currentWheelRotation}deg)`;
 
       setTimeout(async () => {
         triggerHaptic('success');
-        userData.coins = (userData.coins || 0) + winCoin;
+        userData.coins = (userData.coins || 0) + selectedReward.coins;
         userData.last_spin = today;
         updateUI();
         btn.innerText = "আজকের স্পিন শেষ ✓";
@@ -516,11 +585,11 @@
         await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
         await fetch(`${DB_BASE}/users/${user.id}/last_spin.json`, { method: 'PUT', body: JSON.stringify(today) });
 
-        showToast(`স্পিন করে পেয়েছেন +${winCoin} কয়েন!`, "🎉");
+        showToast(`স্পিন থেকে পেয়েছেন ${selectedReward.text}!`, "🎉");
       }, 4000);
     }
 
-    // স্ক্র্যাচ কার্ড সিস্টেম
+    // স্ক্র্যাচ কার্ড লজিক
     function initScratchCard() {
       const canvas = document.getElementById('scratchCanvas');
       const ctx = canvas.getContext('2d');
@@ -536,7 +605,7 @@
         return;
       }
 
-      scratchCardReward = Math.floor(Math.random() * 7) + 3; // ৩ থেকে ৯ কয়েন
+      scratchCardReward = Math.floor(Math.random() * 7) + 3;
       document.getElementById('scratchCoinText').innerText = `+${scratchCardReward} কয়েন`;
 
       ctx.fillStyle = '#64748b';
@@ -596,7 +665,33 @@
       showToast(`স্ক্র্যাচ থেকে পেয়েছেন +${scratchCardReward} কয়েন!`, "🎁");
     }
 
-    // Monetag ভিডিও অ্যাড ট্র্যাকিং
+    // চ্যানেল টাস্ক
+    function checkChannelTaskStatus() {
+      if (userData.joined_channel) {
+        const btn = document.getElementById('btnJoinChannel');
+        btn.disabled = true;
+        btn.innerText = "সম্পন্ন ✓";
+      }
+    }
+
+    async function claimChannelTask() {
+      triggerHaptic();
+      openSupport();
+      setTimeout(async () => {
+        if (!userData.joined_channel) {
+          userData.joined_channel = true;
+          userData.coins = (userData.coins || 0) + 15;
+          updateUI();
+          checkChannelTaskStatus();
+
+          await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+          await fetch(`${DB_BASE}/users/${user.id}/joined_channel.json`, { method: 'PUT', body: JSON.stringify(true) });
+          showToast("চ্যানেল জয়েন সম্পন্ন! +১৫ কয়েন যোগ হয়েছে", "🎉");
+        }
+      }, 3000);
+    }
+
+    // Monetag ভিডিও অ্যাড
     function watchVipAd() {
       triggerHaptic();
       const today = getTodayKey();
@@ -785,4 +880,4 @@
     initApp();
   </script>
 </body>
-  </html>
+                                                                                                                      </html>
