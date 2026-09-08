@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Premium Resources App</title>
+  
+  <!-- Monetag SDK -->
+  <script src="//libtl.com/sdk.js" data-zone="11750504" data-sdk="show_11750504"></script>
+  
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
@@ -275,6 +279,12 @@
         return;
       }
 
+      // Monetag-এর ব্যানার/পপআপ বিজ্ঞাপন সক্রিয় করা
+      if (typeof show_11750504 === 'function') {
+        show_11750504().catch(e => console.log(e));
+      }
+
+      // ফায়ারবেসের একটিভ এড লিংক ওপেন করা
       window.open(activeAdData.link, '_blank');
 
       isAdRunning = true;
@@ -439,4 +449,4 @@
     initApp();
   </script>
 </body>
-  </html>
+</html>
