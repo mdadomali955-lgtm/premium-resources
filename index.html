@@ -55,7 +55,7 @@
     /* Daily Check-in Card */
     .daily-card { background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9)); border: 1px solid rgba(250, 204, 21, 0.4); border-radius: 14px; padding: 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; backdrop-filter: blur(8px); }
     .daily-btn { background: linear-gradient(135deg, #facc15, #eab308); color: #020617; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 800; font-size: 12px; cursor: pointer; }
-    .daily-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
+    .daily-btn:disabled { background: #334155 !important; color: #94a3b8 !important; cursor: not-allowed; }
 
     /* সার্চ বক্স */
     .search-box { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--card-bg); color: #fff; font-size: 13px; margin-bottom: 14px; outline: none; }
@@ -215,11 +215,11 @@
     <div id="pageAds" class="view-page">
       <!-- চ্যানেল জয়েন টাস্ক -->
       <div class="stat-card" style="text-align: left;">
-        <h3 style="font-size: 15px; margin-bottom: 8px;">🚀 স্পেশাল বোনাস টাস্ক</h3>
+        <h3 style="font-size: 15px; margin-bottom: 8px;">🚀 স্পেশাল চ্যানেল টাস্ক</h3>
         <div class="task-item">
           <div>
-            <div style="font-size: 13px; font-weight: 700;">টেলিগ্রাম চ্যানেলে জয়েন</div>
-            <div style="font-size: 11px; color: var(--gold);">পুরস্কার: +১৫ কয়েন</div>
+            <div style="font-size: 13px; font-weight: 700;">অফিসিয়াল টেলিগ্রাম চ্যানেল</div>
+            <div style="font-size: 11px; color: var(--gold);">পুরস্কার: +১৫ কয়েন (একবার)</div>
           </div>
           <button class="daily-btn" id="btnJoinChannel" onclick="claimChannelTask()">জয়েন করুন</button>
         </div>
@@ -296,6 +296,7 @@
         </div>
       </div>
 
+      <!-- সাপোর্ট গ্রুপ বাটন -->
       <button class="action-btn" style="background:rgba(30,41,59,0.8); color:var(--accent); border:1px solid var(--accent);" onclick="openSupport()">💬 হেল্পলাইন ও সাপোর্ট গ্রুপ</button>
     </div>
 
@@ -322,7 +323,8 @@
     if (tg) { tg.ready(); tg.expand(); }
 
     const BOT_USERNAME = "PLPStoreOfficialBot";
-    const SUPPORT_URL = "https://t.me/PLPSTOREAI";
+    const SUPPORT_URL = "https://t.me/PLPSTOREAI";    // অফিসিয়াল সাপোর্ট গ্রুপ
+    const CHANNEL_URL = "https://t.me/PLPStoreBD0";   // অফিসিয়াল টেলিগ্রাম চ্যানেল
     const DB_BASE = "https://premium-resources-default-rtdb.firebaseio.com";
 
     const user = tg?.initDataUnsafe?.user || { id: 7481264433, first_name: "Adom Ali", username: "mdadomali320" };
@@ -355,7 +357,7 @@
       }
     }
 
-    // টোস্ট পপআপ
+    // কাস্টম টোস্ট পপআপ
     function showToast(msg, icon = '💎') {
       const toast = document.getElementById('toast');
       document.getElementById('toastMsg').innerText = msg;
@@ -665,18 +667,30 @@
       showToast(`স্ক্র্যাচ থেকে পেয়েছেন +${scratchCardReward} কয়েন!`, "🎁");
     }
 
-    // চ্যানেল টাস্ক
+    // চ্যানেল টাস্ক স্ট্যাটাস চেক
     function checkChannelTaskStatus() {
       if (userData.joined_channel) {
         const btn = document.getElementById('btnJoinChannel');
-        btn.disabled = true;
-        btn.innerText = "সম্পন্ন ✓";
+        if (btn) {
+          btn.disabled = true;
+          btn.innerText = "সম্পন্ন ✓";
+        }
       }
     }
 
+    // চ্যানেল টাস্ক ক্লেইম হ্যান্ডলার (১ বার পাওয়ার যোগ্য ও সুরক্ষিত)
     async function claimChannelTask() {
       triggerHaptic();
-      openSupport();
+      
+      if (userData.joined_channel) {
+        showToast("আপনি অলরেডি এই বোনাসটি সংগ্রহ করেছেন!", "⚠️");
+        return;
+      }
+
+      // সরাসরি মূল চ্যানেলে রিডাইরেক্ট
+      if (tg && tg.openTelegramLink) tg.openTelegramLink(CHANNEL_URL);
+      else window.open(CHANNEL_URL, '_blank');
+
       setTimeout(async () => {
         if (!userData.joined_channel) {
           userData.joined_channel = true;
@@ -684,6 +698,7 @@
           updateUI();
           checkChannelTaskStatus();
 
+          // ফায়ারবেসে চিরতরে লক
           await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
           await fetch(`${DB_BASE}/users/${user.id}/joined_channel.json`, { method: 'PUT', body: JSON.stringify(true) });
           showToast("চ্যানেল জয়েন সম্পন্ন! +১৫ কয়েন যোগ হয়েছে", "🎉");
@@ -871,6 +886,7 @@
       else window.open(fullUrl, '_blank');
     }
 
+    // সাপোর্ট গ্রুপ ওপেন করা
     function openSupport() {
       triggerHaptic();
       if (tg && tg.openTelegramLink) tg.openTelegramLink(SUPPORT_URL);
@@ -880,4 +896,4 @@
     initApp();
   </script>
 </body>
-                                                                                                                      </html>
+</html>
