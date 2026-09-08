@@ -12,7 +12,7 @@
   <style>
     :root {
       --bg-gradient: radial-gradient(circle at 50% -10%, #1e1b4b 0%, #030712 85%);
-      --card-bg: rgba(15, 23, 42, 0.7);
+      --card-bg: rgba(15, 23, 42, 0.75);
       --card-border: rgba(56, 189, 248, 0.28);
       --accent: #38bdf8;
       --accent-glow: rgba(56, 189, 248, 0.45);
@@ -20,18 +20,17 @@
       --gold-glow: rgba(250, 204, 21, 0.5);
       --text: #f8fafc;
       --text-muted: #94a3b8;
-      --nav-bg: rgba(3, 7, 18, 0.92);
+      --nav-bg: rgba(3, 7, 18, 0.94);
       --green: #22c55e;
       --purple: #a855f7;
+      --danger: #ef4444;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background: var(--bg-gradient); min-height: 100vh; color: var(--text); padding-bottom: 95px; overflow-x: hidden; }
 
-    /* কনফেটি ক্যানভাস */
+    /* কনফেটি ও টোস্ট */
     #confettiCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4000; }
-
-    /* কাস্টম টোস্ট নোটিফিকেশন */
     #toast { position: fixed; top: -75px; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.96); border: 1.5px solid var(--accent); color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 13px; font-weight: 800; z-index: 3000; box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 15px var(--accent-glow); transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; gap: 10px; backdrop-filter: blur(16px); }
     #toast.show { top: 22px; }
 
@@ -45,34 +44,30 @@
     .balance-pill { background: linear-gradient(135deg, rgba(250, 204, 21, 0.18), rgba(234, 179, 8, 0.08)); border: 1.5px solid rgba(250, 204, 21, 0.55); padding: 8px 16px; border-radius: 30px; display: flex; align-items: center; gap: 8px; font-weight: 900; color: var(--gold); font-size: 15px; box-shadow: 0 0 20px var(--gold-glow); }
 
     .container { padding: 16px; }
-
-    /* নিয়ন নোটিশ কার্ড */
     .notice-card { background: linear-gradient(90deg, rgba(56, 189, 248, 0.16), rgba(99, 102, 241, 0.12)); border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; font-size: 12px; color: #bae6fd; backdrop-filter: blur(12px); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
 
-    /* লাইভ কাউন্টার গ্রিড */
-    .live-stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 14px 8px; margin-bottom: 16px; text-align: center; backdrop-filter: blur(18px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+    /* গ্লোবাল স্ট্যাটস বার */
+    .live-stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 14px 8px; margin-bottom: 16px; text-align: center; backdrop-filter: blur(18px); }
     .live-stat-item { display: flex; flex-direction: column; gap: 3px; }
     .live-stat-val { font-size: 15px; font-weight: 900; color: var(--accent); text-shadow: 0 0 8px var(--accent-glow); }
     .live-stat-lbl { font-size: 9px; color: var(--text-muted); font-weight: 700; }
 
     /* ডেইলি কার্ড */
-    .daily-card { background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.98)); border: 1px solid rgba(250, 204, 21, 0.45); border-radius: 18px; padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; backdrop-filter: blur(14px); box-shadow: 0 6px 22px rgba(0,0,0,0.35); }
+    .daily-card { background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.98)); border: 1px solid rgba(250, 204, 21, 0.45); border-radius: 18px; padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; backdrop-filter: blur(14px); }
     .daily-btn { background: linear-gradient(135deg, #facc15, #eab308); color: #020617; border: none; padding: 10px 16px; border-radius: 12px; font-weight: 900; font-size: 12px; cursor: pointer; transition: 0.2s; box-shadow: 0 0 12px var(--gold-glow); }
     .daily-btn:active { transform: scale(0.95); }
     .daily-btn:disabled { background: #334155 !important; color: #94a3b8 !important; box-shadow: none !important; cursor: not-allowed; }
 
-    /* সার্চ বক্স */
-    .search-box { width: 100%; padding: 14px 18px; border-radius: 16px; border: 1px solid var(--card-border); background: var(--card-bg); color: #fff; font-size: 13px; margin-bottom: 16px; outline: none; backdrop-filter: blur(12px); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    /* সার্চ ও ট্যাব */
+    .search-box { width: 100%; padding: 14px 18px; border-radius: 16px; border: 1px solid var(--card-border); background: var(--card-bg); color: #fff; font-size: 13px; margin-bottom: 16px; outline: none; backdrop-filter: blur(12px); }
     .search-box:focus { border-color: var(--accent); box-shadow: 0 0 16px var(--accent-glow); }
-
-    /* Tabs */
     .tabs { display: flex; gap: 10px; margin-bottom: 16px; }
     .tab-btn { flex: 1; padding: 13px; border: none; border-radius: 16px; background: var(--card-bg); color: var(--text-muted); font-weight: 800; font-size: 13px; cursor: pointer; border: 1px solid var(--card-border); backdrop-filter: blur(14px); transition: all 0.2s; }
     .tab-btn.active { background: linear-gradient(135deg, #0284c7, #38bdf8); color: #020617; border-color: #38bdf8; box-shadow: 0 0 18px var(--accent-glow); }
 
-    /* Grid Items */
+    /* গ্রিড ও কার্ড */
     .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-    .card { background: var(--card-bg); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--card-border); backdrop-filter: blur(16px); transition: 0.25s; box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+    .card { background: var(--card-bg); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--card-border); backdrop-filter: blur(16px); transition: 0.25s; }
     .card:active { transform: scale(0.96); }
     .card img { width: 100%; height: 130px; object-fit: cover; background: #0f172a; cursor: pointer; }
     .card-body { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; gap: 10px; }
@@ -81,52 +76,50 @@
     .price-tag { font-size: 13px; color: var(--gold); font-weight: 900; }
     .btn-claim { background: linear-gradient(135deg, #38bdf8, #0ea5e9); color: #020617; border: none; padding: 8px 12px; border-radius: 10px; font-size: 11px; font-weight: 900; cursor: pointer; box-shadow: 0 0 12px var(--accent-glow); }
 
-    /* ক্যানভাস হুইল স্পিন সেকশন */
+    /* গেম জোন */
     .wheel-container { position: relative; width: 240px; height: 240px; margin: 25px auto; display: flex; align-items: center; justify-content: center; }
     #wheelCanvas { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 28px rgba(250, 204, 21, 0.45); transition: transform 4s cubic-bezier(0.15, 0.9, 0.25, 1); }
     .wheel-arrow { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 26px solid #ef4444; z-index: 20; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.8)); }
-
-    /* স্ক্র্যাচ কার্ড */
     .scratch-container { position: relative; width: 260px; height: 130px; margin: 18px auto; border-radius: 16px; overflow: hidden; border: 2px solid var(--gold); box-shadow: 0 0 22px var(--gold-glow); }
     .scratch-reward { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0f172a; font-size: 18px; font-weight: 900; color: var(--gold); }
     #scratchCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer; }
 
-    /* Modal Image Preview */
-    .preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 2500; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px); }
-    .preview-modal.active { display: flex; }
-    .preview-modal img { max-width: 100%; max-height: 80vh; border-radius: 16px; border: 1.5px solid var(--accent); box-shadow: 0 0 30px var(--accent-glow); }
-    .preview-close { position: absolute; top: 20px; right: 20px; font-size: 34px; color: #fff; cursor: pointer; }
-
-    /* Pages */
+    /* পৃষ্ঠা ও সাধারণ উপাদান */
     .view-page { display: none; }
     .view-page.active { display: block; }
-
-    .stat-card { background: var(--card-bg); border: 1px solid var(--card-border); padding: 22px; border-radius: 22px; margin-bottom: 16px; text-align: center; backdrop-filter: blur(18px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+    .stat-card { background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 20px; margin-bottom: 16px; text-align: center; backdrop-filter: blur(18px); }
     .stat-number { font-size: 32px; font-weight: 900; color: var(--gold); margin: 8px 0; text-shadow: 0 0 12px var(--gold-glow); }
     .refer-box { background: rgba(3, 7, 18, 0.75); border: 1px dashed var(--card-border); padding: 13px; border-radius: 14px; font-size: 12px; word-break: break-all; margin: 14px 0; color: var(--accent); }
     .action-btn { width: 100%; background: linear-gradient(135deg, #38bdf8, #0284c7); color: #020617; padding: 15px; font-size: 14px; font-weight: 900; border: none; border-radius: 15px; cursor: pointer; box-shadow: 0 0 16px var(--accent-glow); transition: 0.2s; }
     .action-btn:active { transform: scale(0.98); }
     .action-btn:disabled { background: #334155 !important; color: #94a3b8 !important; box-shadow: none !important; cursor: not-allowed; }
-
-    /* টাস্ক আইটেম */
     .task-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(30, 41, 59, 0.7); border: 1px solid var(--card-border); border-radius: 16px; margin-bottom: 12px; }
-
-    /* আনলক হিস্ট্রি */
     .unlocked-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; text-align: left; }
     .unlocked-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(30, 41, 59, 0.6); border: 1px solid var(--card-border); border-radius: 12px; font-size: 12px; }
+
+    /* অ্যাডমিন প্যানেল টেবিল স্টাইল */
+    .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; text-align: left; }
+    .admin-table th { background: rgba(56, 189, 248, 0.15); color: var(--accent); padding: 10px 8px; border-bottom: 1px solid var(--card-border); }
+    .admin-table td { padding: 12px 8px; border-bottom: 1px solid rgba(255,255,255,0.06); color: var(--text); }
+    .badge-count { background: rgba(34, 197, 94, 0.2); color: var(--green); padding: 4px 8px; border-radius: 8px; font-weight: 900; }
+    .badge-rev { background: rgba(250, 204, 21, 0.2); color: var(--gold); padding: 4px 8px; border-radius: 8px; font-weight: 900; }
+
+    /* Modal Image Preview */
+    .preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 2500; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px); }
+    .preview-modal.active { display: flex; }
+    .preview-modal img { max-width: 100%; max-height: 80vh; border-radius: 16px; border: 1.5px solid var(--accent); }
+    .preview-close { position: absolute; top: 20px; right: 20px; font-size: 34px; color: #fff; cursor: pointer; }
 
     /* Bottom Nav */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: var(--nav-bg); backdrop-filter: blur(22px); border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; align-items: center; z-index: 200; }
     .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--text-muted); font-size: 10px; font-weight: 800; border: none; background: transparent; flex: 1; cursor: pointer; transition: 0.2s; }
     .nav-item.active { color: var(--accent); }
-    .nav-icon { font-size: 20px; }
+    .nav-icon { font-size: 19px; }
   </style>
 </head>
 <body>
 
-  <!-- কনফেটি অ্যানিমেশন ক্যানভাস -->
   <canvas id="confettiCanvas"></canvas>
-
   <div id="toast"><span id="toastIcon">⭐</span><span id="toastMsg">বার্তা</span></div>
 
   <!-- শীর্ষ বার -->
@@ -143,7 +136,6 @@
 
   <div class="container">
     
-    <!-- লাইভ নোটিশ বার -->
     <div class="notice-card" id="noticeBox">
       <span>📢</span>
       <span id="noticeText">স্বাগতম! নতুন প্রিমিয়াম PLP ও ফন্ট যুক্ত করা হয়েছে।</span>
@@ -194,12 +186,10 @@
       <div class="stat-card">
         <h2>🎡 লাকি হুইল স্পিন</h2>
         <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">চাকা ঘুরিয়ে নিশ্চিত রিওয়ার্ড জিতে নিন!</p>
-        
         <div class="wheel-container">
           <div class="wheel-arrow"></div>
           <canvas id="wheelCanvas" width="240" height="240"></canvas>
         </div>
-
         <button class="action-btn" id="btnSpin" onclick="playLuckySpin()">🎯 স্পিন করুন</button>
       </div>
 
@@ -216,7 +206,7 @@
       </div>
     </div>
 
-    <!-- ৩. টাস্ক ও অ্যাড সেকশন (নিরাপদ ৩০ লিমিট + ৬০ সেকেন্ড বিরতি) -->
+    <!-- ৩. টাস্ক ও অ্যাড সেকশন -->
     <div id="pageAds" class="view-page">
       <div class="stat-card" style="text-align: left;">
         <h3 style="font-size: 15px; margin-bottom: 8px;">🚀 স্পেশাল চ্যানেল টাস্ক</h3>
@@ -259,7 +249,7 @@
         <span style="font-size:34px;">🤝</span>
         <h2 style="font-size:17px; margin: 8px 0;">বন্ধুকে রেফার করে আয়</h2>
         <p style="font-size:12px; color:var(--text-muted); line-height: 1.4;">
-          ⚠️ <b>নিয়ম:</b> আপনার রেফারে জয়েন করা মেম্বার কমপক্ষে <b>১টি রিসোর্স ক্লেইম করলে</b> তবেই আপনি পাবেন <b>১০টি কয়েন</b>। ফেক রেফার কাজ করবে না।
+          ⚠️ <b>নিয়ম:</b> আপনার রেফারে জয়েন করা মেম্বার কমপক্ষে <b>১টি রিসোর্স ক্লেইম করলে</b> তবেই আপনি পাবেন <b>১০টি কয়েন</b>।
         </p>
         <div class="stat-number" id="referCount">0</div>
         <p style="font-size:12px; color:var(--text-muted);">সফল ভেরিফাইড রেফার</p>
@@ -302,6 +292,45 @@
       <button class="action-btn" style="background:rgba(30,41,59,0.8); color:var(--accent); border:1px solid var(--accent);" onclick="openSupport()">💬 হেল্পলাইন ও সাপোর্ট গ্রুপ</button>
     </div>
 
+    <!-- ৭. এক্সক্লুসিভ অ্যাডমিন সেলস অ্যানালিটিক্স প্যানেল -->
+    <div id="pageAdmin" class="view-page">
+      <div class="stat-card">
+        <span style="font-size: 34px;">👑</span>
+        <h2 style="font-size: 18px; margin-top: 4px; color: var(--gold);">ফাইলের সেলস ও ডাউনলোড রিপোর্ট</h2>
+        <p style="font-size: 11px; color: var(--text-muted);">কোন ফাইল কতবার কেনা হয়েছে ও কত কয়েন আয় হয়েছে</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px;">
+          <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 14px; border: 1px solid var(--card-border);">
+            <div style="font-size: 10px; color: var(--text-muted);">মোট ডাউনলোড</div>
+            <div style="font-size: 20px; font-weight: 900; color: var(--green);" id="adminTotalSales">0 টি</div>
+          </div>
+          <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 14px; border: 1px solid var(--card-border);">
+            <div style="font-size: 10px; color: var(--text-muted);">মোট ব্যয়িত কয়েন</div>
+            <div style="font-size: 20px; font-weight: 900; color: var(--gold);" id="adminTotalCoinsSpent">0 🪙</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-card" style="padding: 14px;">
+        <h3 style="font-size: 14px; text-align: left; margin-bottom: 6px;">📊 ফাইল ভিত্তিক পারফরম্যান্স</h3>
+        <div style="overflow-x: auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ফাইল নাম</th>
+                <th>টাইপ</th>
+                <th>বিক্রি</th>
+                <th>আয়</th>
+              </tr>
+            </thead>
+            <tbody id="adminSalesTableBody">
+              <tr><td colspan="4" style="text-align: center; color: var(--text-muted);">লোড হচ্ছে...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <div class="preview-modal" id="imageModal" onclick="closePreview()">
@@ -310,23 +339,26 @@
   </div>
 
   <!-- বটম ন্যাভিগেশন বার -->
-  <div class="bottom-nav">
+  <div class="bottom-nav" id="bottomNavBar">
     <button class="nav-item active" onclick="switchNav('pageHome', this)"><span class="nav-icon">💎</span><span>রিসোর্স</span></button>
     <button class="nav-item" onclick="switchNav('pageGames', this)"><span class="nav-icon">🎮</span><span>গেমস</span></button>
     <button class="nav-item" onclick="switchNav('pageAds', this)"><span class="nav-icon">📺</span><span>টাস্ক</span></button>
     <button class="nav-item" onclick="switchNav('pageLeaderboard', this)"><span class="nav-icon">🏆</span><span>র‍্যাংক</span></button>
     <button class="nav-item" onclick="switchNav('pageRefer', this)"><span class="nav-icon">👥</span><span>রেফার</span></button>
     <button class="nav-item" onclick="switchNav('pageProfile', this)"><span class="nav-icon">👤</span><span>প্রোফাইল</span></button>
+    <!-- অ্যাডমিন বাটন জাভাস্ক্রিপ্ট দিয়ে শর্তসাপেক্ষে দেখানো হবে -->
+    <button class="nav-item" id="adminNavBtn" style="display: none;" onclick="switchNav('pageAdmin', this)"><span class="nav-icon">👑</span><span>অ্যাডমিন</span></button>
   </div>
 
   <script>
     const tg = window.Telegram?.WebApp;
     if (tg) { tg.ready(); tg.expand(); }
 
+    const ADMIN_TELEGRAM_ID = 7481264433; // আপনার অ্যাডমিন আইডি
     const BOT_USERNAME = "PLPStoreOfficialBot";
-    const SUPPORT_URL = "https://t.me/PLPSTOREAI";          // সাপোর্ট গ্রুপ
-    const CHANNEL_URL = "https://t.me/PLPStoreBD0";         // অফিশিয়াল চ্যানেল
-    const RENDER_BACKEND_URL = "https://resource-admin-bot.onrender.com"; // ব্যাকএন্ড
+    const SUPPORT_URL = "https://t.me/PLPSTOREAI";
+    const CHANNEL_URL = "https://t.me/PLPStoreBD0";
+    const RENDER_BACKEND_URL = "https://resource-admin-bot.onrender.com";
     const DB_BASE = "https://premium-resources-default-rtdb.firebaseio.com";
 
     const user = tg?.initDataUnsafe?.user || { id: 7481264433, first_name: "Adom Ali", username: "mdadomali320" };
@@ -338,10 +370,9 @@
     let scratchCardScratched = false;
     let adTimerInterval = null;
 
-    // নিরাপদ মনিট্যাগ কনফিগারেশন
-    const AD_LIMIT = 30;       // দৈনিক সর্বোচ্চ ৩০টি
-    const AD_REWARD = 4;      // প্রতি অ্যাডে ৪ কয়েন
-    const AD_COOLDOWN = 60;   // ৬০ সেকেন্ডের কুলডাউন বিরতি
+    const AD_LIMIT = 30;
+    const AD_REWARD = 4;
+    const AD_COOLDOWN = 60;
 
     const spinRewards = [
       { text: "+2 🪙", coins: 2, bg: "#0284c7" },
@@ -352,7 +383,6 @@
       { text: "+15 🪙", coins: 15, bg: "#eab308" }
     ];
 
-    // কাস্টম কনফেটি অ্যানিমেশন
     function fireConfetti() {
       const canvas = document.getElementById('confettiCanvas');
       const ctx = canvas.getContext('2d');
@@ -384,7 +414,7 @@
           p.tiltAngle += p.tiltAngleIncremental;
           p.x += p.vx;
           p.y += p.vy;
-          p.vy += 0.25; // মহাকর্ষ
+          p.vy += 0.25;
           ctx.beginPath();
           ctx.lineWidth = p.r;
           ctx.strokeStyle = p.color;
@@ -436,7 +466,6 @@
       const radius = canvas.width / 2;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
       spinRewards.forEach((seg, i) => {
         const angle = i * arc;
         ctx.beginPath();
@@ -468,6 +497,11 @@
       document.getElementById('profName').innerText = user.first_name || "VIP User";
       const tag = user.username ? `@${user.username}` : `ID: ${user.id}`;
       document.getElementById('profTag').innerText = tag;
+
+      // কেবল অ্যাডমিন আইডি হলেই অ্যাডমিন বাটন দৃশ্যমান হবে
+      if (Number(user.id) === ADMIN_TELEGRAM_ID) {
+        document.getElementById('adminNavBtn').style.display = 'flex';
+      }
 
       try {
         const res = await fetch(`${DB_BASE}/users/${user.id}.json`);
@@ -616,7 +650,6 @@
 
       const winningIndex = Math.floor(Math.random() * spinRewards.length);
       const selectedReward = spinRewards[winningIndex];
-
       const numSegments = spinRewards.length;
       const segDegree = 360 / numSegments;
       
@@ -731,14 +764,12 @@
 
     async function claimChannelTask() {
       triggerHaptic();
-      
       if (userData.joined_channel) {
         showToast("আপনি অলরেডি এই বোনাসটি সংগ্রহ করেছেন!", "⚠️");
         return;
       }
 
       const btn = document.getElementById('btnJoinChannel');
-
       if (!btn.dataset.step) {
         btn.dataset.step = "verify";
         btn.innerText = "ভেরিফাই করুন 🔄";
@@ -783,7 +814,6 @@
       }
     }
 
-    // আগের কুলডাউন বিদ্যমান কি না যাচাই
     function checkExistingCooldown() {
       const now = Math.floor(Date.now() / 1000);
       const diff = now - (userData.last_ad_time || 0);
@@ -792,7 +822,6 @@
       }
     }
 
-    // নিরাপদ মনিট্যাগ বিজ্ঞাপন দেখা ও ৬০ সেকেন্ড টাইমার
     function watchVipAd() {
       triggerHaptic();
       const today = getTodayKey();
@@ -854,7 +883,6 @@
       }
     }
 
-    // লাইভ রিভার্স টাইমার
     function startCooldownTimer(seconds) {
       const btn = document.getElementById('btnWatchMonetag');
       btn.disabled = true;
@@ -937,6 +965,7 @@
       document.getElementById('imageModal').classList.remove('active');
     }
 
+    // রিসোর্স ক্লেইম ও সেলস কাউন্টার আপডেট
     async function claimResource(key, cost, name, type) {
       triggerHaptic();
       if ((userData.coins || 0) < cost) {
@@ -952,10 +981,12 @@
         userData.unlocked[key] = { name: name, type: type, time: Date.now() };
         updateUI();
 
+        // ব্যবহারকারীর ডাটা সেভ
         fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
         fetch(`${DB_BASE}/users/${user.id}/claimed_count.json`, { method: 'PUT', body: JSON.stringify(userData.claimed_count) });
         fetch(`${DB_BASE}/users/${user.id}/unlocked/${key}.json`, { method: 'PUT', body: JSON.stringify(userData.unlocked[key]) });
 
+        // গ্লোবাল মোট ডাউনলোড কাউন্ট
         try {
           const cRes = await fetch(`${DB_BASE}/stats/total_claims.json`);
           let tClaims = (await cRes.json()) || 0;
@@ -964,7 +995,73 @@
           document.getElementById('statClaims').innerText = tClaims;
         } catch(e) {}
 
+        // 👑 প্রতিটি ফাইলের সেলস ও কয়েন আয় ট্র্যাকিং
+        try {
+          const fileRes = await fetch(`${DB_BASE}/resources/${key}.json`);
+          const fileData = await fileRes.json();
+          if (fileData) {
+            const newClaimCount = (fileData.total_claims || 0) + 1;
+            const newRevenue = (fileData.total_revenue || 0) + cost;
+            
+            fetch(`${DB_BASE}/resources/${key}/total_claims.json`, { method: 'PUT', body: JSON.stringify(newClaimCount) });
+            fetch(`${DB_BASE}/resources/${key}/total_revenue.json`, { method: 'PUT', body: JSON.stringify(newRevenue) });
+            
+            if (allResources[key]) {
+              allResources[key].total_claims = newClaimCount;
+              allResources[key].total_revenue = newRevenue;
+            }
+          }
+        } catch(e) {}
+
         openClaimBot(key);
+      }
+    }
+
+    // অ্যাডমিন অ্যানালিটিক্স লোড ফাংশন
+    async function loadAdminAnalytics() {
+      const tbody = document.getElementById('adminSalesTableBody');
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--accent);">ডাটা বিশ্লেষণ করা হচ্ছে... ⏳</td></tr>';
+
+      try {
+        const res = await fetch(`${DB_BASE}/resources.json`);
+        const resources = await res.json() || {};
+        
+        let totalSales = 0;
+        let totalCoins = 0;
+        let rowsHtml = '';
+
+        const keys = Object.keys(resources);
+        if (keys.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">কোনো রিসোর্স পাওয়া যায়নি</td></tr>';
+          return;
+        }
+
+        // সর্বোচ্চ বিক্রির ভিত্তিতে সাজানো
+        keys.sort((a, b) => (resources[b].total_claims || 0) - (resources[a].total_claims || 0));
+
+        keys.forEach(k => {
+          const it = resources[k];
+          const claims = it.total_claims || 0;
+          const revenue = it.total_revenue || 0;
+          totalSales += claims;
+          totalCoins += revenue;
+
+          rowsHtml += `
+            <tr>
+              <td style="font-weight: 700; color: #fff;">${it.name || 'Unknown'}</td>
+              <td><span style="font-size: 10px; color: var(--text-muted);">${(it.type || 'N/A').toUpperCase()}</span></td>
+              <td><span class="badge-count">${claims} বার</span></td>
+              <td><span class="badge-rev">🪙 ${revenue}</span></td>
+            </tr>
+          `;
+        });
+
+        tbody.innerHTML = rowsHtml;
+        document.getElementById('adminTotalSales').innerText = `${totalSales} টি`;
+        document.getElementById('adminTotalCoinsSpent').innerText = `${totalCoins} 🪙`;
+
+      } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--danger);">ডাটা লোড করতে ব্যর্থ হয়েছে!</td></tr>';
       }
     }
 
@@ -991,7 +1088,9 @@
       document.querySelectorAll('.bottom-nav .nav-item').forEach(b => b.classList.remove('active'));
       document.getElementById(pageId).classList.add('active');
       btn.classList.add('active');
+      
       if (pageId === 'pageLeaderboard') loadLeaderboard();
+      if (pageId === 'pageAdmin') loadAdminAnalytics();
     }
 
     function shareReferralLink() {
@@ -1011,4 +1110,4 @@
     initApp();
   </script>
 </body>
-          </html>
+</html>
