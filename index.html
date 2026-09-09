@@ -5,115 +5,418 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>VIP Premium Resources</title>
   
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  
   <!-- Monetag SDK -->
   <script src="//libtl.com/sdk.js" data-zone="11750504" data-sdk="show_11750504"></script>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
     :root {
-      --bg-gradient: radial-gradient(circle at 50% -20%, #1e1b4b 0%, #090d16 60%, #030712 100%);
-      --card-bg: rgba(15, 23, 42, 0.72);
-      --card-border: rgba(56, 189, 248, 0.22);
-      --card-border-glow: rgba(56, 189, 248, 0.45);
-      --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.4);
-      --gold: #facc15;
-      --gold-glow: rgba(250, 204, 21, 0.45);
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --nav-bg: rgba(3, 7, 18, 0.88);
+      --bg-main: #060913;
+      --card-bg: rgba(18, 24, 43, 0.65);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-border-glow: rgba(56, 189, 248, 0.35);
+      
+      --cyan: #38bdf8;
+      --cyan-glow: rgba(56, 189, 248, 0.4);
+      --gold: #fbbf24;
+      --gold-glow: rgba(251, 191, 36, 0.35);
+      --purple: #a855f7;
       --green: #10b981;
-      --green-glow: rgba(16, 185, 129, 0.4);
       --danger: #f43f5e;
+      
+      --text-white: #f8fafc;
+      --text-muted: #94a3b8;
+      --nav-bg: rgba(6, 9, 19, 0.85);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background: var(--bg-gradient); min-height: 100vh; color: var(--text); padding-bottom: 95px; overflow-x: hidden; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-white);
+      min-height: 100vh;
+      padding-bottom: 100px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* সাইবার ব্যাকগ্রাউন্ড লাইট অর্বস */
+    .glow-orb-1 {
+      position: fixed;
+      width: 280px;
+      height: 280px;
+      top: -80px;
+      right: -60px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, transparent 70%);
+      filter: blur(50px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow-orb-2 {
+      position: fixed;
+      width: 320px;
+      height: 320px;
+      bottom: 60px;
+      left: -90px;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.16) 0%, transparent 70%);
+      filter: blur(60px);
+      pointer-events: none;
+      z-index: 0;
+    }
 
     #confettiCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4000; }
-    #toast { position: fixed; top: -75px; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.95); border: 1.5px solid var(--accent); color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 13px; font-weight: 800; z-index: 3000; box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px var(--accent-glow); transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; gap: 10px; backdrop-filter: blur(20px); }
-    #toast.show { top: 22px; }
 
-    .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: rgba(3, 7, 18, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--card-border); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+    /* নিও-গ্লাস টোস্ট */
+    #toast {
+      position: fixed;
+      top: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--card-border-glow);
+      color: #fff;
+      padding: 12px 22px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 700;
+      z-index: 3000;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.6), 0 0 20px var(--cyan-glow);
+      transition: top 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(20px);
+    }
+    #toast.show { top: 24px; }
+
+    /* আল্ট্রা-প্রিমিয়াম স্টিকি টপ বার */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background: rgba(6, 9, 19, 0.65);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
     .user-info { display: flex; align-items: center; gap: 12px; }
-    .user-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #0284c7, #6366f1); color: #fff; font-weight: 900; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 0 16px var(--accent-glow); border: 2px solid rgba(255,255,255,0.25); }
+    .user-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #38bdf8, #6366f1);
+      color: #fff;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 4px 16px var(--cyan-glow);
+      border: 1px solid rgba(255,255,255,0.25);
+    }
     .user-meta { display: flex; flex-direction: column; }
-    .user-name { font-size: 14px; font-weight: 800; color: #fff; letter-spacing: 0.3px; }
-    .user-badge { font-size: 10px; color: var(--gold); font-weight: 800; letter-spacing: 0.8px; text-shadow: 0 0 10px var(--gold-glow); }
-    .balance-pill { background: linear-gradient(135deg, rgba(250, 204, 21, 0.16), rgba(234, 179, 8, 0.05)); border: 1.5px solid rgba(250, 204, 21, 0.5); padding: 8px 16px; border-radius: 30px; display: flex; align-items: center; gap: 8px; font-weight: 900; color: var(--gold); font-size: 15px; box-shadow: 0 0 18px var(--gold-glow); }
+    .user-name { font-size: 14px; font-weight: 800; color: #fff; letter-spacing: -0.2px; }
+    .user-badge {
+      font-size: 10px;
+      color: var(--gold);
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .balance-pill {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(217, 119, 6, 0.08));
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      padding: 7px 15px;
+      border-radius: 99px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 900;
+      color: var(--gold);
+      font-size: 15px;
+      box-shadow: 0 4px 20px var(--gold-glow);
+    }
 
-    .container { padding: 16px; }
-    .notice-card { background: linear-gradient(90deg, rgba(56, 189, 248, 0.12), rgba(99, 102, 241, 0.08)); border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; font-size: 12px; color: #bae6fd; backdrop-filter: blur(14px); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    .container { padding: 18px 16px; position: relative; z-index: 1; }
 
-    .live-stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 14px 8px; margin-bottom: 16px; text-align: center; backdrop-filter: blur(20px); box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
-    .live-stat-item { display: flex; flex-direction: column; gap: 3px; }
-    .live-stat-val { font-size: 15px; font-weight: 900; color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
-    .live-stat-lbl { font-size: 9px; color: var(--text-muted); font-weight: 700; }
+    /* গ্লাস নোটিশ বার */
+    .notice-card {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(168, 85, 247, 0.08));
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      font-size: 12px;
+      color: #cbd5e1;
+      backdrop-filter: blur(16px);
+    }
 
-    .daily-card { background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95)); border: 1px solid rgba(250, 204, 21, 0.4); border-radius: 18px; padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; backdrop-filter: blur(16px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
-    .daily-btn { background: linear-gradient(135deg, #facc15, #eab308); color: #020617; border: none; padding: 10px 16px; border-radius: 12px; font-weight: 900; font-size: 12px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 0 14px var(--gold-glow); }
-    .daily-btn:active { transform: scale(0.96); }
-    .daily-btn:disabled { background: #334155 !important; color: #94a3b8 !important; box-shadow: none !important; cursor: not-allowed; }
+    /* গ্লোবাল স্ট্যাটস বার */
+    .live-stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 14px 6px;
+      margin-bottom: 20px;
+      text-align: center;
+      backdrop-filter: blur(20px);
+    }
+    .live-stat-item { display: flex; flex-direction: column; gap: 4px; }
+    .live-stat-val { font-size: 15px; font-weight: 900; color: var(--cyan); letter-spacing: -0.3px; }
+    .live-stat-lbl { font-size: 9px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
 
-    .search-box { width: 100%; padding: 14px 18px; border-radius: 16px; border: 1px solid var(--card-border); background: var(--card-bg); color: #fff; font-size: 13px; margin-bottom: 16px; outline: none; backdrop-filter: blur(14px); transition: border-color 0.2s, box-shadow 0.2s; }
-    .search-box:focus { border-color: var(--accent); box-shadow: 0 0 18px var(--accent-glow); }
-    .tabs { display: flex; gap: 10px; margin-bottom: 16px; }
-    .tab-btn { flex: 1; padding: 13px; border: none; border-radius: 16px; background: var(--card-bg); color: var(--text-muted); font-weight: 800; font-size: 13px; cursor: pointer; border: 1px solid var(--card-border); backdrop-filter: blur(14px); transition: all 0.25s ease; }
-    .tab-btn.active { background: linear-gradient(135deg, #0284c7, #38bdf8); color: #020617; border-color: #38bdf8; box-shadow: 0 0 20px var(--accent-glow); }
+    /* ফ্লুইড ডেইলি কার্ড */
+    .daily-card {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8));
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      border-radius: 20px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+    .daily-btn {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #030712;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px var(--gold-glow);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .daily-btn:active { transform: scale(0.94); }
+    .daily-btn:disabled { background: #334155 !important; color: #64748b !important; box-shadow: none !important; cursor: not-allowed; }
 
+    /* সার্চ ও ক্যাটাগরি ফিল্টার */
+    .search-box {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      color: #fff;
+      font-size: 13px;
+      margin-bottom: 16px;
+      outline: none;
+      backdrop-filter: blur(16px);
+      transition: 0.3s;
+    }
+    .search-box:focus { border-color: var(--cyan); box-shadow: 0 0 20px var(--cyan-glow); }
+    
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      background: var(--card-bg);
+      color: var(--text-muted);
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      backdrop-filter: blur(16px);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(56, 189, 248, 0.1));
+      color: var(--cyan);
+      border-color: var(--cyan);
+      box-shadow: 0 0 16px var(--cyan-glow);
+    }
+
+    /* রিসোর্স গ্রিড ও মডার্ন কার্ড */
     .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-    .card { background: var(--card-bg); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--card-border); backdrop-filter: blur(16px); transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.25s, box-shadow 0.25s; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
-    .card:active { transform: scale(0.96); }
-    .card img { width: 100%; height: 130px; object-fit: cover; background: #0f172a; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.06); }
-    .card-body { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; gap: 10px; }
-    .card-title { font-size: 13px; font-weight: 700; line-height: 1.35; color: #f8fafc; }
-    .card-meta { display: flex; align-items: center; justify-content: space-between; }
-    .price-tag { font-size: 13px; color: var(--gold); font-weight: 900; }
-    .btn-claim { background: linear-gradient(135deg, #38bdf8, #0ea5e9); color: #020617; border: none; padding: 8px 12px; border-radius: 10px; font-size: 11px; font-weight: 900; cursor: pointer; box-shadow: 0 0 12px var(--accent-glow); transition: 0.2s; }
-    .btn-claim:active { transform: scale(0.95); }
+    .card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(20px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+    .card:active { transform: scale(0.97); }
+    .card-thumb-wrap { position: relative; width: 100%; height: 130px; overflow: hidden; background: #0f172a; }
+    .card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .card:hover img { transform: scale(1.05); }
+    
+    .type-pill {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      padding: 3px 8px;
+      border-radius: 8px;
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+      backdrop-filter: blur(12px);
+      background: rgba(0, 0, 0, 0.65);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff;
+    }
 
-    .wheel-container { position: relative; width: 240px; height: 240px; margin: 25px auto; display: flex; align-items: center; justify-content: center; }
-    #wheelCanvas { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 30px rgba(250, 204, 21, 0.45); transition: transform 4s cubic-bezier(0.15, 0.9, 0.25, 1); }
-    .wheel-arrow { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 26px solid #f43f5e; z-index: 20; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.8)); }
-    .scratch-container { position: relative; width: 260px; height: 130px; margin: 18px auto; border-radius: 16px; overflow: hidden; border: 2px solid var(--gold); box-shadow: 0 0 24px var(--gold-glow); }
+    .card-body { padding: 14px 12px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; gap: 12px; }
+    .card-title { font-size: 13px; font-weight: 700; line-height: 1.35; color: #f8fafc; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-meta { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+    .price-tag { font-size: 13px; color: var(--gold); font-weight: 900; display: flex; align-items: center; gap: 4px; }
+    
+    .btn-claim {
+      background: linear-gradient(135deg, var(--cyan), #0284c7);
+      color: #030712;
+      border: none;
+      padding: 7px 12px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--cyan-glow);
+      transition: all 0.2s;
+    }
+    .btn-claim:active { transform: scale(0.92); }
+
+    /* গেম জোন ক্যানভাস */
+    .wheel-container { position: relative; width: 240px; height: 240px; margin: 24px auto; display: flex; align-items: center; justify-content: center; }
+    #wheelCanvas { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 35px rgba(251, 191, 36, 0.35); transition: transform 4s cubic-bezier(0.15, 0.9, 0.25, 1); }
+    .wheel-arrow { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 26px solid var(--danger); z-index: 20; filter: drop-shadow(0 3px 8px rgba(0,0,0,0.7)); }
+
+    .scratch-container { position: relative; width: 260px; height: 130px; margin: 18px auto; border-radius: 18px; overflow: hidden; border: 2px solid var(--gold); box-shadow: 0 0 24px var(--gold-glow); }
     .scratch-reward { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0f172a; font-size: 18px; font-weight: 900; color: var(--gold); }
     #scratchCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer; }
 
-    .view-page { display: none; }
+    /* ভিউ পেজ ও ট্রানজিশন */
+    .view-page { display: none; animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     .view-page.active { display: block; }
-    .stat-card { background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 20px; margin-bottom: 16px; text-align: center; backdrop-filter: blur(20px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
-    .stat-number { font-size: 32px; font-weight: 900; color: var(--gold); margin: 8px 0; text-shadow: 0 0 14px var(--gold-glow); }
-    .refer-box { background: rgba(3, 7, 18, 0.75); border: 1px dashed var(--card-border); padding: 13px; border-radius: 14px; font-size: 12px; word-break: break-all; margin: 14px 0; color: var(--accent); }
-    .action-btn { width: 100%; background: linear-gradient(135deg, #38bdf8, #0284c7); color: #020617; padding: 15px; font-size: 14px; font-weight: 900; border: none; border-radius: 16px; cursor: pointer; box-shadow: 0 0 20px var(--accent-glow); transition: 0.2s; }
-    .action-btn:active { transform: scale(0.98); }
-    .action-btn:disabled { background: #334155 !important; color: #94a3b8 !important; box-shadow: none !important; cursor: not-allowed; }
-    .task-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(30, 41, 59, 0.7); border: 1px solid var(--card-border); border-radius: 16px; margin-bottom: 12px; }
-    .unlocked-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; text-align: left; }
-    .unlocked-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(30, 41, 59, 0.6); border: 1px solid var(--card-border); border-radius: 12px; font-size: 12px; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 22px;
+      border-radius: 22px;
+      margin-bottom: 18px;
+      text-align: center;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .stat-number { font-size: 34px; font-weight: 900; color: var(--gold); margin: 8px 0; letter-spacing: -1px; text-shadow: 0 0 15px var(--gold-glow); }
+    .refer-box { background: rgba(0, 0, 0, 0.4); border: 1px dashed var(--card-border-glow); padding: 14px; border-radius: 14px; font-size: 12px; word-break: break-all; margin: 14px 0; color: var(--cyan); }
+    
+    .action-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--cyan), #0284c7);
+      color: #030712;
+      padding: 15px;
+      font-size: 14px;
+      font-weight: 900;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 18px var(--cyan-glow);
+      transition: all 0.2s;
+    }
+    .action-btn:active { transform: scale(0.97); }
+    .action-btn:disabled { background: #334155 !important; color: #64748b !important; box-shadow: none !important; cursor: not-allowed; }
+
+    .task-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(30, 41, 59, 0.5); border: 1px solid var(--card-border); border-radius: 18px; margin-bottom: 12px; }
+
+    /* আনলক ও হিস্ট্রি */
+    .unlocked-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; text-align: left; }
+    .unlocked-item { display: flex; justify-content: space-between; align-items: center; padding: 13px; background: rgba(30, 41, 59, 0.5); border: 1px solid var(--card-border); border-radius: 14px; font-size: 12px; }
+
+    /* প্রিমিয়াম অ্যাডমিন সেলস টেবিল */
     .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; text-align: left; }
-    .admin-table th { background: rgba(56, 189, 248, 0.15); color: var(--accent); padding: 10px 8px; border-bottom: 1px solid var(--card-border); }
-    .admin-table td { padding: 12px 8px; border-bottom: 1px solid rgba(255,255,255,0.06); color: var(--text); }
-    .badge-count { background: rgba(16, 185, 129, 0.2); color: var(--green); padding: 4px 8px; border-radius: 8px; font-weight: 900; }
-    .badge-rev { background: rgba(250, 204, 21, 0.2); color: var(--gold); padding: 4px 8px; border-radius: 8px; font-weight: 900; }
+    .admin-table th { background: rgba(56, 189, 248, 0.1); color: var(--cyan); padding: 12px 10px; border-bottom: 1px solid var(--card-border); font-weight: 800; }
+    .admin-table td { padding: 14px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text-white); }
+    .badge-count { background: rgba(16, 185, 129, 0.15); color: var(--green); padding: 5px 10px; border-radius: 10px; font-weight: 800; border: 1px solid rgba(16, 185, 129, 0.25); }
+    .badge-rev { background: rgba(251, 191, 36, 0.15); color: var(--gold); padding: 5px 10px; border-radius: 10px; font-weight: 800; border: 1px solid rgba(251, 191, 36, 0.25); }
 
-    .preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.94); z-index: 2500; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(14px); }
+    /* ইমেজ প্রিভিউ মোডাল */
+    .preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.94); z-index: 2500; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(16px); }
     .preview-modal.active { display: flex; }
-    .preview-modal img { max-width: 100%; max-height: 80vh; border-radius: 16px; border: 1.5px solid var(--accent); box-shadow: 0 0 30px rgba(56, 189, 248, 0.3); }
-    .preview-close { position: absolute; top: 20px; right: 20px; font-size: 34px; color: #fff; cursor: pointer; }
+    .preview-modal img { max-width: 100%; max-height: 80vh; border-radius: 20px; border: 1px solid var(--card-border-glow); box-shadow: 0 0 35px var(--cyan-glow); }
+    .preview-close { position: absolute; top: 22px; right: 22px; font-size: 32px; color: #fff; cursor: pointer; }
 
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 72px; background: var(--nav-bg); backdrop-filter: blur(24px); border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; align-items: center; z-index: 200; box-shadow: 0 -4px 20px rgba(0,0,0,0.5); }
-    .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--text-muted); font-size: 10px; font-weight: 800; border: none; background: transparent; flex: 1; cursor: pointer; transition: color 0.2s, transform 0.2s; }
-    .nav-item.active { color: var(--accent); transform: translateY(-2px); }
-    .nav-icon { font-size: 19px; }
+    /* আল্ট্রা-স্লিক বটম ন্যাভ */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 76px;
+      background: var(--nav-bg);
+      backdrop-filter: blur(28px);
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 200;
+      padding: 0 8px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 800;
+      border: none;
+      background: transparent;
+      flex: 1;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-item.active { color: var(--cyan); transform: translateY(-2px); }
+    .nav-icon { font-size: 20px; }
   </style>
 </head>
 <body>
 
+  <!-- সাইবার লাইট রিফ্লেকশন -->
+  <div class="glow-orb-1"></div>
+  <div class="glow-orb-2"></div>
+
   <canvas id="confettiCanvas"></canvas>
   <div id="toast"><span id="toastIcon">⭐</span><span id="toastMsg">বার্তা</span></div>
 
-  <!-- শীর্ষ বার -->
+  <!-- স্টিকি প্রিমিয়াম টপ বার -->
   <div class="top-bar">
     <div class="user-info">
       <div class="user-avatar" id="uAvatar">U</div>
@@ -127,6 +430,7 @@
 
   <div class="container">
     
+    <!-- ডায়নামিক নোটিশ বার -->
     <div class="notice-card" id="noticeBox">
       <span>📢</span>
       <span id="noticeText">স্বাগতম! নতুন প্রিমিয়াম PLP ও ফন্ট যুক্ত করা হয়েছে।</span>
@@ -136,11 +440,11 @@
     <div class="live-stats-bar">
       <div class="live-stat-item">
         <span class="live-stat-val" id="statVisits">0</span>
-        <span class="live-stat-lbl">👥 মোট মেম্বার</span>
+        <span class="live-stat-lbl">👥 মেম্বার</span>
       </div>
       <div class="live-stat-item">
         <span class="live-stat-val" id="statAdsWatched">0</span>
-        <span class="live-stat-lbl">📺 অ্যাড ভিউ</span>
+        <span class="live-stat-lbl">📺 ভিউজ</span>
       </div>
       <div class="live-stat-item">
         <span class="live-stat-val" id="statClaims">0</span>
@@ -148,7 +452,7 @@
       </div>
       <div class="live-stat-item">
         <span class="live-stat-val" id="statRefers">0</span>
-        <span class="live-stat-lbl">🤝 রেফারেল</span>
+        <span class="live-stat-lbl">🤝 রেফার</span>
       </div>
     </div>
 
@@ -156,8 +460,8 @@
     <div id="pageHome" class="view-page active">
       <div class="daily-card">
         <div>
-          <h4 style="font-size: 13px; font-weight: bold; color: #fff;">🎁 দৈনিক ফ্রি রিওয়ার্ড</h4>
-          <p style="font-size: 11px; color: var(--text-muted);">প্রতিদিন পান ফ্রিতে +৫ কয়েন</p>
+          <h4 style="font-size: 13px; font-weight: 800; color: #fff;">🎁 দৈনিক ফ্রি রিওয়ার্ড</h4>
+          <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">প্রতিদিন পান ফ্রিতে +৫ কয়েন</p>
         </div>
         <button class="daily-btn" id="btnDailyCheck" onclick="claimDailyReward()">ক্লেইম করুন</button>
       </div>
@@ -166,17 +470,18 @@
 
       <div class="tabs">
         <button class="tab-btn active" onclick="switchCategory('plp', this)">🎨 PLP ফাইল</button>
-        <button class="tab-btn" onclick="switchCategory('font', this)">🔤 ফন্ট</button>
+        <button class="tab-btn" onclick="switchCategory('font', this)">🔤 ফন্ট সমূহ</button>
       </div>
-      <div id="loading" style="text-align:center; padding:30px; color:#94a3b8;">লোড হচ্ছে...</div>
+      
+      <div id="loading" style="text-align:center; padding:40px; color:var(--text-muted);">লোড হচ্ছে... ⏳</div>
       <div class="grid" id="resourceGrid"></div>
     </div>
 
     <!-- ২. গেম জোন পেজ -->
     <div id="pageGames" class="view-page">
       <div class="stat-card">
-        <h2>🎡 লাকি হুইল স্পিন</h2>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">চাকা ঘুরিয়ে জিতুন সর্বোচ্চ ১০ কয়েন!</p>
+        <h2 style="font-size: 18px; font-weight: 800;">🎡 লাকি হুইল স্পিন</h2>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">চাকা ঘুরিয়ে জিতে নিন নিশ্চিত ফ্রি কয়েন!</p>
         <div class="wheel-container">
           <div class="wheel-arrow"></div>
           <canvas id="wheelCanvas" width="240" height="240"></canvas>
@@ -185,12 +490,12 @@
       </div>
 
       <div class="stat-card">
-        <h2>✨ দৈনিক স্ক্র্যাচ কার্ড</h2>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">কার্ডটি ঘষে পেয়ে যান নিশ্চিত ৫ কয়েন</p>
+        <h2 style="font-size: 18px; font-weight: 800;">✨ দৈনিক স্ক্র্যাচ কার্ড</h2>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">কার্ডটি আঙুল দিয়ে ঘষে লুকানো রিওয়ার্ড বের করুন</p>
         <div class="scratch-container">
           <div class="scratch-reward">
-            <span>🎁 সারপ্রাইজ রিওয়ার্ড</span>
-            <span id="scratchCoinText">+৫ কয়েন</span>
+            <span style="font-size: 12px; color: var(--text-muted);">সারপ্রাইজ রিওয়ার্ড</span>
+            <span id="scratchCoinText" style="font-size: 24px; margin-top: 4px;">+০ কয়েন</span>
           </div>
           <canvas id="scratchCanvas" width="260" height="130"></canvas>
         </div>
@@ -200,27 +505,27 @@
     <!-- ৩. টাস্ক ও অ্যাড সেকশন -->
     <div id="pageAds" class="view-page">
       <div class="stat-card" style="text-align: left;">
-        <h3 style="font-size: 15px; margin-bottom: 8px;">🚀 স্পেশাল চ্যানেল টাস্ক</h3>
+        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 8px;">🚀 স্পেশাল চ্যানেল টাস্ক</h3>
         <div class="task-item">
           <div>
             <div style="font-size: 13px; font-weight: 700;">অফিসিয়াল টেলিগ্রাম চ্যানেল</div>
-            <div style="font-size: 11px; color: var(--gold);">পুরস্কার: +১৫ কয়েন (যাচাইকৃত)</div>
+            <div style="font-size: 11px; color: var(--gold); margin-top: 2px;">পুরস্কার: +১৫ কয়েন (যাচাইকৃত)</div>
           </div>
           <button class="daily-btn" id="btnJoinChannel" onclick="claimChannelTask()">জয়েন করুন</button>
         </div>
       </div>
 
       <div class="stat-card">
-        <span style="font-size:38px;">💎</span>
-        <h2 style="font-size:18px; margin: 8px 0;">বিজ্ঞাপন দেখে কয়েন সংগ্রহ</h2>
-        <p style="font-size:12px; color:var(--text-muted);">সম্পূর্ণ বিজ্ঞাপনটি দেখলে ওয়ালেটে ১০টি কয়েন যোগ হবে।</p>
+        <span style="font-size:40px;">💎</span>
+        <h2 style="font-size:18px; font-weight: 800; margin: 8px 0;">বিজ্ঞাপন দেখে কয়েন সংগ্রহ</h2>
+        <p style="font-size:12px; color:var(--text-muted);">সম্পূর্ণ বিজ্ঞাপনটি দেখলে ওয়ালেটে ৪টি কয়েন যোগ হবে।</p>
         <div class="stat-number" id="adLimitDisplay">30/30</div>
-        <p style="font-size:11px; color:var(--text-muted);">আজকের অবশিষ্ট সীমা</p>
+        <p style="font-size:11px; color:var(--text-muted); text-transform: uppercase;">আজকের অবশিষ্ট সীমা</p>
       </div>
 
       <div class="stat-card" style="text-align: left;">
         <button class="action-btn" id="btnWatchMonetag" onclick="watchVipAd()">
-          🎬 বিজ্ঞাপন দেখুন (+১০ কয়েন)
+          🎬 বিজ্ঞাপন দেখুন (+৪ কয়েন)
         </button>
       </div>
     </div>
@@ -228,8 +533,8 @@
     <!-- ৪. লিডারবোর্ড -->
     <div id="pageLeaderboard" class="view-page">
       <div class="stat-card">
-        <h3 style="font-size:16px;">🏆 শীর্ষ VIP ব্যবহারকারী</h3>
-        <p style="font-size:12px; color:var(--text-muted);">সর্বাধিক কয়েন সংগ্রহকারী মেম্বার</p>
+        <h3 style="font-size:17px; font-weight: 800;">🏆 শীর্ষ VIP ব্যবহারকারী</h3>
+        <p style="font-size:12px; color:var(--text-muted); margin-top: 3px;">সর্বাধিক কয়েন সংগ্রহকারী মেম্বার</p>
       </div>
       <div id="leaderboardList"></div>
     </div>
@@ -237,73 +542,73 @@
     <!-- ৫. রেফারেল পেজ -->
     <div id="pageRefer" class="view-page">
       <div class="stat-card">
-        <span style="font-size:34px;">🤝</span>
-        <h2 style="font-size:17px; margin: 8px 0;">বন্ধুকে রেফার করে আয়</h2>
+        <span style="font-size:36px;">🤝</span>
+        <h2 style="font-size:18px; font-weight: 800; margin: 8px 0;">বন্ধুকে রেফার করে আয়</h2>
         <p style="font-size:12px; color:var(--text-muted); line-height: 1.5;">
-          ⚠️ <b>নিয়ম:</b> আপনার রেফারে জয়েন করা মেম্বার কমপক্ষে <b>১টি রিসোর্স ক্লেইম করলে</b> তবেই আপনি পাবেন <b>৫০টি কয়েন</b>।
+          ⚠️ <b>নিয়ম:</b> আপনার রেফারে জয়েন করা মেম্বার কমপক্ষে <b>১টি রিসোর্স ক্লেইম করলে</b> তবেই আপনি পাবেন <b>১০টি কয়েন</b>।
         </p>
         <div class="stat-number" id="referCount">0</div>
-        <p style="font-size:12px; color:var(--text-muted);">সফল ভেরিফাইড রেফার</p>
+        <p style="font-size:11px; color:var(--text-muted); text-transform: uppercase;">সফল ভেরিফাইড রেফার</p>
       </div>
       <div class="refer-box" id="referLinkText">লোড হচ্ছে...</div>
-      <button class="action-btn" onclick="shareReferralLink()">🚀 রেফার লিংক শেয়ার করুন (+৫০ কয়েন)</button>
+      <button class="action-btn" onclick="shareReferralLink()">🚀 রেফার লিংক শেয়ার করুন</button>
     </div>
 
     <!-- ৬. প্রোফাইল ও আনলক হিস্ট্রি -->
     <div id="pageProfile" class="view-page">
       <div class="stat-card">
-        <div class="user-avatar" id="profAvatar" style="width:70px; height:70px; font-size:26px; margin: 0 auto 10px auto;">U</div>
-        <h2 id="profName" style="font-size:18px;">VIP User</h2>
-        <p id="profTag" style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">@user</p>
-        <span style="background:rgba(250,204,21,0.15); color:var(--gold); padding:5px 14px; border-radius:20px; font-size:11px; font-weight:800; border:1px solid rgba(250,204,21,0.3);" id="profRank">BRONZE VIP</span>
+        <div class="user-avatar" id="profAvatar" style="width:74px; height:74px; font-size:28px; margin: 0 auto 12px auto; border-radius: 20px;">U</div>
+        <h2 id="profName" style="font-size:18px; font-weight: 800;">VIP User</h2>
+        <p id="profTag" style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">@user</p>
+        <span style="background:rgba(251, 191, 36, 0.15); color:var(--gold); padding:6px 16px; border-radius:99px; font-size:11px; font-weight:800; border:1px solid rgba(251, 191, 36, 0.3);" id="profRank">BRONZE VIP</span>
         
-        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; border-top:1px solid var(--card-border); padding-top:14px; margin-top:15px;">
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; border-top:1px solid var(--card-border); padding-top:16px; margin-top:16px;">
           <div>
-            <div style="font-size:16px; font-weight:bold; color:var(--gold);" id="profCoins">0</div>
-            <div style="font-size:10px; color:var(--text-muted);">কয়েন</div>
+            <div style="font-size:16px; font-weight:900; color:var(--gold);" id="profCoins">0</div>
+            <div style="font-size:10px; color:var(--text-muted); text-transform: uppercase; margin-top: 2px;">কয়েন</div>
           </div>
           <div>
-            <div style="font-size:16px; font-weight:bold; color:var(--accent);" id="profTotalRef">0</div>
-            <div style="font-size:10px; color:var(--text-muted);">রেফার</div>
+            <div style="font-size:16px; font-weight:900; color:var(--cyan);" id="profTotalRef">0</div>
+            <div style="font-size:10px; color:var(--text-muted); text-transform: uppercase; margin-top: 2px;">রেফার</div>
           </div>
           <div>
-            <div style="font-size:16px; font-weight:bold; color:var(--green);" id="profTotalAds">0</div>
-            <div style="font-size:10px; color:var(--text-muted);">অ্যাড দেখা</div>
+            <div style="font-size:16px; font-weight:900; color:var(--green);" id="profTotalAds">0</div>
+            <div style="font-size:10px; color:var(--text-muted); text-transform: uppercase; margin-top: 2px;">অ্যাড ভিউ</div>
           </div>
         </div>
       </div>
 
       <div class="stat-card">
-        <h3 style="font-size: 14px; text-align: left; margin-bottom: 8px;">📂 আমার আনলক করা ফাইলসমূহ</h3>
+        <h3 style="font-size: 14px; text-align: left; margin-bottom: 8px; font-weight: 800;">📂 আমার আনলক করা ফাইলসমূহ</h3>
         <div class="unlocked-list" id="unlockedItemsContainer">
           <p style="color:var(--text-muted); font-size: 11px;">এখনও কোনো ফাইল ক্লেইম করেননি।</p>
         </div>
       </div>
 
-      <button class="action-btn" style="background:rgba(30,41,59,0.8); color:var(--accent); border:1px solid var(--accent);" onclick="openSupport()">💬 হেল্পলাইন ও সাপোর্ট গ্রুপ</button>
+      <button class="action-btn" style="background:rgba(30,41,59,0.7); color:var(--cyan); border:1px solid var(--cyan);" onclick="openSupport()">💬 হেল্পলাইন ও সাপোর্ট গ্রুপ</button>
     </div>
 
-    <!-- ৭. অ্যাডমিন প্যানেল -->
+    <!-- ৭. এক্সক্লুসিভ অ্যাডমিন সেলস অ্যানালিটিক্স প্যানেল -->
     <div id="pageAdmin" class="view-page">
       <div class="stat-card">
-        <span style="font-size: 34px;">👑</span>
-        <h2 style="font-size: 18px; margin-top: 4px; color: var(--gold);">ফাইলের সেলস ও ডাউনলোড রিপোর্ট</h2>
-        <p style="font-size: 11px; color: var(--text-muted);">কোন ফাইল কতবার কেনা হয়েছে ও কত কয়েন আয় হয়েছে</p>
+        <span style="font-size: 36px;">👑</span>
+        <h2 style="font-size: 18px; margin-top: 6px; font-weight: 800; color: var(--gold);">ফাইলের সেলস ও ডাউনলোড রিপোর্ট</h2>
+        <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">কোন ফাইল কতবার কেনা হয়েছে ও মোট কত কয়েন আয় হয়েছে</p>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px;">
-          <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 14px; border: 1px solid var(--card-border);">
-            <div style="font-size: 10px; color: var(--text-muted);">মোট ডাউনলোড</div>
-            <div style="font-size: 20px; font-weight: 900; color: var(--green);" id="adminTotalSales">0 টি</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
+          <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 16px; border: 1px solid var(--card-border);">
+            <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">মোট ডাউনলোড</div>
+            <div style="font-size: 22px; font-weight: 900; color: var(--green); margin-top: 4px;" id="adminTotalSales">0 টি</div>
           </div>
-          <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 14px; border: 1px solid var(--card-border);">
-            <div style="font-size: 10px; color: var(--text-muted);">মোট ব্যয়িত কয়েন</div>
-            <div style="font-size: 20px; font-weight: 900; color: var(--gold);" id="adminTotalCoinsSpent">0 🪙</div>
+          <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 16px; border: 1px solid var(--card-border);">
+            <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">মোট সংগৃহীত কয়েন</div>
+            <div style="font-size: 22px; font-weight: 900; color: var(--gold); margin-top: 4px;" id="adminTotalCoinsSpent">0 🪙</div>
           </div>
         </div>
       </div>
 
-      <div class="stat-card" style="padding: 14px;">
-        <h3 style="font-size: 14px; text-align: left; margin-bottom: 6px;">📊 ফাইল ভিত্তিক পারফরম্যান্স</h3>
+      <div class="stat-card" style="padding: 16px;">
+        <h3 style="font-size: 14px; text-align: left; margin-bottom: 8px; font-weight: 800;">📊 ফাইল ভিত্তিক পারফরম্যান্স</h3>
         <div style="overflow-x: auto;">
           <table class="admin-table">
             <thead>
@@ -311,11 +616,11 @@
                 <th>ফাইল নাম</th>
                 <th>টাইপ</th>
                 <th>বিক্রি</th>
-                <th>আয়</th>
+                <th>মোট আয়</th>
               </tr>
             </thead>
             <tbody id="adminSalesTableBody">
-              <tr><td colspan="4" style="text-align: center; color: var(--text-muted);">লোড হচ্ছে...</td></tr>
+              <tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 20px;">লোড হচ্ছে... ⏳</td></tr>
             </tbody>
           </table>
         </div>
@@ -337,6 +642,7 @@
     <button class="nav-item" onclick="switchNav('pageLeaderboard', this)"><span class="nav-icon">🏆</span><span>র‍্যাংক</span></button>
     <button class="nav-item" onclick="switchNav('pageRefer', this)"><span class="nav-icon">👥</span><span>রেফার</span></button>
     <button class="nav-item" onclick="switchNav('pageProfile', this)"><span class="nav-icon">👤</span><span>প্রোফাইল</span></button>
+    <!-- অ্যাডমিন বাটন জাভাস্ক্রিপ্ট দিয়ে দৃশ্যমান হবে -->
     <button class="nav-item" id="adminNavBtn" style="display: none;" onclick="switchNav('pageAdmin', this)"><span class="nav-icon">👑</span><span>অ্যাডমিন</span></button>
   </div>
 
@@ -344,7 +650,7 @@
     const tg = window.Telegram?.WebApp;
     if (tg) { tg.ready(); tg.expand(); }
 
-    const ADMIN_TELEGRAM_ID = 7481264433;
+    const ADMIN_TELEGRAM_ID = 7481264433; // আপনার অ্যাডমিন আইডি
     const BOT_USERNAME = "PLPStoreOfficialBot";
     const SUPPORT_URL = "https://t.me/PLPSTOREAI";
     const CHANNEL_URL = "https://t.me/PLPStoreBD0";
@@ -356,22 +662,21 @@
     let allResources = {};
     let currentCategory = 'plp';
     let currentWheelRotation = 0;
-    let scratchCardReward = 5; // ফিক্সড ৫ কয়েন
+    let scratchCardReward = 0;
     let scratchCardScratched = false;
     let adTimerInterval = null;
 
     const AD_LIMIT = 30;
-    const AD_REWARD = 10; // বিজ্ঞাপনে ১০ কয়েন
+    const AD_REWARD = 4;
     const AD_COOLDOWN = 60;
 
-    // স্পিনে সর্বোচ্চ ১০ কয়েন
     const spinRewards = [
       { text: "+2 🪙", coins: 2, bg: "#0284c7" },
-      { text: "+4 🪙", coins: 4, bg: "#1e293b" },
-      { text: "+6 🪙", coins: 6, bg: "#f59e0b" },
-      { text: "+8 🪙", coins: 8, bg: "#0284c7" },
       { text: "+5 🪙", coins: 5, bg: "#1e293b" },
-      { text: "+10 🪙", coins: 10, bg: "#eab308" }
+      { text: "+8 🪙", coins: 8, bg: "#f59e0b" },
+      { text: "+10 🪙", coins: 10, bg: "#0284c7" },
+      { text: "+12 🪙", coins: 12, bg: "#1e293b" },
+      { text: "+15 🪙", coins: 15, bg: "#eab308" }
     ];
 
     function fireConfetti() {
@@ -381,9 +686,9 @@
       canvas.height = window.innerHeight;
 
       const pieces = [];
-      const colors = ['#facc15', '#38bdf8', '#ef4444', '#10b981', '#a855f7'];
+      const colors = ['#fbbf24', '#38bdf8', '#f43f5e', '#10b981', '#a855f7'];
 
-      for (let i = 0; i < 70; i++) {
+      for (let i = 0; i < 75; i++) {
         pieces.push({
           x: canvas.width / 2,
           y: canvas.height / 2,
@@ -465,8 +770,8 @@
         ctx.arc(radius, radius, radius, angle, angle + arc);
         ctx.lineTo(radius, radius);
         ctx.fill();
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.25)";
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+        ctx.lineWidth = 1.5;
         ctx.stroke();
 
         ctx.save();
@@ -474,7 +779,7 @@
         ctx.rotate(angle + arc / 2);
         ctx.textAlign = "right";
         ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 15px sans-serif";
+        ctx.font = "bold 14px 'Plus Jakarta Sans', sans-serif";
         ctx.fillText(seg.text, radius - 20, 5);
         ctx.restore();
       });
@@ -489,6 +794,7 @@
       const tag = user.username ? `@${user.username}` : `ID: ${user.id}`;
       document.getElementById('profTag').innerText = tag;
 
+      // শুধুমাত্র অ্যাডমিন আইডি হলে অ্যাডমিন বাটন শো করবে
       if (Number(user.id) === ADMIN_TELEGRAM_ID) {
         document.getElementById('adminNavBtn').style.display = 'flex';
       }
@@ -679,13 +985,13 @@
         return;
       }
 
-      scratchCardReward = 5;
+      scratchCardReward = Math.floor(Math.random() * 7) + 3;
       document.getElementById('scratchCoinText').innerText = `+${scratchCardReward} কয়েন`;
 
-      ctx.fillStyle = '#64748b';
+      ctx.fillStyle = '#475569';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = '#f8fafc';
-      ctx.font = 'bold 14px sans-serif';
+      ctx.font = "bold 14px 'Plus Jakarta Sans', sans-serif";
       ctx.textAlign = 'center';
       ctx.fillText('ঘষে রিওয়ার্ড দেখুন ✨', canvas.width / 2, canvas.height / 2 + 5);
 
@@ -747,7 +1053,7 @@
           btn.disabled = true;
           btn.innerText = "সম্পন্ন ✓";
           btn.style.background = "#334155";
-          btn.style.color = "#94a3b8";
+          btn.style.color = "#64748b";
         }
       }
     }
@@ -763,7 +1069,7 @@
       if (!btn.dataset.step) {
         btn.dataset.step = "verify";
         btn.innerText = "ভেরিফাই করুন 🔄";
-        btn.style.background = "linear-gradient(135deg, #0284c7, #38bdf8)";
+        btn.style.background = "linear-gradient(135deg, var(--cyan), #0284c7)";
         
         if (tg && tg.openTelegramLink) tg.openTelegramLink(CHANNEL_URL);
         else window.open(CHANNEL_URL, '_blank');
@@ -863,12 +1169,12 @@
         }).catch(e => {
           triggerHaptic('warning');
           showToast("বিজ্ঞাপনটি সম্পূর্ণ দেখা হয়নি!", "❌");
-          btn.innerText = "🎬 বিজ্ঞাপন দেখুন (+১০ কয়েন)";
+          btn.innerText = "🎬 বিজ্ঞাপন দেখুন (+৪ কয়েন)";
           btn.disabled = false;
         });
       } else {
         showToast("বিজ্ঞাপন লোড হচ্ছে, কিছু সেকেন্ড পর আবার চাপ দিন", "⏳");
-        btn.innerText = "🎬 বিজ্ঞাপন দেখুন (+১০ কয়েন)";
+        btn.innerText = "🎬 বিজ্ঞাপন দেখুন (+৪ কয়েন)";
         btn.disabled = false;
       }
     }
@@ -885,7 +1191,7 @@
 
         if (remaining < 0) {
           clearInterval(adTimerInterval);
-          btn.innerText = "🎬 বিজ্ঞাপন দেখুন (+১০ কয়েন)";
+          btn.innerText = "🎬 বিজ্ঞাপন দেখুন (+৪ কয়েন)";
           btn.disabled = false;
         }
       }, 1000);
@@ -923,7 +1229,7 @@
       }
 
       if (keys.length === 0) {
-        container.innerHTML = '<p style="grid-column: span 2; text-align: center; color: #64748b; padding: 40px 0;">কোনো রিসোর্স পাওয়া যায়নি</p>';
+        container.innerHTML = '<p style="grid-column: span 2; text-align: center; color: var(--text-muted); padding: 40px 0;">কোনো রিসোর্স পাওয়া যায়নি</p>';
         return;
       }
 
@@ -932,12 +1238,15 @@
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
-          <img src="${item.image || 'https://via.placeholder.com/150'}" alt="thumb" onclick="openPreview('${item.image}')">
+          <div class="card-thumb-wrap">
+            <span class="type-pill">${item.type?.toUpperCase()}</span>
+            <img src="${item.image || 'https://via.placeholder.com/150'}" alt="thumb" onclick="openPreview('${item.image}')">
+          </div>
           <div class="card-body">
             <div class="card-title">${item.name}</div>
             <div class="card-meta">
               <span class="price-tag">🪙 ${item.coins}</span>
-              <button class="btn-claim" onclick="claimResource('${k}', ${item.coins}, '${item.name}', '${item.type}')">${item.type === 'plp' ? 'লিংক নিন 🔗' : 'ফাইল নিন ⚡'}</button>
+              <button class="btn-claim" onclick="claimResource('${k}', ${item.coins}, '${item.name}', '${item.type}')">${item.type === 'plp' ? 'লিংক 🔗' : 'ফাইল ⚡'}</button>
             </div>
           </div>`;
         container.appendChild(card);
@@ -982,6 +1291,7 @@
           document.getElementById('statClaims').innerText = tClaims;
         } catch(e) {}
 
+        // সেলস ও কয়েন আয় ট্র্যাকিং
         try {
           const fileRes = await fetch(`${DB_BASE}/resources/${key}.json`);
           const fileData = await fileRes.json();
@@ -1005,7 +1315,7 @@
 
     async function loadAdminAnalytics() {
       const tbody = document.getElementById('adminSalesTableBody');
-      tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--accent);">ডাটা বিশ্লেষণ করা হচ্ছে... ⏳</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--cyan); padding: 20px;">ডাটা বিশ্লেষণ করা হচ্ছে... ⏳</td></tr>';
 
       try {
         const res = await fetch(`${DB_BASE}/resources.json`);
@@ -1017,7 +1327,7 @@
 
         const keys = Object.keys(resources);
         if (keys.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">কোনো রিসোর্স পাওয়া যায়নি</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 20px;">কোনো রিসোর্স পাওয়া যায়নি</td></tr>';
           return;
         }
 
@@ -1045,7 +1355,7 @@
         document.getElementById('adminTotalCoinsSpent').innerText = `${totalCoins} 🪙`;
 
       } catch (e) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--danger);">ডাটা লোড করতে ব্যর্থ হয়েছে!</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--danger); padding: 20px;">ডাটা লোড করতে ব্যর্থ হয়েছে!</td></tr>';
       }
     }
 
@@ -1057,9 +1367,9 @@
         let html = '';
         sorted.forEach((u, idx) => {
           const rank = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx+1}`;
-          html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:rgba(15,23,42,0.7); border:1px solid var(--card-border); border-radius:12px; margin-bottom:8px;">
-            <span>${rank} ${u.name || 'VIP User'}</span>
-            <span style="color:var(--gold); font-weight:bold;">🪙 ${u.coins || 0}</span>
+          html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:14px; background:rgba(18,24,43,0.6); border:1px solid var(--card-border); border-radius:14px; margin-bottom:8px;">
+            <span style="font-weight:700;">${rank} ${u.name || 'VIP User'}</span>
+            <span style="color:var(--gold); font-weight:800;">🪙 ${u.coins || 0}</span>
           </div>`;
         });
         document.getElementById('leaderboardList').innerHTML = html;
@@ -1079,7 +1389,7 @@
 
     function shareReferralLink() {
       triggerHaptic();
-      const shareText = `💎 ভিআইপি ফন্ট এবং প্রিমিয়াম PLP প্রজেক্ট ফ্রিতে ডাউনলোড করুন এই অ্যাপ থেকে! জয়েন করলেই ফ্রি বোনাস!`;
+      const shareText = `💎 ভিআইপি ফন্ট এবং প্রিমিয়াম PLP প্রজেক্ট ফ্রিতে ডাউনলোড করুন এই অ্যাপ থেকে!`;
       const fullUrl = `https://t.me/share/url?url=${encodeURIComponent(`https://t.me/${BOT_USERNAME}?start=ref_${user.id}`)}&text=${encodeURIComponent(shareText)}`;
       if (tg && tg.openTelegramLink) tg.openTelegramLink(fullUrl);
       else window.open(fullUrl, '_blank');
@@ -1094,4 +1404,4 @@
     initApp();
   </script>
 </body>
-  </html>
+</html>
