@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>VIP Premium Resources</title>
   
-  <!-- প্রফেশনাল ফন্ট ও আইকন -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -16,10 +15,11 @@
 
   <style>
     :root {
-      --bg-base: #030712;
-      --card-bg: rgba(15, 23, 42, 0.68);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --card-glow: rgba(56, 189, 248, 0.18);
+      --bg-base: #020617;
+      --glass-surface: rgba(15, 23, 42, 0.55);
+      --glass-card: rgba(30, 41, 59, 0.45);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --glass-border-subtle: rgba(255, 255, 255, 0.06);
       
       --accent: #38bdf8;
       --accent-glow: rgba(56, 189, 248, 0.45);
@@ -27,12 +27,12 @@
       --gold-glow: rgba(251, 191, 36, 0.4);
       --green: #10b981;
       --green-glow: rgba(16, 185, 129, 0.35);
-      --purple: #a855f7;
+      --purple: #c084fc;
       --danger: #f43f5e;
       
       --text: #f8fafc;
       --text-muted: #94a3b8;
-      --nav-bg: rgba(3, 7, 18, 0.88);
+      --nav-glass: rgba(2, 6, 23, 0.78);
     }
 
     * { 
@@ -48,44 +48,44 @@
       background: var(--bg-base); 
       min-height: 100vh; 
       color: var(--text); 
-      padding-bottom: 95px; 
+      padding-bottom: 100px; 
       overflow-x: hidden; 
       position: relative;
     }
 
-    /* সাইবার ব্যাকগ্রাউন্ড অর্বস */
-    .ambient-glow-1 {
+    /* সাইবার গ্লাস লাইটিং অরবস */
+    .orb-glow-cyan {
       position: fixed;
-      width: 320px;
-      height: 320px;
-      top: -100px;
-      right: -80px;
+      width: 380px;
+      height: 380px;
+      top: -120px;
+      right: -100px;
       background: radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, transparent 70%);
-      filter: blur(60px);
+      filter: blur(70px);
       pointer-events: none;
       z-index: 0;
     }
-    .ambient-glow-2 {
+    .orb-glow-purple {
       position: fixed;
-      width: 360px;
-      height: 360px;
-      bottom: 80px;
-      left: -100px;
-      background: radial-gradient(circle, rgba(168, 85, 247, 0.14) 0%, transparent 70%);
-      filter: blur(70px);
+      width: 400px;
+      height: 400px;
+      bottom: 100px;
+      left: -120px;
+      background: radial-gradient(circle, rgba(192, 132, 252, 0.15) 0%, transparent 70%);
+      filter: blur(80px);
       pointer-events: none;
       z-index: 0;
     }
 
     #confettiCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4000; }
 
-    /* আল্ট্রা-গ্লাস টোস্ট */
+    /* আল্ট্রা গ্লাস টোস্ট */
     #toast { 
       position: fixed; 
       top: -85px; 
       left: 50%; 
       transform: translateX(-50%); 
-      background: rgba(15, 23, 42, 0.9); 
+      background: rgba(15, 23, 42, 0.85); 
       border: 1px solid var(--accent); 
       color: #fff; 
       padding: 12px 24px; 
@@ -93,44 +93,48 @@
       font-size: 13px; 
       font-weight: 800; 
       z-index: 3000; 
-      box-shadow: 0 16px 36px rgba(0,0,0,0.8), 0 0 20px var(--accent-glow); 
+      box-shadow: 0 16px 40px rgba(0,0,0,0.8), 0 0 20px var(--accent-glow); 
       transition: top 0.4s cubic-bezier(0.19, 1, 0.22, 1); 
       display: flex; 
       align-items: center; 
       gap: 10px; 
-      backdrop-filter: blur(24px); 
+      backdrop-filter: blur(25px); 
     }
     #toast.show { top: 24px; }
 
-    /* স্টিকি টপ বার */
+    /* ফ্রস্টেড গ্লাস টপ বার */
     .top-bar { 
       display: flex; 
       justify-content: space-between; 
       align-items: center; 
       padding: 14px 18px; 
-      background: rgba(3, 7, 18, 0.72); 
-      backdrop-filter: blur(24px); 
-      border-bottom: 1px solid var(--card-border); 
+      background: rgba(2, 6, 23, 0.65); 
+      backdrop-filter: blur(28px); 
+      border-bottom: 1px solid var(--glass-border); 
       position: sticky; 
       top: 0; 
       z-index: 100; 
-      box-shadow: 0 4px 25px rgba(0,0,0,0.5); 
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5); 
     }
     .user-info { display: flex; align-items: center; gap: 12px; }
-    .user-avatar { 
-      width: 44px; 
-      height: 44px; 
-      border-radius: 14px; 
+    
+    /* প্রোফাইল অ্যাভাটার কন্টেইনার */
+    .user-avatar-wrap { 
+      width: 46px; 
+      height: 46px; 
+      border-radius: 16px; 
+      overflow: hidden; 
+      border: 1.5px solid rgba(255,255,255,0.25); 
+      box-shadow: 0 4px 18px var(--accent-glow); 
       background: linear-gradient(135deg, #0284c7, #6366f1); 
-      color: #fff; 
-      font-weight: 900; 
       display: flex; 
       align-items: center; 
       justify-content: center; 
-      font-size: 18px; 
-      box-shadow: 0 4px 16px var(--accent-glow); 
-      border: 1.5px solid rgba(255,255,255,0.25); 
+      flex-shrink: 0;
     }
+    .user-avatar-wrap img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .user-avatar-text { font-size: 18px; font-weight: 900; color: #fff; }
+
     .user-meta { display: flex; flex-direction: column; }
     .user-name { font-size: 14px; font-weight: 800; color: #fff; letter-spacing: -0.2px; }
     .user-badge { 
@@ -141,9 +145,10 @@
       text-transform: uppercase; 
       text-shadow: 0 0 10px var(--gold-glow); 
     }
+    
     .balance-pill { 
-      background: linear-gradient(135deg, rgba(251, 191, 36, 0.16), rgba(217, 119, 6, 0.08)); 
-      border: 1.5px solid rgba(251, 191, 36, 0.45); 
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(217, 119, 6, 0.1)); 
+      border: 1px solid rgba(251, 191, 36, 0.45); 
       padding: 8px 16px; 
       border-radius: 99px; 
       display: flex; 
@@ -152,56 +157,57 @@
       font-weight: 900; 
       color: var(--gold); 
       font-size: 15px; 
-      box-shadow: 0 4px 20px var(--gold-glow); 
+      box-shadow: 0 4px 22px var(--gold-glow); 
+      backdrop-filter: blur(14px);
     }
 
     .container { padding: 18px 16px; position: relative; z-index: 1; }
     
     .notice-card { 
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(168, 85, 247, 0.08)); 
-      border: 1px solid var(--card-border); 
-      border-radius: 16px; 
-      padding: 12px 16px; 
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(192, 132, 252, 0.08)); 
+      border: 1px solid var(--glass-border); 
+      border-radius: 18px; 
+      padding: 13px 16px; 
       display: flex; 
       align-items: center; 
       gap: 12px; 
       margin-bottom: 18px; 
       font-size: 12px; 
       color: #cbd5e1; 
-      backdrop-filter: blur(16px); 
-      box-shadow: 0 4px 18px rgba(0,0,0,0.25); 
+      backdrop-filter: blur(20px); 
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3); 
     }
 
-    /* লাইভ স্ট্যাটাস গ্রিড */
+    /* গ্লাস স্ট্যাটাস বার */
     .live-stats-bar { 
       display: grid; 
       grid-template-columns: repeat(4, 1fr); 
       gap: 8px; 
-      background: var(--card-bg); 
-      border: 1px solid var(--card-border); 
-      border-radius: 20px; 
-      padding: 14px 6px; 
+      background: var(--glass-surface); 
+      border: 1px solid var(--glass-border); 
+      border-radius: 22px; 
+      padding: 16px 6px; 
       margin-bottom: 20px; 
       text-align: center; 
-      backdrop-filter: blur(24px); 
-      box-shadow: 0 8px 30px rgba(0,0,0,0.3); 
+      backdrop-filter: blur(25px); 
+      box-shadow: 0 10px 35px rgba(0,0,0,0.4); 
     }
     .live-stat-item { display: flex; flex-direction: column; gap: 4px; }
-    .live-stat-val { font-size: 15px; font-weight: 900; color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+    .live-stat-val { font-size: 16px; font-weight: 900; color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
     .live-stat-lbl { font-size: 9px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; }
 
-    /* ডেইলি কার্ড */
+    /* গ্লাস ডেইলি কার্ড */
     .daily-card { 
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9)); 
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.7)); 
       border: 1px solid rgba(251, 191, 36, 0.35); 
-      border-radius: 20px; 
-      padding: 16px 18px; 
+      border-radius: 22px; 
+      padding: 18px 20px; 
       display: flex; 
       align-items: center; 
       justify-content: space-between; 
       margin-bottom: 20px; 
-      backdrop-filter: blur(20px); 
-      box-shadow: 0 8px 30px rgba(0,0,0,0.35); 
+      backdrop-filter: blur(25px); 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35); 
     }
     .daily-btn { 
       background: linear-gradient(135deg, #fbbf24, #f59e0b); 
@@ -213,23 +219,23 @@
       font-size: 12px; 
       cursor: pointer; 
       transition: all 0.2s; 
-      box-shadow: 0 4px 14px var(--gold-glow); 
+      box-shadow: 0 4px 16px var(--gold-glow); 
     }
     .daily-btn:active { transform: scale(0.94); }
     .daily-btn:disabled { background: #334155 !important; color: #64748b !important; box-shadow: none !important; cursor: not-allowed; }
 
-    /* সার্চ ও ফিল্টার */
+    /* ইনপুট ও বাটনসমূহ */
     .search-box { 
       width: 100%; 
-      padding: 14px 18px; 
-      border-radius: 16px; 
-      border: 1px solid var(--card-border); 
-      background: var(--card-bg); 
+      padding: 15px 18px; 
+      border-radius: 18px; 
+      border: 1px solid var(--glass-border); 
+      background: var(--glass-surface); 
       color: #fff; 
       font-size: 13px; 
       margin-bottom: 16px; 
       outline: none; 
-      backdrop-filter: blur(16px); 
+      backdrop-filter: blur(20px); 
       transition: all 0.25s; 
     }
     .search-box:focus { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
@@ -238,35 +244,35 @@
     .tab-btn { 
       flex: 1; 
       padding: 13px; 
-      border: 1px solid var(--card-border); 
+      border: 1px solid var(--glass-border); 
       border-radius: 16px; 
-      background: var(--card-bg); 
+      background: var(--glass-surface); 
       color: var(--text-muted); 
       font-weight: 800; 
       font-size: 13px; 
       cursor: pointer; 
-      backdrop-filter: blur(16px); 
+      backdrop-filter: blur(20px); 
       transition: all 0.25s; 
     }
     .tab-btn.active { 
-      background: linear-gradient(135deg, #0284c7, #38bdf8); 
-      color: #030712; 
-      border-color: #38bdf8; 
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(56, 189, 248, 0.1)); 
+      color: var(--accent); 
+      border-color: var(--accent); 
       box-shadow: 0 0 20px var(--accent-glow); 
     }
 
-    /* রিসোর্স গ্রিড ও কার্ড */
+    /* রিসোর্স কার্ড গ্রিড */
     .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
     .card { 
-      background: var(--card-bg); 
-      border-radius: 20px; 
+      background: var(--glass-surface); 
+      border-radius: 22px; 
       overflow: hidden; 
       display: flex; 
       flex-direction: column; 
-      border: 1px solid var(--card-border); 
-      backdrop-filter: blur(20px); 
+      border: 1px solid var(--glass-border); 
+      backdrop-filter: blur(25px); 
       transition: transform 0.25s, box-shadow 0.25s; 
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3); 
+      box-shadow: 0 8px 30px rgba(0,0,0,0.35); 
       position: relative;
     }
     .card:active { transform: scale(0.96); }
@@ -282,13 +288,13 @@
       font-size: 9px;
       font-weight: 900;
       text-transform: uppercase;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
       background: rgba(0, 0, 0, 0.65);
       border: 1px solid rgba(255,255,255,0.15);
       color: #fff;
     }
 
-    .card-body { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; gap: 10px; }
+    .card-body { padding: 13px 12px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; gap: 10px; }
     .card-title { font-size: 13px; font-weight: 700; line-height: 1.35; color: #f8fafc; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .card-meta { display: flex; align-items: center; justify-content: space-between; }
     .price-tag { font-size: 13px; color: var(--gold); font-weight: 900; }
@@ -315,7 +321,7 @@
     .scratch-reward { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0f172a; font-size: 18px; font-weight: 900; color: var(--gold); }
     #scratchCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer; }
 
-    /* পৃষ্ঠা ট্রানজিশন */
+    /* ভিউ পেজ */
     .view-page { display: none; animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     .view-page.active { display: block; }
     @keyframes fadeIn {
@@ -324,17 +330,17 @@
     }
 
     .stat-card { 
-      background: var(--card-bg); 
-      border: 1px solid var(--card-border); 
+      background: var(--glass-surface); 
+      border: 1px solid var(--glass-border); 
       padding: 22px; 
       border-radius: 22px; 
       margin-bottom: 18px; 
       text-align: center; 
-      backdrop-filter: blur(24px); 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+      backdrop-filter: blur(25px); 
+      box-shadow: 0 10px 35px rgba(0,0,0,0.35); 
     }
-    .stat-number { font-size: 34px; font-weight: 900; color: var(--gold); margin: 8px 0; letter-spacing: -1px; text-shadow: 0 0 16px var(--gold-glow); }
-    .refer-box { background: rgba(0, 0, 0, 0.45); border: 1px dashed var(--accent); padding: 14px; border-radius: 14px; font-size: 12px; word-break: break-all; margin: 14px 0; color: var(--accent); }
+    .stat-number { font-size: 36px; font-weight: 900; color: var(--gold); margin: 8px 0; letter-spacing: -1px; text-shadow: 0 0 18px var(--gold-glow); }
+    .refer-box { background: rgba(0, 0, 0, 0.4); border: 1px dashed var(--accent); padding: 14px; border-radius: 14px; font-size: 12px; word-break: break-all; margin: 14px 0; color: var(--accent); }
     
     .action-btn { 
       width: 100%; 
@@ -352,38 +358,38 @@
     .action-btn:active { transform: scale(0.97); }
     .action-btn:disabled { background: #334155 !important; color: #64748b !important; box-shadow: none !important; cursor: not-allowed; }
 
-    .task-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(30, 41, 59, 0.55); border: 1px solid var(--card-border); border-radius: 18px; margin-bottom: 12px; }
+    .task-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(30, 41, 59, 0.4); border: 1px solid var(--glass-border); border-radius: 18px; margin-bottom: 12px; backdrop-filter: blur(15px); }
     .unlocked-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; text-align: left; }
-    .unlocked-item { display: flex; justify-content: space-between; align-items: center; padding: 13px; background: rgba(30, 41, 59, 0.55); border: 1px solid var(--card-border); border-radius: 14px; font-size: 12px; }
+    .unlocked-item { display: flex; justify-content: space-between; align-items: center; padding: 13px; background: rgba(30, 41, 59, 0.4); border: 1px solid var(--glass-border); border-radius: 14px; font-size: 12px; backdrop-filter: blur(15px); }
 
-    /* প্রিমিয়াম অ্যাডমিন সেলস টেবিল */
+    /* অ্যাডমিন টেবিল */
     .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; text-align: left; }
-    .admin-table th { background: rgba(56, 189, 248, 0.12); color: var(--accent); padding: 12px 10px; border-bottom: 1px solid var(--card-border); font-weight: 800; }
-    .admin-table td { padding: 14px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text); }
+    .admin-table th { background: rgba(56, 189, 248, 0.12); color: var(--accent); padding: 12px 10px; border-bottom: 1px solid var(--glass-border); font-weight: 800; }
+    .admin-table td { padding: 14px 10px; border-bottom: 1px solid var(--glass-border-subtle); color: var(--text); }
     .badge-count { background: rgba(16, 185, 129, 0.18); color: var(--green); padding: 5px 10px; border-radius: 10px; font-weight: 800; border: 1px solid rgba(16, 185, 129, 0.25); }
     .badge-rev { background: rgba(251, 191, 36, 0.18); color: var(--gold); padding: 5px 10px; border-radius: 10px; font-weight: 800; border: 1px solid rgba(251, 191, 36, 0.25); }
 
     /* ইমেজ মোডাল */
-    .preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.94); z-index: 2500; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(16px); }
+    .preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 2500; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(20px); }
     .preview-modal.active { display: flex; }
     .preview-modal img { max-width: 100%; max-height: 80vh; border-radius: 20px; border: 1.5px solid var(--accent); box-shadow: 0 0 35px var(--accent-glow); }
     .preview-close { position: absolute; top: 22px; right: 22px; font-size: 32px; color: #fff; cursor: pointer; }
 
-    /* আল্ট্রা-স্লিক বটম বার */
+    /* বটম বার */
     .bottom-nav { 
       position: fixed; 
       bottom: 0; 
       left: 0; 
       right: 0; 
-      height: 74px; 
-      background: var(--nav-bg); 
-      backdrop-filter: blur(28px); 
-      border-top: 1px solid var(--card-border); 
+      height: 76px; 
+      background: var(--nav-glass); 
+      backdrop-filter: blur(30px); 
+      border-top: 1px solid var(--glass-border); 
       display: flex; 
       justify-content: space-around; 
       align-items: center; 
       z-index: 200; 
-      box-shadow: 0 -4px 25px rgba(0,0,0,0.6); 
+      box-shadow: 0 -4px 30px rgba(0,0,0,0.6); 
     }
     .nav-item { 
       display: flex; 
@@ -406,9 +412,9 @@
 </head>
 <body>
 
-  <!-- সাইবার ব্যাকগ্রাউন্ড ইফেক্ট -->
-  <div class="ambient-glow-1"></div>
-  <div class="ambient-glow-2"></div>
+  <!-- সাইবার লাইট ব্যাকগ্রাউন্ড -->
+  <div class="orb-glow-cyan"></div>
+  <div class="orb-glow-purple"></div>
 
   <canvas id="confettiCanvas"></canvas>
   <div id="toast"><span id="toastIcon">⭐</span><span id="toastMsg">বার্তা</span></div>
@@ -416,7 +422,10 @@
   <!-- শীর্ষ বার -->
   <div class="top-bar">
     <div class="user-info">
-      <div class="user-avatar" id="uAvatar">U</div>
+      <div class="user-avatar-wrap">
+        <img id="uAvatarImg" src="" alt="avatar">
+        <span class="user-avatar-text" id="uAvatarText">U</span>
+      </div>
       <div class="user-meta">
         <span class="user-name" id="uName">VIP সদস্য</span>
         <span class="user-badge" id="uBadge">⭐ BRONZE VIP</span>
@@ -552,12 +561,15 @@
     <!-- ৬. প্রোফাইল ও আনলক হিস্ট্রি -->
     <div id="pageProfile" class="view-page">
       <div class="stat-card">
-        <div class="user-avatar" id="profAvatar" style="width:74px; height:74px; font-size:28px; margin: 0 auto 12px auto; border-radius: 20px;">U</div>
+        <div class="user-avatar-wrap" style="width: 78px; height: 78px; border-radius: 24px; margin: 0 auto 12px auto;">
+          <img id="profAvatarImg" src="" alt="avatar">
+          <span class="user-avatar-text" id="profAvatarText" style="font-size: 28px;">U</span>
+        </div>
         <h2 id="profName" style="font-size:18px; font-weight: 800;">VIP User</h2>
         <p id="profTag" style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">@user</p>
         <span style="background:rgba(251, 191, 36, 0.15); color:var(--gold); padding:6px 16px; border-radius:99px; font-size:11px; font-weight:800; border:1px solid rgba(251, 191, 36, 0.3);" id="profRank">BRONZE VIP</span>
         
-        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; border-top:1px solid var(--card-border); padding-top:16px; margin-top:16px;">
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; border-top:1px solid var(--glass-border); padding-top:16px; margin-top:16px;">
           <div>
             <div style="font-size:16px; font-weight:900; color:var(--gold);" id="profCoins">0</div>
             <div style="font-size:10px; color:var(--text-muted); text-transform: uppercase; margin-top: 2px;">কয়েন</div>
@@ -591,11 +603,11 @@
         <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">কোন ফাইল কতবার কেনা হয়েছে ও মোট কত কয়েন আয় হয়েছে</p>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
-          <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 16px; border: 1px solid var(--card-border);">
+          <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 16px; border: 1px solid var(--glass-border);">
             <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">মোট ডাউনলোড</div>
             <div style="font-size: 22px; font-weight: 900; color: var(--green); margin-top: 4px;" id="adminTotalSales">0 টি</div>
           </div>
-          <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 16px; border: 1px solid var(--card-border);">
+          <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 16px; border: 1px solid var(--glass-border);">
             <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">মোট ব্যয়িত কয়েন</div>
             <div style="font-size: 22px; font-weight: 900; color: var(--gold); margin-top: 4px;" id="adminTotalCoinsSpent">0 🪙</div>
           </div>
@@ -637,7 +649,6 @@
     <button class="nav-item" onclick="switchNav('pageLeaderboard', this)"><span class="nav-icon">🏆</span><span>র‍্যাংক</span></button>
     <button class="nav-item" onclick="switchNav('pageRefer', this)"><span class="nav-icon">👥</span><span>রেফার</span></button>
     <button class="nav-item" onclick="switchNav('pageProfile', this)"><span class="nav-icon">👤</span><span>প্রোফাইল</span></button>
-    <!-- কেবল অ্যাডমিন আইডি হলে দৃশ্যমান হবে -->
     <button class="nav-item" id="adminNavBtn" style="display: none;" onclick="switchNav('pageAdmin', this)"><span class="nav-icon">👑</span><span>অ্যাডমিন</span></button>
   </div>
 
@@ -657,15 +668,14 @@
     let allResources = {};
     let currentCategory = 'plp';
     let currentWheelRotation = 0;
-    let scratchCardReward = 5; // নিশ্চিত ৫ কয়েন
+    let scratchCardReward = 5;
     let scratchCardScratched = false;
     let adTimerInterval = null;
 
     const AD_LIMIT = 30;
-    const AD_REWARD = 10; // ফিক্সড ১০ কয়েন
+    const AD_REWARD = 10;
     const AD_COOLDOWN = 60;
 
-    // স্পিনে সর্বোচ্চ ১০ কয়েন
     const spinRewards = [
       { text: "+2 🪙", coins: 2, bg: "#0284c7" },
       { text: "+4 🪙", coins: 4, bg: "#1e293b" },
@@ -682,7 +692,7 @@
       canvas.height = window.innerHeight;
 
       const pieces = [];
-      const colors = ['#fbbf24', '#38bdf8', '#f43f5e', '#10b981', '#a855f7'];
+      const colors = ['#fbbf24', '#38bdf8', '#f43f5e', '#10b981', '#c084fc'];
 
       for (let i = 0; i < 75; i++) {
         pieces.push({
@@ -782,9 +792,25 @@
     }
 
     async function initApp() {
+      // প্রোফাইল ফটো লোড লজিক
       const initial = user.first_name ? user.first_name[0].toUpperCase() : 'U';
-      document.getElementById('uAvatar').innerText = initial;
-      document.getElementById('profAvatar').innerText = initial;
+      const userPhoto = user.photo_url;
+
+      if (userPhoto) {
+        const uImg = document.getElementById('uAvatarImg');
+        const pImg = document.getElementById('profAvatarImg');
+        uImg.src = userPhoto;
+        uImg.style.display = 'block';
+        document.getElementById('uAvatarText').style.display = 'none';
+
+        pImg.src = userPhoto;
+        pImg.style.display = 'block';
+        document.getElementById('profAvatarText').style.display = 'none';
+      } else {
+        document.getElementById('uAvatarText').innerText = initial;
+        document.getElementById('profAvatarText').innerText = initial;
+      }
+
       document.getElementById('uName').innerText = user.first_name || "VIP User";
       document.getElementById('profName').innerText = user.first_name || "VIP User";
       const tag = user.username ? `@${user.username}` : `ID: ${user.id}`;
@@ -800,7 +826,7 @@
         if (data) {
           userData = Object.assign({ coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, unlocked: {}, joined_channel: false }, data);
         } else {
-          userData = { name: user.first_name, username: user.username || "", coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, unlocked: {}, joined_channel: false };
+          userData = { name: user.first_name, username: user.username || "", photo: userPhoto || "", coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, unlocked: {}, joined_channel: false };
           await fetch(`${DB_BASE}/users/${user.id}.json`, { method: 'PUT', body: JSON.stringify(userData) });
         }
       } catch (e) {}
@@ -1361,7 +1387,7 @@
         let html = '';
         sorted.forEach((u, idx) => {
           const rank = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx+1}`;
-          html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:14px; background:rgba(18,24,43,0.6); border:1px solid var(--card-border); border-radius:14px; margin-bottom:8px;">
+          html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:14px; background:rgba(30,41,59,0.45); border:1px solid var(--glass-border); border-radius:16px; margin-bottom:8px; backdrop-filter:blur(15px);">
             <span style="font-weight:700;">${rank} ${u.name || 'VIP User'}</span>
             <span style="color:var(--gold); font-weight:800;">🪙 ${u.coins || 0}</span>
           </div>`;
@@ -1398,4 +1424,4 @@
     initApp();
   </script>
 </body>
-          </html>
+</html>
