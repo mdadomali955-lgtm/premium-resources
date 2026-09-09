@@ -11,109 +11,100 @@
 
   <style>
     :root {
-      --bg-gradient: radial-gradient(circle at 50% -10%, #1e1b4b 0%, #030712 85%);
-      --card-bg: rgba(15, 23, 42, 0.75);
-      --card-border: rgba(56, 189, 248, 0.28);
+      --bg-gradient: radial-gradient(circle at 50% -20%, #1e1b4b 0%, #090d16 60%, #030712 100%);
+      --card-bg: rgba(15, 23, 42, 0.72);
+      --card-border: rgba(56, 189, 248, 0.22);
+      --card-border-glow: rgba(56, 189, 248, 0.45);
       --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.45);
+      --accent-glow: rgba(56, 189, 248, 0.4);
       --gold: #facc15;
-      --gold-glow: rgba(250, 204, 21, 0.5);
+      --gold-glow: rgba(250, 204, 21, 0.45);
       --text: #f8fafc;
       --text-muted: #94a3b8;
-      --nav-bg: rgba(3, 7, 18, 0.94);
-      --green: #22c55e;
-      --purple: #a855f7;
-      --danger: #ef4444;
+      --nav-bg: rgba(3, 7, 18, 0.88);
+      --green: #10b981;
+      --green-glow: rgba(16, 185, 129, 0.4);
+      --danger: #f43f5e;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background: var(--bg-gradient); min-height: 100vh; color: var(--text); padding-bottom: 95px; overflow-x: hidden; }
 
-    /* কনফেটি ও টোস্ট */
     #confettiCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4000; }
-    #toast { position: fixed; top: -75px; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.96); border: 1.5px solid var(--accent); color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 13px; font-weight: 800; z-index: 3000; box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 15px var(--accent-glow); transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; gap: 10px; backdrop-filter: blur(16px); }
+    #toast { position: fixed; top: -75px; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.95); border: 1.5px solid var(--accent); color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 13px; font-weight: 800; z-index: 3000; box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px var(--accent-glow); transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; gap: 10px; backdrop-filter: blur(20px); }
     #toast.show { top: 22px; }
 
-    /* VIP Top Bar */
-    .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: rgba(3, 7, 18, 0.75); backdrop-filter: blur(18px); border-bottom: 1px solid var(--card-border); position: sticky; top: 0; z-index: 100; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: rgba(3, 7, 18, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--card-border); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
     .user-info { display: flex; align-items: center; gap: 12px; }
-    .user-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #38bdf8, #6366f1); color: #fff; font-weight: 900; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 0 18px var(--accent-glow); border: 2px solid rgba(255,255,255,0.3); }
+    .user-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #0284c7, #6366f1); color: #fff; font-weight: 900; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 0 16px var(--accent-glow); border: 2px solid rgba(255,255,255,0.25); }
     .user-meta { display: flex; flex-direction: column; }
     .user-name { font-size: 14px; font-weight: 800; color: #fff; letter-spacing: 0.3px; }
     .user-badge { font-size: 10px; color: var(--gold); font-weight: 800; letter-spacing: 0.8px; text-shadow: 0 0 10px var(--gold-glow); }
-    .balance-pill { background: linear-gradient(135deg, rgba(250, 204, 21, 0.18), rgba(234, 179, 8, 0.08)); border: 1.5px solid rgba(250, 204, 21, 0.55); padding: 8px 16px; border-radius: 30px; display: flex; align-items: center; gap: 8px; font-weight: 900; color: var(--gold); font-size: 15px; box-shadow: 0 0 20px var(--gold-glow); }
+    .balance-pill { background: linear-gradient(135deg, rgba(250, 204, 21, 0.16), rgba(234, 179, 8, 0.05)); border: 1.5px solid rgba(250, 204, 21, 0.5); padding: 8px 16px; border-radius: 30px; display: flex; align-items: center; gap: 8px; font-weight: 900; color: var(--gold); font-size: 15px; box-shadow: 0 0 18px var(--gold-glow); }
 
     .container { padding: 16px; }
-    .notice-card { background: linear-gradient(90deg, rgba(56, 189, 248, 0.16), rgba(99, 102, 241, 0.12)); border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; font-size: 12px; color: #bae6fd; backdrop-filter: blur(12px); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    .notice-card { background: linear-gradient(90deg, rgba(56, 189, 248, 0.12), rgba(99, 102, 241, 0.08)); border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; font-size: 12px; color: #bae6fd; backdrop-filter: blur(14px); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
 
-    /* গ্লোবাল স্ট্যাটস বার */
-    .live-stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 14px 8px; margin-bottom: 16px; text-align: center; backdrop-filter: blur(18px); }
+    .live-stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 14px 8px; margin-bottom: 16px; text-align: center; backdrop-filter: blur(20px); box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
     .live-stat-item { display: flex; flex-direction: column; gap: 3px; }
-    .live-stat-val { font-size: 15px; font-weight: 900; color: var(--accent); text-shadow: 0 0 8px var(--accent-glow); }
+    .live-stat-val { font-size: 15px; font-weight: 900; color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
     .live-stat-lbl { font-size: 9px; color: var(--text-muted); font-weight: 700; }
 
-    /* ডেইলি কার্ড */
-    .daily-card { background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.98)); border: 1px solid rgba(250, 204, 21, 0.45); border-radius: 18px; padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; backdrop-filter: blur(14px); }
-    .daily-btn { background: linear-gradient(135deg, #facc15, #eab308); color: #020617; border: none; padding: 10px 16px; border-radius: 12px; font-weight: 900; font-size: 12px; cursor: pointer; transition: 0.2s; box-shadow: 0 0 12px var(--gold-glow); }
-    .daily-btn:active { transform: scale(0.95); }
+    .daily-card { background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95)); border: 1px solid rgba(250, 204, 21, 0.4); border-radius: 18px; padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; backdrop-filter: blur(16px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+    .daily-btn { background: linear-gradient(135deg, #facc15, #eab308); color: #020617; border: none; padding: 10px 16px; border-radius: 12px; font-weight: 900; font-size: 12px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 0 14px var(--gold-glow); }
+    .daily-btn:active { transform: scale(0.96); }
     .daily-btn:disabled { background: #334155 !important; color: #94a3b8 !important; box-shadow: none !important; cursor: not-allowed; }
 
-    /* সার্চ ও ট্যাব */
-    .search-box { width: 100%; padding: 14px 18px; border-radius: 16px; border: 1px solid var(--card-border); background: var(--card-bg); color: #fff; font-size: 13px; margin-bottom: 16px; outline: none; backdrop-filter: blur(12px); }
-    .search-box:focus { border-color: var(--accent); box-shadow: 0 0 16px var(--accent-glow); }
+    .search-box { width: 100%; padding: 14px 18px; border-radius: 16px; border: 1px solid var(--card-border); background: var(--card-bg); color: #fff; font-size: 13px; margin-bottom: 16px; outline: none; backdrop-filter: blur(14px); transition: border-color 0.2s, box-shadow 0.2s; }
+    .search-box:focus { border-color: var(--accent); box-shadow: 0 0 18px var(--accent-glow); }
     .tabs { display: flex; gap: 10px; margin-bottom: 16px; }
-    .tab-btn { flex: 1; padding: 13px; border: none; border-radius: 16px; background: var(--card-bg); color: var(--text-muted); font-weight: 800; font-size: 13px; cursor: pointer; border: 1px solid var(--card-border); backdrop-filter: blur(14px); transition: all 0.2s; }
-    .tab-btn.active { background: linear-gradient(135deg, #0284c7, #38bdf8); color: #020617; border-color: #38bdf8; box-shadow: 0 0 18px var(--accent-glow); }
+    .tab-btn { flex: 1; padding: 13px; border: none; border-radius: 16px; background: var(--card-bg); color: var(--text-muted); font-weight: 800; font-size: 13px; cursor: pointer; border: 1px solid var(--card-border); backdrop-filter: blur(14px); transition: all 0.25s ease; }
+    .tab-btn.active { background: linear-gradient(135deg, #0284c7, #38bdf8); color: #020617; border-color: #38bdf8; box-shadow: 0 0 20px var(--accent-glow); }
 
-    /* গ্রিড ও কার্ড */
     .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-    .card { background: var(--card-bg); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--card-border); backdrop-filter: blur(16px); transition: 0.25s; }
+    .card { background: var(--card-bg); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--card-border); backdrop-filter: blur(16px); transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.25s, box-shadow 0.25s; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
     .card:active { transform: scale(0.96); }
-    .card img { width: 100%; height: 130px; object-fit: cover; background: #0f172a; cursor: pointer; }
+    .card img { width: 100%; height: 130px; object-fit: cover; background: #0f172a; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.06); }
     .card-body { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; gap: 10px; }
     .card-title { font-size: 13px; font-weight: 700; line-height: 1.35; color: #f8fafc; }
     .card-meta { display: flex; align-items: center; justify-content: space-between; }
     .price-tag { font-size: 13px; color: var(--gold); font-weight: 900; }
-    .btn-claim { background: linear-gradient(135deg, #38bdf8, #0ea5e9); color: #020617; border: none; padding: 8px 12px; border-radius: 10px; font-size: 11px; font-weight: 900; cursor: pointer; box-shadow: 0 0 12px var(--accent-glow); }
+    .btn-claim { background: linear-gradient(135deg, #38bdf8, #0ea5e9); color: #020617; border: none; padding: 8px 12px; border-radius: 10px; font-size: 11px; font-weight: 900; cursor: pointer; box-shadow: 0 0 12px var(--accent-glow); transition: 0.2s; }
+    .btn-claim:active { transform: scale(0.95); }
 
-    /* গেম জোন */
     .wheel-container { position: relative; width: 240px; height: 240px; margin: 25px auto; display: flex; align-items: center; justify-content: center; }
-    #wheelCanvas { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 28px rgba(250, 204, 21, 0.45); transition: transform 4s cubic-bezier(0.15, 0.9, 0.25, 1); }
-    .wheel-arrow { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 26px solid #ef4444; z-index: 20; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.8)); }
-    .scratch-container { position: relative; width: 260px; height: 130px; margin: 18px auto; border-radius: 16px; overflow: hidden; border: 2px solid var(--gold); box-shadow: 0 0 22px var(--gold-glow); }
+    #wheelCanvas { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 30px rgba(250, 204, 21, 0.45); transition: transform 4s cubic-bezier(0.15, 0.9, 0.25, 1); }
+    .wheel-arrow { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 26px solid #f43f5e; z-index: 20; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.8)); }
+    .scratch-container { position: relative; width: 260px; height: 130px; margin: 18px auto; border-radius: 16px; overflow: hidden; border: 2px solid var(--gold); box-shadow: 0 0 24px var(--gold-glow); }
     .scratch-reward { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0f172a; font-size: 18px; font-weight: 900; color: var(--gold); }
     #scratchCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer; }
 
-    /* পৃষ্ঠা ও সাধারণ উপাদান */
     .view-page { display: none; }
     .view-page.active { display: block; }
-    .stat-card { background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 20px; margin-bottom: 16px; text-align: center; backdrop-filter: blur(18px); }
-    .stat-number { font-size: 32px; font-weight: 900; color: var(--gold); margin: 8px 0; text-shadow: 0 0 12px var(--gold-glow); }
+    .stat-card { background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 20px; margin-bottom: 16px; text-align: center; backdrop-filter: blur(20px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+    .stat-number { font-size: 32px; font-weight: 900; color: var(--gold); margin: 8px 0; text-shadow: 0 0 14px var(--gold-glow); }
     .refer-box { background: rgba(3, 7, 18, 0.75); border: 1px dashed var(--card-border); padding: 13px; border-radius: 14px; font-size: 12px; word-break: break-all; margin: 14px 0; color: var(--accent); }
-    .action-btn { width: 100%; background: linear-gradient(135deg, #38bdf8, #0284c7); color: #020617; padding: 15px; font-size: 14px; font-weight: 900; border: none; border-radius: 15px; cursor: pointer; box-shadow: 0 0 16px var(--accent-glow); transition: 0.2s; }
+    .action-btn { width: 100%; background: linear-gradient(135deg, #38bdf8, #0284c7); color: #020617; padding: 15px; font-size: 14px; font-weight: 900; border: none; border-radius: 16px; cursor: pointer; box-shadow: 0 0 20px var(--accent-glow); transition: 0.2s; }
     .action-btn:active { transform: scale(0.98); }
     .action-btn:disabled { background: #334155 !important; color: #94a3b8 !important; box-shadow: none !important; cursor: not-allowed; }
     .task-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(30, 41, 59, 0.7); border: 1px solid var(--card-border); border-radius: 16px; margin-bottom: 12px; }
     .unlocked-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; text-align: left; }
     .unlocked-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(30, 41, 59, 0.6); border: 1px solid var(--card-border); border-radius: 12px; font-size: 12px; }
 
-    /* অ্যাডমিন প্যানেল টেবিল স্টাইল */
     .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; text-align: left; }
     .admin-table th { background: rgba(56, 189, 248, 0.15); color: var(--accent); padding: 10px 8px; border-bottom: 1px solid var(--card-border); }
     .admin-table td { padding: 12px 8px; border-bottom: 1px solid rgba(255,255,255,0.06); color: var(--text); }
-    .badge-count { background: rgba(34, 197, 94, 0.2); color: var(--green); padding: 4px 8px; border-radius: 8px; font-weight: 900; }
+    .badge-count { background: rgba(16, 185, 129, 0.2); color: var(--green); padding: 4px 8px; border-radius: 8px; font-weight: 900; }
     .badge-rev { background: rgba(250, 204, 21, 0.2); color: var(--gold); padding: 4px 8px; border-radius: 8px; font-weight: 900; }
 
-    /* Modal Image Preview */
-    .preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 2500; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px); }
+    .preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.94); z-index: 2500; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(14px); }
     .preview-modal.active { display: flex; }
-    .preview-modal img { max-width: 100%; max-height: 80vh; border-radius: 16px; border: 1.5px solid var(--accent); }
+    .preview-modal img { max-width: 100%; max-height: 80vh; border-radius: 16px; border: 1.5px solid var(--accent); box-shadow: 0 0 30px rgba(56, 189, 248, 0.3); }
     .preview-close { position: absolute; top: 20px; right: 20px; font-size: 34px; color: #fff; cursor: pointer; }
 
-    /* Bottom Nav */
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: var(--nav-bg); backdrop-filter: blur(22px); border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; align-items: center; z-index: 200; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--text-muted); font-size: 10px; font-weight: 800; border: none; background: transparent; flex: 1; cursor: pointer; transition: 0.2s; }
-    .nav-item.active { color: var(--accent); }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 72px; background: var(--nav-bg); backdrop-filter: blur(24px); border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; align-items: center; z-index: 200; box-shadow: 0 -4px 20px rgba(0,0,0,0.5); }
+    .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--text-muted); font-size: 10px; font-weight: 800; border: none; background: transparent; flex: 1; cursor: pointer; transition: color 0.2s, transform 0.2s; }
+    .nav-item.active { color: var(--accent); transform: translateY(-2px); }
     .nav-icon { font-size: 19px; }
   </style>
 </head>
@@ -185,7 +176,7 @@
     <div id="pageGames" class="view-page">
       <div class="stat-card">
         <h2>🎡 লাকি হুইল স্পিন</h2>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">চাকা ঘুরিয়ে নিশ্চিত রিওয়ার্ড জিতে নিন!</p>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">চাকা ঘুরিয়ে জিতুন সর্বোচ্চ ১০ কয়েন!</p>
         <div class="wheel-container">
           <div class="wheel-arrow"></div>
           <canvas id="wheelCanvas" width="240" height="240"></canvas>
@@ -195,11 +186,11 @@
 
       <div class="stat-card">
         <h2>✨ দৈনিক স্ক্র্যাচ কার্ড</h2>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">কার্ডটি আঙুল দিয়ে ঘষে লুকানো কয়েন বের করুন</p>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">কার্ডটি ঘষে পেয়ে যান নিশ্চিত ৫ কয়েন</p>
         <div class="scratch-container">
           <div class="scratch-reward">
             <span>🎁 সারপ্রাইজ রিওয়ার্ড</span>
-            <span id="scratchCoinText">+০ কয়েন</span>
+            <span id="scratchCoinText">+৫ কয়েন</span>
           </div>
           <canvas id="scratchCanvas" width="260" height="130"></canvas>
         </div>
@@ -222,14 +213,14 @@
       <div class="stat-card">
         <span style="font-size:38px;">💎</span>
         <h2 style="font-size:18px; margin: 8px 0;">বিজ্ঞাপন দেখে কয়েন সংগ্রহ</h2>
-        <p style="font-size:12px; color:var(--text-muted);">সম্পূর্ণ বিজ্ঞাপনটি দেখলে ওয়ালেটে ৪টি কয়েন যোগ হবে।</p>
+        <p style="font-size:12px; color:var(--text-muted);">সম্পূর্ণ বিজ্ঞাপনটি দেখলে ওয়ালেটে ১০টি কয়েন যোগ হবে।</p>
         <div class="stat-number" id="adLimitDisplay">30/30</div>
         <p style="font-size:11px; color:var(--text-muted);">আজকের অবশিষ্ট সীমা</p>
       </div>
 
       <div class="stat-card" style="text-align: left;">
         <button class="action-btn" id="btnWatchMonetag" onclick="watchVipAd()">
-          🎬 বিজ্ঞাপন দেখুন (+৪ কয়েন)
+          🎬 বিজ্ঞাপন দেখুন (+১০ কয়েন)
         </button>
       </div>
     </div>
@@ -248,14 +239,14 @@
       <div class="stat-card">
         <span style="font-size:34px;">🤝</span>
         <h2 style="font-size:17px; margin: 8px 0;">বন্ধুকে রেফার করে আয়</h2>
-        <p style="font-size:12px; color:var(--text-muted); line-height: 1.4;">
-          ⚠️ <b>নিয়ম:</b> আপনার রেফারে জয়েন করা মেম্বার কমপক্ষে <b>১টি রিসোর্স ক্লেইম করলে</b> তবেই আপনি পাবেন <b>১০টি কয়েন</b>।
+        <p style="font-size:12px; color:var(--text-muted); line-height: 1.5;">
+          ⚠️ <b>নিয়ম:</b> আপনার রেফারে জয়েন করা মেম্বার কমপক্ষে <b>১টি রিসোর্স ক্লেইম করলে</b> তবেই আপনি পাবেন <b>৫০টি কয়েন</b>।
         </p>
         <div class="stat-number" id="referCount">0</div>
         <p style="font-size:12px; color:var(--text-muted);">সফল ভেরিফাইড রেফার</p>
       </div>
       <div class="refer-box" id="referLinkText">লোড হচ্ছে...</div>
-      <button class="action-btn" onclick="shareReferralLink()">🚀 রেফার লিংক শেয়ার করুন</button>
+      <button class="action-btn" onclick="shareReferralLink()">🚀 রেফার লিংক শেয়ার করুন (+৫০ কয়েন)</button>
     </div>
 
     <!-- ৬. প্রোফাইল ও আনলক হিস্ট্রি -->
@@ -292,7 +283,7 @@
       <button class="action-btn" style="background:rgba(30,41,59,0.8); color:var(--accent); border:1px solid var(--accent);" onclick="openSupport()">💬 হেল্পলাইন ও সাপোর্ট গ্রুপ</button>
     </div>
 
-    <!-- ৭. এক্সক্লুসিভ অ্যাডমিন সেলস অ্যানালিটিক্স প্যানেল -->
+    <!-- ৭. অ্যাডমিন প্যানেল -->
     <div id="pageAdmin" class="view-page">
       <div class="stat-card">
         <span style="font-size: 34px;">👑</span>
@@ -346,7 +337,6 @@
     <button class="nav-item" onclick="switchNav('pageLeaderboard', this)"><span class="nav-icon">🏆</span><span>র‍্যাংক</span></button>
     <button class="nav-item" onclick="switchNav('pageRefer', this)"><span class="nav-icon">👥</span><span>রেফার</span></button>
     <button class="nav-item" onclick="switchNav('pageProfile', this)"><span class="nav-icon">👤</span><span>প্রোফাইল</span></button>
-    <!-- অ্যাডমিন বাটন জাভাস্ক্রিপ্ট দিয়ে শর্তসাপেক্ষে দেখানো হবে -->
     <button class="nav-item" id="adminNavBtn" style="display: none;" onclick="switchNav('pageAdmin', this)"><span class="nav-icon">👑</span><span>অ্যাডমিন</span></button>
   </div>
 
@@ -354,7 +344,7 @@
     const tg = window.Telegram?.WebApp;
     if (tg) { tg.ready(); tg.expand(); }
 
-    const ADMIN_TELEGRAM_ID = 7481264433; // আপনার অ্যাডমিন আইডি
+    const ADMIN_TELEGRAM_ID = 7481264433;
     const BOT_USERNAME = "PLPStoreOfficialBot";
     const SUPPORT_URL = "https://t.me/PLPSTOREAI";
     const CHANNEL_URL = "https://t.me/PLPStoreBD0";
@@ -366,21 +356,22 @@
     let allResources = {};
     let currentCategory = 'plp';
     let currentWheelRotation = 0;
-    let scratchCardReward = 0;
+    let scratchCardReward = 5; // ফিক্সড ৫ কয়েন
     let scratchCardScratched = false;
     let adTimerInterval = null;
 
     const AD_LIMIT = 30;
-    const AD_REWARD = 4;
+    const AD_REWARD = 10; // বিজ্ঞাপনে ১০ কয়েন
     const AD_COOLDOWN = 60;
 
+    // স্পিনে সর্বোচ্চ ১০ কয়েন
     const spinRewards = [
       { text: "+2 🪙", coins: 2, bg: "#0284c7" },
+      { text: "+4 🪙", coins: 4, bg: "#1e293b" },
+      { text: "+6 🪙", coins: 6, bg: "#f59e0b" },
+      { text: "+8 🪙", coins: 8, bg: "#0284c7" },
       { text: "+5 🪙", coins: 5, bg: "#1e293b" },
-      { text: "+8 🪙", coins: 8, bg: "#f59e0b" },
-      { text: "+10 🪙", coins: 10, bg: "#0284c7" },
-      { text: "+12 🪙", coins: 12, bg: "#1e293b" },
-      { text: "+15 🪙", coins: 15, bg: "#eab308" }
+      { text: "+10 🪙", coins: 10, bg: "#eab308" }
     ];
 
     function fireConfetti() {
@@ -390,7 +381,7 @@
       canvas.height = window.innerHeight;
 
       const pieces = [];
-      const colors = ['#facc15', '#38bdf8', '#ef4444', '#22c55e', '#a855f7'];
+      const colors = ['#facc15', '#38bdf8', '#ef4444', '#10b981', '#a855f7'];
 
       for (let i = 0; i < 70; i++) {
         pieces.push({
@@ -498,7 +489,6 @@
       const tag = user.username ? `@${user.username}` : `ID: ${user.id}`;
       document.getElementById('profTag').innerText = tag;
 
-      // কেবল অ্যাডমিন আইডি হলেই অ্যাডমিন বাটন দৃশ্যমান হবে
       if (Number(user.id) === ADMIN_TELEGRAM_ID) {
         document.getElementById('adminNavBtn').style.display = 'flex';
       }
@@ -689,7 +679,7 @@
         return;
       }
 
-      scratchCardReward = Math.floor(Math.random() * 7) + 3;
+      scratchCardReward = 5;
       document.getElementById('scratchCoinText').innerText = `+${scratchCardReward} কয়েন`;
 
       ctx.fillStyle = '#64748b';
@@ -873,12 +863,12 @@
         }).catch(e => {
           triggerHaptic('warning');
           showToast("বিজ্ঞাপনটি সম্পূর্ণ দেখা হয়নি!", "❌");
-          btn.innerText = "🎬 বিজ্ঞাপন দেখুন (+৪ কয়েন)";
+          btn.innerText = "🎬 বিজ্ঞাপন দেখুন (+১০ কয়েন)";
           btn.disabled = false;
         });
       } else {
         showToast("বিজ্ঞাপন লোড হচ্ছে, কিছু সেকেন্ড পর আবার চাপ দিন", "⏳");
-        btn.innerText = "🎬 বিজ্ঞাপন দেখুন (+৪ কয়েন)";
+        btn.innerText = "🎬 বিজ্ঞাপন দেখুন (+১০ কয়েন)";
         btn.disabled = false;
       }
     }
@@ -895,7 +885,7 @@
 
         if (remaining < 0) {
           clearInterval(adTimerInterval);
-          btn.innerText = "🎬 বিজ্ঞাপন দেখুন (+৪ কয়েন)";
+          btn.innerText = "🎬 বিজ্ঞাপন দেখুন (+১০ কয়েন)";
           btn.disabled = false;
         }
       }, 1000);
@@ -965,7 +955,6 @@
       document.getElementById('imageModal').classList.remove('active');
     }
 
-    // রিসোর্স ক্লেইম ও সেলস কাউন্টার আপডেট
     async function claimResource(key, cost, name, type) {
       triggerHaptic();
       if ((userData.coins || 0) < cost) {
@@ -981,12 +970,10 @@
         userData.unlocked[key] = { name: name, type: type, time: Date.now() };
         updateUI();
 
-        // ব্যবহারকারীর ডাটা সেভ
         fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
         fetch(`${DB_BASE}/users/${user.id}/claimed_count.json`, { method: 'PUT', body: JSON.stringify(userData.claimed_count) });
         fetch(`${DB_BASE}/users/${user.id}/unlocked/${key}.json`, { method: 'PUT', body: JSON.stringify(userData.unlocked[key]) });
 
-        // গ্লোবাল মোট ডাউনলোড কাউন্ট
         try {
           const cRes = await fetch(`${DB_BASE}/stats/total_claims.json`);
           let tClaims = (await cRes.json()) || 0;
@@ -995,7 +982,6 @@
           document.getElementById('statClaims').innerText = tClaims;
         } catch(e) {}
 
-        // 👑 প্রতিটি ফাইলের সেলস ও কয়েন আয় ট্র্যাকিং
         try {
           const fileRes = await fetch(`${DB_BASE}/resources/${key}.json`);
           const fileData = await fileRes.json();
@@ -1017,7 +1003,6 @@
       }
     }
 
-    // অ্যাডমিন অ্যানালিটিক্স লোড ফাংশন
     async function loadAdminAnalytics() {
       const tbody = document.getElementById('adminSalesTableBody');
       tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--accent);">ডাটা বিশ্লেষণ করা হচ্ছে... ⏳</td></tr>';
@@ -1036,7 +1021,6 @@
           return;
         }
 
-        // সর্বোচ্চ বিক্রির ভিত্তিতে সাজানো
         keys.sort((a, b) => (resources[b].total_claims || 0) - (resources[a].total_claims || 0));
 
         keys.forEach(k => {
@@ -1095,7 +1079,7 @@
 
     function shareReferralLink() {
       triggerHaptic();
-      const shareText = `💎 ভিআইপি ফন্ট এবং প্রিমিয়াম PLP প্রজেক্ট ফ্রিতে ডাউনলোড করুন এই অ্যাপ থেকে!`;
+      const shareText = `💎 ভিআইপি ফন্ট এবং প্রিমিয়াম PLP প্রজেক্ট ফ্রিতে ডাউনলোড করুন এই অ্যাপ থেকে! জয়েন করলেই ফ্রি বোনাস!`;
       const fullUrl = `https://t.me/share/url?url=${encodeURIComponent(`https://t.me/${BOT_USERNAME}?start=ref_${user.id}`)}&text=${encodeURIComponent(shareText)}`;
       if (tg && tg.openTelegramLink) tg.openTelegramLink(fullUrl);
       else window.open(fullUrl, '_blank');
@@ -1110,4 +1094,4 @@
     initApp();
   </script>
 </body>
-</html>
+  </html>
