@@ -29,17 +29,14 @@ def health():
 @app.route('/verify-channel/<int:user_id>', methods=['GET'])
 def verify_channel_member(user_id):
     try:
-        # টেলিগ্রামের নিজস্ব API দিয়ে ইউজার চ্যানেলে জয়েন আছে কি না তা যাচাই
         member = bot.get_chat_member(chat_id=CHANNEL_ID, user_id=user_id)
         if member.status in ['member', 'administrator', 'creator']:
             res = jsonify({"joined": True})
         else:
             res = jsonify({"joined": False})
     except Exception as e:
-        # কোনো সমস্যা হলে বা বট অ্যাডমিন না থাকলে
         res = jsonify({"joined": False, "error": str(e)})
     
-    # মিনি অ্যাপ থেকে যাতে সরাসরি রিকোয়েস্ট এক্সেপ্ট হয় (CORS Fix)
     res.headers.add("Access-Control-Allow-Origin", "*")
     return res, 200
 
@@ -89,7 +86,7 @@ def start_cmd(message):
     except Exception:
         pass
 
-    # রেফারেল রিওয়ার্ড প্রসেসিং
+    # রেফারেল রিওয়ার্ড প্রসেসিং (এখন ৫০ কয়েন পাবে)
     if len(args) > 1 and args[1].startswith("ref_"):
         referrer_id = args[1].replace("ref_", "")
         if str(referrer_id) != str(user_id):
@@ -97,10 +94,10 @@ def start_cmd(message):
                 ref_data = requests.get(f"{FIREBASE_BASE}/users/{referrer_id}.json").json()
                 if ref_data:
                     requests.patch(f"{FIREBASE_BASE}/users/{referrer_id}.json", json={
-                        "coins": ref_data.get('coins', 0) + 10,
+                        "coins": ref_data.get('coins', 0) + 50,
                         "refers": ref_data.get('refers', 0) + 1
                     })
-                    bot.send_message(referrer_id, "🎉 অভিনন্দন! নতুন মেম্বার আপনার রেফারে জয়েন করেছে। আপনি পেয়েছেন +10 🪙 কয়েন!")
+                    bot.send_message(referrer_id, "🎉 অভিনন্দন! নতুন মেম্বার আপনার রেফারে জয়েন করেছে। আপনি পেয়েছেন +50 🪙 কয়েন!")
             except Exception:
                 pass
 
