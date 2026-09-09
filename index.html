@@ -15,24 +15,24 @@
 
   <style>
     :root {
-      --bg-base: #020617;
-      --glass-surface: rgba(15, 23, 42, 0.55);
-      --glass-card: rgba(30, 41, 59, 0.45);
-      --glass-border: rgba(255, 255, 255, 0.12);
-      --glass-border-subtle: rgba(255, 255, 255, 0.06);
+      --bg-base: #070913;
+      /* আসল iOS লিকুইড গ্লাস ম্যাটেরিয়াল */
+      --ios-glass: rgba(255, 255, 255, 0.05);
+      --ios-glass-card: rgba(255, 255, 255, 0.04);
+      --ios-border-top: rgba(255, 255, 255, 0.22);
+      --ios-border-bot: rgba(255, 255, 255, 0.04);
+      --ios-inner-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 2px 0 rgba(0, 0, 0, 0.5);
       
       --accent: #38bdf8;
       --accent-glow: rgba(56, 189, 248, 0.45);
       --gold: #fbbf24;
-      --gold-glow: rgba(251, 191, 36, 0.4);
+      --gold-glow: rgba(251, 191, 36, 0.45);
       --green: #10b981;
-      --green-glow: rgba(16, 185, 129, 0.35);
-      --purple: #c084fc;
       --danger: #f43f5e;
       
-      --text: #f8fafc;
+      --text: #ffffff;
       --text-muted: #94a3b8;
-      --nav-glass: rgba(2, 6, 23, 0.78);
+      --nav-glass: rgba(10, 14, 26, 0.65);
     }
 
     * { 
@@ -48,84 +48,85 @@
       background: var(--bg-base); 
       min-height: 100vh; 
       color: var(--text); 
-      padding-bottom: 100px; 
+      padding-bottom: 105px; 
       overflow-x: hidden; 
       position: relative;
     }
 
-    /* সাইবার গ্লাস লাইটিং অরবস */
-    .orb-glow-cyan {
+    /* আইফোন স্পেকট্রাম গ্লাস লাইট ফিল্টার */
+    .ios-light-1 {
       position: fixed;
-      width: 380px;
-      height: 380px;
-      top: -120px;
-      right: -100px;
-      background: radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, transparent 70%);
-      filter: blur(70px);
+      width: 360px;
+      height: 360px;
+      top: -60px;
+      right: -80px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.3) 0%, rgba(99, 102, 241, 0.15) 50%, transparent 75%);
+      filter: blur(55px);
       pointer-events: none;
       z-index: 0;
     }
-    .orb-glow-purple {
+    .ios-light-2 {
       position: fixed;
-      width: 400px;
-      height: 400px;
-      bottom: 100px;
-      left: -120px;
-      background: radial-gradient(circle, rgba(192, 132, 252, 0.15) 0%, transparent 70%);
-      filter: blur(80px);
+      width: 380px;
+      height: 380px;
+      bottom: 60px;
+      left: -90px;
+      background: radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, rgba(168, 85, 247, 0.18) 50%, transparent 75%);
+      filter: blur(65px);
       pointer-events: none;
       z-index: 0;
     }
 
     #confettiCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4000; }
 
-    /* আল্ট্রা গ্লাস টোস্ট */
+    /* iOS নোটিফিকেশন ব্যানার */
     #toast { 
       position: fixed; 
       top: -85px; 
       left: 50%; 
       transform: translateX(-50%); 
-      background: rgba(15, 23, 42, 0.85); 
-      border: 1px solid var(--accent); 
+      background: rgba(20, 26, 42, 0.85); 
+      border: 1px solid rgba(255, 255, 255, 0.2); 
       color: #fff; 
-      padding: 12px 24px; 
+      padding: 13px 25px; 
       border-radius: 99px; 
       font-size: 13px; 
       font-weight: 800; 
       z-index: 3000; 
-      box-shadow: 0 16px 40px rgba(0,0,0,0.8), 0 0 20px var(--accent-glow); 
-      transition: top 0.4s cubic-bezier(0.19, 1, 0.22, 1); 
+      box-shadow: 0 20px 40px rgba(0,0,0,0.8), var(--ios-inner-shadow); 
+      transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
       display: flex; 
       align-items: center; 
       gap: 10px; 
-      backdrop-filter: blur(25px); 
+      backdrop-filter: blur(35px); 
+      -webkit-backdrop-filter: blur(35px);
     }
     #toast.show { top: 24px; }
 
-    /* ফ্রস্টেড গ্লাস টপ বার */
+    /* অ্যাপল গ্লাস স্টিকি টপ বার */
     .top-bar { 
       display: flex; 
       justify-content: space-between; 
       align-items: center; 
-      padding: 14px 18px; 
-      background: rgba(2, 6, 23, 0.65); 
-      backdrop-filter: blur(28px); 
-      border-bottom: 1px solid var(--glass-border); 
+      padding: 16px 20px; 
+      background: rgba(10, 14, 26, 0.6); 
+      backdrop-filter: blur(35px); 
+      -webkit-backdrop-filter: blur(35px);
+      border-bottom: 1px solid var(--ios-border-bot); 
       position: sticky; 
       top: 0; 
       z-index: 100; 
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5); 
+      box-shadow: 0 4px 30px rgba(0,0,0,0.5); 
     }
     .user-info { display: flex; align-items: center; gap: 12px; }
     
-    /* প্রোফাইল অ্যাভাটার কন্টেইনার */
     .user-avatar-wrap { 
       width: 46px; 
       height: 46px; 
-      border-radius: 16px; 
+      border-radius: 50%; 
       overflow: hidden; 
-      border: 1.5px solid rgba(255,255,255,0.25); 
-      box-shadow: 0 4px 18px var(--accent-glow); 
+      border: 1.5px solid rgba(255,255,255,0.3); 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4), var(--ios-inner-shadow); 
       background: linear-gradient(135deg, #0284c7, #6366f1); 
       display: flex; 
       align-items: center; 
@@ -136,7 +137,7 @@
     .user-avatar-text { font-size: 18px; font-weight: 900; color: #fff; }
 
     .user-meta { display: flex; flex-direction: column; }
-    .user-name { font-size: 14px; font-weight: 800; color: #fff; letter-spacing: -0.2px; }
+    .user-name { font-size: 15px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
     .user-badge { 
       font-size: 10px; 
       color: var(--gold); 
@@ -147,9 +148,12 @@
     }
     
     .balance-pill { 
-      background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(217, 119, 6, 0.1)); 
-      border: 1px solid rgba(251, 191, 36, 0.45); 
-      padding: 8px 16px; 
+      background: rgba(251, 191, 36, 0.1); 
+      border-top: 1px solid rgba(251, 191, 36, 0.4); 
+      border-bottom: 1px solid rgba(251, 191, 36, 0.15); 
+      border-left: 1px solid rgba(251, 191, 36, 0.2); 
+      border-right: 1px solid rgba(251, 191, 36, 0.2); 
+      padding: 8px 18px; 
       border-radius: 99px; 
       display: flex; 
       align-items: center; 
@@ -157,144 +161,174 @@
       font-weight: 900; 
       color: var(--gold); 
       font-size: 15px; 
-      box-shadow: 0 4px 22px var(--gold-glow); 
-      backdrop-filter: blur(14px);
+      box-shadow: 0 8px 25px rgba(251, 191, 36, 0.15), var(--ios-inner-shadow); 
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
     }
 
     .container { padding: 18px 16px; position: relative; z-index: 1; }
     
     .notice-card { 
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(192, 132, 252, 0.08)); 
-      border: 1px solid var(--glass-border); 
-      border-radius: 18px; 
-      padding: 13px 16px; 
+      background: var(--ios-glass); 
+      border-top: 1px solid var(--ios-border-top); 
+      border-bottom: 1px solid var(--ios-border-bot); 
+      border-left: 1px solid rgba(255,255,255,0.08); 
+      border-right: 1px solid rgba(255,255,255,0.08); 
+      border-radius: 20px; 
+      padding: 14px 18px; 
       display: flex; 
       align-items: center; 
       gap: 12px; 
       margin-bottom: 18px; 
       font-size: 12px; 
       color: #cbd5e1; 
-      backdrop-filter: blur(20px); 
-      box-shadow: 0 8px 25px rgba(0,0,0,0.3); 
+      backdrop-filter: blur(35px); 
+      -webkit-backdrop-filter: blur(35px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4), var(--ios-inner-shadow); 
     }
 
-    /* গ্লাস স্ট্যাটাস বার */
+    /* লাইভ স্ট্যাটাস বার */
     .live-stats-bar { 
       display: grid; 
       grid-template-columns: repeat(4, 1fr); 
       gap: 8px; 
-      background: var(--glass-surface); 
-      border: 1px solid var(--glass-border); 
-      border-radius: 22px; 
-      padding: 16px 6px; 
+      background: var(--ios-glass); 
+      border-top: 1px solid var(--ios-border-top); 
+      border-bottom: 1px solid var(--ios-border-bot); 
+      border-left: 1px solid rgba(255,255,255,0.08); 
+      border-right: 1px solid rgba(255,255,255,0.08); 
+      border-radius: 24px; 
+      padding: 16px 8px; 
       margin-bottom: 20px; 
       text-align: center; 
-      backdrop-filter: blur(25px); 
-      box-shadow: 0 10px 35px rgba(0,0,0,0.4); 
+      backdrop-filter: blur(35px); 
+      -webkit-backdrop-filter: blur(35px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.4), var(--ios-inner-shadow); 
     }
     .live-stat-item { display: flex; flex-direction: column; gap: 4px; }
-    .live-stat-val { font-size: 16px; font-weight: 900; color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+    .live-stat-val { font-size: 16px; font-weight: 900; color: var(--accent); text-shadow: 0 0 12px var(--accent-glow); }
     .live-stat-lbl { font-size: 9px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; }
 
     /* গ্লাস ডেইলি কার্ড */
     .daily-card { 
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.7)); 
-      border: 1px solid rgba(251, 191, 36, 0.35); 
-      border-radius: 22px; 
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)); 
+      border-top: 1px solid rgba(255, 255, 255, 0.3); 
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05); 
+      border-left: 1px solid rgba(255, 255, 255, 0.1); 
+      border-right: 1px solid rgba(255, 255, 255, 0.1); 
+      border-radius: 24px; 
       padding: 18px 20px; 
       display: flex; 
       align-items: center; 
       justify-content: space-between; 
       margin-bottom: 20px; 
-      backdrop-filter: blur(25px); 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35); 
+      backdrop-filter: blur(35px); 
+      -webkit-backdrop-filter: blur(35px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4), var(--ios-inner-shadow); 
     }
     .daily-btn { 
       background: linear-gradient(135deg, #fbbf24, #f59e0b); 
       color: #030712; 
       border: none; 
-      padding: 10px 18px; 
+      padding: 10px 20px; 
       border-radius: 14px; 
       font-weight: 900; 
       font-size: 12px; 
       cursor: pointer; 
       transition: all 0.2s; 
-      box-shadow: 0 4px 16px var(--gold-glow); 
+      box-shadow: 0 4px 18px var(--gold-glow); 
     }
     .daily-btn:active { transform: scale(0.94); }
     .daily-btn:disabled { background: #334155 !important; color: #64748b !important; box-shadow: none !important; cursor: not-allowed; }
 
-    /* ইনপুট ও বাটনসমূহ */
+    /* সার্চ ও ফিল্টার */
     .search-box { 
       width: 100%; 
       padding: 15px 18px; 
-      border-radius: 18px; 
-      border: 1px solid var(--glass-border); 
-      background: var(--glass-surface); 
+      border-radius: 20px; 
+      border: none;
+      border-top: 1px solid var(--ios-border-top);
+      border-bottom: 1px solid var(--ios-border-bot);
+      border-left: 1px solid rgba(255,255,255,0.06);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      background: var(--ios-glass); 
       color: #fff; 
       font-size: 13px; 
       margin-bottom: 16px; 
       outline: none; 
-      backdrop-filter: blur(20px); 
+      backdrop-filter: blur(35px); 
+      -webkit-backdrop-filter: blur(35px);
+      box-shadow: var(--ios-inner-shadow);
       transition: all 0.25s; 
     }
-    .search-box:focus { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
+    .search-box:focus { border-top-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow), var(--ios-inner-shadow); }
     
     .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
     .tab-btn { 
       flex: 1; 
       padding: 13px; 
-      border: 1px solid var(--glass-border); 
-      border-radius: 16px; 
-      background: var(--glass-surface); 
+      border: none;
+      border-top: 1px solid var(--ios-border-top);
+      border-bottom: 1px solid var(--ios-border-bot);
+      border-left: 1px solid rgba(255,255,255,0.06);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px; 
+      background: var(--ios-glass); 
       color: var(--text-muted); 
       font-weight: 800; 
       font-size: 13px; 
       cursor: pointer; 
-      backdrop-filter: blur(20px); 
+      backdrop-filter: blur(35px); 
+      -webkit-backdrop-filter: blur(35px);
+      box-shadow: var(--ios-inner-shadow);
       transition: all 0.25s; 
     }
     .tab-btn.active { 
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(56, 189, 248, 0.1)); 
+      background: rgba(56, 189, 248, 0.15); 
       color: var(--accent); 
-      border-color: var(--accent); 
-      box-shadow: 0 0 20px var(--accent-glow); 
+      border-top: 1px solid rgba(56, 189, 248, 0.6); 
+      box-shadow: 0 0 20px var(--accent-glow), var(--ios-inner-shadow); 
     }
 
     /* রিসোর্স কার্ড গ্রিড */
     .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
     .card { 
-      background: var(--glass-surface); 
-      border-radius: 22px; 
+      background: var(--ios-glass-card); 
+      border-radius: 24px; 
       overflow: hidden; 
       display: flex; 
       flex-direction: column; 
-      border: 1px solid var(--glass-border); 
-      backdrop-filter: blur(25px); 
+      border-top: 1px solid var(--ios-border-top);
+      border-bottom: 1px solid var(--ios-border-bot);
+      border-left: 1px solid rgba(255,255,255,0.08);
+      border-right: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(35px); 
+      -webkit-backdrop-filter: blur(35px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.45), var(--ios-inner-shadow); 
       transition: transform 0.25s, box-shadow 0.25s; 
-      box-shadow: 0 8px 30px rgba(0,0,0,0.35); 
       position: relative;
     }
     .card:active { transform: scale(0.96); }
-    .card-thumb-wrap { position: relative; width: 100%; height: 130px; overflow: hidden; background: #0f172a; }
+    .card-thumb-wrap { position: relative; width: 100%; height: 135px; overflow: hidden; background: #0b1120; }
     .card img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; transition: transform 0.4s; }
     .card:hover img { transform: scale(1.05); }
     .type-pill {
       position: absolute;
       top: 8px;
       left: 8px;
-      padding: 3px 8px;
-      border-radius: 8px;
+      padding: 4px 9px;
+      border-radius: 99px;
       font-size: 9px;
       font-weight: 900;
       text-transform: uppercase;
-      backdrop-filter: blur(12px);
-      background: rgba(0, 0, 0, 0.65);
-      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255,255,255,0.2);
       color: #fff;
     }
 
-    .card-body { padding: 13px 12px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; gap: 10px; }
+    .card-body { padding: 14px 12px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; gap: 10px; }
     .card-title { font-size: 13px; font-weight: 700; line-height: 1.35; color: #f8fafc; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .card-meta { display: flex; align-items: center; justify-content: space-between; }
     .price-tag { font-size: 13px; color: var(--gold); font-weight: 900; }
@@ -302,12 +336,12 @@
       background: linear-gradient(135deg, #38bdf8, #0ea5e9); 
       color: #030712; 
       border: none; 
-      padding: 8px 12px; 
-      border-radius: 10px; 
+      padding: 8px 14px; 
+      border-radius: 12px; 
       font-size: 11px; 
       font-weight: 900; 
       cursor: pointer; 
-      box-shadow: 0 0 12px var(--accent-glow); 
+      box-shadow: 0 0 14px var(--accent-glow); 
       transition: all 0.2s; 
     }
     .btn-claim:active { transform: scale(0.92); }
@@ -317,79 +351,84 @@
     #wheelCanvas { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 35px rgba(251, 191, 36, 0.35); transition: transform 4s cubic-bezier(0.15, 0.9, 0.25, 1); }
     .wheel-arrow { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 26px solid var(--danger); z-index: 20; filter: drop-shadow(0 3px 8px rgba(0,0,0,0.8)); }
 
-    .scratch-container { position: relative; width: 260px; height: 130px; margin: 18px auto; border-radius: 18px; overflow: hidden; border: 2px solid var(--gold); box-shadow: 0 0 24px var(--gold-glow); }
-    .scratch-reward { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0f172a; font-size: 18px; font-weight: 900; color: var(--gold); }
+    .scratch-container { position: relative; width: 260px; height: 130px; margin: 18px auto; border-radius: 20px; overflow: hidden; border: 2px solid rgba(251, 191, 36, 0.5); box-shadow: 0 0 25px var(--gold-glow); }
+    .scratch-reward { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0b1120; font-size: 18px; font-weight: 900; color: var(--gold); }
     #scratchCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer; }
 
-    /* ভিউ পেজ */
-    .view-page { display: none; animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    /* ভিউ পেজ ও ফ্লুইড ট্রানজিশন */
+    .view-page { display: none; animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
     .view-page.active { display: block; }
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(10px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .stat-card { 
-      background: var(--glass-surface); 
-      border: 1px solid var(--glass-border); 
-      padding: 22px; 
-      border-radius: 22px; 
+      background: var(--ios-glass); 
+      border-top: 1px solid var(--ios-border-top); 
+      border-bottom: 1px solid var(--ios-border-bot); 
+      border-left: 1px solid rgba(255,255,255,0.08); 
+      border-right: 1px solid rgba(255,255,255,0.08); 
+      padding: 24px; 
+      border-radius: 24px; 
       margin-bottom: 18px; 
       text-align: center; 
-      backdrop-filter: blur(25px); 
-      box-shadow: 0 10px 35px rgba(0,0,0,0.35); 
+      backdrop-filter: blur(35px); 
+      -webkit-backdrop-filter: blur(35px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.4), var(--ios-inner-shadow); 
     }
-    .stat-number { font-size: 36px; font-weight: 900; color: var(--gold); margin: 8px 0; letter-spacing: -1px; text-shadow: 0 0 18px var(--gold-glow); }
-    .refer-box { background: rgba(0, 0, 0, 0.4); border: 1px dashed var(--accent); padding: 14px; border-radius: 14px; font-size: 12px; word-break: break-all; margin: 14px 0; color: var(--accent); }
+    .stat-number { font-size: 38px; font-weight: 900; color: var(--gold); margin: 8px 0; letter-spacing: -1px; text-shadow: 0 0 20px var(--gold-glow); }
+    .refer-box { background: rgba(0, 0, 0, 0.5); border: 1px dashed rgba(56, 189, 248, 0.5); padding: 14px; border-radius: 16px; font-size: 12px; word-break: break-all; margin: 14px 0; color: var(--accent); }
     
     .action-btn { 
       width: 100%; 
       background: linear-gradient(135deg, #38bdf8, #0284c7); 
       color: #030712; 
-      padding: 15px; 
+      padding: 16px; 
       font-size: 14px; 
       font-weight: 900; 
       border: none; 
-      border-radius: 16px; 
+      border-radius: 18px; 
       cursor: pointer; 
-      box-shadow: 0 4px 18px var(--accent-glow); 
+      box-shadow: 0 4px 20px var(--accent-glow); 
       transition: all 0.2s; 
     }
     .action-btn:active { transform: scale(0.97); }
     .action-btn:disabled { background: #334155 !important; color: #64748b !important; box-shadow: none !important; cursor: not-allowed; }
 
-    .task-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(30, 41, 59, 0.4); border: 1px solid var(--glass-border); border-radius: 18px; margin-bottom: 12px; backdrop-filter: blur(15px); }
+    .task-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: rgba(255, 255, 255, 0.03); border-top: 1px solid rgba(255,255,255,0.15); border-radius: 20px; margin-bottom: 12px; }
     .unlocked-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; text-align: left; }
-    .unlocked-item { display: flex; justify-content: space-between; align-items: center; padding: 13px; background: rgba(30, 41, 59, 0.4); border: 1px solid var(--glass-border); border-radius: 14px; font-size: 12px; backdrop-filter: blur(15px); }
+    .unlocked-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(255, 255, 255, 0.03); border-top: 1px solid rgba(255,255,255,0.12); border-radius: 16px; font-size: 12px; }
 
     /* অ্যাডমিন টেবিল */
     .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; text-align: left; }
-    .admin-table th { background: rgba(56, 189, 248, 0.12); color: var(--accent); padding: 12px 10px; border-bottom: 1px solid var(--glass-border); font-weight: 800; }
-    .admin-table td { padding: 14px 10px; border-bottom: 1px solid var(--glass-border-subtle); color: var(--text); }
+    .admin-table th { background: rgba(56, 189, 248, 0.1); color: var(--accent); padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 800; }
+    .admin-table td { padding: 14px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text); }
     .badge-count { background: rgba(16, 185, 129, 0.18); color: var(--green); padding: 5px 10px; border-radius: 10px; font-weight: 800; border: 1px solid rgba(16, 185, 129, 0.25); }
     .badge-rev { background: rgba(251, 191, 36, 0.18); color: var(--gold); padding: 5px 10px; border-radius: 10px; font-weight: 800; border: 1px solid rgba(251, 191, 36, 0.25); }
 
     /* ইমেজ মোডাল */
-    .preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 2500; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(20px); }
+    .preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2500; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); }
     .preview-modal.active { display: flex; }
-    .preview-modal img { max-width: 100%; max-height: 80vh; border-radius: 20px; border: 1.5px solid var(--accent); box-shadow: 0 0 35px var(--accent-glow); }
+    .preview-modal img { max-width: 100%; max-height: 80vh; border-radius: 24px; border: 1.5px solid rgba(255,255,255,0.25); box-shadow: 0 0 35px var(--accent-glow); }
     .preview-close { position: absolute; top: 22px; right: 22px; font-size: 32px; color: #fff; cursor: pointer; }
 
-    /* বটম বার */
+    /* অ্যাপল গ্লাস ডক বার (Dock) */
     .bottom-nav { 
       position: fixed; 
       bottom: 0; 
       left: 0; 
       right: 0; 
-      height: 76px; 
+      height: 78px; 
       background: var(--nav-glass); 
-      backdrop-filter: blur(30px); 
-      border-top: 1px solid var(--glass-border); 
+      backdrop-filter: blur(40px); 
+      -webkit-backdrop-filter: blur(40px);
+      border-top: 1px solid var(--ios-border-top); 
       display: flex; 
       justify-content: space-around; 
       align-items: center; 
       z-index: 200; 
-      box-shadow: 0 -4px 30px rgba(0,0,0,0.6); 
+      box-shadow: 0 -4px 35px rgba(0,0,0,0.7), var(--ios-inner-shadow); 
     }
     .nav-item { 
       display: flex; 
@@ -404,17 +443,17 @@
       background: transparent; 
       flex: 1; 
       cursor: pointer; 
-      transition: all 0.2s; 
+      transition: all 0.25s; 
     }
-    .nav-item.active { color: var(--accent); transform: translateY(-2px); }
-    .nav-icon { font-size: 20px; }
+    .nav-item.active { color: var(--accent); transform: translateY(-3px); }
+    .nav-icon { font-size: 21px; }
   </style>
 </head>
 <body>
 
-  <!-- সাইবার লাইট ব্যাকগ্রাউন্ড -->
-  <div class="orb-glow-cyan"></div>
-  <div class="orb-glow-purple"></div>
+  <!-- স্পেকট্রাম গ্লাস লাইট ব্যাকগ্রাউন্ড -->
+  <div class="ios-light-1"></div>
+  <div class="ios-light-2"></div>
 
   <canvas id="confettiCanvas"></canvas>
   <div id="toast"><span id="toastIcon">⭐</span><span id="toastMsg">বার্তা</span></div>
@@ -561,15 +600,15 @@
     <!-- ৬. প্রোফাইল ও আনলক হিস্ট্রি -->
     <div id="pageProfile" class="view-page">
       <div class="stat-card">
-        <div class="user-avatar-wrap" style="width: 78px; height: 78px; border-radius: 24px; margin: 0 auto 12px auto;">
+        <div class="user-avatar-wrap" style="width: 80px; height: 80px; margin: 0 auto 12px auto;">
           <img id="profAvatarImg" src="" alt="avatar">
-          <span class="user-avatar-text" id="profAvatarText" style="font-size: 28px;">U</span>
+          <span class="user-avatar-text" id="profAvatarText" style="font-size: 30px;">U</span>
         </div>
         <h2 id="profName" style="font-size:18px; font-weight: 800;">VIP User</h2>
         <p id="profTag" style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">@user</p>
         <span style="background:rgba(251, 191, 36, 0.15); color:var(--gold); padding:6px 16px; border-radius:99px; font-size:11px; font-weight:800; border:1px solid rgba(251, 191, 36, 0.3);" id="profRank">BRONZE VIP</span>
         
-        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; border-top:1px solid var(--glass-border); padding-top:16px; margin-top:16px;">
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; border-top:1px solid rgba(255,255,255,0.08); padding-top:16px; margin-top:16px;">
           <div>
             <div style="font-size:16px; font-weight:900; color:var(--gold);" id="profCoins">0</div>
             <div style="font-size:10px; color:var(--text-muted); text-transform: uppercase; margin-top: 2px;">কয়েন</div>
@@ -592,7 +631,7 @@
         </div>
       </div>
 
-      <button class="action-btn" style="background:rgba(30,41,59,0.7); color:var(--accent); border:1px solid var(--accent);" onclick="openSupport()">💬 হেল্পলাইন ও সাপোর্ট গ্রুপ</button>
+      <button class="action-btn" style="background:rgba(255,255,255,0.06); color:var(--accent); border-top:1px solid rgba(255,255,255,0.2);" onclick="openSupport()">💬 হেল্পলাইন ও সাপোর্ট গ্রুপ</button>
     </div>
 
     <!-- ৭. এক্সক্লুসিভ অ্যাডমিন সেলস অ্যানালিটিক্স প্যানেল -->
@@ -603,11 +642,11 @@
         <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">কোন ফাইল কতবার কেনা হয়েছে ও মোট কত কয়েন আয় হয়েছে</p>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
-          <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 16px; border: 1px solid var(--glass-border);">
+          <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 18px; border-top: 1px solid rgba(255,255,255,0.15);">
             <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">মোট ডাউনলোড</div>
             <div style="font-size: 22px; font-weight: 900; color: var(--green); margin-top: 4px;" id="adminTotalSales">0 টি</div>
           </div>
-          <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 16px; border: 1px solid var(--glass-border);">
+          <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 18px; border-top: 1px solid rgba(255,255,255,0.15);">
             <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">মোট ব্যয়িত কয়েন</div>
             <div style="font-size: 22px; font-weight: 900; color: var(--gold); margin-top: 4px;" id="adminTotalCoinsSpent">0 🪙</div>
           </div>
@@ -641,7 +680,7 @@
     <img id="modalImg" src="" alt="preview">
   </div>
 
-  <!-- বটম ন্যাভিগেশন বার -->
+  <!-- অ্যাপল গ্লাস ডক ন্যাভিগেশন -->
   <div class="bottom-nav" id="bottomNavBar">
     <button class="nav-item active" onclick="switchNav('pageHome', this)"><span class="nav-icon">💎</span><span>রিসোর্স</span></button>
     <button class="nav-item" onclick="switchNav('pageGames', this)"><span class="nav-icon">🎮</span><span>গেমস</span></button>
@@ -673,9 +712,10 @@
     let adTimerInterval = null;
 
     const AD_LIMIT = 30;
-    const AD_REWARD = 10;
+    const AD_REWARD = 10; // বিজ্ঞাপনে ১০ কয়েন
     const AD_COOLDOWN = 60;
 
+    // স্পিনে সর্বোচ্চ ১০ কয়েন
     const spinRewards = [
       { text: "+2 🪙", coins: 2, bg: "#0284c7" },
       { text: "+4 🪙", coins: 4, bg: "#1e293b" },
@@ -792,10 +832,10 @@
     }
 
     async function initApp() {
-      // প্রোফাইল ফটো লোড লজিক
       const initial = user.first_name ? user.first_name[0].toUpperCase() : 'U';
       const userPhoto = user.photo_url;
 
+      // প্রোফাইল ফটো লোড লজিক
       if (userPhoto) {
         const uImg = document.getElementById('uAvatarImg');
         const pImg = document.getElementById('profAvatarImg');
@@ -1387,7 +1427,7 @@
         let html = '';
         sorted.forEach((u, idx) => {
           const rank = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx+1}`;
-          html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:14px; background:rgba(30,41,59,0.45); border:1px solid var(--glass-border); border-radius:16px; margin-bottom:8px; backdrop-filter:blur(15px);">
+          html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:14px; background:rgba(255,255,255,0.03); border-top:1px solid rgba(255,255,255,0.12); border-radius:16px; margin-bottom:8px; backdrop-filter:blur(20px);">
             <span style="font-weight:700;">${rank} ${u.name || 'VIP User'}</span>
             <span style="color:var(--gold); font-weight:800;">🪙 ${u.coins || 0}</span>
           </div>`;
@@ -1424,4 +1464,4 @@
     initApp();
   </script>
 </body>
-</html>
+  </html>
