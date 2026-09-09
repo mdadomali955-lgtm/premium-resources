@@ -15,24 +15,26 @@
 
   <style>
     :root {
-      --bg-base: #070913;
-      /* আসল iOS লিকুইড গ্লাস ম্যাটেরিয়াল */
-      --ios-glass: rgba(255, 255, 255, 0.05);
-      --ios-glass-card: rgba(255, 255, 255, 0.04);
-      --ios-border-top: rgba(255, 255, 255, 0.22);
-      --ios-border-bot: rgba(255, 255, 255, 0.04);
-      --ios-inner-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 2px 0 rgba(0, 0, 0, 0.5);
+      --bg-base: #030308;
+      
+      /* পিওর আইফোন লিকুইড ক্রিস্টাল গ্লাস */
+      --ios-glass: rgba(255, 255, 255, 0.07);
+      --ios-glass-card: rgba(255, 255, 255, 0.05);
+      --ios-border-top: rgba(255, 255, 255, 0.35);
+      --ios-border-bot: rgba(255, 255, 255, 0.08);
+      --ios-border-sides: rgba(255, 255, 255, 0.12);
+      --ios-inner-specular: inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.6);
       
       --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.45);
-      --gold: #fbbf24;
-      --gold-glow: rgba(251, 191, 36, 0.45);
+      --accent-glow: rgba(56, 189, 248, 0.5);
+      --gold: #f59e0b;
+      --gold-glow: rgba(245, 158, 11, 0.5);
       --green: #10b981;
       --danger: #f43f5e;
       
       --text: #ffffff;
-      --text-muted: #94a3b8;
-      --nav-glass: rgba(10, 14, 26, 0.65);
+      --text-muted: #cbd5e1;
+      --nav-glass: rgba(12, 10, 24, 0.72);
     }
 
     * { 
@@ -48,52 +50,49 @@
       background: var(--bg-base); 
       min-height: 100vh; 
       color: var(--text); 
-      padding-bottom: 105px; 
+      padding-bottom: 110px; 
       overflow-x: hidden; 
       position: relative;
     }
 
-    /* আইফোন স্পেকট্রাম গ্লাস লাইট ফিল্টার */
-    .ios-light-1 {
+    /* অ্যাপল ভাইব্রেন্ট অরোরা মেশ গ্লাস লাইট (কোনো ব্লু ফ্ল্যাট ব্যাকগ্রাউন্ড নেই) */
+    .aurora-mesh {
       position: fixed;
-      width: 360px;
-      height: 360px;
-      top: -60px;
-      right: -80px;
-      background: radial-gradient(circle, rgba(56, 189, 248, 0.3) 0%, rgba(99, 102, 241, 0.15) 50%, transparent 75%);
-      filter: blur(55px);
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       pointer-events: none;
       z-index: 0;
-    }
-    .ios-light-2 {
-      position: fixed;
-      width: 380px;
-      height: 380px;
-      bottom: 60px;
-      left: -90px;
-      background: radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, rgba(168, 85, 247, 0.18) 50%, transparent 75%);
-      filter: blur(65px);
-      pointer-events: none;
-      z-index: 0;
+      background: 
+        radial-gradient(circle at 10% 20%, rgba(217, 70, 239, 0.28) 0%, transparent 45%),
+        radial-gradient(circle at 85% 15%, rgba(56, 189, 248, 0.32) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.25) 0%, transparent 50%),
+        radial-gradient(circle at 20% 80%, rgba(245, 158, 11, 0.22) 0%, transparent 45%),
+        radial-gradient(circle at 80% 85%, rgba(168, 85, 247, 0.3) 0%, transparent 50%);
+      filter: blur(45px);
     }
 
     #confettiCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4000; }
 
-    /* iOS নোটিফিকেশন ব্যানার */
+    /* আইওএস নোটিফিকেশন ক্যাপসুল */
     #toast { 
       position: fixed; 
       top: -85px; 
       left: 50%; 
       transform: translateX(-50%); 
-      background: rgba(20, 26, 42, 0.85); 
-      border: 1px solid rgba(255, 255, 255, 0.2); 
+      background: rgba(25, 20, 45, 0.75); 
+      border-top: 1px solid var(--ios-border-top);
+      border-bottom: 1px solid var(--ios-border-bot);
+      border-left: 1px solid var(--ios-border-sides);
+      border-right: 1px solid var(--ios-border-sides);
       color: #fff; 
-      padding: 13px 25px; 
+      padding: 13px 26px; 
       border-radius: 99px; 
       font-size: 13px; 
       font-weight: 800; 
       z-index: 3000; 
-      box-shadow: 0 20px 40px rgba(0,0,0,0.8), var(--ios-inner-shadow); 
+      box-shadow: 0 20px 45px rgba(0,0,0,0.8), var(--ios-inner-specular); 
       transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
       display: flex; 
       align-items: center; 
@@ -101,22 +100,22 @@
       backdrop-filter: blur(35px); 
       -webkit-backdrop-filter: blur(35px);
     }
-    #toast.show { top: 24px; }
+    #toast.show { top: 22px; }
 
-    /* অ্যাপল গ্লাস স্টিকি টপ বার */
+    /* অ্যাপল আইল্যান্ড টপ বার */
     .top-bar { 
       display: flex; 
       justify-content: space-between; 
       align-items: center; 
       padding: 16px 20px; 
-      background: rgba(10, 14, 26, 0.6); 
-      backdrop-filter: blur(35px); 
-      -webkit-backdrop-filter: blur(35px);
+      background: rgba(15, 12, 28, 0.5); 
+      backdrop-filter: blur(40px); 
+      -webkit-backdrop-filter: blur(40px);
       border-bottom: 1px solid var(--ios-border-bot); 
       position: sticky; 
       top: 0; 
       z-index: 100; 
-      box-shadow: 0 4px 30px rgba(0,0,0,0.5); 
+      box-shadow: 0 4px 30px rgba(0,0,0,0.4); 
     }
     .user-info { display: flex; align-items: center; gap: 12px; }
     
@@ -125,9 +124,9 @@
       height: 46px; 
       border-radius: 50%; 
       overflow: hidden; 
-      border: 1.5px solid rgba(255,255,255,0.3); 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.4), var(--ios-inner-shadow); 
-      background: linear-gradient(135deg, #0284c7, #6366f1); 
+      border: 1.5px solid rgba(255,255,255,0.4); 
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5), var(--ios-inner-specular); 
+      background: linear-gradient(135deg, #a855f7, #38bdf8); 
       display: flex; 
       align-items: center; 
       justify-content: center; 
@@ -148,11 +147,11 @@
     }
     
     .balance-pill { 
-      background: rgba(251, 191, 36, 0.1); 
-      border-top: 1px solid rgba(251, 191, 36, 0.4); 
+      background: rgba(251, 191, 36, 0.12); 
+      border-top: 1px solid rgba(251, 191, 36, 0.45); 
       border-bottom: 1px solid rgba(251, 191, 36, 0.15); 
-      border-left: 1px solid rgba(251, 191, 36, 0.2); 
-      border-right: 1px solid rgba(251, 191, 36, 0.2); 
+      border-left: 1px solid rgba(251, 191, 36, 0.25); 
+      border-right: 1px solid rgba(251, 191, 36, 0.25); 
       padding: 8px 18px; 
       border-radius: 99px; 
       display: flex; 
@@ -161,9 +160,9 @@
       font-weight: 900; 
       color: var(--gold); 
       font-size: 15px; 
-      box-shadow: 0 8px 25px rgba(251, 191, 36, 0.15), var(--ios-inner-shadow); 
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
+      box-shadow: 0 8px 25px rgba(251, 191, 36, 0.2), var(--ios-inner-specular); 
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
     }
 
     .container { padding: 18px 16px; position: relative; z-index: 1; }
@@ -172,8 +171,8 @@
       background: var(--ios-glass); 
       border-top: 1px solid var(--ios-border-top); 
       border-bottom: 1px solid var(--ios-border-bot); 
-      border-left: 1px solid rgba(255,255,255,0.08); 
-      border-right: 1px solid rgba(255,255,255,0.08); 
+      border-left: 1px solid var(--ios-border-sides); 
+      border-right: 1px solid var(--ios-border-sides); 
       border-radius: 20px; 
       padding: 14px 18px; 
       display: flex; 
@@ -181,13 +180,13 @@
       gap: 12px; 
       margin-bottom: 18px; 
       font-size: 12px; 
-      color: #cbd5e1; 
+      color: #e2e8f0; 
       backdrop-filter: blur(35px); 
       -webkit-backdrop-filter: blur(35px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4), var(--ios-inner-shadow); 
+      box-shadow: 0 12px 35px rgba(0,0,0,0.35), var(--ios-inner-specular); 
     }
 
-    /* লাইভ স্ট্যাটাস বার */
+    /* ফ্রস্টেড গ্লাস লাইভ স্ট্যাটাস বার */
     .live-stats-bar { 
       display: grid; 
       grid-template-columns: repeat(4, 1fr); 
@@ -195,15 +194,15 @@
       background: var(--ios-glass); 
       border-top: 1px solid var(--ios-border-top); 
       border-bottom: 1px solid var(--ios-border-bot); 
-      border-left: 1px solid rgba(255,255,255,0.08); 
-      border-right: 1px solid rgba(255,255,255,0.08); 
+      border-left: 1px solid var(--ios-border-sides); 
+      border-right: 1px solid var(--ios-border-sides); 
       border-radius: 24px; 
       padding: 16px 8px; 
       margin-bottom: 20px; 
       text-align: center; 
-      backdrop-filter: blur(35px); 
-      -webkit-backdrop-filter: blur(35px);
-      box-shadow: 0 12px 35px rgba(0,0,0,0.4), var(--ios-inner-shadow); 
+      backdrop-filter: blur(40px); 
+      -webkit-backdrop-filter: blur(40px);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.35), var(--ios-inner-specular); 
     }
     .live-stat-item { display: flex; flex-direction: column; gap: 4px; }
     .live-stat-val { font-size: 16px; font-weight: 900; color: var(--accent); text-shadow: 0 0 12px var(--accent-glow); }
@@ -211,20 +210,20 @@
 
     /* গ্লাস ডেইলি কার্ড */
     .daily-card { 
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)); 
-      border-top: 1px solid rgba(255, 255, 255, 0.3); 
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05); 
-      border-left: 1px solid rgba(255, 255, 255, 0.1); 
-      border-right: 1px solid rgba(255, 255, 255, 0.1); 
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03)); 
+      border-top: 1px solid rgba(255, 255, 255, 0.45); 
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
+      border-left: 1px solid rgba(255, 255, 255, 0.18); 
+      border-right: 1px solid rgba(255, 255, 255, 0.18); 
       border-radius: 24px; 
       padding: 18px 20px; 
       display: flex; 
       align-items: center; 
       justify-content: space-between; 
       margin-bottom: 20px; 
-      backdrop-filter: blur(35px); 
-      -webkit-backdrop-filter: blur(35px);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.4), var(--ios-inner-shadow); 
+      backdrop-filter: blur(40px); 
+      -webkit-backdrop-filter: blur(40px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.4), var(--ios-inner-specular); 
     }
     .daily-btn { 
       background: linear-gradient(135deg, #fbbf24, #f59e0b); 
@@ -241,7 +240,7 @@
     .daily-btn:active { transform: scale(0.94); }
     .daily-btn:disabled { background: #334155 !important; color: #64748b !important; box-shadow: none !important; cursor: not-allowed; }
 
-    /* সার্চ ও ফিল্টার */
+    /* গ্লাস সার্চ ও ট্যাব */
     .search-box { 
       width: 100%; 
       padding: 15px 18px; 
@@ -249,19 +248,19 @@
       border: none;
       border-top: 1px solid var(--ios-border-top);
       border-bottom: 1px solid var(--ios-border-bot);
-      border-left: 1px solid rgba(255,255,255,0.06);
-      border-right: 1px solid rgba(255,255,255,0.06);
+      border-left: 1px solid var(--ios-border-sides);
+      border-right: 1px solid var(--ios-border-sides);
       background: var(--ios-glass); 
       color: #fff; 
       font-size: 13px; 
       margin-bottom: 16px; 
       outline: none; 
-      backdrop-filter: blur(35px); 
-      -webkit-backdrop-filter: blur(35px);
-      box-shadow: var(--ios-inner-shadow);
+      backdrop-filter: blur(40px); 
+      -webkit-backdrop-filter: blur(40px);
+      box-shadow: var(--ios-inner-specular);
       transition: all 0.25s; 
     }
-    .search-box:focus { border-top-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow), var(--ios-inner-shadow); }
+    .search-box:focus { border-top-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow), var(--ios-inner-specular); }
     
     .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
     .tab-btn { 
@@ -270,24 +269,24 @@
       border: none;
       border-top: 1px solid var(--ios-border-top);
       border-bottom: 1px solid var(--ios-border-bot);
-      border-left: 1px solid rgba(255,255,255,0.06);
-      border-right: 1px solid rgba(255,255,255,0.06);
+      border-left: 1px solid var(--ios-border-sides);
+      border-right: 1px solid var(--ios-border-sides);
       border-radius: 18px; 
       background: var(--ios-glass); 
       color: var(--text-muted); 
       font-weight: 800; 
       font-size: 13px; 
       cursor: pointer; 
-      backdrop-filter: blur(35px); 
-      -webkit-backdrop-filter: blur(35px);
-      box-shadow: var(--ios-inner-shadow);
+      backdrop-filter: blur(40px); 
+      -webkit-backdrop-filter: blur(40px);
+      box-shadow: var(--ios-inner-specular);
       transition: all 0.25s; 
     }
     .tab-btn.active { 
-      background: rgba(56, 189, 248, 0.15); 
-      color: var(--accent); 
-      border-top: 1px solid rgba(56, 189, 248, 0.6); 
-      box-shadow: 0 0 20px var(--accent-glow), var(--ios-inner-shadow); 
+      background: rgba(255, 255, 255, 0.15); 
+      color: #fff; 
+      border-top: 1px solid rgba(255, 255, 255, 0.7); 
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.25), var(--ios-inner-specular); 
     }
 
     /* রিসোর্স কার্ড গ্রিড */
@@ -300,16 +299,16 @@
       flex-direction: column; 
       border-top: 1px solid var(--ios-border-top);
       border-bottom: 1px solid var(--ios-border-bot);
-      border-left: 1px solid rgba(255,255,255,0.08);
-      border-right: 1px solid rgba(255,255,255,0.08);
-      backdrop-filter: blur(35px); 
-      -webkit-backdrop-filter: blur(35px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.45), var(--ios-inner-shadow); 
+      border-left: 1px solid var(--ios-border-sides);
+      border-right: 1px solid var(--ios-border-sides);
+      backdrop-filter: blur(40px); 
+      -webkit-backdrop-filter: blur(40px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.4), var(--ios-inner-specular); 
       transition: transform 0.25s, box-shadow 0.25s; 
       position: relative;
     }
     .card:active { transform: scale(0.96); }
-    .card-thumb-wrap { position: relative; width: 100%; height: 135px; overflow: hidden; background: #0b1120; }
+    .card-thumb-wrap { position: relative; width: 100%; height: 135px; overflow: hidden; background: #000; }
     .card img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; transition: transform 0.4s; }
     .card:hover img { transform: scale(1.05); }
     .type-pill {
@@ -321,10 +320,10 @@
       font-size: 9px;
       font-weight: 900;
       text-transform: uppercase;
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(255,255,255,0.25);
       color: #fff;
     }
 
@@ -333,7 +332,7 @@
     .card-meta { display: flex; align-items: center; justify-content: space-between; }
     .price-tag { font-size: 13px; color: var(--gold); font-weight: 900; }
     .btn-claim { 
-      background: linear-gradient(135deg, #38bdf8, #0ea5e9); 
+      background: linear-gradient(135deg, #38bdf8, #0284c7); 
       color: #030712; 
       border: none; 
       padding: 8px 14px; 
@@ -352,10 +351,10 @@
     .wheel-arrow { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 26px solid var(--danger); z-index: 20; filter: drop-shadow(0 3px 8px rgba(0,0,0,0.8)); }
 
     .scratch-container { position: relative; width: 260px; height: 130px; margin: 18px auto; border-radius: 20px; overflow: hidden; border: 2px solid rgba(251, 191, 36, 0.5); box-shadow: 0 0 25px var(--gold-glow); }
-    .scratch-reward { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0b1120; font-size: 18px; font-weight: 900; color: var(--gold); }
+    .scratch-reward { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #000; font-size: 18px; font-weight: 900; color: var(--gold); }
     #scratchCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer; }
 
-    /* ভিউ পেজ ও ফ্লুইড ট্রানজিশন */
+    /* পৃষ্ঠা ট্রানজিশন */
     .view-page { display: none; animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
     .view-page.active { display: block; }
     @keyframes fadeIn {
@@ -367,18 +366,18 @@
       background: var(--ios-glass); 
       border-top: 1px solid var(--ios-border-top); 
       border-bottom: 1px solid var(--ios-border-bot); 
-      border-left: 1px solid rgba(255,255,255,0.08); 
-      border-right: 1px solid rgba(255,255,255,0.08); 
+      border-left: 1px solid var(--ios-border-sides); 
+      border-right: 1px solid var(--ios-border-sides); 
       padding: 24px; 
       border-radius: 24px; 
       margin-bottom: 18px; 
       text-align: center; 
-      backdrop-filter: blur(35px); 
-      -webkit-backdrop-filter: blur(35px);
-      box-shadow: 0 12px 35px rgba(0,0,0,0.4), var(--ios-inner-shadow); 
+      backdrop-filter: blur(40px); 
+      -webkit-backdrop-filter: blur(40px);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.4), var(--ios-inner-specular); 
     }
     .stat-number { font-size: 38px; font-weight: 900; color: var(--gold); margin: 8px 0; letter-spacing: -1px; text-shadow: 0 0 20px var(--gold-glow); }
-    .refer-box { background: rgba(0, 0, 0, 0.5); border: 1px dashed rgba(56, 189, 248, 0.5); padding: 14px; border-radius: 16px; font-size: 12px; word-break: break-all; margin: 14px 0; color: var(--accent); }
+    .refer-box { background: rgba(0, 0, 0, 0.55); border: 1px dashed rgba(56, 189, 248, 0.5); padding: 14px; border-radius: 16px; font-size: 12px; word-break: break-all; margin: 14px 0; color: var(--accent); }
     
     .action-btn { 
       width: 100%; 
@@ -396,24 +395,24 @@
     .action-btn:active { transform: scale(0.97); }
     .action-btn:disabled { background: #334155 !important; color: #64748b !important; box-shadow: none !important; cursor: not-allowed; }
 
-    .task-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: rgba(255, 255, 255, 0.03); border-top: 1px solid rgba(255,255,255,0.15); border-radius: 20px; margin-bottom: 12px; }
+    .task-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: rgba(255, 255, 255, 0.04); border-top: 1px solid rgba(255,255,255,0.2); border-radius: 20px; margin-bottom: 12px; }
     .unlocked-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; text-align: left; }
-    .unlocked-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(255, 255, 255, 0.03); border-top: 1px solid rgba(255,255,255,0.12); border-radius: 16px; font-size: 12px; }
+    .unlocked-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(255, 255, 255, 0.04); border-top: 1px solid rgba(255,255,255,0.18); border-radius: 16px; font-size: 12px; }
 
     /* অ্যাডমিন টেবিল */
     .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; text-align: left; }
-    .admin-table th { background: rgba(56, 189, 248, 0.1); color: var(--accent); padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 800; }
-    .admin-table td { padding: 14px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text); }
-    .badge-count { background: rgba(16, 185, 129, 0.18); color: var(--green); padding: 5px 10px; border-radius: 10px; font-weight: 800; border: 1px solid rgba(16, 185, 129, 0.25); }
-    .badge-rev { background: rgba(251, 191, 36, 0.18); color: var(--gold); padding: 5px 10px; border-radius: 10px; font-weight: 800; border: 1px solid rgba(251, 191, 36, 0.25); }
+    .admin-table th { background: rgba(255, 255, 255, 0.08); color: var(--accent); padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.12); font-weight: 800; }
+    .admin-table td { padding: 14px 10px; border-bottom: 1px solid rgba(255,255,255,0.06); color: var(--text); }
+    .badge-count { background: rgba(16, 185, 129, 0.2); color: var(--green); padding: 5px 10px; border-radius: 10px; font-weight: 800; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-rev { background: rgba(251, 191, 36, 0.2); color: var(--gold); padding: 5px 10px; border-radius: 10px; font-weight: 800; border: 1px solid rgba(251, 191, 36, 0.3); }
 
     /* ইমেজ মোডাল */
-    .preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2500; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); }
+    .preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2500; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px); }
     .preview-modal.active { display: flex; }
-    .preview-modal img { max-width: 100%; max-height: 80vh; border-radius: 24px; border: 1.5px solid rgba(255,255,255,0.25); box-shadow: 0 0 35px var(--accent-glow); }
+    .preview-modal img { max-width: 100%; max-height: 80vh; border-radius: 24px; border: 1.5px solid rgba(255,255,255,0.3); box-shadow: 0 0 40px rgba(0,0,0,0.8); }
     .preview-close { position: absolute; top: 22px; right: 22px; font-size: 32px; color: #fff; cursor: pointer; }
 
-    /* অ্যাপল গ্লাস ডক বার (Dock) */
+    /* অ্যাপল ডক বার */
     .bottom-nav { 
       position: fixed; 
       bottom: 0; 
@@ -421,14 +420,14 @@
       right: 0; 
       height: 78px; 
       background: var(--nav-glass); 
-      backdrop-filter: blur(40px); 
-      -webkit-backdrop-filter: blur(40px);
+      backdrop-filter: blur(45px); 
+      -webkit-backdrop-filter: blur(45px);
       border-top: 1px solid var(--ios-border-top); 
       display: flex; 
       justify-content: space-around; 
       align-items: center; 
       z-index: 200; 
-      box-shadow: 0 -4px 35px rgba(0,0,0,0.7), var(--ios-inner-shadow); 
+      box-shadow: 0 -4px 35px rgba(0,0,0,0.7), var(--ios-inner-specular); 
     }
     .nav-item { 
       display: flex; 
@@ -445,15 +444,14 @@
       cursor: pointer; 
       transition: all 0.25s; 
     }
-    .nav-item.active { color: var(--accent); transform: translateY(-3px); }
+    .nav-item.active { color: #fff; transform: translateY(-3px); }
     .nav-icon { font-size: 21px; }
   </style>
 </head>
 <body>
 
-  <!-- স্পেকট্রাম গ্লাস লাইট ব্যাকগ্রাউন্ড -->
-  <div class="ios-light-1"></div>
-  <div class="ios-light-2"></div>
+  <!-- অরিজিনাল অরোরা মেশ গ্লাস লাইট (Refraction Backdrop) -->
+  <div class="aurora-mesh"></div>
 
   <canvas id="confettiCanvas"></canvas>
   <div id="toast"><span id="toastIcon">⭐</span><span id="toastMsg">বার্তা</span></div>
@@ -631,7 +629,7 @@
         </div>
       </div>
 
-      <button class="action-btn" style="background:rgba(255,255,255,0.06); color:var(--accent); border-top:1px solid rgba(255,255,255,0.2);" onclick="openSupport()">💬 হেল্পলাইন ও সাপোর্ট গ্রুপ</button>
+      <button class="action-btn" style="background:rgba(255,255,255,0.08); color:var(--accent); border-top:1px solid rgba(255,255,255,0.25);" onclick="openSupport()">💬 হেল্পলাইন ও সাপোর্ট গ্রুপ</button>
     </div>
 
     <!-- ৭. এক্সক্লুসিভ অ্যাডমিন সেলস অ্যানালিটিক্স প্যানেল -->
@@ -642,11 +640,11 @@
         <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">কোন ফাইল কতবার কেনা হয়েছে ও মোট কত কয়েন আয় হয়েছে</p>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
-          <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 18px; border-top: 1px solid rgba(255,255,255,0.15);">
+          <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 18px; border-top: 1px solid rgba(255,255,255,0.18);">
             <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">মোট ডাউনলোড</div>
             <div style="font-size: 22px; font-weight: 900; color: var(--green); margin-top: 4px;" id="adminTotalSales">0 টি</div>
           </div>
-          <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 18px; border-top: 1px solid rgba(255,255,255,0.15);">
+          <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 18px; border-top: 1px solid rgba(255,255,255,0.18);">
             <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">মোট ব্যয়িত কয়েন</div>
             <div style="font-size: 22px; font-weight: 900; color: var(--gold); margin-top: 4px;" id="adminTotalCoinsSpent">0 🪙</div>
           </div>
@@ -712,10 +710,9 @@
     let adTimerInterval = null;
 
     const AD_LIMIT = 30;
-    const AD_REWARD = 10; // বিজ্ঞাপনে ১০ কয়েন
+    const AD_REWARD = 10;
     const AD_COOLDOWN = 60;
 
-    // স্পিনে সর্বোচ্চ ১০ কয়েন
     const spinRewards = [
       { text: "+2 🪙", coins: 2, bg: "#0284c7" },
       { text: "+4 🪙", coins: 4, bg: "#1e293b" },
@@ -835,7 +832,6 @@
       const initial = user.first_name ? user.first_name[0].toUpperCase() : 'U';
       const userPhoto = user.photo_url;
 
-      // প্রোফাইল ফটো লোড লজিক
       if (userPhoto) {
         const uImg = document.getElementById('uAvatarImg');
         const pImg = document.getElementById('profAvatarImg');
@@ -1427,7 +1423,7 @@
         let html = '';
         sorted.forEach((u, idx) => {
           const rank = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx+1}`;
-          html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:14px; background:rgba(255,255,255,0.03); border-top:1px solid rgba(255,255,255,0.12); border-radius:16px; margin-bottom:8px; backdrop-filter:blur(20px);">
+          html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:14px; background:rgba(255,255,255,0.04); border-top:1px solid rgba(255,255,255,0.18); border-radius:16px; margin-bottom:8px; backdrop-filter:blur(20px);">
             <span style="font-weight:700;">${rank} ${u.name || 'VIP User'}</span>
             <span style="color:var(--gold); font-weight:800;">🪙 ${u.coins || 0}</span>
           </div>`;
