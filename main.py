@@ -1,6 +1,7 @@
 import os
 import requests
 import telebot
+import time
 from telebot.types import (
     InlineKeyboardMarkup, 
     InlineKeyboardButton, 
@@ -69,6 +70,46 @@ def get_admin_dashboard_keyboard():
         KeyboardButton("❌ বাতিল করুন")
     )
     return markup
+
+# --- নতুন রিসোর্স ব্রডকাস্ট ফাংশন (ব্যাকগ্রাউন্ড থ্রেড) ---
+def broadcast_new_resource(resource):
+    try:
+        users_data = requests.get(f"{FIREBASE_BASE}/users.json").json() or {}
+        cat_name = "PLP প্রজেক্ট" if resource.get('type') == 'plp' else "ফন্ট ফাইল"
+        
+        # ক্যাটাগরি অনুযায়ী ওয়েব অ্যাপ লিঙ্ক নির্ধারণ
+        target_tab = "plp" if resource.get('type') == 'plp' else "font"
+        separator = "&" if "?" in WEB_APP_URL else "?"
+        app_url_with_tab = f"{WEB_APP_URL}{separator}tab={target_tab}"
+        
+        caption_text = (
+            f"🔥 **নতুন প্রিমিয়াম রিসোর্স যুক্ত হয়েছে!**\n\n"
+            f"📌 **নাম:** {resource.get('name')}\n"
+            f"📁 **ক্যাটাগরি:** {cat_name}\n"
+            f"🪙 **মূল্য:** {resource.get('coins')} কয়েন\n\n"
+            f"✨ এখনই প্রিমিয়াম রিসোর্স অ্যাপ থেকে কয়েন দিয়ে আনলক করে নিতে পারেন!"
+        )
+        
+        markup = InlineKeyboardMarkup()
+        btn_text = f"🛒 {cat_name} সংগ্রহ করুন"
+        markup.add(InlineKeyboardButton(btn_text, web_app=WebAppInfo(url=app_url_with_tab)))
+
+        photo_source = resource.get('raw_photo_id') or resource.get('image')
+
+        for uid in users_data.keys():
+            try:
+                bot.send_photo(
+                    chat_id=int(uid),
+                    photo=photo_source,
+                    caption=caption_text,
+                    parse_mode="Markdown",
+                    reply_markup=markup
+                )
+                time.sleep(0.05)  # Telegram Flood Limits হ্যান্ডেল করার জন্য বিরতি
+            except Exception:
+                continue
+    except Exception as e:
+        print(f"Broadcast error: {e}")
 
 # --- ০. ক্যানসেল হ্যান্ডলার ---
 def cancel_process(message):
@@ -463,6 +504,7 @@ def get_image(message):
     
     file_id = message.photo[-1].file_id
     file_info = bot.get_file(file_id)
+    admin_temp_data[message.from_user.id]['raw_photo_id'] = file_id
     admin_temp_data[message.from_user.id]['image'] = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
     
     cat = admin_temp_data[message.from_user.id]['type']
@@ -498,7 +540,10 @@ def get_font_file(message):
 
 def save_resource_to_firebase(message):
     resource = admin_temp_data[message.from_user.id]
-    res = requests.post(f"{FIREBASE_BASE}/resources.json", json=resource)
+    
+    # Firebase-এ সেভ করার জন্য ডেটা প্রস্তুতি
+    firebase_payload = {k: v for k, v in resource.items() if k != 'raw_photo_id'}
+    res = requests.post(f"{FIREBASE_BASE}/resources.json", json=firebase_payload)
     
     if res.status_code == 200:
         bot.reply_to(
@@ -507,9 +552,11 @@ def save_resource_to_firebase(message):
             f"📌 নাম: {resource['name']}\n"
             f"📁 ক্যাটাগরি: {resource['type'].upper()}\n"
             f"🪙 মূল্য: {resource['coins']} কয়েন\n\n"
-            f"✅ মিনি অ্যাপে লাইভ করা হয়েছে!",
+            f"✅ মিনি অ্যাপে লাইভ করা হয়েছে এবং সকল ইউজারের ইনবক্সে নোটিফিকেশন পাঠানো শুরু হয়েছে!",
             reply_markup=get_admin_dashboard_keyboard()
         )
+        # ব্যাকগ্রাউন্ডে ব্রডকাস্ট চালু
+        Thread(target=broadcast_new_resource, args=(resource,), daemon=True).start()
     else:
         bot.reply_to(message, "❌ ফায়ারবেসে তথ্য সংরক্ষণ করা যায়নি।", reply_markup=get_admin_dashboard_keyboard())
 
