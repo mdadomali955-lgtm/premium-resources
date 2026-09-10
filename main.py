@@ -13,6 +13,7 @@ CHANNEL_ID = "@PLPStoreBD0"  # অফিসিয়াল চ্যানেল �
 
 bot = telebot.TeleBot(BOT_TOKEN)
 admin_temp_data = {}
+edit_sessions = {}
 
 # --- UptimeRobot ও API এর জন্য ওয়েব সার্ভার ---
 app = Flask(__name__)
@@ -61,6 +62,8 @@ def cancel_cmd(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     if message.from_user.id in admin_temp_data:
         del admin_temp_data[message.from_user.id]
+    if message.from_user.id in edit_sessions:
+        del edit_sessions[message.from_user.id]
     bot.reply_to(message, "❌ চলমান প্রক্রিয়া বাতিল করা হয়েছে। আপনি আবার নতুন করে শুরু করতে পারেন।", reply_markup=get_main_keyboard())
 
 # --- স্টার্ট ও ডেলিভারি হ্যান্ডলার ---
@@ -159,6 +162,7 @@ def start_cmd(message):
             "👋 **অ্যাডমিন প্যানেল সক্রিয় আছে!**\n\n"
             "👑 *কমান্ডসমূহ:*\n"
             "▫️ /add - নতুন ফন্ট ফাইল বা PLP ড্রাইভ লিংক যুক্ত করুন\n"
+            "▫️ /edit - আগের রিসোর্স নাম ও ফাইল ধরে আপডেট করুন\n"
             "▫️ /setad - মিনি অ্যাপের ব্যানার বিজ্ঞাপন আপডেট করুন\n"
             "▫️ /cancel - যেকোনো চলমান কাজ বাতিল করুন\n\n"
             "👇 অ্যাপ ওপেন করতে নিচের বাটনে চাপ দিন:",
@@ -199,7 +203,7 @@ def get_ad_link(message):
     requests.put(f"{FIREBASE_BASE}/active_ad.json", json=ad_data)
     bot.reply_to(message, "✅ বিজ্ঞাপন সফলভাবে মিনি অ্যাপে সেট হয়েছে!", reply_markup=get_main_keyboard())
 
-# --- ২. রিসোর্স আপলোড ---
+# --- ২. নতুন রিসোর্স আপলোড ---
 @bot.message_handler(commands=['add'])
 def add_resource_start(message):
     if message.from_user.id != ADMIN_ID:
@@ -296,7 +300,222 @@ def save_resource_to_firebase(message):
     else:
         bot.reply_to(message, "❌ ফায়ারবেসে তথ্য সংরক্ষণ করা যায়নি।", reply_markup=get_main_keyboard())
 
-# --- ৩. সাপোর্ট মেসেজিং সিস্টেম ---
+# --- ৩. রিসোর্স এডিট ও আপডেট সিস্টেম (স্টেপ বাই স্টেপ) ---
+@bot.message_handler(commands=['edit', 'update'])
+def edit_start(message):
+    if message.from_user.id != ADMIN_ID:
+        return
+    edit_sessions[message.from_user.id] = {}
+    bot.reply_to(
+        message, 
+        "🛠️ **রিসোর্স আপডেট প্রক্রিয়া শুরু হয়েছে!**\n\n"
+        "প্রথমে জানান এটি কি?\n"
+        "শুধুমাত্র `font` অথবা `plp` লিখে পাঠান:\n(বাতিল করতে /cancel লিখুন)",
+        parse_mode="Markdown"
+    )
+    bot.register_next_step_handler(message, get_edit_category)
+
+def get_edit_category(message):
+    if message.text and message.text.startswith('/'):
+        return cancel_cmd(message)
+    
+    cat = (message.text or "").lower().strip()
+    if cat not in ['font', 'plp']:
+        bot.reply_to(message, "⚠️ ভুল ইনপুট! দয়া করে শুধু `font` অথবা `plp` লিখুন:\n(বাতিল করতে /cancel)")
+        bot.register_next_step_handler(message, get_edit_category)
+        return
+    
+    edit_sessions[message.from_user.id]['type'] = cat
+    bot.reply_to(
+        message, 
+        f"✅ ক্যাটাগরি: *{cat.upper()}*\n\n"
+        "এবার যে ফাইলটি আপডেট করতে চান সেটির **হুবহু বা কাছাকাছি নাম** লিখে পাঠান:",
+        parse_mode="Markdown"
+    )
+    bot.register_next_step_handler(message, find_resource_by_name)
+
+def find_resource_by_name(message):
+    if message.text and message.text.startswith('/'):
+        return cancel_cmd(message)
+    
+    search_name = (message.text or "").strip().lower()
+    selected_type = edit_sessions[message.from_user.id]['type']
+    
+    bot.reply_to(message, "🔍 ডাটাবেজে ফাইল খোঁজা হচ্ছে...")
+    
+    try:
+        res = requests.get(f"{FIREBASE_BASE}/resources.json").json() or {}
+        
+        # নাম এবং ক্যাটাগরি অনুযায়ী ফিল্টার
+        matched_items = {}
+        for key, item in res.items():
+            if item.get('type') == selected_type:
+                res_name = item.get('name', '').lower()
+                if search_name in res_name:
+                    matched_items[key] = item
+        
+        if not matched_items:
+            bot.send_message(
+                message.chat.id, 
+                f"❌ *{selected_type.upper()}* ক্যাটাগরিতে '{message.text}' নামের কোনো রিসোর্স পাওয়া যায়নি!\n"
+                "সঠিক নামটি লিখে আবার পাঠান (অথবা বাতিল করতে /cancel লিখুন):",
+                parse_mode="Markdown"
+            )
+            bot.register_next_step_handler(message, find_resource_by_name)
+            return
+
+        # যদি কেবল একটি মাত্র ফাইল মেলে
+        if len(matched_items) == 1:
+            res_key = list(matched_items.keys())[0]
+            item_data = matched_items[res_key]
+            show_edit_options(message.chat.id, res_key, item_data)
+        else:
+            # একাধিক ফাইল মিললে বাটন দিয়ে নিশ্চিত করা
+            markup = InlineKeyboardMarkup()
+            for k, it in matched_items.items():
+                markup.add(InlineKeyboardButton(f"📁 {it.get('name')}", callback_data=f"selres:{k}"))
+            bot.send_message(message.chat.id, "🎯 এই নামের সাথে একাধিক ফাইল পাওয়া গেছে। সঠিক ফাইলটি সিলেক্ট করুন:", reply_markup=markup)
+
+    except Exception as e:
+        bot.reply_to(message, f"❌ ত্রুটি: {e}")
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('selres:'))
+def select_from_matched(call):
+    res_key = call.data.split(":")[1]
+    res_data = requests.get(f"{FIREBASE_BASE}/resources/{res_key}.json").json()
+    bot.delete_message(call.message.chat.id, call.message.message_id)
+    show_edit_options(call.message.chat.id, res_key, res_data)
+
+def show_edit_options(chat_id, res_key, item_data):
+    markup = InlineKeyboardMarkup(row_width=2)
+    markup.add(
+        InlineKeyboardButton("📝 নাম পরিবর্তন", callback_data=f"do_upd:{res_key}:name"),
+        InlineKeyboardButton("🪙 কয়েন পরিবর্তন", callback_data=f"do_upd:{res_key}:coins"),
+        InlineKeyboardButton("🖼️ ছবি পরিবর্তন", callback_data=f"do_upd:{res_key}:image")
+    )
+    
+    if item_data.get('type') == 'plp':
+        markup.add(InlineKeyboardButton("🔗 ড্রাইভ লিংক পরিবর্তন", callback_data=f"do_upd:{res_key}:download_link"))
+    else:
+        markup.add(InlineKeyboardButton("📁 ফন্ট ফাইল পরিবর্তন", callback_data=f"do_upd:{res_key}:file_id"))
+        
+    markup.add(InlineKeyboardButton("🗑️ রিসোর্সটি ডিলিট করুন", callback_data=f"do_del:{res_key}"))
+    markup.add(InlineKeyboardButton("❌ বন্ধ করুন", callback_data="close_edit"))
+
+    details = (
+        f"🎯 **রিসোর্স পাওয়া গেছে!**\n\n"
+        f"📌 **নাম:** {item_data.get('name')}\n"
+        f"📁 **ক্যাটাগরি:** {item_data.get('type', '').upper()}\n"
+        f"🪙 **কয়েন:** {item_data.get('coins')}\n\n"
+        f"👇 **আপনি এর কোনটি আপডেট করতে চান?**"
+    )
+    bot.send_message(chat_id, details, parse_mode="Markdown", reply_markup=markup)
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('do_upd:'))
+def prompt_for_field(call):
+    if call.from_user.id != ADMIN_ID:
+        return
+        
+    _, res_key, field = call.data.split(":")
+    edit_sessions[call.from_user.id] = {'key': res_key, 'field': field}
+    
+    prompts = {
+        "name": "নতুন নামটি লিখে পাঠান:",
+        "coins": "নতুন কয়েন সংখ্যাটি লিখে পাঠান (যেমন: 15):",
+        "image": "নতুন থাম্বনেইল ছবিটি ফটো হিসেবে পাঠান:",
+        "download_link": "নতুন গুগল ড্রাইভ বা ডাউনলোড লিংকটি পাঠান:",
+        "file_id": "নতুন আসল ফন্ট ফাইলটি ডকুমেন্ট আকারে পাঠান:"
+    }
+    
+    bot.delete_message(call.message.chat.id, call.message.message_id)
+    msg = bot.send_message(
+        call.message.chat.id, 
+        f"✍️ **{prompts.get(field, 'নতুন মান পাঠান:')}**\n\n(বাতিল করতে /cancel লিখুন)", 
+        parse_mode="Markdown"
+    )
+    bot.register_next_step_handler(msg, save_updated_field)
+
+def save_updated_field(message):
+    if message.text and message.text.startswith('/'):
+        return cancel_cmd(message)
+        
+    user_id = message.from_user.id
+    if user_id not in edit_sessions:
+        return
+        
+    session = edit_sessions[user_id]
+    res_key = session['key']
+    field = session['field']
+    new_val = None
+    
+    if field == "coins":
+        try:
+            new_val = int(message.text.strip())
+        except (ValueError, AttributeError):
+            bot.reply_to(message, "⚠️ কয়েন সংখ্যায় হতে হবে। আবার লিখুন:")
+            bot.register_next_step_handler(message, save_updated_field)
+            return
+            
+    elif field == "name":
+        if not message.text:
+            bot.reply_to(message, "⚠️ টেক্সট হিসেবে নাম পাঠান:")
+            bot.register_next_step_handler(message, save_updated_field)
+            return
+        new_val = message.text.strip()
+        
+    elif field == "image":
+        if not message.photo:
+            bot.reply_to(message, "⚠️ দয়া করে ছবি পাঠান (ফটো হিসেবে):")
+            bot.register_next_step_handler(message, save_updated_field)
+            return
+        file_id = message.photo[-1].file_id
+        file_info = bot.get_file(file_id)
+        new_val = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
+        
+    elif field == "download_link":
+        if not message.text or not message.text.strip().startswith("http"):
+            bot.reply_to(message, "⚠️ সঠিক লিংক পাঠান (যেমন: https://...):")
+            bot.register_next_step_handler(message, save_updated_field)
+            return
+        new_val = message.text.strip()
+        
+    elif field == "file_id":
+        if not message.document:
+            bot.reply_to(message, "⚠️ আসল ফন্ট ফাইলটি ডকুমেন্ট হিসেবে পাঠান:")
+            bot.register_next_step_handler(message, save_updated_field)
+            return
+        new_val = message.document.file_id
+
+    if new_val is not None:
+        try:
+            requests.patch(f"{FIREBASE_BASE}/resources/{res_key}.json", json={field: new_val})
+            del edit_sessions[user_id]
+            bot.reply_to(
+                message, 
+                f"🎉 **সফলভাবে আপডেট হয়েছে!**\n\nফাইলটির **{field}** সফলভাবে পরিবর্তন করা হয়েছে।", 
+                parse_mode="Markdown", 
+                reply_markup=get_main_keyboard()
+            )
+        except Exception as e:
+            bot.reply_to(message, f"❌ ডাটাবেজ ত্রুটি: {e}")
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('do_del:'))
+def delete_item(call):
+    if call.from_user.id != ADMIN_ID:
+        return
+    res_key = call.data.split(":")[1]
+    try:
+        requests.delete(f"{FIREBASE_BASE}/resources/{res_key}.json")
+        bot.answer_callback_query(call.id, "রিসোর্সটি সফলভাবে মুছে ফেলা হয়েছে!", show_alert=True)
+        bot.delete_message(call.message.chat.id, call.message.message_id)
+    except Exception as e:
+        bot.answer_callback_query(call.id, f"ত্রুটি: {e}", show_alert=True)
+
+@bot.callback_query_handler(func=lambda call: call.data == "close_edit")
+def close_edit_box(call):
+    bot.delete_message(call.message.chat.id, call.message.message_id)
+
+# --- ৪. সাপোর্ট মেসেজিং সিস্টেম ---
 @bot.message_handler(func=lambda message: message.reply_to_message is not None and message.from_user.id == ADMIN_ID)
 def reply_to_user_from_admin(message):
     try:
