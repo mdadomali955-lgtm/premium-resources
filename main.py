@@ -71,12 +71,38 @@ def get_admin_dashboard_keyboard():
     )
     return markup
 
-# --- নতুন রিসোর্স ব্রডকাস্ট ফাংশন ---
+# --- চ্যানেল ও গ্রুপ অটো-ট্র্যাকিং (বট যেখানে অ্যাডমিন হবে তা সেভ করবে) ---
+@bot.my_chat_member_handler()
+def track_bot_channels_and_groups(update):
+    try:
+        chat = update.chat
+        new_status = update.new_chat_member.status
+        
+        # বট যদি চ্যানেল বা সুপারগ্রুপে অ্যাডমিন হিসেবে যুক্ত হয়
+        if new_status in ['administrator', 'creator', 'member']:
+            chat_info = {
+                "id": chat.id,
+                "title": chat.title or "Untitled",
+                "type": chat.type
+            }
+            # Firebase এ চ্যানেল/গ্রুপ সেভ করা
+            requests.put(f"{FIREBASE_BASE}/connected_chats/{chat.id}.json", json=chat_info)
+            print(f"Connected to new chat: {chat.title} ({chat.id})")
+            
+        elif new_status in ['left', 'kicked']:
+            # বটকে সরিয়ে দিলে ডাটাবেজ থেকেও মুছে ফেলবে
+            requests.delete(f"{FIREBASE_BASE}/connected_chats/{chat.id}.json")
+            print(f"Removed from chat: {chat.id}")
+    except Exception as e:
+        print(f"Track chat error: {e}")
+
+# --- নতুন রিসোর্স ব্রডকাস্ট ফাংশন (ইউজার ইনবক্স + সকল চ্যানেল ও গ্রুপ) ---
 def broadcast_new_resource(resource):
     try:
         users_data = requests.get(f"{FIREBASE_BASE}/users.json").json() or {}
-        r_type = resource.get('type')
+        connected_chats = requests.get(f"{FIREBASE_BASE}/connected_chats.json").json() or {}
         
+        r_type = resource.get('type')
         if r_type == 'plp':
             cat_name = "PLP প্রজেক্ট"
             target_tab = "plp"
@@ -105,6 +131,31 @@ def broadcast_new_resource(resource):
         raw_vid = resource.get('raw_video_id')
         raw_photo = resource.get('raw_photo_id') or resource.get('image')
 
+        # ১. সব কানেক্টেড চ্যানেল ও গ্রুপে পোস্ট পাঠানো
+        for chat_id in connected_chats.keys():
+            try:
+                if raw_vid:
+                    bot.send_video(
+                        chat_id=int(chat_id),
+                        video=raw_vid,
+                        caption=caption_text,
+                        parse_mode="Markdown",
+                        reply_markup=markup
+                    )
+                else:
+                    bot.send_photo(
+                        chat_id=int(chat_id),
+                        photo=raw_photo,
+                        caption=caption_text,
+                        parse_mode="Markdown",
+                        reply_markup=markup
+                    )
+                time.sleep(0.08)
+            except Exception as ex:
+                print(f"Failed sending to channel/group {chat_id}: {ex}")
+                continue
+
+        # ২. সকল ইউজারের পার্সোনাল ইনবক্সে পাঠানো
         for uid in users_data.keys():
             try:
                 if raw_vid:
@@ -275,6 +326,7 @@ def start_cmd(message):
             "• `/xml` বা `/add_xml` - সরাসরি XML যোগ করতে\n"
             "• `/plp` বা `/add_plp` - সরাসরি PLP যোগ করতে\n"
             "• `/font` বা `/add_font` - সরাসরি Font যোগ করতে\n\n"
+            "📢 **চ্যানেল ব্রডকাস্ট:** বটকে যেকোনো চ্যানেল বা গ্রুপে অ্যাডমিন বানালে নতুন রিসোর্স সেখানেও অটো-পোস্ট হয়ে যাবে!\n\n"
             "অথবা নিচের বাটন দিয়ে পরিচালনা করুন:",
             parse_mode="Markdown",
             reply_markup=get_admin_dashboard_keyboard()
