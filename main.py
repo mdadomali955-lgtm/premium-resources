@@ -9,7 +9,7 @@ BOT_TOKEN = "8815920877:AAGoSTAtxPHWvEzmwfLobQYCDGe0tcyGc9U"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
 WEB_APP_URL = "https://premium-resources.vercel.app"
-CHANNEL_ID = "@PLPStoreBD0"  # অফিসিয়াল চ্যানেল ইউজারনেম
+CHANNEL_ID = "@PLPStoreBD0"
 
 bot = telebot.TeleBot(BOT_TOKEN)
 admin_temp_data = {}
@@ -50,21 +50,20 @@ def keep_alive():
     t.daemon = True
     t.start()
 
-# মিনি অ্যাপ খোলার বাটন তৈরির ফাংশন
 def get_main_keyboard():
     markup = InlineKeyboardMarkup()
     markup.add(InlineKeyboardButton("🚀 প্রিমিয়াম রিসোর্স 💎", web_app=WebAppInfo(url=WEB_APP_URL)))
     return markup
 
-# --- ০. ক্যানসেল হ্যান্ডলার (আটকে গেলে ছাড়ানোর জন্য) ---
-@bot.message_handler(commands=['cancel'])
+# --- ০. ক্যানসেল হ্যান্ডলার ---
+@bot.message_handler(func=lambda m: m.text in ['/cancel', 'cancel', 'বাতিল'])
 def cancel_cmd(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     if message.from_user.id in admin_temp_data:
         del admin_temp_data[message.from_user.id]
     if message.from_user.id in edit_sessions:
         del edit_sessions[message.from_user.id]
-    bot.reply_to(message, "❌ চলমান প্রক্রিয়া বাতিল করা হয়েছে। আপনি আবার নতুন করে শুরু করতে পারেন।", reply_markup=get_main_keyboard())
+    bot.reply_to(message, "❌ চলমান প্রক্রিয়া বাতিল করা হয়েছে।", reply_markup=get_main_keyboard())
 
 # --- স্টার্ট ও ডেলিভারি হ্যান্ডলার ---
 @bot.message_handler(commands=['start'])
@@ -75,7 +74,6 @@ def start_cmd(message):
     user_id = message.from_user.id
     user_name = message.from_user.first_name
     
-    # ডাটাবেজে ইউজার প্রোফাইল যাচাই ও তৈরি
     try:
         u_res = requests.get(f"{FIREBASE_BASE}/users/{user_id}.json").json()
         if not u_res:
@@ -89,7 +87,6 @@ def start_cmd(message):
     except Exception:
         pass
 
-    # রেফারেল রিওয়ার্ড প্রসেসিং (এখন ৫০ কয়েন পাবে)
     if len(args) > 1 and args[1].startswith("ref_"):
         referrer_id = args[1].replace("ref_", "")
         if str(referrer_id) != str(user_id):
@@ -104,7 +101,6 @@ def start_cmd(message):
             except Exception:
                 pass
 
-    # মিনি অ্যাপ থেকে ফাইল/লিংক রিকোয়েস্ট হ্যান্ডলার
     if len(args) > 1 and args[1].startswith("get_"):
         file_key = args[1].replace("get_", "").split("_from_")[0]
         bot.send_message(message.chat.id, "⏳ আপনার রিসোর্সটি প্রস্তুত করা হচ্ছে...")
@@ -114,7 +110,6 @@ def start_cmd(message):
             item = res.json()
             
             if item:
-                # ১. PLP ফাইল হলে গুগল ড্রাইভ বা ডাউনলোড লিংক ডেলিভারি
                 if item.get("download_link"):
                     markup = InlineKeyboardMarkup()
                     markup.add(InlineKeyboardButton("📥 সরাসরি ফাইল ডাউনলোড করুন", url=item["download_link"]))
@@ -130,8 +125,6 @@ def start_cmd(message):
                         reply_markup=markup
                     )
                     return
-                
-                # ২. ফন্ট হলে সরাসরি ডকুমেন্ট ফাইল ডেলিভারি
                 elif item.get("file_id"):
                     caption_text = (
                         f"🎁 আপনার ফন্ট: *{item.get('name', 'ফন্ট')}*\n"
@@ -155,15 +148,14 @@ def start_cmd(message):
             bot.send_message(message.chat.id, "❌ রিসোর্স ডেলিভারিতে সমস্যা দেখা দিয়েছে। পরে আবার চেষ্টা করুন।", reply_markup=get_main_keyboard())
             return
 
-    # সাধারণ স্বাগতম বার্তা (বাটনসহ)
-    if user_id == ADMIN_ID:
+    if int(user_id) == int(ADMIN_ID):
         bot.send_message(
             message.chat.id,
             "👋 **অ্যাডমিন প্যানেল সক্রিয় আছে!**\n\n"
             "👑 *কমান্ডসমূহ:*\n"
             "▫️ /add - নতুন ফন্ট ফাইল বা PLP ড্রাইভ লিংক যুক্ত করুন\n"
-            "▫️ /edit - আগের রিসোর্স নাম ও ফাইল ধরে আপডেট করুন\n"
-            "▫️ /setad - মিনি অ্যাপের ব্যানার বিজ্ঞাপন আপডেট করুন\n"
+            "▫️ /edit - আগের রিসোর্স আপডেট বা এডিট করুন\n"
+            "▫️ /setad - ব্যানার বিজ্ঞাপন আপডেট করুন\n"
             "▫️ /cancel - যেকোনো চলমান কাজ বাতিল করুন\n\n"
             "👇 অ্যাপ ওপেন করতে নিচের বাটনে চাপ দিন:",
             parse_mode="Markdown",
@@ -176,11 +168,12 @@ def start_cmd(message):
             reply_markup=get_main_keyboard()
         )
 
-# --- ১. অ্যাডমিন ব্যানার বিজ্ঞাপন সেট ---
+# --- ব্যানার বিজ্ঞাপন সেট ---
 @bot.message_handler(commands=['setad'])
 def set_ad_start(message):
-    if message.from_user.id != ADMIN_ID:
+    if int(message.from_user.id) != int(ADMIN_ID):
         return
+    bot.clear_step_handler_by_chat_id(message.chat.id)
     admin_temp_data[message.from_user.id] = {}
     bot.reply_to(message, "📢 বিজ্ঞাপনের শিরোনাম বা টেক্সট লিখে পাঠান:\n(বাতিল করতে /cancel লিখুন)")
     bot.register_next_step_handler(message, get_ad_text)
@@ -203,26 +196,31 @@ def get_ad_link(message):
     requests.put(f"{FIREBASE_BASE}/active_ad.json", json=ad_data)
     bot.reply_to(message, "✅ বিজ্ঞাপন সফলভাবে মিনি অ্যাপে সেট হয়েছে!", reply_markup=get_main_keyboard())
 
-# --- ২. নতুন রিসোর্স আপলোড ---
+# --- নতুন রিসোর্স আপলোড (/add) ---
 @bot.message_handler(commands=['add'])
 def add_resource_start(message):
-    if message.from_user.id != ADMIN_ID:
+    if int(message.from_user.id) != int(ADMIN_ID):
         return
+    bot.clear_step_handler_by_chat_id(message.chat.id)
     admin_temp_data[message.from_user.id] = {}
-    bot.reply_to(message, "📦 ক্যাটাগরি নির্ধারণ করুন:\nশুধুমাত্র `font` অথবা `plp` লিখুন\n(বাতিল করতে /cancel লিখুন)", parse_mode="Markdown")
-    bot.register_next_step_handler(message, get_category)
+    
+    markup = InlineKeyboardMarkup()
+    markup.add(
+        InlineKeyboardButton("🎨 PLP প্রজেক্ট", callback_data="addcat:plp"),
+        InlineKeyboardButton("🔤 ফন্ট ফাইল", callback_data="addcat:font")
+    )
+    bot.send_message(message.chat.id, "📦 **কোন ক্যাটাগরির রিসোর্স যোগ করতে চান?**", parse_mode="Markdown", reply_markup=markup)
 
-def get_category(message):
-    if message.text and message.text.startswith('/'):
-        return cancel_cmd(message)
-    cat = (message.text or "").lower().strip()
-    if cat not in ['font', 'plp']:
-        bot.reply_to(message, "ভুল ইনপুট! শুধু `font` অথবা `plp` লিখুন (বাতিল করতে /cancel লিখুন):")
-        bot.register_next_step_handler(message, get_category)
+@bot.callback_query_handler(func=lambda call: call.data.startswith('addcat:'))
+def handle_add_category(call):
+    if int(call.from_user.id) != int(ADMIN_ID):
         return
-    admin_temp_data[message.from_user.id]['type'] = cat
-    bot.reply_to(message, f"✅ ক্যাটাগরি: {cat.upper()}\n\nএবার রিসোর্সের নামটি লিখুন:")
-    bot.register_next_step_handler(message, get_name)
+    cat = call.data.split(":")[1]
+    admin_temp_data[call.from_user.id] = {'type': cat}
+    bot.delete_message(call.message.chat.id, call.message.message_id)
+    
+    msg = bot.send_message(call.message.chat.id, f"✅ ক্যাটাগরি: *{cat.upper()}*\n\nএবার রিসোর্সের নাম লিখে পাঠান:", parse_mode="Markdown")
+    bot.register_next_step_handler(msg, get_name)
 
 def get_name(message):
     if message.text and message.text.startswith('/'):
@@ -256,7 +254,7 @@ def get_image(message):
     
     cat = admin_temp_data[message.from_user.id]['type']
     if cat == 'plp':
-        bot.reply_to(message, "🔗 এটি PLP প্রজেক্ট। বড় সাইজ এড়াতে ফাইলটির **গুগল ড্রাইভ বা ডাউনলোড লিংক** পাঠান:")
+        bot.reply_to(message, "🔗 এটি PLP প্রজেক্ট। ফাইলটির **গুগল ড্রাইভ বা ডাউনলোড লিংক** পাঠান:")
         bot.register_next_step_handler(message, get_plp_link)
     else:
         bot.reply_to(message, "📁 এটি ফন্ট। মূল **ফন্ট ফাইলটি ডকুমেন্ট আকারে** পাঠান:")
@@ -300,39 +298,37 @@ def save_resource_to_firebase(message):
     else:
         bot.reply_to(message, "❌ ফায়ারবেসে তথ্য সংরক্ষণ করা যায়নি।", reply_markup=get_main_keyboard())
 
-# --- ৩. রিসোর্স এডিট ও আপডেট সিস্টেম (স্টেপ বাই স্টেপ) ---
-@bot.message_handler(commands=['edit', 'update'])
+# --- এডিট ও আপডেট সিস্টেম (/edit, edit বা এডিট যাই লিখুন কাজ করবে) ---
+@bot.message_handler(func=lambda m: m.text and m.text.strip().lower() in ['/edit', 'edit', 'এডিট', '/update', 'update', 'আপডেট'])
 def edit_start(message):
-    if message.from_user.id != ADMIN_ID:
+    if int(message.from_user.id) != int(ADMIN_ID):
+        bot.reply_to(message, "⛔ আপনি এই কমান্ড ব্যবহারের অনুমতিপ্রাপ্ত নন।")
         return
+    bot.clear_step_handler_by_chat_id(message.chat.id)
     edit_sessions[message.from_user.id] = {}
-    bot.reply_to(
-        message, 
-        "🛠️ **রিসোর্স আপডেট প্রক্রিয়া শুরু হয়েছে!**\n\n"
-        "প্রথমে জানান এটি কি?\n"
-        "শুধুমাত্র `font` অথবা `plp` লিখে পাঠান:\n(বাতিল করতে /cancel লিখুন)",
-        parse_mode="Markdown"
+    
+    markup = InlineKeyboardMarkup()
+    markup.add(
+        InlineKeyboardButton("🎨 PLP প্রজেক্ট", callback_data="edcat:plp"),
+        InlineKeyboardButton("🔤 ফন্ট ফাইল", callback_data="edcat:font")
     )
-    bot.register_next_step_handler(message, get_edit_category)
+    bot.send_message(message.chat.id, "🛠️ **কোন ক্যাটাগরির ফাইল আপডেট করতে চান?**", parse_mode="Markdown", reply_markup=markup)
 
-def get_edit_category(message):
-    if message.text and message.text.startswith('/'):
-        return cancel_cmd(message)
-    
-    cat = (message.text or "").lower().strip()
-    if cat not in ['font', 'plp']:
-        bot.reply_to(message, "⚠️ ভুল ইনপুট! দয়া করে শুধু `font` অথবা `plp` লিখুন:\n(বাতিল করতে /cancel)")
-        bot.register_next_step_handler(message, get_edit_category)
+@bot.callback_query_handler(func=lambda call: call.data.startswith('edcat:'))
+def handle_edit_category(call):
+    if int(call.from_user.id) != int(ADMIN_ID):
         return
+    cat = call.data.split(":")[1]
+    edit_sessions[call.from_user.id] = {'type': cat}
+    bot.delete_message(call.message.chat.id, call.message.message_id)
     
-    edit_sessions[message.from_user.id]['type'] = cat
-    bot.reply_to(
-        message, 
-        f"✅ ক্যাটাগরি: *{cat.upper()}*\n\n"
-        "এবার যে ফাইলটি আপডেট করতে চান সেটির **হুবহু বা কাছাকাছি নাম** লিখে পাঠান:",
+    msg = bot.send_message(
+        call.message.chat.id,
+        f"✅ নির্বাচিত ক্যাটাগরি: *{cat.upper()}*\n\n"
+        "এবার যে ফাইলটি আপডেট করতে চান সেটির **নাম বা নামের কিছু অংশ** লিখে পাঠান:\n(বাতিল করতে /cancel)",
         parse_mode="Markdown"
     )
-    bot.register_next_step_handler(message, find_resource_by_name)
+    bot.register_next_step_handler(msg, find_resource_by_name)
 
 def find_resource_by_name(message):
     if message.text and message.text.startswith('/'):
@@ -341,12 +337,12 @@ def find_resource_by_name(message):
     search_name = (message.text or "").strip().lower()
     selected_type = edit_sessions[message.from_user.id]['type']
     
-    bot.reply_to(message, "🔍 ডাটাবেজে ফাইল খোঁজা হচ্ছে...")
+    wait_msg = bot.reply_to(message, "🔍 ডাটাবেজে ফাইল খোঁজা হচ্ছে...")
     
     try:
         res = requests.get(f"{FIREBASE_BASE}/resources.json").json() or {}
+        bot.delete_message(message.chat.id, wait_msg.message_id)
         
-        # নাম এবং ক্যাটাগরি অনুযায়ী ফিল্টার
         matched_items = {}
         for key, item in res.items():
             if item.get('type') == selected_type:
@@ -355,29 +351,27 @@ def find_resource_by_name(message):
                     matched_items[key] = item
         
         if not matched_items:
-            bot.send_message(
+            msg = bot.send_message(
                 message.chat.id, 
-                f"❌ *{selected_type.upper()}* ক্যাটাগরিতে '{message.text}' নামের কোনো রিসোর্স পাওয়া যায়নি!\n"
-                "সঠিক নামটি লিখে আবার পাঠান (অথবা বাতিল করতে /cancel লিখুন):",
+                f"❌ *{selected_type.upper()}* ক্যাটাগরিতে '{message.text}' নামের ফাইল মেলেনি!\n\n"
+                "সঠিক নাম লিখে আবার পাঠান (বাতিল করতে /cancel):",
                 parse_mode="Markdown"
             )
-            bot.register_next_step_handler(message, find_resource_by_name)
+            bot.register_next_step_handler(msg, find_resource_by_name)
             return
 
-        # যদি কেবল একটি মাত্র ফাইল মেলে
         if len(matched_items) == 1:
             res_key = list(matched_items.keys())[0]
             item_data = matched_items[res_key]
             show_edit_options(message.chat.id, res_key, item_data)
         else:
-            # একাধিক ফাইল মিললে বাটন দিয়ে নিশ্চিত করা
-            markup = InlineKeyboardMarkup()
+            markup = InlineKeyboardMarkup(row_width=1)
             for k, it in matched_items.items():
                 markup.add(InlineKeyboardButton(f"📁 {it.get('name')}", callback_data=f"selres:{k}"))
-            bot.send_message(message.chat.id, "🎯 এই নামের সাথে একাধিক ফাইল পাওয়া গেছে। সঠিক ফাইলটি সিলেক্ট করুন:", reply_markup=markup)
+            bot.send_message(message.chat.id, "🎯 একাধিক ফাইল মিলেছে। নির্দিষ্ট ফাইলটি বেছে নিন:", reply_markup=markup)
 
     except Exception as e:
-        bot.reply_to(message, f"❌ ত্রুটি: {e}")
+        bot.reply_to(message, f"❌ ফায়ারবেস ত্রুটি: {e}")
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('selres:'))
 def select_from_matched(call):
@@ -413,7 +407,7 @@ def show_edit_options(chat_id, res_key, item_data):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('do_upd:'))
 def prompt_for_field(call):
-    if call.from_user.id != ADMIN_ID:
+    if int(call.from_user.id) != int(ADMIN_ID):
         return
         
     _, res_key, field = call.data.split(":")
@@ -501,7 +495,7 @@ def save_updated_field(message):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('do_del:'))
 def delete_item(call):
-    if call.from_user.id != ADMIN_ID:
+    if int(call.from_user.id) != int(ADMIN_ID):
         return
     res_key = call.data.split(":")[1]
     try:
@@ -515,8 +509,8 @@ def delete_item(call):
 def close_edit_box(call):
     bot.delete_message(call.message.chat.id, call.message.message_id)
 
-# --- ৪. সাপোর্ট মেসেজিং সিস্টেম ---
-@bot.message_handler(func=lambda message: message.reply_to_message is not None and message.from_user.id == ADMIN_ID)
+# --- সাপোর্ট রিপ্লাই (অ্যাডমিন থেকে ইউজার) ---
+@bot.message_handler(func=lambda message: message.reply_to_message is not None and int(message.from_user.id) == int(ADMIN_ID))
 def reply_to_user_from_admin(message):
     try:
         reply_header = message.reply_to_message.text or message.reply_to_message.caption
@@ -527,7 +521,8 @@ def reply_to_user_from_admin(message):
     except Exception as e:
         bot.reply_to(message, f"❌ উত্তর পাঠানো যায়নি: {e}")
 
-@bot.message_handler(func=lambda message: message.chat.type == 'private' and message.from_user.id != ADMIN_ID)
+# --- ইউজার সাপোর্ট মেসেজ ফরোয়ার্ড ---
+@bot.message_handler(func=lambda message: message.chat.type == 'private' and int(message.from_user.id) != int(ADMIN_ID) and not (message.text and message.text.startswith('/')))
 def forward_user_message_to_admin(message):
     user_info = f"👤 *মেসেজ প্রেরক:* {message.from_user.first_name}\n🆔 User ID: `{message.from_user.id}`\n\n📝 *টেক্সট:* {message.text}"
     bot.send_message(ADMIN_ID, user_info, parse_mode="Markdown")
