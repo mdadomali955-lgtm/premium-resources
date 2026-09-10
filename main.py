@@ -71,14 +71,22 @@ def get_admin_dashboard_keyboard():
     )
     return markup
 
-# --- নতুন রিসোর্স ব্রডকাস্ট ফাংশন (ব্যাকগ্রাউন্ড থ্রেড) ---
+# --- নতুন রিসোর্স ব্রডকাস্ট ফাংশন ---
 def broadcast_new_resource(resource):
     try:
         users_data = requests.get(f"{FIREBASE_BASE}/users.json").json() or {}
-        cat_name = "PLP প্রজেক্ট" if resource.get('type') == 'plp' else "ফন্ট ফাইল"
+        r_type = resource.get('type')
         
-        # ক্যাটাগরি অনুযায়ী ওয়েব অ্যাপ লিঙ্ক নির্ধারণ
-        target_tab = "plp" if resource.get('type') == 'plp' else "font"
+        if r_type == 'plp':
+            cat_name = "PLP প্রজেক্ট"
+            target_tab = "plp"
+        elif r_type == 'xml':
+            cat_name = "XML প্রজেক্ট"
+            target_tab = "xml"
+        else:
+            cat_name = "ফন্ট ফাইল"
+            target_tab = "font"
+        
         separator = "&" if "?" in WEB_APP_URL else "?"
         app_url_with_tab = f"{WEB_APP_URL}{separator}tab={target_tab}"
         
@@ -94,24 +102,34 @@ def broadcast_new_resource(resource):
         btn_text = f"🛒 {cat_name} সংগ্রহ করুন"
         markup.add(InlineKeyboardButton(btn_text, web_app=WebAppInfo(url=app_url_with_tab)))
 
-        photo_source = resource.get('raw_photo_id') or resource.get('image')
+        raw_vid = resource.get('raw_video_id')
+        raw_photo = resource.get('raw_photo_id') or resource.get('image')
 
         for uid in users_data.keys():
             try:
-                bot.send_photo(
-                    chat_id=int(uid),
-                    photo=photo_source,
-                    caption=caption_text,
-                    parse_mode="Markdown",
-                    reply_markup=markup
-                )
-                time.sleep(0.05)  # Telegram Flood Limits হ্যান্ডেল করার জন্য বিরতি
+                if raw_vid:
+                    bot.send_video(
+                        chat_id=int(uid),
+                        video=raw_vid,
+                        caption=caption_text,
+                        parse_mode="Markdown",
+                        reply_markup=markup
+                    )
+                else:
+                    bot.send_photo(
+                        chat_id=int(uid),
+                        photo=raw_photo,
+                        caption=caption_text,
+                        parse_mode="Markdown",
+                        reply_markup=markup
+                    )
+                time.sleep(0.05)
             except Exception:
                 continue
     except Exception as e:
         print(f"Broadcast error: {e}")
 
-# --- ০. ক্যানসেল হ্যান্ডলার ---
+# --- ক্যানসেল হ্যান্ডলার ---
 def cancel_process(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     if message.from_user.id in admin_temp_data:
@@ -124,7 +142,7 @@ def cancel_process(message):
     else:
         bot.send_message(message.chat.id, "❌ বাতিল করা হয়েছে।", reply_markup=get_main_keyboard())
 
-# --- স্টার্ট ও ডেলিভারি হ্যান্ডলার ---
+# --- স্টার্ট ও ফাইল ডেলিভারি হ্যান্ডলার ---
 @bot.message_handler(commands=['start'])
 def start_cmd(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
@@ -161,14 +179,17 @@ def start_cmd(message):
 
     if len(args) > 1 and args[1].startswith("get_"):
         file_key = args[1].replace("get_", "").split("_from_")[0]
-        bot.send_message(message.chat.id, "⏳ আপনার রিসোর্সটি প্রস্তুত করা হচ্ছে...")
+        bot.send_message(message.chat.id, "⏳ আপনার ফাইলটি প্রস্তুত করা হচ্ছে...")
         
         try:
             res = requests.get(f"{FIREBASE_BASE}/resources/{file_key}.json")
             item = res.json()
             
             if item:
-                if item.get("download_link"):
+                res_type = item.get("type", "plp")
+
+                # ১. PLP লিংক ডেলিভারি
+                if res_type == 'plp' and item.get("download_link"):
                     markup = InlineKeyboardMarkup()
                     markup.add(InlineKeyboardButton("📥 সরাসরি ফাইল ডাউনলোড করুন", url=item["download_link"]))
                     markup.add(InlineKeyboardButton("🚀 পুনরায় অ্যাপ খুলুন", web_app=WebAppInfo(url=WEB_APP_URL)))
@@ -177,11 +198,32 @@ def start_cmd(message):
                         f"🎁 আপনার রিসোর্স: *{item.get('name', 'রিসোর্স')}*\n"
                         f"📁 ক্যাটাগরি: *PLP প্রজেক্ট*\n"
                         f"🪙 ব্যবহৃত কয়েন: {item.get('coins', 0)}\n\n"
-                        "🔗 নিচের বাটনে ট্যাপ করে সম্পূর্ণ ফাইলটি ডাউনলোড করে নিন:",
+                        "🔗 নিচের বাটনে চাপ দিয়ে ড্রাইভ ফাইল ডাউনলোড করুন:",
                         parse_mode="Markdown",
                         reply_markup=markup
                     )
                     return
+
+                # ২. XML ফাইল সরাসরি ডকুমেন্ট আকারে ডেলিভারি
+                elif res_type == 'xml' and item.get("file_id"):
+                    caption_text = (
+                        f"⚡ **আপনার XML ফাইল প্রস্তুত!**\n\n"
+                        f"📌 নাম: *{item.get('name', 'XML প্রজেক্ট')}*\n"
+                        f"🪙 ব্যবহৃত কয়েন: {item.get('coins', 0)}\n\n"
+                        "📂 **সেভ করার নিয়ম:**\n"
+                        "১. ফাইলে ট্যাপ করে ডাউনলোড সম্পন্ন করুন।\n"
+                        "২. ডানপাশের ৩-ডটে (⋮) চাপ দিয়ে **'Save to Downloads'** করুন।"
+                    )
+                    bot.send_document(
+                        message.chat.id,
+                        item["file_id"],
+                        caption=caption_text,
+                        parse_mode="Markdown",
+                        reply_markup=get_main_keyboard()
+                    )
+                    return
+
+                # ৩. ফন্ট ফাইল ডেলিভারি
                 elif item.get("file_id"):
                     caption_text = (
                         f"🎁 আপনার ফন্ট: *{item.get('name', 'ফন্ট')}*\n"
@@ -246,10 +288,11 @@ def start_edit_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     edit_sessions[message.from_user.id] = {}
     
-    markup = InlineKeyboardMarkup()
+    markup = InlineKeyboardMarkup(row_width=3)
     markup.add(
-        InlineKeyboardButton("🎨 PLP প্রজেক্ট", callback_data="edcat:plp"),
-        InlineKeyboardButton("🔤 ফন্ট ফাইল", callback_data="edcat:font")
+        InlineKeyboardButton("🎨 PLP", callback_data="edcat:plp"),
+        InlineKeyboardButton("🔤 ফন্ট", callback_data="edcat:font"),
+        InlineKeyboardButton("⚡ XML", callback_data="edcat:xml")
     )
     bot.send_message(message.chat.id, "🛠️ **কোন ক্যাটাগরির ফাইল আপডেট করতে চান?**", parse_mode="Markdown", reply_markup=markup)
 
@@ -294,7 +337,7 @@ def find_resource_by_name(message):
             msg = bot.send_message(
                 message.chat.id, 
                 f"❌ *{selected_type.upper()}* ক্যাটাগরিতে '{message.text}' নামের ফাইল মেলেনি!\n\n"
-                "সঠিক নাম লিখে আবার পাঠান (অথবা বাটন থেকে '❌ বাতিল করুন'):",
+                "সঠিক নাম লিখে আবার পাঠান (অথবা '❌ বাতিল করুন' বাটন চাপুন):",
                 parse_mode="Markdown"
             )
             bot.register_next_step_handler(msg, find_resource_by_name)
@@ -324,14 +367,25 @@ def show_edit_options(chat_id, res_key, item_data):
     markup = InlineKeyboardMarkup(row_width=2)
     markup.add(
         InlineKeyboardButton("📝 নাম পরিবর্তন", callback_data=f"do_upd:{res_key}:name"),
-        InlineKeyboardButton("🪙 কয়েন পরিবর্তন", callback_data=f"do_upd:{res_key}:coins"),
-        InlineKeyboardButton("🖼️ ছবি পরিবর্তন", callback_data=f"do_upd:{res_key}:image")
+        InlineKeyboardButton("🪙 কয়েন পরিবর্তন", callback_data=f"do_upd:{res_key}:coins")
     )
-    
-    if item_data.get('type') == 'plp':
-        markup.add(InlineKeyboardButton("🔗 ড্রাইভ লিংক পরিবর্তন", callback_data=f"do_upd:{res_key}:download_link"))
+
+    r_type = item_data.get('type')
+    if r_type == 'xml':
+        markup.add(
+            InlineKeyboardButton("🎬 প্রিভিউ ভিডিও পরিবর্তন", callback_data=f"do_upd:{res_key}:video"),
+            InlineKeyboardButton("⚡ মূল XML ফাইল পরিবর্তন", callback_data=f"do_upd:{res_key}:file_id")
+        )
+    elif r_type == 'plp':
+        markup.add(
+            InlineKeyboardButton("🖼️ থাম্বনেইল ছবি", callback_data=f"do_upd:{res_key}:image"),
+            InlineKeyboardButton("🔗 ড্রাইভ লিংক পরিবর্তন", callback_data=f"do_upd:{res_key}:download_link")
+        )
     else:
-        markup.add(InlineKeyboardButton("📁 ফন্ট ফাইল পরিবর্তন", callback_data=f"do_upd:{res_key}:file_id"))
+        markup.add(
+            InlineKeyboardButton("🖼️ থাম্বনেইল ছবি", callback_data=f"do_upd:{res_key}:image"),
+            InlineKeyboardButton("📁 ফন্ট ফাইল পরিবর্তন", callback_data=f"do_upd:{res_key}:file_id")
+        )
         
     markup.add(InlineKeyboardButton("🗑️ রিসোর্সটি ডিলিট করুন", callback_data=f"do_del:{res_key}"))
     markup.add(InlineKeyboardButton("❌ বন্ধ করুন", callback_data="close_edit"))
@@ -341,7 +395,7 @@ def show_edit_options(chat_id, res_key, item_data):
         f"📌 **নাম:** {item_data.get('name')}\n"
         f"📁 **ক্যাটাগরি:** {item_data.get('type', '').upper()}\n"
         f"🪙 **কয়েন:** {item_data.get('coins')}\n\n"
-        f"👇 **আপনি এর কোনটি আপডেট করতে চান?**"
+        f"👇 **আপনি কোনটি আপডেট করতে চান?**"
     )
     bot.send_message(chat_id, details, parse_mode="Markdown", reply_markup=markup)
 
@@ -357,8 +411,9 @@ def prompt_for_field(call):
         "name": "নতুন নামটি লিখে পাঠান:",
         "coins": "নতুন কয়েন সংখ্যাটি লিখে পাঠান (যেমন: 15):",
         "image": "নতুন থাম্বনেইল ছবিটি ফটো হিসেবে পাঠান:",
+        "video": "নতুন প্রিভিউ ভিডিও ফাইলটি পাঠান (ভিডিও হিসেবে):",
         "download_link": "নতুন গুগল ড্রাইভ বা ডাউনলোড লিংকটি পাঠান:",
-        "file_id": "নতুন আসল ফন্ট ফাইলটি ডকুমেন্ট আকারে পাঠান:"
+        "file_id": "নতুন ফাইলটি ডকুমেন্ট (Document) আকারে পাঠান:"
     }
     
     bot.delete_message(call.message.chat.id, call.message.message_id)
@@ -400,13 +455,22 @@ def save_updated_field(message):
         
     elif field == "image":
         if not message.photo:
-            bot.reply_to(message, "⚠️ দয়া করে ছবি পাঠান (ফটো হিসেবে):")
+            bot.reply_to(message, "⚠️ দয়া করে ফটো হিসেবে ছবি পাঠান:")
             bot.register_next_step_handler(message, save_updated_field)
             return
         file_id = message.photo[-1].file_id
         file_info = bot.get_file(file_id)
         new_val = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
         
+    elif field == "video":
+        if not message.video:
+            bot.reply_to(message, "⚠️ দয়া করে ভিডিও হিসেবে প্রিভিউ ক্লিপ পাঠান:")
+            bot.register_next_step_handler(message, save_updated_field)
+            return
+        vid_id = message.video.file_id
+        file_info = bot.get_file(vid_id)
+        new_val = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
+
     elif field == "download_link":
         if not message.text or not message.text.strip().startswith("http"):
             bot.reply_to(message, "⚠️ সঠিক লিংক পাঠান (যেমন: https://...):")
@@ -416,7 +480,7 @@ def save_updated_field(message):
         
     elif field == "file_id":
         if not message.document:
-            bot.reply_to(message, "⚠️ আসল ফন্ট ফাইলটি ডকুমেন্ট হিসেবে পাঠান:")
+            bot.reply_to(message, "⚠️ মূল ফাইলটি ডকুমেন্ট (Document) হিসেবে পাঠান:")
             bot.register_next_step_handler(message, save_updated_field)
             return
         new_val = message.document.file_id
@@ -441,7 +505,7 @@ def delete_item(call):
     res_key = call.data.split(":")[1]
     try:
         requests.delete(f"{FIREBASE_BASE}/resources/{res_key}.json")
-        bot.answer_callback_query(call.id, "রিসোর্সটি সফলভাবে মুছে ফেলা হয়েছে!", show_alert=True)
+        bot.answer_callback_query(call.id, "রিসোর্সটি মুছে ফেলা হয়েছে!", show_alert=True)
         bot.delete_message(call.message.chat.id, call.message.message_id)
     except Exception as e:
         bot.answer_callback_query(call.id, f"ত্রুটি: {e}", show_alert=True)
@@ -450,15 +514,16 @@ def delete_item(call):
 def close_edit_box(call):
     bot.delete_message(call.message.chat.id, call.message.message_id)
 
-# --- অ্যাড ফ্লো ---
+# --- রিসোর্স যুক্ত করার ফ্লো ---
 def start_add_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     admin_temp_data[message.from_user.id] = {}
     
-    markup = InlineKeyboardMarkup()
+    markup = InlineKeyboardMarkup(row_width=3)
     markup.add(
         InlineKeyboardButton("🎨 PLP প্রজেক্ট", callback_data="addcat:plp"),
-        InlineKeyboardButton("🔤 ফন্ট ফাইল", callback_data="addcat:font")
+        InlineKeyboardButton("🔤 ফন্ট ফাইল", callback_data="addcat:font"),
+        InlineKeyboardButton("⚡ XML ফাইল", callback_data="addcat:xml")
     )
     bot.send_message(message.chat.id, "📦 **কোন ক্যাটাগরির রিসোর্স যোগ করতে চান?**", parse_mode="Markdown", reply_markup=markup)
 
@@ -478,7 +543,7 @@ def get_name(message):
         cancel_process(message)
         return
     admin_temp_data[message.from_user.id]['name'] = message.text.strip()
-    bot.reply_to(message, "🪙 এই রিসোর্স আনলক করতে ইউজারের কত কয়েন লাগবে? (যেমন: 10):")
+    bot.reply_to(message, "🪙 এই রিসোর্স আনলক করতে ইউজারের কত কয়েন লাগবে? (যেমন: 15):")
     bot.register_next_step_handler(message, get_coins)
 
 def get_coins(message):
@@ -487,18 +552,25 @@ def get_coins(message):
         return
     try:
         admin_temp_data[message.from_user.id]['coins'] = int(message.text.strip())
-        bot.reply_to(message, "🖼️ এবার থাম্বনেইল ছবি পাঠান:")
-        bot.register_next_step_handler(message, get_image)
+        cat = admin_temp_data[message.from_user.id]['type']
+        
+        if cat == 'xml':
+            bot.reply_to(message, "🎬 **XML থাম্বনেইল ভিডিও পাঠান:**\n(বটের চ্যাটে ভিডিওটি আপলোড করুন)")
+            bot.register_next_step_handler(message, get_xml_video)
+        else:
+            bot.reply_to(message, "🖼️ **থাম্বনেইল ছবি পাঠান:**\n(বটের চ্যাটে ফটো আকারে পাঠান)")
+            bot.register_next_step_handler(message, get_image)
     except ValueError:
-        bot.reply_to(message, "কয়েন সংখ্যায় দিন (যেমন: 10)। আবার লিখুন:")
+        bot.reply_to(message, "কয়েন সংখ্যায় দিন (যেমন: 15)। আবার লিখুন:")
         bot.register_next_step_handler(message, get_coins)
 
+# ছবি প্রসেসিং (PLP / Font)
 def get_image(message):
     if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
         return
     if not message.photo:
-        bot.reply_to(message, "একটি ছবি পাঠান (ফটো হিসেবে):")
+        bot.reply_to(message, "একটি ফটো পাঠান:")
         bot.register_next_step_handler(message, get_image)
         return
     
@@ -512,8 +584,26 @@ def get_image(message):
         bot.reply_to(message, "🔗 এটি PLP প্রজেক্ট। ফাইলটির **গুগল ড্রাইভ বা ডাউনলোড লিংক** পাঠান:")
         bot.register_next_step_handler(message, get_plp_link)
     else:
-        bot.reply_to(message, "📁 এটি ফন্ট। মূল **ফন্ট ফাইলটি ডকুমেন্ট আকারে** পাঠান:")
-        bot.register_next_step_handler(message, get_font_file)
+        bot.reply_to(message, "📁 এটি ফন্ট। মূল **ফন্ট ফাইলটি ডকুমেন্ট (Document) আকারে** পাঠান:")
+        bot.register_next_step_handler(message, get_document_file)
+
+# ভিডিও থাম্বনেইল প্রসেসিং (XML)
+def get_xml_video(message):
+    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
+        cancel_process(message)
+        return
+    if not message.video:
+        bot.reply_to(message, "❌ দয়া করে একটি ভিডিও ফাইল পাঠান:")
+        bot.register_next_step_handler(message, get_xml_video)
+        return
+
+    vid_id = message.video.file_id
+    file_info = bot.get_file(vid_id)
+    admin_temp_data[message.from_user.id]['raw_video_id'] = vid_id
+    admin_temp_data[message.from_user.id]['video'] = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
+    
+    bot.reply_to(message, "📁 প্রিভিউ ভিডিও যুক্ত হয়েছে!\n\nএবার **মূল XML ফাইলটি ডকুমেন্ট (Document) আকারে** পাঠান:")
+    bot.register_next_step_handler(message, get_document_file)
 
 def get_plp_link(message):
     if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
@@ -527,13 +617,13 @@ def get_plp_link(message):
     admin_temp_data[message.from_user.id]['download_link'] = link
     save_resource_to_firebase(message)
 
-def get_font_file(message):
+def get_document_file(message):
     if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
         return
     if not message.document:
-        bot.reply_to(message, "❌ ডকুমেন্ট হিসেবে ফন্ট ফাইল পাঠান:")
-        bot.register_next_step_handler(message, get_font_file)
+        bot.reply_to(message, "❌ আসল ফাইলটি ডকুমেন্ট (Document) হিসেবে পাঠান:")
+        bot.register_next_step_handler(message, get_document_file)
         return
     admin_temp_data[message.from_user.id]['file_id'] = message.document.file_id
     save_resource_to_firebase(message)
@@ -541,8 +631,8 @@ def get_font_file(message):
 def save_resource_to_firebase(message):
     resource = admin_temp_data[message.from_user.id]
     
-    # Firebase-এ সেভ করার জন্য ডেটা প্রস্তুতি
-    firebase_payload = {k: v for k, v in resource.items() if k != 'raw_photo_id'}
+    # Firebase Payload ক্লিন করা
+    firebase_payload = {k: v for k, v in resource.items() if k not in ['raw_photo_id', 'raw_video_id']}
     res = requests.post(f"{FIREBASE_BASE}/resources.json", json=firebase_payload)
     
     if res.status_code == 200:
@@ -552,10 +642,9 @@ def save_resource_to_firebase(message):
             f"📌 নাম: {resource['name']}\n"
             f"📁 ক্যাটাগরি: {resource['type'].upper()}\n"
             f"🪙 মূল্য: {resource['coins']} কয়েন\n\n"
-            f"✅ মিনি অ্যাপে লাইভ করা হয়েছে এবং সকল ইউজারের ইনবক্সে নোটিফিকেশন পাঠানো শুরু হয়েছে!",
+            f"✅ ওয়েব অ্যাপে যুক্ত হয়েছে এবং ব্রডকাস্ট পাঠানো শুরু হয়েছে!",
             reply_markup=get_admin_dashboard_keyboard()
         )
-        # ব্যাকগ্রাউন্ডে ব্রডকাস্ট চালু
         Thread(target=broadcast_new_resource, args=(resource,), daemon=True).start()
     else:
         bot.reply_to(message, "❌ ফায়ারবেসে তথ্য সংরক্ষণ করা যায়নি।", reply_markup=get_admin_dashboard_keyboard())
