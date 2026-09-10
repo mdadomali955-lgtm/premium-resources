@@ -142,7 +142,27 @@ def cancel_process(message):
     else:
         bot.send_message(message.chat.id, "❌ বাতিল করা হয়েছে।", reply_markup=get_main_keyboard())
 
-# --- স্টার্ট ও ফাইল ডেলিভারি হ্যান্ডলার ---
+# --- ডাইরেক্ট ক্যাটাগরি কমান্ড হ্যান্ডলার (XML, PLP, FONT) ---
+@bot.message_handler(commands=['add_xml', 'xml', 'add_plp', 'plp', 'add_font', 'font'])
+def handle_direct_add_commands(message):
+    if int(message.from_user.id) != int(ADMIN_ID):
+        return
+    
+    cmd = message.text.split()[0].replace('/', '').lower()
+    cat_type = 'xml' if 'xml' in cmd else ('plp' if 'plp' in cmd else 'font')
+    
+    bot.clear_step_handler_by_chat_id(message.chat.id)
+    admin_temp_data[message.from_user.id] = {'type': cat_type}
+    
+    cat_title = "⚡ XML প্রজেক্ট" if cat_type == 'xml' else ("🎨 PLP প্রজেক্ট" if cat_type == 'plp' else "🔤 ফন্ট ফাইল")
+    msg = bot.send_message(
+        message.chat.id, 
+        f"✅ কমান্ড গ্রহণ করা হয়েছে: *{cat_title}*\n\nএবার রিসোর্সের নাম লিখে পাঠান:\n(বাতিল করতে /cancel চাপুন)", 
+        parse_mode="Markdown"
+    )
+    bot.register_next_step_handler(msg, get_name)
+
+# --- স্টার্ট ও ডেলিভারি হ্যান্ডলার ---
 @bot.message_handler(commands=['start'])
 def start_cmd(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
@@ -188,7 +208,7 @@ def start_cmd(message):
             if item:
                 res_type = item.get("type", "plp")
 
-                # ১. PLP লিংক ডেলিভারি
+                # PLP লিংক ডেলিভারি
                 if res_type == 'plp' and item.get("download_link"):
                     markup = InlineKeyboardMarkup()
                     markup.add(InlineKeyboardButton("📥 সরাসরি ফাইল ডাউনলোড করুন", url=item["download_link"]))
@@ -204,7 +224,7 @@ def start_cmd(message):
                     )
                     return
 
-                # ২. XML ফাইল সরাসরি ডকুমেন্ট আকারে ডেলিভারি
+                # XML ফাইল ডকুমেন্ট আকারে সরাসরি ইনবক্সে
                 elif res_type == 'xml' and item.get("file_id"):
                     caption_text = (
                         f"⚡ **আপনার XML ফাইল প্রস্তুত!**\n\n"
@@ -223,7 +243,7 @@ def start_cmd(message):
                     )
                     return
 
-                # ৩. ফন্ট ফাইল ডেলিভারি
+                # ফন্ট ফাইল ডেলিভারি
                 elif item.get("file_id"):
                     caption_text = (
                         f"🎁 আপনার ফন্ট: *{item.get('name', 'ফন্ট')}*\n"
@@ -250,7 +270,12 @@ def start_cmd(message):
     if int(user_id) == int(ADMIN_ID):
         bot.send_message(
             message.chat.id,
-            "👑 **স্বাগতম অ্যাডমিন প্যানেলে!**\n\nনিচের বাটন চেপে কাজ শুরু করতে পারেন:",
+            "👑 **স্বাগতম অ্যাডমিন প্যানেলে!**\n\n"
+            "💡 **সরাসরি কমান্ডসমূহ:**\n"
+            "• `/xml` বা `/add_xml` - সরাসরি XML যোগ করতে\n"
+            "• `/plp` বা `/add_plp` - সরাসরি PLP যোগ করতে\n"
+            "• `/font` বা `/add_font` - সরাসরি Font যোগ করতে\n\n"
+            "অথবা নিচের বাটন দিয়ে পরিচালনা করুন:",
             parse_mode="Markdown",
             reply_markup=get_admin_dashboard_keyboard()
         )
@@ -337,7 +362,7 @@ def find_resource_by_name(message):
             msg = bot.send_message(
                 message.chat.id, 
                 f"❌ *{selected_type.upper()}* ক্যাটাগরিতে '{message.text}' নামের ফাইল মেলেনি!\n\n"
-                "সঠিক নাম লিখে আবার পাঠান (অথবা '❌ বাতিল করুন' বাটন চাপুন):",
+                "সঠিক নাম লিখে আবার পাঠান (অথবা '❌ বাতিল করুন' চাপুন):",
                 parse_mode="Markdown"
             )
             bot.register_next_step_handler(msg, find_resource_by_name)
@@ -514,7 +539,7 @@ def delete_item(call):
 def close_edit_box(call):
     bot.delete_message(call.message.chat.id, call.message.message_id)
 
-# --- রিসোর্স যুক্ত করার ফ্লো ---
+# --- রিসোর্স যুক্ত করার ফ্লো (বাটন ক্লিক) ---
 def start_add_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     admin_temp_data[message.from_user.id] = {}
