@@ -79,9 +79,51 @@
       filter: blur(60px);
     }
 
+    /* লাইভ বাবল এনিমেশন */
+    .bubbles-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .bubble {
+      position: absolute;
+      bottom: -100px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.28), rgba(56, 189, 248, 0.12) 60%, rgba(217, 70, 239, 0.05) 100%);
+      box-shadow: 
+        inset 0 2px 4px rgba(255, 255, 255, 0.4),
+        0 8px 24px rgba(56, 189, 248, 0.2);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      animation: floatUp 14s infinite linear;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(0.8) rotate(0deg);
+        opacity: 0;
+      }
+      15% {
+        opacity: 0.8;
+      }
+      85% {
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(-115vh) scale(1.15) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
     #confettiCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4000; }
 
-    /* স্পষ্ট টোস্ট ক্যাপসুল */
+    /* টোস্ট ক্যাপসুল */
     #toast { 
       position: fixed; 
       top: -85px; 
@@ -274,25 +316,30 @@
     .search-box::placeholder { color: var(--text-dim); }
     .search-box:focus { border-top-color: var(--accent); box-shadow: 0 0 25px var(--accent-glow), var(--liquid-specular); }
     
-    .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
     .tab-btn { 
       flex: 1; 
-      padding: 14px; 
+      padding: 12px 6px; 
       border: none;
       border-top: 1px solid var(--liquid-border-top);
       border-bottom: 1px solid var(--liquid-border-bot);
       border-left: 1px solid var(--liquid-border-side);
       border-right: 1px solid var(--liquid-border-side);
-      border-radius: 18px; 
+      border-radius: 16px; 
       background: var(--liquid-glass); 
       color: var(--text-sub); 
       font-weight: 800; 
-      font-size: 13.5px; 
+      font-size: 12px; 
       cursor: pointer; 
       backdrop-filter: blur(35px); 
       -webkit-backdrop-filter: blur(35px);
       box-shadow: var(--liquid-specular);
       transition: all 0.25s; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      white-space: nowrap;
     }
     .tab-btn.active { 
       background: rgba(56, 189, 248, 0.22); 
@@ -302,7 +349,7 @@
       text-shadow: 0 1px 3px rgba(0,0,0,0.8);
     }
 
-    /* রিসোর্স গ্রিড ও কার্ড */
+    /* রিসোর্স গ্রিড ও সাধারণ কার্ড */
     .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
     .card { 
       background: var(--liquid-glass-card); 
@@ -320,17 +367,64 @@
       transition: transform 0.25s, box-shadow 0.25s; 
       position: relative;
     }
-    .card:active { transform: scale(0.96); }
+    .card:active { transform: scale(0.97); }
     .card-thumb-wrap { position: relative; width: 100%; height: 135px; overflow: hidden; background: #0b101f; }
     .card img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; transition: transform 0.4s; }
     .card:hover img { transform: scale(1.05); }
+
+    /* ফুল-উইডথ সিনেমাটিক XML ভিডিও কার্ড */
+    .card.xml-fullwidth-card {
+      grid-column: span 2;
+      border-radius: 28px;
+    }
+    .card.xml-fullwidth-card .card-thumb-wrap {
+      height: auto;
+      aspect-ratio: 16 / 9;
+      background: #000;
+    }
+    .card.xml-fullwidth-card video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      cursor: pointer;
+      display: block;
+    }
+    .card.xml-fullwidth-card .card-body {
+      padding: 16px 18px;
+    }
+    .card.xml-fullwidth-card .card-title {
+      font-size: 15px;
+      -webkit-line-clamp: 2;
+    }
+
+    .video-play-indicator {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 44px;
+      height: 44px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 18px;
+      pointer-events: none;
+      border: 1.5px solid rgba(255,255,255,0.4);
+      box-shadow: 0 0 16px rgba(0,0,0,0.8);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
     .type-pill {
       position: absolute;
-      top: 8px;
-      left: 8px;
-      padding: 4px 10px;
+      top: 10px;
+      left: 10px;
+      padding: 5px 12px;
       border-radius: 99px;
-      font-size: 9.5px;
+      font-size: 10px;
       font-weight: 900;
       text-transform: uppercase;
       backdrop-filter: blur(20px);
@@ -338,6 +432,7 @@
       background: rgba(0, 0, 0, 0.75);
       border: 1px solid rgba(255,255,255,0.35);
       color: #fff;
+      z-index: 2;
     }
 
     .card-body { padding: 14px 12px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; gap: 12px; }
@@ -348,13 +443,14 @@
       background: linear-gradient(135deg, #38bdf8, #0284c7); 
       color: #030712; 
       border: none; 
-      padding: 8px 14px; 
+      padding: 9px 16px; 
       border-radius: 12px; 
-      font-size: 11.5px; 
+      font-size: 12px; 
       font-weight: 900; 
       cursor: pointer; 
       box-shadow: 0 0 14px var(--accent-glow); 
       transition: all 0.2s; 
+      white-space: nowrap;
     }
     .btn-claim:active { transform: scale(0.92); }
 
@@ -419,11 +515,48 @@
     .badge-count { background: rgba(34, 197, 94, 0.22); color: #4ade80; padding: 5px 10px; border-radius: 10px; font-weight: 900; border: 1px solid rgba(34, 197, 94, 0.35); }
     .badge-rev { background: rgba(251, 191, 36, 0.22); color: var(--gold); padding: 5px 10px; border-radius: 10px; font-weight: 900; border: 1px solid rgba(251, 191, 36, 0.35); }
 
-    /* ইমেজ মোডাল */
-    .preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2500; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px); }
+    /* প্রিমিয়াম ফুলস্ক্রিন মিডিয়া মোডাল */
+    .preview-modal { 
+      display: none; 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      background: rgba(0,0,0,0.95); 
+      z-index: 2500; 
+      align-items: center; 
+      justify-content: center; 
+      padding: 16px; 
+      backdrop-filter: blur(35px); 
+      -webkit-backdrop-filter: blur(35px); 
+    }
     .preview-modal.active { display: flex; }
-    .preview-modal img { max-width: 100%; max-height: 80vh; border-radius: 24px; border: 1.5px solid rgba(255,255,255,0.4); box-shadow: 0 0 45px rgba(0,0,0,0.9); }
-    .preview-close { position: absolute; top: 22px; right: 22px; font-size: 34px; color: #fff; cursor: pointer; }
+    .preview-modal img { 
+      max-width: 100%; 
+      max-height: 85vh; 
+      border-radius: 20px; 
+      border: 1px solid rgba(255,255,255,0.3); 
+      box-shadow: 0 0 50px rgba(0,0,0,0.9); 
+    }
+    .preview-modal video { 
+      width: 100%; 
+      max-width: 720px; 
+      max-height: 85vh; 
+      border-radius: 20px; 
+      border: 1px solid rgba(255,255,255,0.3); 
+      box-shadow: 0 0 50px rgba(0,0,0,0.95); 
+      outline: none; 
+    }
+    .preview-close { 
+      position: absolute; 
+      top: 20px; 
+      right: 24px; 
+      font-size: 36px; 
+      color: #fff; 
+      cursor: pointer; 
+      z-index: 2600;
+    }
 
     /* ডক বার */
     .bottom-nav { 
@@ -464,6 +597,9 @@
 <body>
 
   <div class="apple-fluid-canvas"></div>
+  
+  <!-- লাইভ বাবল লেয়ার -->
+  <div class="bubbles-container" id="bubblesContainer"></div>
 
   <canvas id="confettiCanvas"></canvas>
   <div id="toast"><span id="toastIcon">⭐</span><span id="toastMsg">বার্তা</span></div>
@@ -487,7 +623,7 @@
     
     <div class="notice-card" id="noticeBox">
       <span>📢</span>
-      <span id="noticeText">স্বাগতম! নতুন প্রিমিয়াম PLP ও ফন্ট যুক্ত করা হয়েছে।</span>
+      <span id="noticeText">স্বাগতম! নতুন প্রিমিয়াম PLP, XML ও ফন্ট যুক্ত করা হয়েছে।</span>
     </div>
 
     <!-- গ্লোবাল লাইভ স্ট্যাটাস বার -->
@@ -520,11 +656,13 @@
         <button class="daily-btn" id="btnDailyCheck" onclick="claimDailyReward()">ক্লেইম করুন</button>
       </div>
 
-      <input type="text" class="search-box" id="searchInput" placeholder="🔍 কাঙ্ক্ষিত ফাইল বা ফন্টের নাম লিখুন..." oninput="handleSearch()">
+      <input type="text" class="search-box" id="searchInput" placeholder="🔍 কাঙ্ক্ষিত ফাইল, XML বা ফন্টের নাম লিখুন..." oninput="handleSearch()">
 
+      <!-- ক্যাটাগরি বাটন সমূহ -->
       <div class="tabs">
         <button class="tab-btn active" onclick="switchCategory('plp', this)">🎨 PLP ফাইল</button>
         <button class="tab-btn" onclick="switchCategory('font', this)">🔤 ফন্ট সমূহ</button>
+        <button class="tab-btn" onclick="switchCategory('xml', this)">⚡ XML ফাইল</button>
       </div>
       <div id="loading" style="text-align:center; padding:35px; color:#fff; font-weight: 700;">লোড হচ্ছে... ⏳</div>
       <div class="grid" id="resourceGrid"></div>
@@ -685,9 +823,11 @@
 
   </div>
 
-  <div class="preview-modal" id="imageModal" onclick="closePreview()">
+  <!-- বড় প্রিভিউ মোডাল -->
+  <div class="preview-modal" id="mediaModal" onclick="closeMediaPreview()">
     <span class="preview-close">&times;</span>
-    <img id="modalImg" src="" alt="preview">
+    <img id="modalImg" src="" alt="preview" style="display: none;">
+    <video id="modalVideo" src="" controls autoplay playsinline style="display: none;"></video>
   </div>
 
   <!-- ডক বার -->
@@ -733,6 +873,23 @@
       { text: "+5 🪙", coins: 5, bg: "#1e293b" },
       { text: "+10 🪙", coins: 10, bg: "#eab308" }
     ];
+
+    /* প্রিমিয়াম বাবল এফেক্ট */
+    function initLiquidBubbles() {
+      const container = document.getElementById('bubblesContainer');
+      const bubbleCount = 18;
+      for (let i = 0; i < bubbleCount; i++) {
+        const b = document.createElement('div');
+        b.className = 'bubble';
+        const size = Math.floor(Math.random() * 55) + 20;
+        b.style.width = `${size}px`;
+        b.style.height = `${size}px`;
+        b.style.left = `${Math.random() * 100}%`;
+        b.style.animationDuration = `${Math.random() * 8 + 8}s`;
+        b.style.animationDelay = `${Math.random() * 6}s`;
+        container.appendChild(b);
+      }
+    }
 
     function fireConfetti() {
       const canvas = document.getElementById('confettiCanvas');
@@ -808,6 +965,11 @@
       return "⭐ BRONZE VIP";
     }
 
+    function isVideoUrl(url) {
+      if (!url) return false;
+      return url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.includes('/video/');
+    }
+
     function drawWheel() {
       const canvas = document.getElementById('wheelCanvas');
       if (!canvas) return;
@@ -841,6 +1003,7 @@
     }
 
     async function initApp() {
+      initLiquidBubbles();
       const initial = user.first_name ? user.first_name[0].toUpperCase() : 'U';
       const userPhoto = user.photo_url;
 
@@ -958,7 +1121,7 @@
         div.className = 'unlocked-item';
         div.innerHTML = `
           <span><b>${it.name}</b> (${it.type?.toUpperCase()})</span>
-          <button class="btn-claim" onclick="openClaimBot('${k}')">পুনরায় ফাইল নিন ⚡</button>
+          <button class="btn-claim" onclick="openClaimBot('${k}')">পুনরায় নিন ⚡</button>
         `;
         container.appendChild(div);
       });
@@ -1304,33 +1467,74 @@
 
       keys.forEach(k => {
         const item = allResources[k];
+        const isXml = item.type === 'xml';
+        const mediaSource = item.video || item.image || '';
+        const isVideo = isVideoUrl(mediaSource) || (isXml && item.video);
+
         const card = document.createElement('div');
-        card.className = 'card';
+        // XML ফাইল হলে ফুল-উইডথ কার্ড ক্লাস অ্যাপ্লাই হবে
+        card.className = isXml ? 'card xml-fullwidth-card' : 'card';
+        
+        let mediaHtml = '';
+        if (isVideo) {
+          mediaHtml = `
+            <div class="card-thumb-wrap" onclick="openMediaPreview('${mediaSource}', true)">
+              <span class="type-pill">${item.type?.toUpperCase()}</span>
+              <video src="${mediaSource}" muted loop playsinline autoplay preload="metadata"></video>
+              <div class="video-play-indicator">▶</div>
+            </div>`;
+        } else {
+          mediaHtml = `
+            <div class="card-thumb-wrap" onclick="openMediaPreview('${item.image || 'https://via.placeholder.com/150'}', false)">
+              <span class="type-pill">${item.type?.toUpperCase()}</span>
+              <img src="${item.image || 'https://via.placeholder.com/150'}" alt="thumb">
+            </div>`;
+        }
+
+        const buttonText = item.type === 'plp' ? 'লিংক নিন 🔗' : (isXml ? 'XML ফাইল ⚡' : 'ফাইল নিন ⚡');
+
         card.innerHTML = `
-          <div class="card-thumb-wrap">
-            <span class="type-pill">${item.type?.toUpperCase()}</span>
-            <img src="${item.image || 'https://via.placeholder.com/150'}" alt="thumb" onclick="openPreview('${item.image}')">
-          </div>
+          ${mediaHtml}
           <div class="card-body">
             <div class="card-title">${item.name}</div>
             <div class="card-meta">
               <span class="price-tag">🪙 ${item.coins}</span>
-              <button class="btn-claim" onclick="claimResource('${k}', ${item.coins}, '${item.name}', '${item.type}')">${item.type === 'plp' ? 'লিংক নিন 🔗' : 'ফাইল নিন ⚡'}</button>
+              <button class="btn-claim" onclick="claimResource('${k}', ${item.coins}, '${item.name}', '${item.type}')">${buttonText}</button>
             </div>
           </div>`;
         container.appendChild(card);
       });
     }
 
-    function openPreview(imgSrc) {
-      if (!imgSrc) return;
+    function openMediaPreview(src, isVideo = false) {
+      if (!src) return;
       triggerHaptic();
-      document.getElementById('modalImg').src = imgSrc;
-      document.getElementById('imageModal').classList.add('active');
+      const modal = document.getElementById('mediaModal');
+      const img = document.getElementById('modalImg');
+      const vid = document.getElementById('modalVideo');
+
+      if (isVideo) {
+        img.style.display = 'none';
+        vid.style.display = 'block';
+        vid.src = src;
+        vid.play();
+      } else {
+        vid.pause();
+        vid.style.display = 'none';
+        img.style.display = 'block';
+        img.src = src;
+      }
+      modal.classList.add('active');
     }
 
-    function closePreview() {
-      document.getElementById('imageModal').classList.remove('active');
+    function closeMediaPreview() {
+      const modal = document.getElementById('mediaModal');
+      const vid = document.getElementById('modalVideo');
+      if (vid) {
+        vid.pause();
+        vid.src = '';
+      }
+      modal.classList.remove('active');
     }
 
     async function claimResource(key, cost, name, type) {
@@ -1457,7 +1661,7 @@
 
     function shareReferralLink() {
       triggerHaptic();
-      const shareText = `💎 ভিআইপি ফন্ট এবং প্রিমিয়াম PLP প্রজেক্ট ফ্রিতে ডাউনলোড করুন এই অ্যাপ থেকে! জয়েন করলেই ফ্রি বোনাস!`;
+      const shareText = `💎 ভিআইপি ফন্ট, XML ভিডিও প্রজেক্ট এবং প্রিমিয়াম PLP ফাইল ফ্রিতে ডাউনলোড করুন এই অ্যাপ থেকে! জয়েন করলেই ফ্রি বোনাস!`;
       const fullUrl = `https://t.me/share/url?url=${encodeURIComponent(`https://t.me/${BOT_USERNAME}?start=ref_${user.id}`)}&text=${encodeURIComponent(shareText)}`;
       if (tg && tg.openTelegramLink) tg.openTelegramLink(fullUrl);
       else window.open(fullUrl, '_blank');
@@ -1472,4 +1676,4 @@
     initApp();
   </script>
 </body>
-  </html>
+                                     </html>
