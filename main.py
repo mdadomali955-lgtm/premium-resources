@@ -71,37 +71,71 @@ def get_admin_dashboard_keyboard():
     )
     return markup
 
-# --- চ্যানেল ও গ্রুপ অটো-ট্র্যাকিং (বট যেখানে অ্যাডমিন হবে তা সেভ করবে) ---
+# --- চ্যানেল ও গ্রুপ অটো-ট্র্যাকিং হ্যান্ডলার ---
 @bot.my_chat_member_handler()
 def track_bot_channels_and_groups(update):
     try:
         chat = update.chat
         new_status = update.new_chat_member.status
         
-        # বট যদি চ্যানেল বা সুপারগ্রুপে অ্যাডমিন হিসেবে যুক্ত হয়
         if new_status in ['administrator', 'creator', 'member']:
             chat_info = {
-                "id": chat.id,
+                "id": str(chat.id),
                 "title": chat.title or "Untitled",
                 "type": chat.type
             }
-            # Firebase এ চ্যানেল/গ্রুপ সেভ করা
-            requests.put(f"{FIREBASE_BASE}/connected_chats/{chat.id}.json", json=chat_info)
-            print(f"Connected to new chat: {chat.title} ({chat.id})")
+            clean_id = str(chat.id).replace("-", "m_")
+            requests.put(f"{FIREBASE_BASE}/connected_chats/{clean_id}.json", json=chat_info)
+            print(f"✅ কানেক্ট হয়েছে: {chat.title} ({chat.id})")
             
         elif new_status in ['left', 'kicked']:
-            # বটকে সরিয়ে দিলে ডাটাবেজ থেকেও মুছে ফেলবে
-            requests.delete(f"{FIREBASE_BASE}/connected_chats/{chat.id}.json")
-            print(f"Removed from chat: {chat.id}")
+            clean_id = str(chat.id).replace("-", "m_")
+            requests.delete(f"{FIREBASE_BASE}/connected_chats/{clean_id}.json")
+            print(f"❌ রিমুভ হয়েছে: {chat.id}")
     except Exception as e:
-        print(f"Track chat error: {e}")
+        print(f"Chat tracking error: {e}")
 
-# --- নতুন রিসোর্স ব্রডকাস্ট ফাংশন (ইউজার ইনবক্স + সকল চ্যানেল ও গ্রুপ) ---
+# --- ম্যানুয়ালি চ্যানেল অ্যাড করার হ্যান্ডলার (যদি অটো ট্র্যাক মিস হয়) ---
+@bot.message_handler(commands=['addchannel'])
+def manual_add_channel(message):
+    if int(message.from_user.id) != int(ADMIN_ID):
+        return
+    args = message.text.split()
+    if len(args) < 2:
+        bot.reply_to(message, "⚠️ চ্যানেলের ইউজারনেম বা আইডি দিন।\nউদাহরণ: `/addchannel @PLPStoreBD0`", parse_mode="Markdown")
+        return
+    
+    target_channel = args[1].strip()
+    try:
+        chat = bot.get_chat(target_channel)
+        clean_id = str(chat.id).replace("-", "m_")
+        requests.put(f"{FIREBASE_BASE}/connected_chats/{clean_id}.json", json={
+            "id": str(chat.id),
+            "title": chat.title or target_channel,
+            "type": chat.type
+        })
+        bot.reply_to(message, f"🎉 সফলভাবে ব্রডকাস্ট তালিকায় যুক্ত হয়েছে: *{chat.title}* (`{chat.id}`)", parse_mode="Markdown")
+    except Exception as e:
+        bot.reply_to(message, f"❌ চ্যানেল পাওয়া যায়নি বা বট সেখানে অ্যাডমিন নেই!\nত্রুটি: `{e}`", parse_mode="Markdown")
+
+# --- নতুন রিসোর্স ব্রডকাস্ট ফাংশন ---
 def broadcast_new_resource(resource):
     try:
         users_data = requests.get(f"{FIREBASE_BASE}/users.json").json() or {}
-        connected_chats = requests.get(f"{FIREBASE_BASE}/connected_chats.json").json() or {}
+        saved_chats = requests.get(f"{FIREBASE_BASE}/connected_chats.json").json() or {}
         
+        # চ্যানেল টার্গেট লিস্ট তৈরি (ডিফল্ট অফিশিয়াল চ্যানেল নিশ্চিত অন্তর্ভুক্ত রাখা হচ্ছে)
+        target_channels = set()
+        target_channels.add(CHANNEL_ID)
+        
+        for k, v in saved_chats.items():
+            if isinstance(v, dict) and 'id' in v:
+                target_channels.add(v['id'])
+            elif isinstance(v, str):
+                target_channels.add(v)
+            else:
+                target_channels.add(k.replace("m_", "-"))
+
         r_type = resource.get('type')
         if r_type == 'plp':
             cat_name = "PLP প্রজেক্ট"
@@ -131,12 +165,13 @@ def broadcast_new_resource(resource):
         raw_vid = resource.get('raw_video_id')
         raw_photo = resource.get('raw_photo_id') or resource.get('image')
 
-        # ১. সব কানেক্টেড চ্যানেল ও গ্রুপে পোস্ট পাঠানো
-        for chat_id in connected_chats.keys():
+        # ১. সকল চ্যানেলে পোস্ট পাঠানো
+        for target in target_channels:
             try:
+                c_id = int(target) if (str(target).startswith('-') or str(target).isdigit()) else target
                 if raw_vid:
                     bot.send_video(
-                        chat_id=int(chat_id),
+                        chat_id=c_id,
                         video=raw_vid,
                         caption=caption_text,
                         parse_mode="Markdown",
@@ -144,18 +179,17 @@ def broadcast_new_resource(resource):
                     )
                 else:
                     bot.send_photo(
-                        chat_id=int(chat_id),
+                        chat_id=c_id,
                         photo=raw_photo,
                         caption=caption_text,
                         parse_mode="Markdown",
                         reply_markup=markup
                     )
-                time.sleep(0.08)
+                time.sleep(0.1)
             except Exception as ex:
-                print(f"Failed sending to channel/group {chat_id}: {ex}")
-                continue
+                print(f"Channel broadcast failed for {target}: {ex}")
 
-        # ২. সকল ইউজারের পার্সোনাল ইনবক্সে পাঠানো
+        # ২. সকল ইউজারের ইনবক্সে পাঠানো
         for uid in users_data.keys():
             try:
                 if raw_vid:
@@ -178,7 +212,7 @@ def broadcast_new_resource(resource):
             except Exception:
                 continue
     except Exception as e:
-        print(f"Broadcast error: {e}")
+        print(f"Broadcast main error: {e}")
 
 # --- ক্যানসেল হ্যান্ডলার ---
 def cancel_process(message):
@@ -325,8 +359,8 @@ def start_cmd(message):
             "💡 **সরাসরি কমান্ডসমূহ:**\n"
             "• `/xml` বা `/add_xml` - সরাসরি XML যোগ করতে\n"
             "• `/plp` বা `/add_plp` - সরাসরি PLP যোগ করতে\n"
-            "• `/font` বা `/add_font` - সরাসরি Font যোগ করতে\n\n"
-            "📢 **চ্যানেল ব্রডকাস্ট:** বটকে যেকোনো চ্যানেল বা গ্রুপে অ্যাডমিন বানালে নতুন রিসোর্স সেখানেও অটো-পোস্ট হয়ে যাবে!\n\n"
+            "• `/font` বা `/add_font` - সরাসরি Font যোগ করতে\n"
+            "• `/addchannel @username` - ম্যানুয়ালি ব্রডকাস্ট চ্যানেল যুক্ত করতে\n\n"
             "অথবা নিচের বাটন দিয়ে পরিচালনা করুন:",
             parse_mode="Markdown",
             reply_markup=get_admin_dashboard_keyboard()
@@ -775,4 +809,8 @@ def forward_user_message_to_admin(message):
 if __name__ == "__main__":
     keep_alive()
     print("Premium Resource Delivery Bot is running with Web Server...")
-    bot.infinity_polling(skip_pending=True)
+    # allowed_updates স্পষ্ট করে দেওয়া হলো যেন my_chat_member ইভেন্ট ড্রপ না হয়
+    bot.infinity_polling(
+        skip_pending=True, 
+        allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
+    )
