@@ -22,6 +22,7 @@ BOT_USERNAME = "PLPStoreOfficialBot"
 bot = telebot.TeleBot(BOT_TOKEN)
 admin_temp_data = {}
 edit_sessions = {}
+coin_sessions = {}
 
 # --- UptimeRobot ও API সার্ভার ---
 app = Flask(__name__)
@@ -62,17 +63,19 @@ def get_main_keyboard():
     markup.add(InlineKeyboardButton("🚀 প্রিমিয়াম রিসোর্স 💎", web_app=WebAppInfo(url=WEB_APP_URL)))
     return markup
 
+# ডিফল্ট অ্যাডমিন ড্যাশবোর্ড কিবোর্ডে কয়েন আপডেটের বাটন যুক্ত
 def get_admin_dashboard_keyboard():
     markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     markup.add(
         KeyboardButton("➕ নতুন রিসোর্স যুক্ত করুন"),
         KeyboardButton("✏️ রিসোর্স এডিট/আপডেট"),
+        KeyboardButton("🪙 কয়েন আপডেট/ম্যানেজ"),
         KeyboardButton("📢 বিজ্ঞাপন সেট করুন"),
         KeyboardButton("❌ বাতিল করুন")
     )
     return markup
 
-# চারটা বাটনের মতো সুন্দর লেআউটের ফাইল কালেকশন কিবোর্ড
+# ফাইল আপলোডের সময় নিচে দেখানোর বাটন
 def get_file_collection_keyboard():
     markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     markup.add(
@@ -267,6 +270,8 @@ def cancel_process(message):
         del admin_temp_data[message.from_user.id]
     if message.from_user.id in edit_sessions:
         del edit_sessions[message.from_user.id]
+    if message.from_user.id in coin_sessions:
+        del coin_sessions[message.from_user.id]
     
     if int(message.from_user.id) == int(ADMIN_ID):
         bot.send_message(message.chat.id, "❌ চলমান প্রক্রিয়া বাতিল করা হয়েছে।", reply_markup=get_admin_dashboard_keyboard())
@@ -292,6 +297,170 @@ def handle_direct_add_commands(message):
         parse_mode="Markdown"
     )
     bot.register_next_step_handler(msg, get_name)
+
+# --- কয়েন ম্যানেজমেন্ট ফ্লো ---
+def start_coin_management_flow(message):
+    bot.clear_step_handler_by_chat_id(message.chat.id)
+    markup = InlineKeyboardMarkup(row_width=1)
+    markup.add(
+        InlineKeyboardButton("👑 আমার নিজের কয়েন সেট করুন", callback_data="coin_act:self"),
+        InlineKeyboardButton("👤 অন্য ইউজারকে কয়েন দিন/কমান", callback_data="coin_act:other")
+    )
+    bot.send_message(
+        message.chat.id,
+        "🪙 **কয়েন ম্যানেজমেন্ট প্যানেল**\n\nআপনি নিজের কয়েন আপডেট করতে চান নাকি কোনো ইউজারকে কয়েন দিতে চান?",
+        parse_mode="Markdown",
+        reply_markup=markup
+    )
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('coin_act:'))
+def handle_coin_action(call):
+    if int(call.from_user.id) != int(ADMIN_ID):
+        return
+    act = call.data.split(":")[1]
+    bot.delete_message(call.message.chat.id, call.message.message_id)
+
+    if act == "self":
+        msg = bot.send_message(
+            call.message.chat.id,
+            "👑 **আপনার অ্যাকাউন্টে কত কয়েন সেট করতে চান?**\n(যেমন: `2000` লিখে পাঠান বা '❌ বাতিল করুন' চাপুন)",
+            parse_mode="Markdown"
+        )
+        bot.register_next_step_handler(msg, process_self_coins)
+    else:
+        msg = bot.send_message(
+            call.message.chat.id,
+            "👤 **যে ইউজারকে কয়েন দিতে চান তার Telegram User ID লিখে পাঠান:**\n(বাতিল করতে '❌ বাতিল করুন' চাপুন)",
+            parse_mode="Markdown"
+        )
+        bot.register_next_step_handler(msg, process_user_id_for_coins)
+
+def process_self_coins(message):
+    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
+        cancel_process(message)
+        return
+    try:
+        amount = int(message.text.strip())
+        requests.patch(f"{FIREBASE_BASE}/users/{ADMIN_ID}.json", json={"coins": amount})
+        bot.reply_to(
+            message,
+            f"🎉 আপনার অ্যাকাউন্টে সফলভাবে *{amount} 🪙* কয়েন সেট করা হয়েছে!",
+            parse_mode="Markdown",
+            reply_markup=get_admin_dashboard_keyboard()
+        )
+    except ValueError:
+        bot.reply_to(message, "⚠️ কয়েনের পরিমাণ সংখ্যায় দিন। আবার লিখুন:")
+        bot.register_next_step_handler(message, process_self_coins)
+
+def process_user_id_for_coins(message):
+    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
+        cancel_process(message)
+        return
+    
+    target_id = message.text.strip()
+    u_data = requests.get(f"{FIREBASE_BASE}/users/{target_id}.json").json()
+    if not u_data:
+        bot.reply_to(message, f"❌ আইডি `{target_id}` ডেটাবেজে খুঁজে পাওয়া যায়নি! সঠিক আইডি দিন:")
+        bot.register_next_step_handler(message, process_user_id_for_coins)
+        return
+
+    coin_sessions[message.from_user.id] = {'target_id': target_id, 'user_name': u_data.get('name', 'User')}
+    msg = bot.reply_to(
+        message, 
+        f"✅ ইউজার পাওয়া গেছে: *{u_data.get('name', 'User')}* (বর্তমান কয়েন: {u_data.get('coins', 0)})\n\n"
+        f"🪙 **কত কয়েন যোগ বা বিয়োগ করতে চান?** (যেমন: যোগ করতে `500` বা কমাতে `-200`):",
+        parse_mode="Markdown"
+    )
+    bot.register_next_step_handler(msg, process_apply_coins)
+
+def process_apply_coins(message):
+    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
+        cancel_process(message)
+        return
+    
+    user_id = message.from_user.id
+    if user_id not in coin_sessions:
+        return
+    
+    try:
+        amount = int(message.text.strip())
+        target_id = coin_sessions[user_id]['target_id']
+        u_data = requests.get(f"{FIREBASE_BASE}/users/{target_id}.json").json() or {}
+        
+        current_c = u_data.get('coins', 0)
+        updated_c = max(0, current_c + amount)
+        requests.patch(f"{FIREBASE_BASE}/users/{target_id}.json", json={"coins": updated_c})
+
+        del coin_sessions[user_id]
+        bot.reply_to(
+            message,
+            f"🎉 **সফলভাবে সম্পন্ন হয়েছে!**\n\n"
+            f"👤 ইউজার: {u_data.get('name', 'User')}\n"
+            f"🆔 আইডি: `{target_id}`\n"
+            f"🪙 পূর্বের কয়েন: {current_c}\n"
+            f"✨ বর্তমান কয়েন: *{updated_c}*",
+            parse_mode="Markdown",
+            reply_markup=get_admin_dashboard_keyboard()
+        )
+        
+        try:
+            bot.send_message(
+                target_id, 
+                f"🎁 **অ্যাডমিন থেকে কয়েন আপডেট!**\n\nআপনার অ্যাকাউন্টে *{amount}* কয়েন যোগ করা হয়েছে।\nবর্তমান ব্যালেন্স: *{updated_c} 🪙*",
+                parse_mode="Markdown"
+            )
+        except Exception:
+            pass
+
+    except ValueError:
+        bot.reply_to(message, "⚠️ কয়েন সংখ্যায় দিন (যেমন: 500)। আবার লিখুন:")
+        bot.register_next_step_handler(message, process_apply_coins)
+
+# সরাসরি কমান্ড সাপোর্ট
+@bot.message_handler(commands=['mycoins'])
+def set_admin_my_coins_cmd(message):
+    if int(message.from_user.id) != int(ADMIN_ID):
+        return
+    args = message.text.split()
+    amount = 2000
+    if len(args) > 1:
+        try:
+            amount = int(args[1].strip())
+        except ValueError:
+            bot.reply_to(message, "⚠️ কয়েনের পরিমাণ সংখ্যায় দিন। যেমন: `/mycoins 2500`", parse_mode="Markdown")
+            return
+
+    try:
+        requests.patch(f"{FIREBASE_BASE}/users/{ADMIN_ID}.json", json={"coins": amount})
+        bot.reply_to(message, f"🎉 আপনার অ্যাকাউন্টে সফলভাবে *{amount} 🪙* কয়েন সেট করা হয়েছে!", parse_mode="Markdown")
+    except Exception as e:
+        bot.reply_to(message, f"❌ ডেটাবেজ এরর: {e}")
+
+@bot.message_handler(commands=['givecoins'])
+def give_user_coins_cmd(message):
+    if int(message.from_user.id) != int(ADMIN_ID):
+        return
+    args = message.text.split()
+    if len(args) < 3:
+        bot.reply_to(message, "⚠️ ব্যবহার: `/givecoins [User_ID] [Coins]`\nযেমন: `/givecoins 7481264433 500`", parse_mode="Markdown")
+        return
+
+    target_uid = args[1].strip()
+    try:
+        coins_to_add = int(args[2].strip())
+        u_data = requests.get(f"{FIREBASE_BASE}/users/{target_uid}.json").json()
+        if not u_data:
+            bot.reply_to(message, f"❌ আইডি `{target_uid}` খুঁজে পাওয়া যায়নি!")
+            return
+
+        current_c = u_data.get('coins', 0)
+        updated_c = max(0, current_c + coins_to_add)
+        requests.patch(f"{FIREBASE_BASE}/users/{target_uid}.json", json={"coins": updated_c})
+        bot.reply_to(message, f"✅ সফল! বর্তমান কয়েন: *{updated_c}*", parse_mode="Markdown")
+    except ValueError:
+        bot.reply_to(message, "⚠️ কয়েন সংখ্যায় দিন।")
+    except Exception as e:
+        bot.reply_to(message, f"❌ এরর: {e}")
 
 # --- স্টার্ট ও ডেলিভারি হ্যান্ডলার ---
 @bot.message_handler(commands=['start'])
@@ -339,7 +508,6 @@ def start_cmd(message):
             if item:
                 res_type = item.get("type", "plp").upper()
                 
-                # ড্রাইভ বা অন্য ডাউনলোড লিঙ্ক থাকলে
                 if item.get("download_link"):
                     markup = InlineKeyboardMarkup()
                     markup.add(InlineKeyboardButton("📥 সরাসরি ফাইল ডাউনলোড করুন", url=item["download_link"]))
@@ -355,7 +523,6 @@ def start_cmd(message):
                     )
                     return
 
-                # ইনবক্সে ফাইল ডেলিভারি
                 file_ids = item.get("file_ids") or ([] if not item.get("file_id") else [item.get("file_id")])
                 
                 if file_ids:
@@ -386,13 +553,7 @@ def start_cmd(message):
         bot.send_message(
             message.chat.id,
             "👑 **স্বাগতম অ্যাডমিন প্যানেলে!**\n\n"
-            "💡 **শর্টকাট কমান্ডসমূহ:**\n"
-            "• `/xml` বা `/add_xml` - সরাসরি XML যোগ করতে\n"
-            "• `/plp` বা `/add_plp` - সরাসরি PLP যোগ করতে\n"
-            "• `/font` বা `/add_font` - সরাসরি Font যোগ করতে\n"
-            "• `/addchannel @username` - ব্রডকাস্ট চ্যানেল যোগ করতে\n"
-            "• `/testpost` - চ্যানেল পোস্ট টেস্ট করতে\n\n"
-            "অথবা নিচের বাটন দিয়ে পরিচালনা করুন:",
+            "নিচের বাটন বা কমান্ড ব্যবহার করে যেকোনো কাজ পরিচালনা করতে পারেন:",
             parse_mode="Markdown",
             reply_markup=get_admin_dashboard_keyboard()
         )
@@ -419,6 +580,10 @@ def handle_all_admin_text(message):
 
     if text in ['/add', 'add', 'যোগ', '➕ নতুন রিসোর্স যুক্ত করুন']:
         start_add_flow(message)
+        return
+
+    if text in ['🪙 কয়েন আপডেট/ম্যানেজ', 'কয়েন', 'coins', '/coins']:
+        start_coin_management_flow(message)
         return
 
     if text in ['/setad', 'setad', 'বিজ্ঞাপন', '📢 বিজ্ঞাপন সেট করুন']:
@@ -578,7 +743,6 @@ def prompt_for_field(call):
     )
     bot.register_next_step_handler(msg, save_updated_field)
 
-# এডিটে একাধিক ফাইল সংগ্রহ
 def collect_edit_files(message):
     user_id = message.from_user.id
     if user_id not in edit_sessions:
@@ -832,14 +996,12 @@ def get_batch_files_or_link(message):
         cancel_process(message)
         return
 
-    # ১. ইউজার যদি লিঙ্ক পাঠায়
     if message.text and message.text.strip().startswith("http"):
         admin_temp_data[user_id]['download_link'] = message.text.strip()
         admin_temp_data[user_id]['file_ids'] = []
         save_resource_to_firebase(message)
         return
 
-    # ২. ইউজার যদি ডান বাটনে চাপ দেয়
     if message.text and message.text.strip() in ['/done', 'done', '✅ আপলোড সম্পন্ন']:
         if not admin_temp_data[user_id].get('file_ids'):
             bot.reply_to(message, "⚠️ আপনি এখনও কোনো ফাইল পাঠাননি! আগে ফাইল আপলোড করুন:")
@@ -848,7 +1010,6 @@ def get_batch_files_or_link(message):
         save_resource_to_firebase(message)
         return
 
-    # ৩. ডকুমেন্ট গ্রহণ করা
     if message.document:
         admin_temp_data[user_id]['file_ids'].append(message.document.file_id)
         count = len(admin_temp_data[user_id]['file_ids'])
@@ -885,7 +1046,7 @@ def save_resource_to_firebase(message):
             f"🎉 **সফলভাবে যুক্ত হয়েছে!**\n\n"
             f"📌 নাম: {resource['name']}\n"
             f"📁 ক্যাটাগরি: {resource['type'].upper()}\n"
-            f"🪙 মূল্য: {resource['coins']} কয়েন\n"
+            f"🪙 মূল্য: {resource['coins']} কয়েন\n\n"
             f"{file_info_msg}\n\n"
             f"✅ ওয়েব অ্যাপে যুক্ত হয়েছে এবং চ্যানেলে ব্রডকাস্ট পাঠানো শুরু হয়েছে!",
             reply_markup=get_admin_dashboard_keyboard()
@@ -946,4 +1107,4 @@ if __name__ == "__main__":
     bot.infinity_polling(
         skip_pending=True, 
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-                                           )
+    )
