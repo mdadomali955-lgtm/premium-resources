@@ -139,40 +139,41 @@ def test_channel_post(message):
     except Exception as e:
         bot.reply_to(message, f"❌ চ্যানেলে পোস্ট যায়নি!\n\nকারণ: `{e}`\n\n💡 সমাধান: চ্যানেলের Administrators অপশনে গিয়ে বটকে **Post Messages** পারমিশন দিন।")
 
-# --- নতুন রিসোর্স ব্রডকাস্ট ফাংশন (ডাবল পোস্ট সমস্যা সমাধানকৃত) ---
+# --- নতুন রিসোর্স ব্রডকাস্ট ফাংশন (ডাবল পোস্ট সম্পূর্ণ সমাধানকৃত) ---
 def broadcast_new_resource(resource):
     try:
         users_data = requests.get(f"{FIREBASE_BASE}/users.json").json() or {}
         saved_chats = requests.get(f"{FIREBASE_BASE}/connected_chats.json").json() or {}
         
-        # ইউনিক চ্যাট আইডি সেট তৈরি (ডুপ্লিকেট রিমুভ করতে)
+        # সমস্ত চ্যানেলকে নির্দিষ্ট integer numeric ID-তে রূপান্তর
         target_channels = set()
         
-        # ১. ডিফল্ট চ্যানেল আইডি বের করা
+        # ১. ডিফল্ট চ্যানেল থেকে মূল সংখ্যা আইডি নেওয়া
         try:
-            default_chat = bot.get_chat(CHANNEL_ID)
-            target_channels.add(default_chat.id)
+            ch_info = bot.get_chat(CHANNEL_ID)
+            target_channels.add(ch_info.id)
         except Exception:
             target_channels.add(CHANNEL_ID)
 
-        # ২. ডাটাবেজ থেকে ইউনিক চ্যানেল আইডি ফিল্টার
+        # ২. ডাটাবেজের চ্যানেলগুলোর সংখ্যা আইডি নেওয়া
         for k, v in saved_chats.items():
+            raw_id = None
             if isinstance(v, dict) and 'id' in v:
-                try:
-                    target_channels.add(int(v['id']))
-                except ValueError:
-                    target_channels.add(v['id'])
-            elif isinstance(v, str):
-                try:
-                    target_channels.add(int(v))
-                except ValueError:
-                    target_channels.add(v)
+                raw_id = v['id']
+            elif isinstance(v, (str, int)):
+                raw_id = v
             else:
-                clean_k = k.replace("m_", "-")
+                raw_id = k.replace("m_", "-")
+            
+            if raw_id:
                 try:
-                    target_channels.add(int(clean_k))
+                    target_channels.add(int(raw_id))
                 except ValueError:
-                    target_channels.add(clean_k)
+                    try:
+                        resolved = bot.get_chat(raw_id)
+                        target_channels.add(resolved.id)
+                    except Exception:
+                        target_channels.add(raw_id)
 
         r_type = resource.get('type')
         if r_type == 'plp':
@@ -196,12 +197,12 @@ def broadcast_new_resource(resource):
             f"✨ এখনই প্রিমিয়াম রিসোর্স অ্যাপ থেকে কয়েন দিয়ে আনলক করে নিতে পারেন!"
         )
         
-        # চ্যানেলের জন্য ইউআরএল বাটন
+        # চ্যানেলের জন্য ডাইরেক্ট টেলিগ্রাম বট বাটন
         channel_markup = InlineKeyboardMarkup()
         btn_text = f"🛒 {cat_name} সংগ্রহ করুন"
         channel_markup.add(InlineKeyboardButton(btn_text, url=f"https://t.me/{BOT_USERNAME}?start=open_{target_tab}"))
 
-        # ইনবক্স ইউজারদের জন্য সরাসরি WebApp বাটন
+        # ইউজারদের ইনবক্সের জন্য সরাসরি WebApp বাটন
         inbox_markup = InlineKeyboardMarkup()
         inbox_markup.add(InlineKeyboardButton(btn_text, web_app=WebAppInfo(url=app_url_with_tab)))
 
@@ -231,7 +232,7 @@ def broadcast_new_resource(resource):
             except Exception as ex:
                 print(f"Channel broadcast failed for {target}: {ex}")
 
-        # --- ইউজারদের ইনবক্সে পোস্ট সেন্ড ---
+        # --- ইউজারদের ইনবক্সে পাঠানো ---
         for uid in users_data.keys():
             try:
                 if raw_vid:
@@ -780,7 +781,14 @@ def get_document_file(message):
     save_resource_to_firebase(message)
 
 def save_resource_to_firebase(message):
-    resource = admin_temp_data[message.from_user.id]
+    user_id = message.from_user.id
+    if user_id not in admin_temp_data:
+        return
+    
+    # সেশন ডেটা পপ করে নেওয়া যেন একই রিকোয়েস্ট দ্বিতীয়বার ট্রিগার না হয়
+    resource = admin_temp_data.pop(user_id, None)
+    if not resource:
+        return
     
     firebase_payload = {k: v for k, v in resource.items() if k not in ['raw_photo_id', 'raw_video_id']}
     res = requests.post(f"{FIREBASE_BASE}/resources.json", json=firebase_payload)
@@ -851,4 +859,4 @@ if __name__ == "__main__":
     bot.infinity_polling(
         skip_pending=True, 
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-    )
+            )
