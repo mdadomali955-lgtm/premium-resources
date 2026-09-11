@@ -72,10 +72,11 @@ def get_admin_dashboard_keyboard():
     )
     return markup
 
+# চারটা বাটনের মতো সুন্দর লেআউটের ফাইল কালেকশন কিবোর্ড
 def get_file_collection_keyboard():
     markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     markup.add(
-        KeyboardButton("✅ আপলোড সম্পন্ন (/done)"),
+        KeyboardButton("✅ আপলোড সম্পন্ন"),
         KeyboardButton("❌ বাতিল করুন")
     )
     return markup
@@ -104,7 +105,7 @@ def track_bot_channels_and_groups(update):
     except Exception as e:
         print(f"Chat tracking error: {e}")
 
-# --- ম্যানুয়াল চ্যানেল অ্যাড করার কমান্ড ---
+# --- ম্যানুয়াল চ্যানেল লিঙ্ক কমান্ড ---
 @bot.message_handler(commands=['addchannel'])
 def manual_add_channel(message):
     if int(message.from_user.id) != int(ADMIN_ID):
@@ -127,7 +128,7 @@ def manual_add_channel(message):
     except Exception as e:
         bot.reply_to(message, f"❌ চ্যানেল পাওয়া যায়নি! বট চ্যানেলে অ্যাডমিন কিনা নিশ্চিত করুন।\nত্রুটি: `{e}`", parse_mode="Markdown")
 
-# --- টেস্ট পোস্ট কমান্ড ---
+# --- চ্যানেলে টেস্ট পোস্ট কমান্ড ---
 @bot.message_handler(commands=['testpost'])
 def test_channel_post(message):
     if int(message.from_user.id) != int(ADMIN_ID):
@@ -147,7 +148,7 @@ def test_channel_post(message):
     except Exception as e:
         bot.reply_to(message, f"❌ চ্যানেলে পোস্ট যায়নি!\n\nকারণ: `{e}`\n\n💡 সমাধান: চ্যানেলের Administrators অপশনে গিয়ে বটকে **Post Messages** পারমিশন দিন।")
 
-# --- নতুন রিসোর্স ব্রডকাস্ট ফাংশন ---
+# --- রিসোর্স ব্রডকাস্ট ফাংশন ---
 def broadcast_new_resource(resource):
     try:
         users_data = requests.get(f"{FIREBASE_BASE}/users.json").json() or {}
@@ -211,7 +212,7 @@ def broadcast_new_resource(resource):
         raw_vid = resource.get('raw_video_id')
         raw_photo = resource.get('raw_photo_id') or resource.get('image')
 
-        # চ্যানেলে পাঠানো
+        # চ্যানেলে পোস্ট
         for target in target_channels:
             try:
                 if raw_vid:
@@ -234,7 +235,7 @@ def broadcast_new_resource(resource):
             except Exception as ex:
                 print(f"Channel broadcast failed for {target}: {ex}")
 
-        # ইউজারদের ইনবক্সে পাঠানো
+        # ইউজার ইনবক্সে পোস্ট
         for uid in users_data.keys():
             try:
                 if raw_vid:
@@ -272,7 +273,7 @@ def cancel_process(message):
     else:
         bot.send_message(message.chat.id, "❌ বাতিল করা হয়েছে।", reply_markup=get_main_keyboard())
 
-# --- ডাইরেক্ট ক্যাটাগরি কমান্ড হ্যান্ডলার ---
+# --- সরাসরি ক্যাটাগরি কমান্ড হ্যান্ডলার ---
 @bot.message_handler(commands=['add_xml', 'xml', 'add_plp', 'plp', 'add_font', 'font'])
 def handle_direct_add_commands(message):
     if int(message.from_user.id) != int(ADMIN_ID):
@@ -292,7 +293,7 @@ def handle_direct_add_commands(message):
     )
     bot.register_next_step_handler(msg, get_name)
 
-# --- স্টার্ট ও ডেলিভারি হ্যান্ডলার (একাধিক ফাইল ও লিংক সাপোর্ট) ---
+# --- স্টার্ট ও ডেলিভারি হ্যান্ডলার ---
 @bot.message_handler(commands=['start'])
 def start_cmd(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
@@ -338,7 +339,7 @@ def start_cmd(message):
             if item:
                 res_type = item.get("type", "plp").upper()
                 
-                # ১. যদি ডাউনলোড বা ড্রাইভ লিঙ্ক থাকে
+                # ড্রাইভ বা অন্য ডাউনলোড লিঙ্ক থাকলে
                 if item.get("download_link"):
                     markup = InlineKeyboardMarkup()
                     markup.add(InlineKeyboardButton("📥 সরাসরি ফাইল ডাউনলোড করুন", url=item["download_link"]))
@@ -354,7 +355,7 @@ def start_cmd(message):
                     )
                     return
 
-                # ২. ফাইল আইডি সংগ্রহ (একাধিক বা একক)
+                # ইনবক্সে ফাইল ডেলিভারি
                 file_ids = item.get("file_ids") or ([] if not item.get("file_id") else [item.get("file_id")])
                 
                 if file_ids:
@@ -551,12 +552,11 @@ def prompt_for_field(call):
     
     bot.delete_message(call.message.chat.id, call.message.message_id)
 
-    # যদি ফাইল পরিবর্তন করতে চায় (একাধিক ফাইল সাপোর্ট)
     if field == "files":
         msg = bot.send_message(
             call.message.chat.id,
             "📂 **নতুন ফাইল(সমূহ) পাঠান:**\n\n"
-            "আপনি এক বা একাধিক ডকুমেন্ট ফাইল পাঠাতে পারেন। সবগুলো পাঠানো শেষ হলে **`/done`** কমান্ড চাপুন বা নিচের বাটনে ট্যাপ করুন:",
+            "আপনি এক বা একাধিক ডকুমেন্ট ফাইল পাঠাতে পারেন। সব ফাইল পাঠানো শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটনে চাপুন:",
             reply_markup=get_file_collection_keyboard(),
             parse_mode="Markdown"
         )
@@ -588,7 +588,7 @@ def collect_edit_files(message):
         cancel_process(message)
         return
 
-    if message.text and message.text.strip().lower() in ['/done', 'done', '✅ আপলোড সম্পন্ন (/done)']:
+    if message.text and message.text.strip() in ['/done', 'done', '✅ আপলোড সম্পন্ন']:
         session = edit_sessions.pop(user_id, None)
         if not session or not session.get('file_ids'):
             bot.reply_to(message, "⚠️ আপনি কোনো ফাইল আপলোড করেননি! বাতিল করা হয়েছে।", reply_markup=get_admin_dashboard_keyboard())
@@ -601,7 +601,7 @@ def collect_edit_files(message):
             patch_data = {
                 "file_ids": file_list,
                 "file_id": file_list[0],
-                "download_link": None # ফাইল দিলে ডাউনলোড লিংক মুছে যাবে
+                "download_link": None
             }
             requests.patch(f"{FIREBASE_BASE}/resources/{res_key}.json", json=patch_data)
             bot.reply_to(
@@ -619,11 +619,11 @@ def collect_edit_files(message):
         count = len(edit_sessions[user_id]['file_ids'])
         bot.reply_to(
             message,
-            f"📥 ফাইল ({count}) গ্রহণ করা হয়েছে!\n\nআরও ফাইল থাকলে পাঠান, অথবা শেষ করতে **`/done`** কমান্ড চাপুন।"
+            f"📥 ফাইল ({count}) গ্রহণ করা হয়েছে!\n\nআরও ফাইল থাকলে পাঠান, অথবা শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটনে চাপুন।"
         )
         bot.register_next_step_handler(message, collect_edit_files)
     else:
-        bot.reply_to(message, "⚠️ দয়া করে ফাইলটি ডকুমেন্ট হিসেবে পাঠান অথবা শেষ করতে **`/done`** চাপুন:")
+        bot.reply_to(message, "⚠️ দয়া করে ফাইলটি ডকুমেন্ট হিসেবে পাঠান অথবা শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটনে চাপুন:")
         bot.register_next_step_handler(message, collect_edit_files)
 
 def save_updated_field(message):
@@ -784,7 +784,7 @@ def get_image(message):
         bot.reply_to(
             message, 
             "📂 **PLP ফাইল বা লিঙ্ক পাঠান:**\n\n"
-            "• **ছোট ফাইল হলে:** ১টি বা একাধিক ফাইল পাঠান এবং সব পাঠানো হলে **`/done`** কমান্ড চাপুন।\n"
+            "• **ছোট ফাইল হলে:** ১টি বা একাধিক ফাইল পাঠান এবং সব পাঠানো শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটনে চাপুন।\n"
             "• **বড় ফাইল হলে:** সরাসরি ডাউনলোড লিঙ্ক পাঠিয়ে দিন।",
             reply_markup=get_file_collection_keyboard(),
             parse_mode="Markdown"
@@ -793,7 +793,7 @@ def get_image(message):
     else:
         bot.reply_to(
             message, 
-            "📁 মূল **ফন্ট ফাইল পাঠান:**\n\n(১টি বা একাধিক ফন্ট পাঠাতে পারেন। সব ফাইল পাঠানো শেষ হলে **`/done`** কমান্ড চাপুন)",
+            "📁 মূল **ফন্ট ফাইল পাঠান:**\n\n(১টি বা একাধিক ফন্ট পাঠাতে পারেন। সব ফাইল পাঠানো শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটনে চাপুন)",
             reply_markup=get_file_collection_keyboard(),
             parse_mode="Markdown"
         )
@@ -816,13 +816,13 @@ def get_xml_video(message):
     
     bot.reply_to(
         message, 
-        "📁 প্রিভিউ ভিডিও যুক্ত হয়েছে!\n\nএবার **XML ফাইল(সমূহ) পাঠান** এবং সব পাঠানো শেষ হলে **`/done`** চাপুন:",
+        "📁 প্রিভিউ ভিডিও যুক্ত হয়েছে!\n\nএবার **XML ফাইল(সমূহ) পাঠান** এবং সব পাঠানো শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটনে চাপুন:",
         reply_markup=get_file_collection_keyboard(),
         parse_mode="Markdown"
     )
     bot.register_next_step_handler(message, get_batch_files_or_link)
 
-# এক বা একাধিক ফাইল বা লিংক হ্যান্ডলার
+# ব্যাচ ফাইল অথবা লিংক হ্যান্ডলার
 def get_batch_files_or_link(message):
     user_id = message.from_user.id
     if user_id not in admin_temp_data:
@@ -832,15 +832,15 @@ def get_batch_files_or_link(message):
         cancel_process(message)
         return
 
-    # ১. ইউজার যদি লিঙ্ক পাঠায় (একক লিঙ্ক)
+    # ১. ইউজার যদি লিঙ্ক পাঠায়
     if message.text and message.text.strip().startswith("http"):
         admin_temp_data[user_id]['download_link'] = message.text.strip()
         admin_temp_data[user_id]['file_ids'] = []
         save_resource_to_firebase(message)
         return
 
-    # ২. ইউজার যদি /done দেয় (সব ফাইল পাঠানো শেষ)
-    if message.text and message.text.strip().lower() in ['/done', 'done', '✅ আপলোড সম্পন্ন (/done)']:
+    # ২. ইউজার যদি ডান বাটনে চাপ দেয়
+    if message.text and message.text.strip() in ['/done', 'done', '✅ আপলোড সম্পন্ন']:
         if not admin_temp_data[user_id].get('file_ids'):
             bot.reply_to(message, "⚠️ আপনি এখনও কোনো ফাইল পাঠাননি! আগে ফাইল আপলোড করুন:")
             bot.register_next_step_handler(message, get_batch_files_or_link)
@@ -848,17 +848,17 @@ def get_batch_files_or_link(message):
         save_resource_to_firebase(message)
         return
 
-    # ৩. ইউজার যদি ডকুমেন্ট ফাইল দেয় (সংগ্রহ করা হচ্ছে)
+    # ৩. ডকুমেন্ট গ্রহণ করা
     if message.document:
         admin_temp_data[user_id]['file_ids'].append(message.document.file_id)
         count = len(admin_temp_data[user_id]['file_ids'])
         bot.reply_to(
             message,
-            f"📥 ফাইল ({count}) গ্রহণ করা হয়েছে!\n\nআরও ফাইল থাকলে পাঠাতে থাকুন, অথবা শেষ করতে **`/done`** চাপুন।"
+            f"📥 ফাইল ({count}) গ্রহণ করা হয়েছে!\n\nআরও ফাইল থাকলে পাঠাতে থাকুন, অথবা শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটনে চাপুন।"
         )
         bot.register_next_step_handler(message, get_batch_files_or_link)
     else:
-        bot.reply_to(message, "⚠️ দয়া করে ডকুমেন্ট ফাইল পাঠান, লিঙ্ক পাঠান অথবা শেষ করতে **`/done`** চাপুন:")
+        bot.reply_to(message, "⚠️ দয়া করে ডকুমেন্ট ফাইল পাঠান, লিঙ্ক পাঠান অথবা শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটনে চাপুন:")
         bot.register_next_step_handler(message, get_batch_files_or_link)
 
 def save_resource_to_firebase(message):
@@ -870,7 +870,6 @@ def save_resource_to_firebase(message):
     if not resource:
         return
     
-    # প্রথম ফাইলটিকে ডিফল্ট file_id হিসেবে রাখা (ব্যাকওয়ার্ড কম্প্যাটিবিলিটি)
     if resource.get('file_ids'):
         resource['file_id'] = resource['file_ids'][0]
 
@@ -947,4 +946,4 @@ if __name__ == "__main__":
     bot.infinity_polling(
         skip_pending=True, 
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-    )
+                                           )
