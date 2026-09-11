@@ -660,9 +660,9 @@
 
       <!-- ক্যাটাগরি বাটন সমূহ -->
       <div class="tabs">
-        <button class="tab-btn active" onclick="switchCategory('plp', this)">🎨 PLP ফাইল</button>
-        <button class="tab-btn" onclick="switchCategory('font', this)">🔤 ফন্ট সমূহ</button>
-        <button class="tab-btn" onclick="switchCategory('xml', this)">⚡ XML ফাইল</button>
+        <button class="tab-btn active" id="tabBtn-plp" onclick="switchCategory('plp', this)">🎨 PLP ফাইল</button>
+        <button class="tab-btn" id="tabBtn-font" onclick="switchCategory('font', this)">🔤 ফন্ট সমূহ</button>
+        <button class="tab-btn" id="tabBtn-xml" onclick="switchCategory('xml', this)">⚡ XML ফাইল</button>
       </div>
       <div id="loading" style="text-align:center; padding:35px; color:#fff; font-weight: 700;">লোড হচ্ছে... ⏳</div>
       <div class="grid" id="resourceGrid"></div>
@@ -1004,6 +1004,17 @@
 
     async function initApp() {
       initLiquidBubbles();
+      
+      // URL Parameter থেকে Tab সেট করা (যেমন: ?tab=xml)
+      const urlParams = new URLSearchParams(window.location.search);
+      const requestedTab = urlParams.get('tab');
+      if (requestedTab && ['plp', 'font', 'xml'].includes(requestedTab)) {
+        currentCategory = requestedTab;
+        document.querySelectorAll('.tabs .tab-btn').forEach(b => b.classList.remove('active'));
+        const activeBtn = document.getElementById(`tabBtn-${requestedTab}`);
+        if (activeBtn) activeBtn.classList.add('active');
+      }
+
       const initial = user.first_name ? user.first_name[0].toUpperCase() : 'U';
       const userPhoto = user.photo_url;
 
@@ -1472,7 +1483,6 @@
         const isVideo = isVideoUrl(mediaSource) || (isXml && item.video);
 
         const card = document.createElement('div');
-        // XML ফাইল হলে ফুল-উইডথ কার্ড ক্লাস অ্যাপ্লাই হবে
         card.className = isXml ? 'card xml-fullwidth-card' : 'card';
         
         let mediaHtml = '';
@@ -1491,7 +1501,13 @@
             </div>`;
         }
 
-        const buttonText = item.type === 'plp' ? 'লিংক নিন 🔗' : (isXml ? 'XML ফাইল ⚡' : 'ফাইল নিন ⚡');
+        // PLP ফাইল বা লিঙ্ক ডাইনামিক বাটন টেক্সট
+        let buttonText = 'ফাইল নিন ⚡';
+        if (item.download_link) {
+          buttonText = 'লিংক নিন 🔗';
+        } else if (isXml) {
+          buttonText = 'XML ফাইল ⚡';
+        }
 
         card.innerHTML = `
           ${mediaHtml}
@@ -1676,4 +1692,4 @@
     initApp();
   </script>
 </body>
-                                     </html>
+  </html>
