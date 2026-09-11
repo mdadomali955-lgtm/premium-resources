@@ -17,6 +17,7 @@ ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
 WEB_APP_URL = "https://premium-resources.vercel.app"
 CHANNEL_ID = "@PLPStoreBD0"
+BOT_USERNAME = "PLPStoreOfficialBot"
 
 bot = telebot.TeleBot(BOT_TOKEN)
 admin_temp_data = {}
@@ -95,14 +96,14 @@ def track_bot_channels_and_groups(update):
     except Exception as e:
         print(f"Chat tracking error: {e}")
 
-# --- ম্যানুয়ালি চ্যানেল অ্যাড করার হ্যান্ডলার (যদি অটো ট্র্যাক মিস হয়) ---
+# --- ম্যানুয়াল চ্যানেল অ্যাড করার কমান্ড ---
 @bot.message_handler(commands=['addchannel'])
 def manual_add_channel(message):
     if int(message.from_user.id) != int(ADMIN_ID):
         return
     args = message.text.split()
     if len(args) < 2:
-        bot.reply_to(message, "⚠️ চ্যানেলের ইউজারনেম বা আইডি দিন।\nউদাহরণ: `/addchannel @PLPStoreBD0`", parse_mode="Markdown")
+        bot.reply_to(message, "⚠️ চ্যানেলের ইউজারনেম দিন।\nউদাহরণ: `/addchannel @PLPStoreBD0`", parse_mode="Markdown")
         return
     
     target_channel = args[1].strip()
@@ -114,17 +115,36 @@ def manual_add_channel(message):
             "title": chat.title or target_channel,
             "type": chat.type
         })
-        bot.reply_to(message, f"🎉 সফলভাবে ব্রডকাস্ট তালিকায় যুক্ত হয়েছে: *{chat.title}* (`{chat.id}`)", parse_mode="Markdown")
+        bot.reply_to(message, f"🎉 ব্রডকাস্ট তালিকায় যুক্ত হয়েছে: *{chat.title}* (`{chat.id}`)", parse_mode="Markdown")
     except Exception as e:
-        bot.reply_to(message, f"❌ চ্যানেল পাওয়া যায়নি বা বট সেখানে অ্যাডমিন নেই!\nত্রুটি: `{e}`", parse_mode="Markdown")
+        bot.reply_to(message, f"❌ চ্যানেল পাওয়া যায়নি! বট চ্যানেলে অ্যাডমিন কিনা নিশ্চিত করুন।\nত্রুটি: `{e}`", parse_mode="Markdown")
 
-# --- নতুন রিসোর্স ব্রডকাস্ট ফাংশন ---
+# --- চ্যানেলে টেস্ট পোস্ট পাঠানোর কমান্ড ---
+@bot.message_handler(commands=['testpost'])
+def test_channel_post(message):
+    if int(message.from_user.id) != int(ADMIN_ID):
+        return
+    
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("🛒 অ্যাপে দেখুন 💎", url=f"https://t.me/{BOT_USERNAME}?start=open"))
+    
+    try:
+        bot.send_message(
+            chat_id=CHANNEL_ID,
+            text="🔔 **এটি একটি সফল টেস্ট ব্রডকাস্ট মেসেজ!**\n\nবট এখন চ্যানেলটিতে সফলভাবে পোস্ট পাঠাতে পারছে।",
+            parse_mode="Markdown",
+            reply_markup=markup
+        )
+        bot.reply_to(message, f"✅ সফল! {CHANNEL_ID} চ্যানেলে টেস্ট পোস্ট চলে গেছে।")
+    except Exception as e:
+        bot.reply_to(message, f"❌ চ্যানেলে পোস্ট যায়নি!\n\nকারণ: `{e}`\n\n💡 সমাধান: চ্যানেলের Administrators অপশনে গিয়ে বটকে **Post Messages** পারমিশন দিন।")
+
+# --- নতুন রিসোর্স ব্রডকাস্ট ফাংশন (চ্যানেল ও ইনবক্স ফিক্সড) ---
 def broadcast_new_resource(resource):
     try:
         users_data = requests.get(f"{FIREBASE_BASE}/users.json").json() or {}
         saved_chats = requests.get(f"{FIREBASE_BASE}/connected_chats.json").json() or {}
         
-        # চ্যানেল টার্গেট লিস্ট তৈরি (ডিফল্ট অফিশিয়াল চ্যানেল নিশ্চিত অন্তর্ভুক্ত রাখা হচ্ছে)
         target_channels = set()
         target_channels.add(CHANNEL_ID)
         
@@ -158,14 +178,19 @@ def broadcast_new_resource(resource):
             f"✨ এখনই প্রিমিয়াম রিসোর্স অ্যাপ থেকে কয়েন দিয়ে আনলক করে নিতে পারেন!"
         )
         
-        markup = InlineKeyboardMarkup()
+        # ১. চ্যানেলের জন্য বাটন (টেলিগ্রাম চ্যানেলে WebApp নিষিদ্ধ, তাই ডাইরেক্ট Bot লিংক দিতে হয়)
+        channel_markup = InlineKeyboardMarkup()
         btn_text = f"🛒 {cat_name} সংগ্রহ করুন"
-        markup.add(InlineKeyboardButton(btn_text, web_app=WebAppInfo(url=app_url_with_tab)))
+        channel_markup.add(InlineKeyboardButton(btn_text, url=f"https://t.me/{BOT_USERNAME}?start=open_{target_tab}"))
+
+        # ২. ইনবক্স ইউজারদের জন্য সরাসরি WebApp বাটন
+        inbox_markup = InlineKeyboardMarkup()
+        inbox_markup.add(InlineKeyboardButton(btn_text, web_app=WebAppInfo(url=app_url_with_tab)))
 
         raw_vid = resource.get('raw_video_id')
         raw_photo = resource.get('raw_photo_id') or resource.get('image')
 
-        # ১. সকল চ্যানেলে পোস্ট পাঠানো
+        # --- চ্যানেলে পোস্ট সেন্ড ---
         for target in target_channels:
             try:
                 c_id = int(target) if (str(target).startswith('-') or str(target).isdigit()) else target
@@ -175,7 +200,7 @@ def broadcast_new_resource(resource):
                         video=raw_vid,
                         caption=caption_text,
                         parse_mode="Markdown",
-                        reply_markup=markup
+                        reply_markup=channel_markup
                     )
                 else:
                     bot.send_photo(
@@ -183,13 +208,13 @@ def broadcast_new_resource(resource):
                         photo=raw_photo,
                         caption=caption_text,
                         parse_mode="Markdown",
-                        reply_markup=markup
+                        reply_markup=channel_markup
                     )
                 time.sleep(0.1)
             except Exception as ex:
                 print(f"Channel broadcast failed for {target}: {ex}")
 
-        # ২. সকল ইউজারের ইনবক্সে পাঠানো
+        # --- ইউজারদের ইনবক্সে পোস্ট সেন্ড ---
         for uid in users_data.keys():
             try:
                 if raw_vid:
@@ -198,7 +223,7 @@ def broadcast_new_resource(resource):
                         video=raw_vid,
                         caption=caption_text,
                         parse_mode="Markdown",
-                        reply_markup=markup
+                        reply_markup=inbox_markup
                     )
                 else:
                     bot.send_photo(
@@ -206,7 +231,7 @@ def broadcast_new_resource(resource):
                         photo=raw_photo,
                         caption=caption_text,
                         parse_mode="Markdown",
-                        reply_markup=markup
+                        reply_markup=inbox_markup
                     )
                 time.sleep(0.05)
             except Exception:
@@ -227,7 +252,7 @@ def cancel_process(message):
     else:
         bot.send_message(message.chat.id, "❌ বাতিল করা হয়েছে।", reply_markup=get_main_keyboard())
 
-# --- ডাইরেক্ট ক্যাটাগরি কমান্ড হ্যান্ডলার (XML, PLP, FONT) ---
+# --- ডাইরেক্ট ক্যাটাগরি কমান্ড হ্যান্ডলার ---
 @bot.message_handler(commands=['add_xml', 'xml', 'add_plp', 'plp', 'add_font', 'font'])
 def handle_direct_add_commands(message):
     if int(message.from_user.id) != int(ADMIN_ID):
@@ -293,7 +318,6 @@ def start_cmd(message):
             if item:
                 res_type = item.get("type", "plp")
 
-                # PLP লিংক ডেলিভারি
                 if res_type == 'plp' and item.get("download_link"):
                     markup = InlineKeyboardMarkup()
                     markup.add(InlineKeyboardButton("📥 সরাসরি ফাইল ডাউনলোড করুন", url=item["download_link"]))
@@ -309,7 +333,6 @@ def start_cmd(message):
                     )
                     return
 
-                # XML ফাইল ডকুমেন্ট আকারে সরাসরি ইনবক্সে
                 elif res_type == 'xml' and item.get("file_id"):
                     caption_text = (
                         f"⚡ **আপনার XML ফাইল প্রস্তুত!**\n\n"
@@ -328,7 +351,6 @@ def start_cmd(message):
                     )
                     return
 
-                # ফন্ট ফাইল ডেলিভারি
                 elif item.get("file_id"):
                     caption_text = (
                         f"🎁 আপনার ফন্ট: *{item.get('name', 'ফন্ট')}*\n"
@@ -356,11 +378,12 @@ def start_cmd(message):
         bot.send_message(
             message.chat.id,
             "👑 **স্বাগতম অ্যাডমিন প্যানেলে!**\n\n"
-            "💡 **সরাসরি কমান্ডসমূহ:**\n"
+            "💡 **সহজ কমান্ডসমূহ:**\n"
+            "• `/testpost` - চ্যানেলে পোস্ট যাচ্ছে কিনা টেস্ট করতে\n"
+            "• `/addchannel @username` - নতুন চ্যানেল ব্রডকাস্টে যুক্ত করতে\n"
             "• `/xml` বা `/add_xml` - সরাসরি XML যোগ করতে\n"
             "• `/plp` বা `/add_plp` - সরাসরি PLP যোগ করতে\n"
-            "• `/font` বা `/add_font` - সরাসরি Font যোগ করতে\n"
-            "• `/addchannel @username` - ম্যানুয়ালি ব্রডকাস্ট চ্যানেল যুক্ত করতে\n\n"
+            "• `/font` বা `/add_font` - সরাসরি Font যোগ করতে\n\n"
             "অথবা নিচের বাটন দিয়ে পরিচালনা করুন:",
             parse_mode="Markdown",
             reply_markup=get_admin_dashboard_keyboard()
@@ -742,7 +765,6 @@ def get_document_file(message):
 def save_resource_to_firebase(message):
     resource = admin_temp_data[message.from_user.id]
     
-    # Firebase Payload ক্লিন করা
     firebase_payload = {k: v for k, v in resource.items() if k not in ['raw_photo_id', 'raw_video_id']}
     res = requests.post(f"{FIREBASE_BASE}/resources.json", json=firebase_payload)
     
@@ -753,7 +775,7 @@ def save_resource_to_firebase(message):
             f"📌 নাম: {resource['name']}\n"
             f"📁 ক্যাটাগরি: {resource['type'].upper()}\n"
             f"🪙 মূল্য: {resource['coins']} কয়েন\n\n"
-            f"✅ ওয়েব অ্যাপে যুক্ত হয়েছে এবং ব্রডকাস্ট পাঠানো শুরু হয়েছে!",
+            f"✅ ওয়েব অ্যাপে যুক্ত হয়েছে এবং চ্যানেলে ও ইউজারদের কাছে ব্রডকাস্ট পাঠানো শুরু হয়েছে!",
             reply_markup=get_admin_dashboard_keyboard()
         )
         Thread(target=broadcast_new_resource, args=(resource,), daemon=True).start()
@@ -809,7 +831,6 @@ def forward_user_message_to_admin(message):
 if __name__ == "__main__":
     keep_alive()
     print("Premium Resource Delivery Bot is running with Web Server...")
-    # allowed_updates স্পষ্ট করে দেওয়া হলো যেন my_chat_member ইভেন্ট ড্রপ না হয়
     bot.infinity_polling(
         skip_pending=True, 
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
