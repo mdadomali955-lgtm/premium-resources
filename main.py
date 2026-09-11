@@ -139,22 +139,40 @@ def test_channel_post(message):
     except Exception as e:
         bot.reply_to(message, f"❌ চ্যানেলে পোস্ট যায়নি!\n\nকারণ: `{e}`\n\n💡 সমাধান: চ্যানেলের Administrators অপশনে গিয়ে বটকে **Post Messages** পারমিশন দিন।")
 
-# --- নতুন রিসোর্স ব্রডকাস্ট ফাংশন (চ্যানেল ও ইনবক্স ফিক্সড) ---
+# --- নতুন রিসোর্স ব্রডকাস্ট ফাংশন (ডাবল পোস্ট সমস্যা সমাধানকৃত) ---
 def broadcast_new_resource(resource):
     try:
         users_data = requests.get(f"{FIREBASE_BASE}/users.json").json() or {}
         saved_chats = requests.get(f"{FIREBASE_BASE}/connected_chats.json").json() or {}
         
+        # ইউনিক চ্যাট আইডি সেট তৈরি (ডুপ্লিকেট রিমুভ করতে)
         target_channels = set()
-        target_channels.add(CHANNEL_ID)
         
+        # ১. ডিফল্ট চ্যানেল আইডি বের করা
+        try:
+            default_chat = bot.get_chat(CHANNEL_ID)
+            target_channels.add(default_chat.id)
+        except Exception:
+            target_channels.add(CHANNEL_ID)
+
+        # ২. ডাটাবেজ থেকে ইউনিক চ্যানেল আইডি ফিল্টার
         for k, v in saved_chats.items():
             if isinstance(v, dict) and 'id' in v:
-                target_channels.add(v['id'])
+                try:
+                    target_channels.add(int(v['id']))
+                except ValueError:
+                    target_channels.add(v['id'])
             elif isinstance(v, str):
-                target_channels.add(v)
+                try:
+                    target_channels.add(int(v))
+                except ValueError:
+                    target_channels.add(v)
             else:
-                target_channels.add(k.replace("m_", "-"))
+                clean_k = k.replace("m_", "-")
+                try:
+                    target_channels.add(int(clean_k))
+                except ValueError:
+                    target_channels.add(clean_k)
 
         r_type = resource.get('type')
         if r_type == 'plp':
@@ -178,25 +196,24 @@ def broadcast_new_resource(resource):
             f"✨ এখনই প্রিমিয়াম রিসোর্স অ্যাপ থেকে কয়েন দিয়ে আনলক করে নিতে পারেন!"
         )
         
-        # ১. চ্যানেলের জন্য বাটন (টেলিগ্রাম চ্যানেলে WebApp নিষিদ্ধ, তাই ডাইরেক্ট Bot লিংক দিতে হয়)
+        # চ্যানেলের জন্য ইউআরএল বাটন
         channel_markup = InlineKeyboardMarkup()
         btn_text = f"🛒 {cat_name} সংগ্রহ করুন"
         channel_markup.add(InlineKeyboardButton(btn_text, url=f"https://t.me/{BOT_USERNAME}?start=open_{target_tab}"))
 
-        # ২. ইনবক্স ইউজারদের জন্য সরাসরি WebApp বাটন
+        # ইনবক্স ইউজারদের জন্য সরাসরি WebApp বাটন
         inbox_markup = InlineKeyboardMarkup()
         inbox_markup.add(InlineKeyboardButton(btn_text, web_app=WebAppInfo(url=app_url_with_tab)))
 
         raw_vid = resource.get('raw_video_id')
         raw_photo = resource.get('raw_photo_id') or resource.get('image')
 
-        # --- চ্যানেলে পোস্ট সেন্ড ---
+        # --- চ্যানেলে একবারই পাঠানো ---
         for target in target_channels:
             try:
-                c_id = int(target) if (str(target).startswith('-') or str(target).isdigit()) else target
                 if raw_vid:
                     bot.send_video(
-                        chat_id=c_id,
+                        chat_id=target,
                         video=raw_vid,
                         caption=caption_text,
                         parse_mode="Markdown",
@@ -204,7 +221,7 @@ def broadcast_new_resource(resource):
                     )
                 else:
                     bot.send_photo(
-                        chat_id=c_id,
+                        chat_id=target,
                         photo=raw_photo,
                         caption=caption_text,
                         parse_mode="Markdown",
