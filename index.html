@@ -1493,7 +1493,6 @@
         const card = document.createElement('div');
         card.className = isXml ? 'card xml-fullwidth-card' : 'card';
         
-        // উপরে টাইপ এবং ডানপাশে মোট ডাউনলোড সংখ্যা ব্যাজ
         const badgePills = `
           <span class="type-pill">${item.type?.toUpperCase()}</span>
           <span class="download-count-pill">📥 ${claimCount}</span>
@@ -1501,12 +1500,11 @@
 
         let mediaHtml = '';
         if (isVideo) {
-          // ভিডিওর জায়গায় হালকা থাম্বনেইল ছবি দেওয়া হয়েছে যাতে ব্রাউজার আটকে না যায়
-          const thumbSrc = item.image || 'https://via.placeholder.com/400x225/0b101f/38bdf8?text=Video+Preview';
+          // ভিডিওর ঠিক ৬ষ্ঠ সেকেন্ড (#t=6) থেকে ফ্রেম তুলে প্রিভিউ থাম্বনেইল হিসেবে সেট করা হয়েছে
           mediaHtml = `
             <div class="card-thumb-wrap" onclick="openMediaPreview('${mediaSource}', true)">
               ${badgePills}
-              <img src="${thumbSrc}" alt="video-thumb" loading="lazy" style="width:100%; height:100%; object-fit:cover;">
+              <video src="${mediaSource}#t=6" muted preload="metadata" playsinline style="width:100%; height:100%; object-fit:cover; pointer-events:none;"></video>
               <div class="video-play-indicator">▶</div>
             </div>`;
         } else {
@@ -1549,7 +1547,7 @@
         vid.style.display = 'block';
         vid.src = src;
         vid.preload = "auto";
-        vid.load(); // ভিডিও দ্রুত বাফারিং শুরু করবে
+        vid.load();
         
         const playPromise = vid.play();
         if (playPromise !== undefined) {
