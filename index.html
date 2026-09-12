@@ -16,26 +16,20 @@
   <style>
     :root {
       --bg-base: #02040a;
-      
-      /* আইওএস হাই-কনট্রাস্ট লিকুইড গ্লাস */
       --liquid-glass: rgba(13, 17, 30, 0.76);
       --liquid-glass-card: rgba(18, 24, 42, 0.82);
-      
       --liquid-border-top: rgba(255, 255, 255, 0.45);
       --liquid-border-bot: rgba(255, 255, 255, 0.08);
       --liquid-border-side: rgba(255, 255, 255, 0.18);
-      
       --liquid-specular: 
         inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.4),
         inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.8);
-
       --accent: #38bdf8;
       --accent-glow: rgba(56, 189, 248, 0.55);
       --gold: #fbbf24;
       --gold-glow: rgba(251, 191, 36, 0.5);
       --green: #22c55e;
       --danger: #f43f5e;
-      
       --text-main: #ffffff;
       --text-sub: #cbd5e1;
       --text-dim: #94a3b8;
@@ -60,7 +54,6 @@
       position: relative;
     }
 
-    /* ভাইব্রেন্ট ব্যাকগ্রাউন্ড মেশ গ্লো */
     .apple-fluid-canvas {
       position: fixed;
       top: 0;
@@ -78,7 +71,6 @@
       filter: blur(60px);
     }
 
-    /* লাইভ বাবল এনিমেশন */
     .bubbles-container {
       position: fixed;
       top: 0;
@@ -112,7 +104,6 @@
 
     #confettiCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4000; }
 
-    /* টোস্ট ক্যাপসুল */
     #toast { 
       position: fixed; 
       top: -85px; 
@@ -142,7 +133,6 @@
     }
     #toast.show { top: 22px; }
 
-    /* টপ বার */
     .top-bar { 
       display: flex; 
       justify-content: space-between; 
@@ -828,7 +818,7 @@
         </div>
       </div>
 
-      <!-- অ্যাডমিন ডাউনলোডার ট্র্যাকিং টেবিল -->
+      <!-- কে কোন ফাইল ডাউনলোড করেছে (ইউজার হিস্ট্রি) -->
       <div class="stat-card" style="padding: 16px; margin-top: 18px;">
         <h3 style="font-size: 14.5px; text-align: left; margin-bottom: 8px; font-weight: 800; color: var(--gold);">🕵️‍♂️ কে কোন ফাইল ডাউনলোড করেছে (ইউজার হিস্ট্রি)</h3>
         <div style="overflow-x: auto;">
@@ -1509,7 +1499,7 @@
         const card = document.createElement('div');
         card.className = isXml ? 'card xml-fullwidth-card' : 'card';
         
-        // উপরে টাইপ এবং ডানপাশে মোট ডাউনলোড সংখ্যা
+        // উপরে টাইপ এবং ডানপাশে মোট ডাউনলোড সংখ্যা ব্যাজ
         const badgePills = `
           <span class="type-pill">${item.type?.toUpperCase()}</span>
           <span class="download-count-pill">📥 ${claimCount}</span>
@@ -1517,10 +1507,12 @@
 
         let mediaHtml = '';
         if (isVideo) {
+          // ভিডিওর ব্যাকআপ থাম্বনেইলকে পোস্টার হিসেবে সেট
+          const posterAttr = item.image ? `poster="${item.image}"` : '';
           mediaHtml = `
             <div class="card-thumb-wrap" onclick="openMediaPreview('${mediaSource}', true)">
               ${badgePills}
-              <video src="${mediaSource}" muted loop playsinline autoplay preload="metadata"></video>
+              <video src="${mediaSource}" ${posterAttr} muted loop playsinline preload="metadata"></video>
               <div class="video-play-indicator">▶</div>
             </div>`;
         } else {
@@ -1773,4 +1765,4 @@
     initApp();
   </script>
 </body>
-          </html>
+  </html>
