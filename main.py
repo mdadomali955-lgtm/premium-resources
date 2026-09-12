@@ -936,7 +936,7 @@ def save_resource_to_firebase(message):
     else:
         bot.reply_to(message, "❌ ফায়ারবেসে তথ্য সংরক্ষণ করা যায়নি।", reply_markup=get_admin_dashboard_keyboard())
 
-# --- চ্যানেলে পোস্ট করা বা না করার কনফার্মেশন হ্যান্ডলার ---
+# --- চ্যানেলে পোস্ট করা বা না করার কনফার্মেশন হ্যান্ডলার (রেফারেল লিংকসহ) ---
 @bot.callback_query_handler(func=lambda call: call.data.startswith('ch_post:'))
 def handle_channel_post_decision(call):
     if int(call.from_user.id) != int(ADMIN_ID):
@@ -967,12 +967,12 @@ def handle_channel_post_decision(call):
                 f"📌 *নাম:* {resource['name']}\n"
                 f"📁 *ক্যাটাগরি:* {res_type_upper}\n"
                 f"🪙 *মূল্য:* {resource['coins']} কয়েন\n\n"
-                f"🚀 ফ্রিতে সংগ্রহ করতে নিচের বাটনে চাপ দিয়ে অ্যাপ ওপেন করুন:"
+                f"🚀 ফ্রিতে সংগ্রহ করতে নিচের বাটনে চাপ দিয়ে বটে প্রবেশ করুন:"
             )
             
-            # শুধুমাত্র মিনি অ্যাপ ওপেন করার একক বাটন
+            # চ্যানেলের বাটনটিতে অ্যাডমিনের রেফারেল লিংক বা মিনি অ্যাপ লিংক সেট করা হয়েছে
             markup = InlineKeyboardMarkup()
-            markup.add(InlineKeyboardButton("🚀 মিনি অ্যাপ ওপেন করুন 💎", url=WEB_APP_URL))
+            markup.add(InlineKeyboardButton("🚀 মিনি অ্যাপ ওপেন করুন 💎", url=f"https://t.me/{BOT_USERNAME}?start=ref_{ADMIN_ID}"))
             
             if resource.get('video_file_id'):
                 bot.send_video(CHANNEL_ID, resource['video_file_id'], caption=channel_caption, parse_mode="Markdown", reply_markup=markup)
@@ -1047,4 +1047,4 @@ if __name__ == "__main__":
     bot.infinity_polling(
         skip_pending=True, 
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-)
+                     )
