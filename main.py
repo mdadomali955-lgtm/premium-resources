@@ -936,7 +936,7 @@ def save_resource_to_firebase(message):
     else:
         bot.reply_to(message, "❌ ফায়ারবেসে তথ্য সংরক্ষণ করা যায়নি।", reply_markup=get_admin_dashboard_keyboard())
 
-# --- চ্যানেলে পোস্ট করা বা না করার কনফার্মেশন হ্যান্ডলার ---
+# --- চ্যানেলে পোস্ট করা বা না করার কনফার্মেশন হ্যান্ডলার (সংশোধিত ও ত্রুটিমুক্ত) ---
 @bot.callback_query_handler(func=lambda call: call.data.startswith('ch_post:'))
 def handle_channel_post_decision(call):
     if int(call.from_user.id) != int(ADMIN_ID):
@@ -971,8 +971,9 @@ def handle_channel_post_decision(call):
                 f"🚀 ফ্রিতে সংগ্রহ করতে নিচের বাটনে চাপ দিয়ে অ্যাপ ওপেন করুন:"
             )
             
+            # চ্যানেলের জন্য সঠিক url বাটন ফরম্যাট যা BUTTON_TYPE_INVALID এরর দূর করবে
             markup = InlineKeyboardMarkup()
-            markup.add(InlineKeyboardButton("🚀 মিনি অ্যাপ ওপেন করুন 💎", web_app=WebAppInfo(url=WEB_APP_URL)))
+            markup.add(InlineKeyboardButton("🚀 মিনি অ্যাপ ওপেন করুন 💎", url=WEB_APP_URL))
             
             if resource.get('video'):
                 bot.send_video(CHANNEL_ID, resource['video'], caption=channel_caption, parse_mode="Markdown", reply_markup=markup)
