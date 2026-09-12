@@ -1500,11 +1500,11 @@
 
         let mediaHtml = '';
         if (isVideo) {
-          // ভিডিওর ঠিক ৬ষ্ঠ সেকেন্ড (#t=6) থেকে ফ্রেম তুলে প্রিভিউ থাম্বনেইল হিসেবে সেট করা হয়েছে
+          // ভিডিওর সঠিক রেশিও (Aspect Ratio) বজায় রেখে ৬ষ্ঠ সেকেন্ডের ফ্রেম থাম্বনেইল হিসেবে সেট করা হয়েছে
           mediaHtml = `
             <div class="card-thumb-wrap" onclick="openMediaPreview('${mediaSource}', true)">
               ${badgePills}
-              <video src="${mediaSource}#t=6" muted preload="metadata" playsinline style="width:100%; height:100%; object-fit:cover; pointer-events:none;"></video>
+              <video src="${mediaSource}#t=6" muted preload="metadata" playsinline style="width:100%; height:100%; object-fit:contain; background:#000; pointer-events:none;"></video>
               <div class="video-play-indicator">▶</div>
             </div>`;
         } else {
@@ -1765,4 +1765,4 @@
     initApp();
   </script>
 </body>
-  </html>
+                                                                                                                                                                                                                          </html>
