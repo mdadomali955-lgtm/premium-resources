@@ -1500,11 +1500,11 @@
 
         let mediaHtml = '';
         if (isVideo) {
-          // XML ভিডিওর থাম্বনেইল লোড সুনিশ্চিত করতে preload="auto" এবং #t=1 ব্যবহার করা হয়েছে
+          // ভিডিও লোড না হলে থাম্বনেইল হিসেবে কালো ব্যাকগ্রাউন্ডের ওপর প্লে বাটন দেখানোর ব্যবস্থা (Fallback Widget)
           mediaHtml = `
             <div class="card-thumb-wrap" onclick="openMediaPreview('${mediaSource}', true)">
               ${badgePills}
-              <video src="${mediaSource}#t=1" muted preload="auto" playsinline style="width:100%; height:100%; object-fit:contain; background:#000; pointer-events:none;" onerror="this.style.display='none';"></video>
+              <video src="${mediaSource}#t=1" muted preload="metadata" playsinline style="width:100%; height:100%; object-fit:contain; background:#000;" onerror="this.style.display='none';"></video>
               <div class="video-play-indicator">▶</div>
             </div>`;
         } else {
@@ -1765,4 +1765,4 @@
     initApp();
   </script>
 </body>
-          </html>
+            </html>
