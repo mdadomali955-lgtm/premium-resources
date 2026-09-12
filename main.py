@@ -318,7 +318,7 @@ def handle_verify_subscription(call):
                 reply_markup=get_main_keyboard()
             )
     else:
-        bot.answer_callback_query(call.id, "❌ আপনি এখনও চ্যানেলে জয়েন করেননি! আগে জয়েন করুন।", show_alert=True)
+        bot.answer_callback_query(call.id, "❌ আপনি এখনও চ্যানেলে জয়েন করেননি! আগে জয়েন করুন.", show_alert=True)
 
 # মূল ফাইল ডেলিভারি ফাংশন
 def process_resource_delivery(chat_id, arg_text):
@@ -802,7 +802,7 @@ def get_coins(message):
         bot.reply_to(message, "কয়েন সংখ্যায় দিন (যেমন: 15)। আবার লিখুন:")
         bot.register_next_step_handler(message, get_coins)
 
-# ছবি প্রসেসিং
+# ছবি প্রসেসিং (ফাইল আইডি সহ সেভ করা যাতে চ্যানেলে এরর না আসে)
 def get_image(message):
     if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
@@ -812,8 +812,9 @@ def get_image(message):
         bot.register_next_step_handler(message, get_image)
         return
     
-    file_id = message.photo[-1].file_id
-    file_info = bot.get_file(file_id)
+    photo_file_id = message.photo[-1].file_id
+    admin_temp_data[message.from_user.id]['image_file_id'] = photo_file_id
+    file_info = bot.get_file(photo_file_id)
     admin_temp_data[message.from_user.id]['image'] = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
     
     cat = admin_temp_data[message.from_user.id]['type']
@@ -836,7 +837,7 @@ def get_image(message):
         )
         bot.register_next_step_handler(message, get_batch_files_or_link)
 
-# ভিডিও থাম্বনেইল প্রসেসিং
+# ভিডিও থাম্বনেইল প্রসেসিং (ফাইল আইডি সহ সেভ করা)
 def get_xml_video(message):
     if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
@@ -847,6 +848,7 @@ def get_xml_video(message):
         return
 
     vid_id = message.video.file_id
+    admin_temp_data[message.from_user.id]['video_file_id'] = vid_id
     file_info = bot.get_file(vid_id)
     admin_temp_data[message.from_user.id]['video'] = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
     
@@ -910,12 +912,10 @@ def save_resource_to_firebase(message):
     res = requests.post(f"{FIREBASE_BASE}/resources.json", json=resource)
     
     if res.status_code == 200:
-        # সফলভাবে ফায়ারবেসে সেভ হওয়ার পর ইউনিক রিসোর্স আইডি বের করা
         res_key = res.json().get("name")
         total_files = len(resource.get('file_ids', []))
         file_info_msg = f"📦 মোট ফাইল: {total_files}টি" if total_files > 0 else "🔗 লিঙ্ক সংযুক্ত"
         
-        # অ্যাডমিনকে জিজ্ঞেস করা হবে সে কি চ্যানেলে পোস্ট করতে চায় কি না
         markup = InlineKeyboardMarkup(row_width=2)
         markup.add(
             InlineKeyboardButton("✅ হ্যাঁ, চ্যানেলে পোস্ট করুন", callback_data=f"ch_post:yes:{res_key}"),
@@ -936,7 +936,7 @@ def save_resource_to_firebase(message):
     else:
         bot.reply_to(message, "❌ ফায়ারবেসে তথ্য সংরক্ষণ করা যায়নি।", reply_markup=get_admin_dashboard_keyboard())
 
-# --- চ্যানেলে পোস্ট করা বা না করার কনফার্মেশন হ্যান্ডলার (সংশোধিত ও ত্রুটিমুক্ত) ---
+# --- চ্যানেলে পোস্ট করা বা না করার কনফার্মেশন হ্যান্ডলার (ফাইল আইডি ব্যবহার করে ত্রুটিমুক্ত পোস্টিং) ---
 @bot.callback_query_handler(func=lambda call: call.data.startswith('ch_post:'))
 def handle_channel_post_decision(call):
     if int(call.from_user.id) != int(ADMIN_ID):
@@ -956,7 +956,6 @@ def handle_channel_post_decision(call):
         )
         return
     
-    # হ্যাঁ সিলেক্ট করলে ডাটাবেজ থেকে রিসোর্স এনে চ্যানেলে পোস্ট পাঠানো হবে
     try:
         item_res = requests.get(f"{FIREBASE_BASE}/resources/{res_key}.json")
         resource = item_res.json()
@@ -971,11 +970,15 @@ def handle_channel_post_decision(call):
                 f"🚀 ফ্রিতে সংগ্রহ করতে নিচের বাটনে চাপ দিয়ে অ্যাপ ওপেন করুন:"
             )
             
-            # চ্যানেলের জন্য সঠিক url বাটন ফরম্যাট যা BUTTON_TYPE_INVALID এরর দূর করবে
             markup = InlineKeyboardMarkup()
             markup.add(InlineKeyboardButton("🚀 মিনি অ্যাপ ওপেন করুন 💎", url=WEB_APP_URL))
             
-            if resource.get('video'):
+            # সরাসরি টেলিগ্রাম ফাইল আইডি ব্যবহার করে চ্যানেলে ভিডিও বা ছবি পাঠানোর মাধ্যমে HTTP URL ত্রুটি দূর করা হয়েছে
+            if resource.get('video_file_id'):
+                bot.send_video(CHANNEL_ID, resource['video_file_id'], caption=channel_caption, parse_mode="Markdown", reply_markup=markup)
+            elif resource.get('image_file_id'):
+                bot.send_photo(CHANNEL_ID, resource['image_file_id'], caption=channel_caption, parse_mode="Markdown", reply_markup=markup)
+            elif resource.get('video'):
                 bot.send_video(CHANNEL_ID, resource['video'], caption=channel_caption, parse_mode="Markdown", reply_markup=markup)
             elif resource.get('image'):
                 bot.send_photo(CHANNEL_ID, resource['image'], caption=channel_caption, parse_mode="Markdown", reply_markup=markup)
@@ -1044,4 +1047,4 @@ if __name__ == "__main__":
     bot.infinity_polling(
         skip_pending=True, 
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-    )
+        )
