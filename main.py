@@ -555,7 +555,7 @@ def show_edit_options(chat_id, res_key, item_data):
     if r_type == 'xml':
         markup.add(
             InlineKeyboardButton("🎬 প্রিভিউ ভিডিও পরিবর্তন", callback_data=f"do_upd:{res_key}:video"),
-            InlineKeyboardButton("🖼️ থাম্বনেইল ছবি (ঐচ্ছিক)", callback_data=f"do_upd:{res_key}:image"),
+            InlineKeyboardButton("🖼️ থাম্বনেইল ছবি", callback_data=f"do_upd:{res_key}:image"),
             InlineKeyboardButton("⚡ মূল XML ফাইল পরিবর্তন", callback_data=f"do_upd:{res_key}:files")
         )
     elif r_type == 'plp':
@@ -992,7 +992,7 @@ def handle_channel_post_decision(call):
                 reply_markup=get_admin_dashboard_keyboard()
             )
         else:
-            bot.send_message(call.message.chat.id, "❌ রিসোর্স ডেটা পাওয়া যায়নি।", reply_markup=get_admin_dashboard_keyboard())
+            bot.send_message(call.message.chat.id, "❌ রিসোর্স ডেটা পাওয়া যায়নি।", reply_markup=get_admin_dashboard_keyword())
     except Exception as e:
         bot.send_message(call.message.chat.id, f"❌ চ্যানেলে পোস্ট করতে সমস্যা হয়েছে: {e}", reply_markup=get_admin_dashboard_keyboard())
 
@@ -1048,4 +1048,4 @@ if __name__ == "__main__":
     bot.infinity_polling(
         skip_pending=True, 
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-                        )
+    )
