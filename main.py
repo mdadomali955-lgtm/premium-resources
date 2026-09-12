@@ -253,7 +253,7 @@ def process_apply_coins(message):
         bot.reply_to(message, "⚠️ কয়েন সংখ্যায় দিন (যেমন: 500)। আবার লিখুন:")
         bot.register_next_step_handler(message, process_apply_coins)
 
-# সরাসরি কমান্ড
+# সরাসরি কমান্ড সাপোর্ট
 @bot.message_handler(commands=['mycoins'])
 def set_admin_my_coins_cmd(message):
     if int(message.from_user.id) != int(ADMIN_ID):
@@ -330,7 +330,7 @@ def process_resource_delivery(chat_id, arg_text):
         if item:
             res_type = item.get("type", "plp").upper()
             
-            # ড্রাইভ বা এক্সটার্নাল লিঙ্ক হলে
+            # ড্রাইভ বা এক্সটার্নাল লিঙ্ক
             if item.get("download_link"):
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton("📥 সরাসরি ফাইল ডাউনলোড করুন", url=item["download_link"]))
@@ -346,7 +346,7 @@ def process_resource_delivery(chat_id, arg_text):
                 )
                 return
 
-            # টেলিগ্রাম ফাইল আইডি হলে
+            # টেলিগ্রাম ফাইল আইডি
             file_ids = item.get("file_ids") or ([] if not item.get("file_id") else [item.get("file_id")])
             if file_ids:
                 total_f = len(file_ids)
@@ -920,7 +920,7 @@ def save_resource_to_firebase(message):
             f"📁 ক্যাটাগরি: {resource['type'].upper()}\n"
             f"🪙 মূল্য: {resource['coins']} কয়েন\n"
             f"{file_info_msg}\n\n"
-            f"✅ ওয়েব অ্যাপে যুক্ত হয়েছে (কোনো ইউজারের ইনবক্সে নোটিফিকেশন পাঠানো হয়নি)।",
+            f"✅ ওয়েব অ্যাপে যুক্ত হয়েছে (কোনো ইউজারের ইনবক্সে ব্রডকাস্ট পাঠানো হয়নি)।",
             reply_markup=get_admin_dashboard_keyboard()
         )
     else:
@@ -978,4 +978,4 @@ if __name__ == "__main__":
     bot.infinity_polling(
         skip_pending=True, 
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-    )
+                                )
