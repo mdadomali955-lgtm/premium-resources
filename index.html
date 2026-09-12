@@ -16,27 +16,20 @@
   <style>
     :root {
       --bg-base: #02040a;
-      
-      /* আইওএস হাই-কনট্রাস্ট লিকুইড গ্লাস */
       --liquid-glass: rgba(13, 17, 30, 0.76);
       --liquid-glass-card: rgba(18, 24, 42, 0.82);
-      
       --liquid-border-top: rgba(255, 255, 255, 0.45);
       --liquid-border-bot: rgba(255, 255, 255, 0.08);
       --liquid-border-side: rgba(255, 255, 255, 0.18);
-      
       --liquid-specular: 
         inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.4),
         inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.8);
-
       --accent: #38bdf8;
       --accent-glow: rgba(56, 189, 248, 0.55);
       --gold: #fbbf24;
       --gold-glow: rgba(251, 191, 36, 0.5);
       --green: #22c55e;
       --danger: #f43f5e;
-      
-      /* নিখুঁত টেক্সট স্পষ্টতা */
       --text-main: #ffffff;
       --text-sub: #cbd5e1;
       --text-dim: #94a3b8;
@@ -61,7 +54,6 @@
       position: relative;
     }
 
-    /* ভাইব্রেন্ট ব্যাকগ্রাউন্ড মেশ গ্লো */
     .apple-fluid-canvas {
       position: fixed;
       top: 0;
@@ -79,7 +71,6 @@
       filter: blur(60px);
     }
 
-    /* লাইভ বাবল এনিমেশন */
     .bubbles-container {
       position: fixed;
       top: 0;
@@ -105,25 +96,14 @@
     }
 
     @keyframes floatUp {
-      0% {
-        transform: translateY(0) scale(0.8) rotate(0deg);
-        opacity: 0;
-      }
-      15% {
-        opacity: 0.8;
-      }
-      85% {
-        opacity: 0.7;
-      }
-      100% {
-        transform: translateY(-115vh) scale(1.15) rotate(360deg);
-        opacity: 0;
-      }
+      0% { transform: translateY(0) scale(0.8) rotate(0deg); opacity: 0; }
+      15% { opacity: 0.8; }
+      85% { opacity: 0.7; }
+      100% { transform: translateY(-115vh) scale(1.15) rotate(360deg); opacity: 0; }
     }
 
     #confettiCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4000; }
 
-    /* টোস্ট ক্যাপসুল */
     #toast { 
       position: fixed; 
       top: -85px; 
@@ -153,7 +133,6 @@
     }
     #toast.show { top: 22px; }
 
-    /* টপ বার */
     .top-bar { 
       display: flex; 
       justify-content: space-between; 
@@ -240,7 +219,6 @@
       text-shadow: 0 1px 3px rgba(0,0,0,0.6);
     }
 
-    /* লাইভ স্ট্যাটাস বার */
     .live-stats-bar { 
       display: grid; 
       grid-template-columns: repeat(4, 1fr); 
@@ -262,7 +240,6 @@
     .live-stat-val { font-size: 17px; font-weight: 900; color: #38bdf8; text-shadow: 0 0 12px var(--accent-glow); }
     .live-stat-lbl { font-size: 9.5px; color: var(--text-sub); font-weight: 800; text-transform: uppercase; letter-spacing: 0.2px; }
 
-    /* ডেইলি কার্ড */
     .daily-card { 
       background: linear-gradient(135deg, rgba(25, 33, 56, 0.85), rgba(15, 23, 42, 0.9)); 
       border-top: 1px solid rgba(255, 255, 255, 0.45); 
@@ -294,7 +271,6 @@
     .daily-btn:active { transform: scale(0.94); }
     .daily-btn:disabled { background: #334155 !important; color: #94a3b8 !important; box-shadow: none !important; cursor: not-allowed; }
 
-    /* সার্চ ও ফিল্টার */
     .search-box { 
       width: 100%; 
       padding: 16px 20px; 
@@ -351,7 +327,6 @@
       text-shadow: 0 1px 3px rgba(0,0,0,0.8);
     }
 
-    /* রিসোর্স গ্রিড ও সাধারণ কার্ড */
     .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
     .card { 
       background: var(--liquid-glass-card); 
@@ -374,7 +349,6 @@
     .card img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; transition: transform 0.4s; }
     .card:hover img { transform: scale(1.05); }
 
-    /* ফুল-উইডথ সিনেমাটিক XML ভিডিও কার্ড */
     .card.xml-fullwidth-card {
       grid-column: span 2;
       border-radius: 28px;
@@ -456,7 +430,6 @@
     }
     .btn-claim:active { transform: scale(0.92); }
 
-    /* গেম জোন */
     .wheel-container { position: relative; width: 240px; height: 240px; margin: 24px auto; display: flex; align-items: center; justify-content: center; }
     #wheelCanvas { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 35px rgba(251, 191, 36, 0.35); transition: transform 4s cubic-bezier(0.15, 0.9, 0.25, 1); }
     .wheel-arrow { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 26px solid var(--danger); z-index: 20; filter: drop-shadow(0 3px 8px rgba(0,0,0,0.8)); }
@@ -465,7 +438,6 @@
     .scratch-reward { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0a0f1d; font-size: 18px; font-weight: 900; color: var(--gold); }
     #scratchCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer; }
 
-    /* ভিউ পেজ */
     .view-page { display: none; animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
     .view-page.active { display: block; }
     @keyframes fadeIn {
@@ -510,14 +482,12 @@
     .unlocked-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; text-align: left; }
     .unlocked-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(255, 255, 255, 0.06); border-top: 1px solid rgba(255,255,255,0.2); border-radius: 16px; font-size: 12.5px; color: #ffffff; font-weight: 700; }
 
-    /* অ্যাডমিন টেবিল */
     .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12.5px; text-align: left; }
     .admin-table th { background: rgba(255, 255, 255, 0.08); color: var(--accent); padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.15); font-weight: 800; }
     .admin-table td { padding: 14px 10px; border-bottom: 1px solid rgba(255,255,255,0.06); color: #ffffff; font-weight: 700; }
     .badge-count { background: rgba(34, 197, 94, 0.22); color: #4ade80; padding: 5px 10px; border-radius: 10px; font-weight: 900; border: 1px solid rgba(34, 197, 94, 0.35); }
     .badge-rev { background: rgba(251, 191, 36, 0.22); color: var(--gold); padding: 5px 10px; border-radius: 10px; font-weight: 900; border: 1px solid rgba(251, 191, 36, 0.35); }
 
-    /* প্রিমিয়াম ফুলস্ক্রিন মিডিয়া মোডাল */
     .preview-modal { 
       display: none; 
       position: fixed; 
@@ -560,7 +530,6 @@
       z-index: 2600;
     }
 
-    /* ডক বার */
     .bottom-nav { 
       position: fixed; 
       bottom: 0; 
@@ -599,14 +568,11 @@
 <body>
 
   <div class="apple-fluid-canvas"></div>
-  
-  <!-- লাইভ বাবল লেয়ার -->
   <div class="bubbles-container" id="bubblesContainer"></div>
 
   <canvas id="confettiCanvas"></canvas>
   <div id="toast"><span id="toastIcon">⭐</span><span id="toastMsg">বার্তা</span></div>
 
-  <!-- শীর্ষ বার -->
   <div class="top-bar">
     <div class="user-info">
       <div class="user-avatar-wrap">
@@ -628,7 +594,6 @@
       <span id="noticeText">স্বাগতম! নতুন প্রিমিয়াম PLP, XML ও ফন্ট যুক্ত করা হয়েছে।</span>
     </div>
 
-    <!-- গ্লোবাল লাইভ স্ট্যাটাস বার -->
     <div class="live-stats-bar">
       <div class="live-stat-item">
         <span class="live-stat-val" id="statVisits">0</span>
@@ -652,7 +617,7 @@
     <div id="pageHome" class="view-page active">
       <div class="daily-card">
         <div>
-          <h4 style="font-size: 13.5px; font-weight: 800; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.6);">🎁 দৈনিক ফ্রি রিওয়ার্ড</h4>
+          <h4 style="font-size: 13.5px; font-weight: 800; color: #fff;">🎁 দৈনিক ফ্রি রিওয়ার্ড</h4>
           <p style="font-size: 11.5px; color: var(--text-sub); margin-top: 2px;">প্রতিদিন পান ফ্রিতে +৫ কয়েন</p>
         </div>
         <button class="daily-btn" id="btnDailyCheck" onclick="claimDailyReward()">ক্লেইম করুন</button>
@@ -660,7 +625,6 @@
 
       <input type="text" class="search-box" id="searchInput" placeholder="🔍 কাঙ্ক্ষিত ফাইল, XML বা ফন্টের নাম লিখুন..." oninput="handleSearch()">
 
-      <!-- ক্যাটাগরি বাটন সমূহ -->
       <div class="tabs">
         <button class="tab-btn active" id="tabBtn-plp" onclick="switchCategory('plp', this)">🎨 PLP ফাইল</button>
         <button class="tab-btn" id="tabBtn-font" onclick="switchCategory('font', this)">🔤 ফন্ট সমূহ</button>
@@ -825,14 +789,12 @@
 
   </div>
 
-  <!-- বড় প্রিভিউ মোডাল -->
   <div class="preview-modal" id="mediaModal" onclick="closeMediaPreview()">
     <span class="preview-close">&times;</span>
     <img id="modalImg" src="" alt="preview" style="display: none;">
     <video id="modalVideo" src="" controls autoplay playsinline style="display: none;"></video>
   </div>
 
-  <!-- ডক বার -->
   <div class="bottom-nav" id="bottomNavBar">
     <button class="nav-item active" onclick="switchNav('pageHome', this)"><span class="nav-icon">💎</span><span>রিসোর্স</span></button>
     <button class="nav-item" onclick="switchNav('pageGames', this)"><span class="nav-icon">🎮</span><span>গেমস</span></button>
@@ -876,7 +838,6 @@
       { text: "+10 🪙", coins: 10, bg: "#eab308" }
     ];
 
-    /* প্রিমিয়াম বাবল এফেক্ট */
     function initLiquidBubbles() {
       const container = document.getElementById('bubblesContainer');
       const bubbleCount = 18;
@@ -1133,28 +1094,10 @@
         div.className = 'unlocked-item';
         div.innerHTML = `
           <span><b>${it.name}</b> (${it.type?.toUpperCase()})</span>
-          <button class="btn-claim" onclick="sendDeliveryAndOpenBot('${k}')">ইনবক্সে নিন ⚡</button>
+          <button class="btn-claim" onclick="openClaimBot('${k}')">পুনরায় ইনবক্সে নিন ⚡</button>
         `;
         container.appendChild(div);
       });
-    }
-
-    /* বট ইনবক্সে সরাসরি ডেলিভারি পাঠানো ও চ্যাট ওপেন করা */
-    async function sendDeliveryAndOpenBot(key) {
-      triggerHaptic('success');
-      showToast("আপনার বটের ইনবক্সে ফাইল পাঠানো হচ্ছে... 📥", "⏳");
-
-      try {
-        await fetch(`${RENDER_BACKEND_URL}/api/instant-deliver`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id: user.id, resource_key: key })
-        });
-        showToast("ফাইল আপনার বটের ইনবক্সে পাঠানো হয়েছে! চ্যাট চেক করুন।", "🎉");
-      } catch (err) {
-        // ব্যাকএন্ড কল ফেইল হলে ফলব্যাক লিংক
-        openClaimBot(key);
-      }
     }
 
     function openClaimBot(key) {
@@ -1571,7 +1514,7 @@
       modal.classList.remove('active');
     }
 
-    /* রিসোর্স ক্রয় ও স্পষ্ট নোটিফিকেশন প্রদান */
+    /* রিসোর্স ক্রয় ও নোটিফিকেশন প্রদান */
     async function claimResource(key, cost, name, type) {
       triggerHaptic();
       if ((userData.coins || 0) < cost) {
@@ -1617,17 +1560,11 @@
           }
         } catch(e) {}
 
-        // স্পষ্ট বার্তা: ফাইল কোথায় যাবে তা নোটিফিকেশনে বলে দেওয়া
-        showToast("🎉 কেনা সফল হয়েছে! আপনার বটের ইনবক্সে ফাইলটি পাঠানো হয়েছে।", "📥");
-
-        // ব্যাকএন্ডের মাধ্যমে ইউজারের ইনবক্সে ফাইল পাঠিয়ে দেওয়া এবং অপশন পপআপ দেওয়া
-        sendDeliveryAndOpenBot(key);
+        showToast("🎉 কেনা সফল হয়েছে! ফাইলটি সরাসরি আপনার বটের ইনবক্সে দেওয়া হয়েছে।", "📥");
 
         setTimeout(() => {
-          if (confirm("🎉 আপনার রিসোর্সটি সরাসরি Telegram Bot ইনবক্সে পৌঁছে গেছে!\n\nফাইলটি ডাউনলোড করতে এখনই কি বট ইনবক্স ওপেন করবেন?")) {
-            openClaimBot(key);
-          }
-        }, 1200);
+          openClaimBot(key);
+        }, 600);
       }
     }
 
@@ -1722,4 +1659,4 @@
     initApp();
   </script>
 </body>
-          </html>
+        </html>
