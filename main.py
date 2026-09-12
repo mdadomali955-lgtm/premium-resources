@@ -17,7 +17,6 @@ ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
 WEB_APP_URL = "https://premium-resources.vercel.app"
 CHANNEL_ID = "@PLPStoreBD0"
-CHANNEL_URL = "https://t.me/PLPStoreBD0"
 BOT_USERNAME = "PLPStoreOfficialBot"
 
 bot = telebot.TeleBot(BOT_TOKEN)
@@ -58,23 +57,6 @@ def keep_alive():
     t = Thread(target=run_server)
     t.daemon = True
     t.start()
-
-def is_user_member(user_id):
-    if int(user_id) == int(ADMIN_ID):
-        return True
-    try:
-        member = bot.get_chat_member(chat_id=CHANNEL_ID, user_id=user_id)
-        return member.status in ['member', 'administrator', 'creator']
-    except Exception:
-        return True
-
-def get_force_sub_keyboard(target_arg=""):
-    markup = InlineKeyboardMarkup(row_width=1)
-    markup.add(
-        InlineKeyboardButton("📢 চ্যানেলে জয়েন করুন", url=CHANNEL_URL),
-        InlineKeyboardButton("🔄 ভেরিফাই করুন", callback_data=f"check_sub:{target_arg}")
-    )
-    return markup
 
 def get_main_keyboard():
     markup = InlineKeyboardMarkup()
@@ -167,7 +149,7 @@ def test_channel_post(message):
     except Exception as e:
         bot.reply_to(message, f"❌ চ্যানেলে পোস্ট যায়নি!\n\nকারণ: `{e}`\n\n💡 সমাধান: চ্যানেলের Administrators অপশনে গিয়ে বটকে **Post Messages** পারমিশন দিন।")
 
-# --- রিসোর্স ব্রডকাস্ট ফাংশন (শুধু চ্যানেলে যাবে) ---
+# --- নতুন রিসোর্স ব্রডকাস্ট ফাংশন (শুধুমাত্র চ্যানেলে পোস্ট যাবে) ---
 def broadcast_new_resource(resource):
     try:
         saved_chats = requests.get(f"{FIREBASE_BASE}/connected_chats.json").json() or {}
@@ -224,6 +206,7 @@ def broadcast_new_resource(resource):
         raw_vid = resource.get('raw_video_id')
         raw_photo = resource.get('raw_photo_id') or resource.get('image')
 
+        # শুধুমাত্র কানেক্টেড চ্যানেলে পোস্ট পাঠানো হবে
         for target in target_channels:
             try:
                 if raw_vid:
@@ -448,70 +431,7 @@ def give_user_coins_cmd(message):
     except Exception as e:
         bot.reply_to(message, f"❌ এরর: {e}")
 
-# --- ফোর্স সাবস্ক্রিপশন ভেরিফিকেশন বাটন হ্যান্ডলার ---
-@bot.callback_query_handler(func=lambda call: call.data.startswith('check_sub:'))
-def handle_verify_subscription(call):
-    user_id = call.from_user.id
-    target_arg = call.data.split("check_sub:")[1]
-
-    if is_user_member(user_id):
-        bot.delete_message(call.message.chat.id, call.message.message_id)
-        bot.answer_callback_query(call.id, "✅ ভেরিফিকেশন সফল হয়েছে!", show_alert=False)
-        
-        if target_arg.startswith("get_"):
-            process_resource_delivery(call.message.chat.id, target_arg)
-        else:
-            bot.send_message(
-                call.message.chat.id,
-                f"👋 স্বাগতম {call.from_user.first_name}!\n\n💎 প্রিমিয়াম রিসোর্স অ্যাপে আপনাকে স্বাগতম। নিচের বাটনে চাপ দিয়ে অ্যাপ ওপেন করুন:",
-                reply_markup=get_main_keyboard()
-            )
-    else:
-        bot.answer_callback_query(call.id, "❌ আপনি এখনও চ্যানেলে জয়েন করেননি! আগে জয়েন করুন।", show_alert=True)
-
-# ফাইল ডেলিভারি ফাংশন
-def process_resource_delivery(chat_id, arg_text):
-    file_key = arg_text.replace("get_", "").split("_from_")[0]
-    bot.send_message(chat_id, "⏳ আপনার ফাইল(সমূহ) প্রস্তুত করা হচ্ছে...")
-    try:
-        res = requests.get(f"{FIREBASE_BASE}/resources/{file_key}.json")
-        item = res.json()
-        if item:
-            res_type = item.get("type", "plp").upper()
-            if item.get("download_link"):
-                markup = InlineKeyboardMarkup()
-                markup.add(InlineKeyboardButton("📥 সরাসরি ফাইল ডাউনলোড করুন", url=item["download_link"]))
-                markup.add(InlineKeyboardButton("🚀 পুনরায় অ্যাপ খুলুন", web_app=WebAppInfo(url=WEB_APP_URL)))
-                bot.send_message(
-                    chat_id,
-                    f"🎁 আপনার রিসোর্স: *{item.get('name', 'রিসোর্স')}*\n"
-                    f"📁 ক্যাটাগরি: *{res_type}*\n"
-                    f"🪙 ব্যবহৃত কয়েন: {item.get('coins', 0)}\n\n"
-                    "🔗 নিচের বাটনে চাপ দিয়ে ড্রাইভ/ডাউনলোড লিঙ্ক থেকে ফাইল সংগ্রহ করুন:",
-                    parse_mode="Markdown",
-                    reply_markup=markup
-                )
-                return
-
-            file_ids = item.get("file_ids") or ([] if not item.get("file_id") else [item.get("file_id")])
-            if file_ids:
-                total_f = len(file_ids)
-                for idx, fid in enumerate(file_ids, 1):
-                    cap = (
-                        f"🎁 ফাইল ({idx}/{total_f}): *{item.get('name', 'রিসোর্স')}*\n"
-                        f"📁 ক্যাটাগরি: *{res_type}*\n\n"
-                        "📂 সেভ করতে ফাইলে ট্যাপ করুন ও ডাউনলোড শেষে ৩-ডট (⋮) চেপে **'Save to Downloads'** করুন।"
-                    )
-                    bot.send_document(chat_id, fid, caption=cap, parse_mode="Markdown")
-                    time.sleep(0.3)
-                bot.send_message(chat_id, "✅ আপনার সমস্ত ফাইল ডেলিভার করা হয়েছে!", reply_markup=get_main_keyboard())
-                return
-        else:
-            bot.send_message(chat_id, "❌ ফাইলটি ডাটাবেজে খুঁজে পাওয়া যায়নি।", reply_markup=get_main_keyboard())
-    except Exception as e:
-        bot.send_message(chat_id, "❌ রিসোর্স ডেলিভারিতে সমস্যা দেখা দিয়েছে।", reply_markup=get_main_keyboard())
-
-# --- স্টার্ট ও ডেলিভারি হ্যান্ডলার (ফোর্স সাবস্ক্রিপশন যুক্ত) ---
+# --- স্টার্ট ও ডেলিভারি হ্যান্ডলার ---
 @bot.message_handler(commands=['start'])
 def start_cmd(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
@@ -519,7 +439,6 @@ def start_cmd(message):
     user_id = message.from_user.id
     user_name = message.from_user.first_name
     
-    # ইউজার রেজিস্ট্রেশন
     try:
         u_res = requests.get(f"{FIREBASE_BASE}/users/{user_id}.json").json()
         if not u_res:
@@ -533,7 +452,6 @@ def start_cmd(message):
     except Exception:
         pass
 
-    # রেফারেল হ্যান্ডলার
     if len(args) > 1 and args[1].startswith("ref_"):
         referrer_id = args[1].replace("ref_", "")
         if str(referrer_id) != str(user_id):
@@ -548,7 +466,58 @@ def start_cmd(message):
             except Exception:
                 pass
 
-    # অ্যাডমিন প্যানেল হ্যান্ডলার
+    if len(args) > 1 and args[1].startswith("get_"):
+        file_key = args[1].replace("get_", "").split("_from_")[0]
+        bot.send_message(message.chat.id, "⏳ আপনার ফাইল(সমূহ) প্রস্তুত করা হচ্ছে...")
+        
+        try:
+            res = requests.get(f"{FIREBASE_BASE}/resources/{file_key}.json")
+            item = res.json()
+            
+            if item:
+                res_type = item.get("type", "plp").upper()
+                
+                if item.get("download_link"):
+                    markup = InlineKeyboardMarkup()
+                    markup.add(InlineKeyboardButton("📥 সরাসরি ফাইল ডাউনলোড করুন", url=item["download_link"]))
+                    markup.add(InlineKeyboardButton("🚀 পুনরায় অ্যাপ খুলুন", web_app=WebAppInfo(url=WEB_APP_URL)))
+                    bot.send_message(
+                        message.chat.id,
+                        f"🎁 আপনার রিসোর্স: *{item.get('name', 'রিসোর্স')}*\n"
+                        f"📁 ক্যাটাগরি: *{res_type}*\n"
+                        f"🪙 ব্যবহৃত কয়েন: {item.get('coins', 0)}\n\n"
+                        "🔗 নিচের বাটনে চাপ দিয়ে ড্রাইভ/ডাউনলোড লিঙ্ক থেকে ফাইল সংগ্রহ করুন:",
+                        parse_mode="Markdown",
+                        reply_markup=markup
+                    )
+                    return
+
+                file_ids = item.get("file_ids") or ([] if not item.get("file_id") else [item.get("file_id")])
+                
+                if file_ids:
+                    total_f = len(file_ids)
+                    for idx, fid in enumerate(file_ids, 1):
+                        cap = (
+                            f"🎁 ফাইল ({idx}/{total_f}): *{item.get('name', 'রিসোর্স')}*\n"
+                            f"📁 ক্যাটাগরি: *{res_type}*\n\n"
+                            "📂 সেভ করতে ফাইলে ট্যাপ করুন ও ডাউনলোড শেষে ৩-ডট (⋮) চেপে **'Save to Downloads'** করুন।"
+                        )
+                        bot.send_document(
+                            message.chat.id,
+                            fid,
+                            caption=cap,
+                            parse_mode="Markdown"
+                        )
+                        time.sleep(0.3)
+                    bot.send_message(message.chat.id, "✅ আপনার সমস্ত ফাইল ডেলিভার করা হয়েছে!", reply_markup=get_main_keyboard())
+                    return
+            else:
+                bot.send_message(message.chat.id, "❌ ফাইলটি ডাটাবেজে খুঁজে পাওয়া যায়নি।", reply_markup=get_main_keyboard())
+                return
+        except Exception as e:
+            bot.send_message(message.chat.id, "❌ রিসোর্স ডেলিভারিতে সমস্যা দেখা দিয়েছে।", reply_markup=get_main_keyboard())
+            return
+
     if int(user_id) == int(ADMIN_ID):
         bot.send_message(
             message.chat.id,
@@ -558,32 +527,12 @@ def start_cmd(message):
             reply_markup=get_admin_dashboard_keyboard()
         )
         bot.send_message(message.chat.id, "মিনি অ্যাপে যেতে নিচের বাটনে চাপুন:", reply_markup=get_main_keyboard())
-        return
-
-    # সাধারণ ইউজারের জন্য চ্যানেল জয়েন ভেরিফিকেশন চেক
-    target_arg = args[1] if len(args) > 1 else ""
-    if not is_user_member(user_id):
+    else:
         bot.send_message(
             message.chat.id,
-            f"👋 হ্যালো *{user_name}*!\n\n"
-            "⚠️ **বট এবং মিনি অ্যাপটি ব্যবহার করতে হলে আমাদের অফিসিয়াল টেলিগ্রাম চ্যানেলে জয়েন থাকা বাধ্যতামূলক।**\n\n"
-            "👉 নিচের বাটনে ক্লিক করে চ্যানেলে জয়েন করুন এবং এরপর **'🔄 ভেরিফাই করুন'** বাটনে চাপ দিন:",
-            parse_mode="Markdown",
-            reply_markup=get_force_sub_keyboard(target_arg)
+            f"👋 হ্যালো {user_name}!\n\n💎 প্রিমিয়াম রিসোর্স অ্যাপে আপনাকে স্বাগতম। নিচের বাটনে চাপ দিয়ে অ্যাপ ওপেন করুন:",
+            reply_markup=get_main_keyboard()
         )
-        return
-
-    # রিসোর্স ডেলিভারি হ্যান্ডলার
-    if len(args) > 1 and args[1].startswith("get_"):
-        process_resource_delivery(message.chat.id, args[1])
-        return
-
-    # স্বাভাবিক ইউজার ওয়েলকাম
-    bot.send_message(
-        message.chat.id,
-        f"👋 হ্যালো {user_name}!\n\n💎 প্রিমিয়াম রিসোর্স অ্যাপে আপনাকে স্বাগতম। নিচের বাটনে চাপ দিয়ে অ্যাপ ওপেন করুন:",
-        reply_markup=get_main_keyboard()
-    )
 
 # --- সেন্ট্রাল অ্যাডমিন টেক্সট কন্ট্রোলার ---
 @bot.message_handler(func=lambda m: int(m.from_user.id) == int(ADMIN_ID) and m.text and not m.reply_to_message)
