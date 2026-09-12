@@ -821,7 +821,7 @@ def get_image(message):
         bot.reply_to(
             message, 
             "📂 **PLP ফাইল বা লিঙ্ক পাঠান:**\n\n"
-            "• **ছোট ফাইল হলে:** ১টি বা একাধিক ফাইল পাঠান এবং সব পাঠানো শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটনে চাপুন সংযোগ করুন।\n"
+            "• **ছোট ফাইল হলে:** ১টি বা একাধিক ফাইল পাঠান এবং সব পাঠানো শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটনে চাপুন।\n"
             "• **বড় ফাইল হলে:** সরাসরি ডাউনলোড লিঙ্ক পাঠিয়ে দিন।",
             reply_markup=get_file_collection_keyboard(),
             parse_mode="Markdown"
@@ -894,7 +894,7 @@ def get_batch_files_or_link(message):
         bot.reply_to(message, "⚠️ দয়া করে ডকুমেন্ট ফাইল পাঠান, লিঙ্ক পাঠান অথবা শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটনে চাপুন:")
         bot.register_next_step_handler(message, get_batch_files_or_link)
 
-# রিসোর্স সংরক্ষণ এবং চ্যানেলে ডাবল পোস্ট এড়িয়ে সরাসরি একক পোস্ট পাঠানো
+# রিসোর্স সংরক্ষণ এবং চ্যানেলে পোস্ট করার জন্য কনফার্মেশন বাটন দেখানো
 def save_resource_to_firebase(message):
     user_id = message.from_user.id
     if user_id not in admin_temp_data:
@@ -910,11 +910,58 @@ def save_resource_to_firebase(message):
     res = requests.post(f"{FIREBASE_BASE}/resources.json", json=resource)
     
     if res.status_code == 200:
+        # সফলভাবে ফায়ারবেসে সেভ হওয়ার পর ইউনিক রিসোর্স আইডি বের করা
+        res_key = res.json().get("name")
         total_files = len(resource.get('file_ids', []))
         file_info_msg = f"📦 মোট ফাইল: {total_files}টি" if total_files > 0 else "🔗 লিঙ্ক সংযুক্ত"
         
-        # চ্যানেলে কোনো বাধা ছাড়াই স্বয়ংক্রিয় একক পোস্ট পাঠানো (ডাবল পোস্ট এড়ানোর জন্য একবারই কল করা হয়েছে)
-        try:
+        # অ্যাডমিনকে জিজ্ঞেস করা হবে সে কি চ্যানেলে পোস্ট করতে চায় কি না
+        markup = InlineKeyboardMarkup(row_width=2)
+        markup.add(
+            InlineKeyboardButton("✅ হ্যাঁ, চ্যানেলে পোস্ট করুন", callback_data=f"ch_post:yes:{res_key}"),
+            InlineKeyboardButton("❌ না, দরকার নেই", callback_data=f"ch_post:no:{res_key}")
+        )
+        
+        bot.reply_to(
+            message,
+            f"🎉 **রিসোর্স সফলভাবে মিনি অ্যাপে যুক্ত হয়েছে!**\n\n"
+            f"📌 নাম: {resource['name']}\n"
+            f"📁 ক্যাটাগরি: {resource['type'].upper()}\n"
+            f"🪙 মূল্য: {resource['coins']} কয়েন\n"
+            f"{file_info_msg}\n\n"
+            f"📢 **আপনি কি এই রিসোর্সটি টেলিগ্রাম চ্যানেলে পোস্ট করতে চান?**",
+            parse_mode="Markdown",
+            reply_markup=markup
+        )
+    else:
+        bot.reply_to(message, "❌ ফায়ারবেসে তথ্য সংরক্ষণ করা যায়নি।", reply_markup=get_admin_dashboard_keyboard())
+
+# --- চ্যানেলে পোস্ট করা বা না করার কনফার্মেশন হ্যান্ডলার ---
+@bot.callback_query_handler(func=lambda call: call.data.startswith('ch_post:'))
+def handle_channel_post_decision(call):
+    if int(call.from_user.id) != int(ADMIN_ID):
+        return
+    
+    parts = call.data.split(":")
+    decision = parts[1]
+    res_key = parts[2]
+    
+    bot.delete_message(call.message.chat.id, call.message.message_id)
+    
+    if decision == "no":
+        bot.send_message(
+            call.message.chat.id,
+            "✅ রিসোর্সটি শুধু মিনি অ্যাপে সেভ করা হয়েছে (চ্যানেলে কোনো পোস্ট করা হয়নি)।",
+            reply_markup=get_admin_dashboard_keyboard()
+        )
+        return
+    
+    # হ্যাঁ সিলেক্ট করলে ডাটাবেজ থেকে রিসোর্স এনে চ্যানেলে পোস্ট পাঠানো হবে
+    try:
+        item_res = requests.get(f"{FIREBASE_BASE}/resources/{res_key}.json")
+        resource = item_res.json()
+        
+        if resource:
             res_type_upper = resource['type'].upper()
             channel_caption = (
                 f"🔥 *নতুন প্রিমিয়াম {res_type_upper} যুক্ত হয়েছে!*\n\n"
@@ -933,20 +980,16 @@ def save_resource_to_firebase(message):
                 bot.send_photo(CHANNEL_ID, resource['image'], caption=channel_caption, parse_mode="Markdown", reply_markup=markup)
             else:
                 bot.send_message(CHANNEL_ID, channel_caption, parse_mode="Markdown", reply_markup=markup)
-        except Exception as e:
-            print(f"Channel broadcast error: {e}")
-
-        bot.reply_to(
-            message,
-            f"🎉 **সফলভাবে যুক্ত এবং চ্যানেলে পোস্ট করা হয়েছে!**\n\n"
-            f"📌 নাম: {resource['name']}\n"
-            f"📁 ক্যাটাগরি: {resource['type'].upper()}\n"
-            f"🪙 মূল্য: {resource['coins']} কয়েন\n"
-            f"{file_info_msg}",
-            reply_markup=get_admin_dashboard_keyboard()
-        )
-    else:
-        bot.reply_to(message, "❌ ফায়ারবেসে তথ্য সংরক্ষণ করা যায়নি।", reply_markup=get_admin_dashboard_keyboard())
+                
+            bot.send_message(
+                call.message.chat.id,
+                "🎉 **সফলভাবে টেলিগ্রাম চ্যানেলে পোস্ট করা হয়েছে!**",
+                reply_markup=get_admin_dashboard_keyboard()
+            )
+        else:
+            bot.send_message(call.message.chat.id, "❌ রিসোর্স ডেটা পাওয়া যায়নি।", reply_markup=get_admin_dashboard_keyboard())
+    except Exception as e:
+        bot.send_message(call.message.chat.id, f"❌ চ্যানেলে পোস্ট করতে সমস্যা হয়েছে: {e}", reply_markup=get_admin_dashboard_keyboard())
 
 # --- বিজ্ঞাপন ফ্লো ---
 def start_ad_flow(message):
@@ -1000,4 +1043,4 @@ if __name__ == "__main__":
     bot.infinity_polling(
         skip_pending=True, 
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-)
+    )
