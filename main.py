@@ -318,7 +318,7 @@ def handle_verify_subscription(call):
                 reply_markup=get_main_keyboard()
             )
     else:
-        bot.answer_callback_query(call.id, "❌ আপনি এখনও চ্যানেলে জয়েন করেননি! আগে জয়েন করুন.", show_alert=True)
+        bot.answer_callback_query(call.id, "❌ আপনি এখনও চ্যানেলে জয়েন করেননি! আগে জয়েন করুন।", show_alert=True)
 
 # মূল ফাইল ডেলিভারি ফাংশন
 def process_resource_delivery(chat_id, arg_text):
@@ -644,7 +644,7 @@ def collect_edit_files(message):
             requests.patch(f"{FIREBASE_BASE}/resources/{res_key}.json", json=patch_data)
             bot.reply_to(
                 message,
-                f"🎉 **সফলভাবে ফাইল আপডেট হয়েছে!**\n\nমোট **{len(file_list)}টি** ফাইল সেভ করা হয়েছে।",
+                f"🎉 **সফলভাবে ফাইল আপডেট হয়েছে!**\n\nমোট ফাইল: **{len(file_list)}টি** সেভ করা হয়েছে।",
                 parse_mode="Markdown",
                 reply_markup=get_admin_dashboard_keyboard()
             )
@@ -802,7 +802,7 @@ def get_coins(message):
         bot.reply_to(message, "কয়েন সংখ্যায় দিন (যেমন: 15)। আবার লিখুন:")
         bot.register_next_step_handler(message, get_coins)
 
-# ছবি প্রসেসিং (ফাইল আইডি সহ সেভ করা যাতে চ্যানেলে এরর না আসে)
+# ছবি প্রসেসিং
 def get_image(message):
     if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
@@ -837,7 +837,7 @@ def get_image(message):
         )
         bot.register_next_step_handler(message, get_batch_files_or_link)
 
-# ভিডিও থাম্বনেইল প্রসেসিং (ফাইল আইডি সহ সেভ করা)
+# ভিডিও থাম্বনেইল প্রসেসিং
 def get_xml_video(message):
     if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
@@ -896,7 +896,7 @@ def get_batch_files_or_link(message):
         bot.reply_to(message, "⚠️ দয়া করে ডকুমেন্ট ফাইল পাঠান, লিঙ্ক পাঠান অথবা শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটনে চাপুন:")
         bot.register_next_step_handler(message, get_batch_files_or_link)
 
-# রিসোর্স সংরক্ষণ এবং চ্যানেলে পোস্ট করার জন্য কনফার্মেশন বাটন দেখানো
+# রিসোর্স সংরক্ষণ এবং চ্যানেলে পোস্ট করার কনফার্মেশন
 def save_resource_to_firebase(message):
     user_id = message.from_user.id
     if user_id not in admin_temp_data:
@@ -936,7 +936,7 @@ def save_resource_to_firebase(message):
     else:
         bot.reply_to(message, "❌ ফায়ারবেসে তথ্য সংরক্ষণ করা যায়নি।", reply_markup=get_admin_dashboard_keyboard())
 
-# --- চ্যানেলে পোস্ট করা বা না করার কনফার্মেশন হ্যান্ডলার (ফাইল আইডি ব্যবহার করে ত্রুটিমুক্ত পোস্টিং) ---
+# --- চ্যানেলে পোস্ট করা বা না করার কনফার্মেশন হ্যান্ডলার ---
 @bot.callback_query_handler(func=lambda call: call.data.startswith('ch_post:'))
 def handle_channel_post_decision(call):
     if int(call.from_user.id) != int(ADMIN_ID):
@@ -970,10 +970,10 @@ def handle_channel_post_decision(call):
                 f"🚀 ফ্রিতে সংগ্রহ করতে নিচের বাটনে চাপ দিয়ে অ্যাপ ওপেন করুন:"
             )
             
+            # শুধুমাত্র মিনি অ্যাপ ওপেন করার একক বাটন
             markup = InlineKeyboardMarkup()
             markup.add(InlineKeyboardButton("🚀 মিনি অ্যাপ ওপেন করুন 💎", url=WEB_APP_URL))
             
-            # সরাসরি টেলিগ্রাম ফাইল আইডি ব্যবহার করে চ্যানেলে ভিডিও বা ছবি পাঠানোর মাধ্যমে HTTP URL ত্রুটি দূর করা হয়েছে
             if resource.get('video_file_id'):
                 bot.send_video(CHANNEL_ID, resource['video_file_id'], caption=channel_caption, parse_mode="Markdown", reply_markup=markup)
             elif resource.get('image_file_id'):
@@ -1047,4 +1047,4 @@ if __name__ == "__main__":
     bot.infinity_polling(
         skip_pending=True, 
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-        )
+)
