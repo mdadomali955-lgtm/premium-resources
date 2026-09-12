@@ -129,7 +129,7 @@
       top: -85px; 
       left: 50%; 
       transform: translateX(-50%); 
-      background: rgba(15, 23, 42, 0.94); 
+      background: rgba(15, 23, 42, 0.96); 
       border-top: 1px solid var(--liquid-border-top);
       border-bottom: 1px solid var(--liquid-border-bot);
       border-left: 1px solid var(--liquid-border-side);
@@ -148,6 +148,8 @@
       backdrop-filter: blur(30px); 
       -webkit-backdrop-filter: blur(30px);
       text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+      max-width: 90vw;
+      text-align: center;
     }
     #toast.show { top: 22px; }
 
@@ -849,7 +851,7 @@
     const BOT_USERNAME = "PLPStoreOfficialBot";
     const SUPPORT_URL = "https://t.me/PLPSTOREAI";
     const CHANNEL_URL = "https://t.me/PLPStoreBD0";
-    const RENDER_BACKEND_URL = "https://resource-admin-bot.onrender.com";
+    const RENDER_BACKEND_URL = "https://rana-ahmed-chat-bot-1.onrender.com";
     const DB_BASE = "https://premium-resources-default-rtdb.firebaseio.com";
 
     const user = tg?.initDataUnsafe?.user || { id: 7481264433, first_name: "Adom Ali", username: "mdadomali320" };
@@ -950,7 +952,7 @@
       document.getElementById('toastMsg').innerText = msg;
       document.getElementById('toastIcon').innerText = icon;
       toast.classList.add('show');
-      setTimeout(() => { toast.classList.remove('show'); }, 3000);
+      setTimeout(() => { toast.classList.remove('show'); }, 4000);
     }
 
     function getTodayKey() {
@@ -1005,7 +1007,6 @@
     async function initApp() {
       initLiquidBubbles();
       
-      // URL Parameter থেকে Tab সেট করা (যেমন: ?tab=xml)
       const urlParams = new URLSearchParams(window.location.search);
       const requestedTab = urlParams.get('tab');
       if (requestedTab && ['plp', 'font', 'xml'].includes(requestedTab)) {
@@ -1132,10 +1133,28 @@
         div.className = 'unlocked-item';
         div.innerHTML = `
           <span><b>${it.name}</b> (${it.type?.toUpperCase()})</span>
-          <button class="btn-claim" onclick="openClaimBot('${k}')">পুনরায় নিন ⚡</button>
+          <button class="btn-claim" onclick="sendDeliveryAndOpenBot('${k}')">ইনবক্সে নিন ⚡</button>
         `;
         container.appendChild(div);
       });
+    }
+
+    /* বট ইনবক্সে সরাসরি ডেলিভারি পাঠানো ও চ্যাট ওপেন করা */
+    async function sendDeliveryAndOpenBot(key) {
+      triggerHaptic('success');
+      showToast("আপনার বটের ইনবক্সে ফাইল পাঠানো হচ্ছে... 📥", "⏳");
+
+      try {
+        await fetch(`${RENDER_BACKEND_URL}/api/instant-deliver`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: user.id, resource_key: key })
+        });
+        showToast("ফাইল আপনার বটের ইনবক্সে পাঠানো হয়েছে! চ্যাট চেক করুন।", "🎉");
+      } catch (err) {
+        // ব্যাকএন্ড কল ফেইল হলে ফলব্যাক লিংক
+        openClaimBot(key);
+      }
     }
 
     function openClaimBot(key) {
@@ -1501,7 +1520,6 @@
             </div>`;
         }
 
-        // PLP ফাইল বা লিঙ্ক ডাইনামিক বাটন টেক্সট
         let buttonText = 'ফাইল নিন ⚡';
         if (item.download_link) {
           buttonText = 'লিংক নিন 🔗';
@@ -1553,6 +1571,7 @@
       modal.classList.remove('active');
     }
 
+    /* রিসোর্স ক্রয় ও স্পষ্ট নোটিফিকেশন প্রদান */
     async function claimResource(key, cost, name, type) {
       triggerHaptic();
       if ((userData.coins || 0) < cost) {
@@ -1567,6 +1586,7 @@
         if (!userData.unlocked) userData.unlocked = {};
         userData.unlocked[key] = { name: name, type: type, time: Date.now() };
         updateUI();
+        fireConfetti();
 
         fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
         fetch(`${DB_BASE}/users/${user.id}/claimed_count.json`, { method: 'PUT', body: JSON.stringify(userData.claimed_count) });
@@ -1597,7 +1617,17 @@
           }
         } catch(e) {}
 
-        openClaimBot(key);
+        // স্পষ্ট বার্তা: ফাইল কোথায় যাবে তা নোটিফিকেশনে বলে দেওয়া
+        showToast("🎉 কেনা সফল হয়েছে! আপনার বটের ইনবক্সে ফাইলটি পাঠানো হয়েছে।", "📥");
+
+        // ব্যাকএন্ডের মাধ্যমে ইউজারের ইনবক্সে ফাইল পাঠিয়ে দেওয়া এবং অপশন পপআপ দেওয়া
+        sendDeliveryAndOpenBot(key);
+
+        setTimeout(() => {
+          if (confirm("🎉 আপনার রিসোর্সটি সরাসরি Telegram Bot ইনবক্সে পৌঁছে গেছে!\n\nফাইলটি ডাউনলোড করতে এখনই কি বট ইনবক্স ওপেন করবেন?")) {
+            openClaimBot(key);
+          }
+        }, 1200);
       }
     }
 
@@ -1692,4 +1722,4 @@
     initApp();
   </script>
 </body>
-  </html>
+          </html>
