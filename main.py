@@ -821,7 +821,7 @@ def get_image(message):
         bot.reply_to(
             message, 
             "📂 **PLP ফাইল বা লিঙ্ক পাঠান:**\n\n"
-            "• **ছোট ফাইল হলে:** ১টি বা একাধিক ফাইল পাঠান এবং সব পাঠানো শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটনে চাপুন।\n"
+            "• **ছোট ফাইল হলে:** ১টি বা একাধিক ফাইল পাঠান এবং সব পাঠানো শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটনে চাপুন সংযোগ করুন।\n"
             "• **বড় ফাইল হলে:** সরাসরি ডাউনলোড লিঙ্ক পাঠিয়ে দিন।",
             reply_markup=get_file_collection_keyboard(),
             parse_mode="Markdown"
@@ -894,7 +894,7 @@ def get_batch_files_or_link(message):
         bot.reply_to(message, "⚠️ দয়া করে ডকুমেন্ট ফাইল পাঠান, লিঙ্ক পাঠান অথবা শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটনে চাপুন:")
         bot.register_next_step_handler(message, get_batch_files_or_link)
 
-# রিসোর্স সংরক্ষণ (ইনবক্সে কোনো নোটিফিকেশন যাবে না)
+# রিসোর্স সংরক্ষণ এবং চ্যানেলে ডাবল পোস্ট এড়িয়ে সরাসরি একক পোস্ট পাঠানো
 def save_resource_to_firebase(message):
     user_id = message.from_user.id
     if user_id not in admin_temp_data:
@@ -913,14 +913,36 @@ def save_resource_to_firebase(message):
         total_files = len(resource.get('file_ids', []))
         file_info_msg = f"📦 মোট ফাইল: {total_files}টি" if total_files > 0 else "🔗 লিঙ্ক সংযুক্ত"
         
+        # চ্যানেলে কোনো বাধা ছাড়াই স্বয়ংক্রিয় একক পোস্ট পাঠানো (ডাবল পোস্ট এড়ানোর জন্য একবারই কল করা হয়েছে)
+        try:
+            res_type_upper = resource['type'].upper()
+            channel_caption = (
+                f"🔥 *নতুন প্রিমিয়াম {res_type_upper} যুক্ত হয়েছে!*\n\n"
+                f"📌 *নাম:* {resource['name']}\n"
+                f"📁 *ক্যাটাগরি:* {res_type_upper}\n"
+                f"🪙 *মূল্য:* {resource['coins']} কয়েন\n\n"
+                f"🚀 ফ্রিতে সংগ্রহ করতে নিচের বাটনে চাপ দিয়ে অ্যাপ ওপেন করুন:"
+            )
+            
+            markup = InlineKeyboardMarkup()
+            markup.add(InlineKeyboardButton("🚀 মিনি অ্যাপ ওপেন করুন 💎", web_app=WebAppInfo(url=WEB_APP_URL)))
+            
+            if resource.get('video'):
+                bot.send_video(CHANNEL_ID, resource['video'], caption=channel_caption, parse_mode="Markdown", reply_markup=markup)
+            elif resource.get('image'):
+                bot.send_photo(CHANNEL_ID, resource['image'], caption=channel_caption, parse_mode="Markdown", reply_markup=markup)
+            else:
+                bot.send_message(CHANNEL_ID, channel_caption, parse_mode="Markdown", reply_markup=markup)
+        except Exception as e:
+            print(f"Channel broadcast error: {e}")
+
         bot.reply_to(
             message,
-            f"🎉 **সফলভাবে যুক্ত হয়েছে!**\n\n"
+            f"🎉 **সফলভাবে যুক্ত এবং চ্যানেলে পোস্ট করা হয়েছে!**\n\n"
             f"📌 নাম: {resource['name']}\n"
             f"📁 ক্যাটাগরি: {resource['type'].upper()}\n"
             f"🪙 মূল্য: {resource['coins']} কয়েন\n"
-            f"{file_info_msg}\n\n"
-            f"✅ ওয়েব অ্যাপে যুক্ত হয়েছে (কোনো ইউজারের ইনবক্সে ব্রডকাস্ট পাঠানো হয়নি)।",
+            f"{file_info_msg}",
             reply_markup=get_admin_dashboard_keyboard()
         )
     else:
@@ -978,4 +1000,4 @@ if __name__ == "__main__":
     bot.infinity_polling(
         skip_pending=True, 
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-                                )
+)
