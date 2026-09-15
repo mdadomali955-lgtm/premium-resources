@@ -975,7 +975,7 @@
 
     function isVideoUrl(url) {
       if (!url) return false;
-      return url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.includes('/video/');
+      return url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.includes('/video/') || url.includes('drive.google.com');
     }
 
     function drawWheel() {
@@ -1478,6 +1478,9 @@
         keys = keys.filter(k => allResources[k].name.toLowerCase().includes(searchFilter));
       }
 
+      // নতুন বা ইদানীং যোগ করা রিসোর্সগুলো যেন তালিকার সবার উপরে থাকে, সেজন্য রিভার্স বা সাজিয়ে নেওয়া হলো
+      keys.reverse();
+
       if (keys.length === 0) {
         container.innerHTML = '<p style="grid-column: span 2; text-align: center; color: var(--text-sub); padding: 40px 0; font-weight: 700;">কোনো রিসোর্স পাওয়া যায়নি</p>';
         return;
@@ -1500,7 +1503,6 @@
 
         let mediaHtml = '';
         if (isVideo) {
-          // ভিডিওর প্রথম ফ্রেম তোলার জন্য #t=1 এবং সাথে কোনো কারণে ভিডিও লোড না হলে সুন্দর প্লে প্লেসহোল্ডার দেখানোর ব্যবস্থা
           mediaHtml = `
             <div class="card-thumb-wrap" onclick="openMediaPreview('${mediaSource}', true)">
               ${badgePills}
@@ -1575,7 +1577,6 @@
       modal.classList.remove('active');
     }
 
-    /* রিসোর্স ক্রয় ও ডাউনলোডার ডাটা সংরক্ষণ */
     async function claimResource(key, cost, name, type) {
       triggerHaptic();
       if ((userData.coins || 0) < cost) {
@@ -1596,7 +1597,6 @@
         fetch(`${DB_BASE}/users/${user.id}/claimed_count.json`, { method: 'PUT', body: JSON.stringify(userData.claimed_count) });
         fetch(`${DB_BASE}/users/${user.id}/unlocked/${key}.json`, { method: 'PUT', body: JSON.stringify(userData.unlocked[key]) });
 
-        // গ্লোবাল ডাউনলোড কাউন্টার আপডেট
         try {
           const cRes = await fetch(`${DB_BASE}/stats/total_claims.json`);
           let tClaims = (await cRes.json()) || 0;
@@ -1605,7 +1605,6 @@
           document.getElementById('statClaims').innerText = tClaims;
         } catch(e) {}
 
-        // ফাইল ভিত্তিক ডাউনলোড ও আয় আপডেট
         try {
           const fileRes = await fetch(`${DB_BASE}/resources/${key}.json`);
           const fileData = await fileRes.json();
@@ -1623,7 +1622,6 @@
           }
         } catch(e) {}
 
-        // কে ডাউনলোড করলো তার তথ্য কেবল অ্যাডমিনের দেখার জন্য সেভ
         const buyerInfo = {
           user_id: user.id,
           name: user.first_name || "Unknown",
@@ -1635,10 +1633,8 @@
           body: JSON.stringify(buyerInfo) 
         });
 
-        // নোটিফিকেশন প্রদর্শন
         showToast("🎉 কেনা সফল হয়েছে! ফাইলটি সরাসরি আপনার বটের ইনবক্সে দেওয়া হয়েছে।", "📥");
 
-        // স্বয়ংক্রিয়ভাবে বটের ইনবক্স ওপেন
         setTimeout(() => {
           openClaimBot(key);
         }, 500);
@@ -1687,7 +1683,6 @@
             </tr>
           `;
 
-          // কে কে ডাউনলোড করেছে তালিকা প্রস্তুতকরণ
           if (it.buyers) {
             Object.values(it.buyers).forEach(b => {
               hasBuyers = true;
