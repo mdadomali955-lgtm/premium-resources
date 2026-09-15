@@ -606,8 +606,8 @@ def prompt_for_field(call):
     prompts = {
         "name": "নতুন নামটি লিখে পাঠান:",
         "coins": "নতুন কয়েন সংখ্যাটি লিখে পাঠান (যেমন: 15):",
-        "image": "নতুন থাম্বনেইল ছবিটি ফটো হিসেবে পাঠান:",
-        "video": "নতুন প্রিভিউ ভিডিও ফাইলটি পাঠান (ভিডিও হিসেবে):",
+        "image": "নতুন থাম্বনেইল ছবি অথবা ডাইরেক্ট লিংক (ড্রাইভ লিংক) পাঠান:",
+        "video": "নতুন প্রিভিউ ভিডিও ফাইল অথবা ডাইরেক্ট লিংক (ড্রাইভ লিংক) পাঠান:",
         "download_link": "নতুন গুগল ড্রাইভ বা অন্য যেকোনো ডাউনলোড লিংক পাঠান:"
     }
     
@@ -695,22 +695,28 @@ def save_updated_field(message):
         new_val = message.text.strip()
         
     elif field == "image":
-        if not message.photo:
-            bot.reply_to(message, "⚠️ দয়া করে ফটো হিসেবে ছবি পাঠান:")
+        if message.photo:
+            file_id = message.photo[-1].file_id
+            file_info = bot.get_file(file_id)
+            new_val = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
+        elif message.text and message.text.strip().startswith("http"):
+            new_val = message.text.strip()
+        else:
+            bot.reply_to(message, "⚠️ দয়া করে সঠিক ছবি অথবা ডাইরেক্ট লিংক (https://...) পাঠান:")
             bot.register_next_step_handler(message, save_updated_field)
             return
-        file_id = message.photo[-1].file_id
-        file_info = bot.get_file(file_id)
-        new_val = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
         
     elif field == "video":
-        if not message.video:
-            bot.reply_to(message, "⚠️ দয়া করে ভিডিও হিসেবে প্রিভিউ ক্লিপ পাঠান:")
+        if message.video:
+            vid_id = message.video.file_id
+            file_info = bot.get_file(vid_id)
+            new_val = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
+        elif message.text and message.text.strip().startswith("http"):
+            new_val = message.text.strip()
+        else:
+            bot.reply_to(message, "⚠️ দয়া করে ভিডিও ফাইল অথবা ডাইরেক্ট লিংক (https://...) পাঠান:")
             bot.register_next_step_handler(message, save_updated_field)
             return
-        vid_id = message.video.file_id
-        file_info = bot.get_file(vid_id)
-        new_val = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
 
     elif field == "download_link":
         if not message.text or not message.text.strip().startswith("http"):
@@ -794,10 +800,10 @@ def get_coins(message):
         cat = admin_temp_data[message.from_user.id]['type']
         
         if cat == 'xml':
-            bot.reply_to(message, "🎬 **XML থাম্বনেইল ভিডিও পাঠান:**\n(বটের চ্যাটে ভিডিওটি আপলোড করুন)")
+            bot.reply_to(message, "🎬 **XML থাম্বনেইল ভিডিও পাঠান (অথবা ড্রাইভের ডাইরেক্ট লিংক দিন):**")
             bot.register_next_step_handler(message, get_xml_video)
         else:
-            bot.reply_to(message, "🖼️ **থাম্বনেইল ছবি পাঠান:**\n(বটের চ্যাটে ফটো আকারে পাঠান)")
+            bot.reply_to(message, "🖼️ **থাম্বনেইল ছবি পাঠান (অথবা ড্রাইভের ডাইরেক্ট লিংক দিন):**")
             bot.register_next_step_handler(message, get_image)
     except ValueError:
         bot.reply_to(message, "কয়েন সংখ্যায় দিন (যেমন: 15)। আবার লিখুন:")
@@ -808,15 +814,18 @@ def get_image(message):
     if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
         return
-    if not message.photo:
-        bot.reply_to(message, "একটি ফটো পাঠান:")
+    
+    if message.photo:
+        photo_file_id = message.photo[-1].file_id
+        admin_temp_data[message.from_user.id]['image_file_id'] = photo_file_id
+        file_info = bot.get_file(photo_file_id)
+        admin_temp_data[message.from_user.id]['image'] = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
+    elif message.text and message.text.strip().startswith("http"):
+        admin_temp_data[message.from_user.id]['image'] = message.text.strip()
+    else:
+        bot.reply_to(message, "⚠️ দয়া করে একটি ফটো অথবা সঠিক ডাইরেক্ট লিংক (https://...) পাঠান:")
         bot.register_next_step_handler(message, get_image)
         return
-    
-    photo_file_id = message.photo[-1].file_id
-    admin_temp_data[message.from_user.id]['image_file_id'] = photo_file_id
-    file_info = bot.get_file(photo_file_id)
-    admin_temp_data[message.from_user.id]['image'] = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
     
     cat = admin_temp_data[message.from_user.id]['type']
     if cat == 'plp':
@@ -843,15 +852,18 @@ def get_xml_video(message):
     if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
         return
-    if not message.video:
-        bot.reply_to(message, "❌ দয়া করে একটি ভিডিও ফাইল পাঠান:")
+    
+    if message.video:
+        vid_id = message.video.file_id
+        admin_temp_data[message.from_user.id]['video_file_id'] = vid_id
+        file_info = bot.get_file(vid_id)
+        admin_temp_data[message.from_user.id]['video'] = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
+    elif message.text and message.text.strip().startswith("http"):
+        admin_temp_data[message.from_user.id]['video'] = message.text.strip()
+    else:
+        bot.reply_to(message, "⚠️ দয়া করে ভিডিও ফাইল অথবা সঠিক ডাইরেক্ট লিংক (https://...) পাঠান:")
         bot.register_next_step_handler(message, get_xml_video)
         return
-
-    vid_id = message.video.file_id
-    admin_temp_data[message.from_user.id]['video_file_id'] = vid_id
-    file_info = bot.get_file(vid_id)
-    admin_temp_data[message.from_user.id]['video'] = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_info.file_path}"
     
     bot.reply_to(
         message, 
@@ -971,7 +983,6 @@ def handle_channel_post_decision(call):
                 f"🚀 ফ্রিতে সংগ্রহ করতে নিচের বাটনে চাপ দিয়ে বটে প্রবেশ করুন:"
             )
             
-            # চ্যানেলের বাটনটিতে অ্যাডমিনের রেফারেল লিংক বা মিনি অ্যাপ লিংক সেট করা হয়েছে
             markup = InlineKeyboardMarkup()
             markup.add(InlineKeyboardButton("🚀 মিনি অ্যাপ ওপেন করুন 💎", url=f"https://t.me/{BOT_USERNAME}?start=ref_{ADMIN_ID}"))
             
@@ -992,7 +1003,7 @@ def handle_channel_post_decision(call):
                 reply_markup=get_admin_dashboard_keyboard()
             )
         else:
-            bot.send_message(call.message.chat.id, "❌ রিসোর্স ডেটা পাওয়া যায়নি।", reply_markup=get_admin_dashboard_keyword())
+            bot.send_message(call.message.chat.id, "❌ রিসোর্স ডেটা পাওয়া যায়নি।", reply_markup=get_admin_dashboard_keyboard())
     except Exception as e:
         bot.send_message(call.message.chat.id, f"❌ চ্যানেলে পোস্ট করতে সমস্যা হয়েছে: {e}", reply_markup=get_admin_dashboard_keyboard())
 
@@ -1048,4 +1059,4 @@ if __name__ == "__main__":
     bot.infinity_polling(
         skip_pending=True, 
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-    )
+        )
