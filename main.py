@@ -354,7 +354,7 @@ def process_resource_delivery(chat_id, arg_text):
                     cap = (
                         f"🎁 ফাইল ({idx}/{total_f}): *{item.get('name', 'রিসোর্স')}*\n"
                         f"📁 ক্যাটাগরি: *{res_type}*\n\n"
-                        "📂 সেভ করতে ফাইলে ট্যাপ করুন ও ডাউনলোড শেষে ৩-ডট (⋮) চেপে **'Save to Downloads'** করুন।"
+                        "📂 সেভ করতে ফাইলে ট্যাপ করুন ও ডাউনলোড শেষে ৩-ডট (⋮) চেপে **'Save to Downloads'** করুন."
                     )
                     bot.send_document(chat_id, fid, caption=cap, parse_mode="Markdown")
                     time.sleep(0.3)
@@ -984,7 +984,8 @@ def handle_channel_post_decision(call):
             )
             
             markup = InlineKeyboardMarkup()
-            markup.add(InlineKeyboardButton("🚀 মিনি অ্যাপ ওপেন করুন 💎", url=f"https://t.me/{BOT_USERNAME}?start=ref_{ADMIN_ID}"))
+            # এখানে বাটন টেক্সট পরিবর্তন করে "📥 ডাউনলোড করুন" করা হয়েছে
+            markup.add(InlineKeyboardButton("📥 ডাউনলোড করুন", url=f"https://t.me/{BOT_USERNAME}?start=ref_{ADMIN_ID}"))
             
             if resource.get('video_file_id'):
                 bot.send_video(CHANNEL_ID, resource['video_file_id'], caption=channel_caption, parse_mode="Markdown", reply_markup=markup)
@@ -1059,4 +1060,4 @@ if __name__ == "__main__":
     bot.infinity_polling(
         skip_pending=True, 
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-        )
+    )
