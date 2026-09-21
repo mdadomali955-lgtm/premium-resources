@@ -437,23 +437,25 @@
       background: linear-gradient(135deg, #38bdf8, #0284c7); 
       color: #030712; 
       border: none; 
-      padding: 9px 16px; 
-      border-radius: 12px; 
-      font-size: 12px; 
+      padding: 11px 20px; 
+      border-radius: 14px; 
+      font-size: 13px; 
       font-weight: 900; 
       cursor: pointer; 
-      box-shadow: 0 0 14px var(--accent-glow); 
+      box-shadow: 0 4px 18px var(--accent-glow); 
       transition: all 0.2s; 
       white-space: nowrap;
+      width: 100%;
+      text-align: center;
     }
-    .btn-claim:active { transform: scale(0.92); }
+    .btn-claim:active { transform: scale(0.94); }
 
-    /* গেম জোন */
-    .wheel-container { position: relative; width: 240px; height: 240px; margin: 24px auto; display: flex; align-items: center; justify-content: center; }
-    #wheelCanvas { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 35px rgba(251, 191, 36, 0.35); transition: transform 4s cubic-bezier(0.15, 0.9, 0.25, 1); }
-    .wheel-arrow { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 26px solid var(--danger); z-index: 20; filter: drop-shadow(0 3px 8px rgba(0,0,0,0.8)); }
+    /* প্রিমিয়াম গেমস উপাদান (টাস্ক পেজের ভেতরের জন্য) */
+    .wheel-container { position: relative; width: 220px; height: 220px; margin: 16px auto; display: flex; align-items: center; justify-content: center; }
+    #wheelCanvas { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 30px rgba(251, 191, 36, 0.35); transition: transform 4s cubic-bezier(0.15, 0.9, 0.25, 1); }
+    .wheel-arrow { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 22px solid var(--danger); z-index: 20; filter: drop-shadow(0 3px 8px rgba(0,0,0,0.8)); }
 
-    .scratch-container { position: relative; width: 260px; height: 130px; margin: 18px auto; border-radius: 20px; overflow: hidden; border: 2px solid rgba(251, 191, 36, 0.6); box-shadow: 0 0 25px var(--gold-glow); }
+    .scratch-container { position: relative; width: 100%; height: 120px; margin: 12px auto; border-radius: 18px; overflow: hidden; border: 2px solid rgba(251, 191, 36, 0.6); box-shadow: 0 0 20px var(--gold-glow); }
     .scratch-reward { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0a0f1d; font-size: 18px; font-weight: 900; color: var(--gold); }
     #scratchCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer; }
 
@@ -487,13 +489,14 @@
       background: linear-gradient(135deg, #38bdf8, #0284c7); 
       color: #030712; 
       padding: 16px; 
-      font-size: 14.5px; 
+      font-size: 15px; 
       font-weight: 900; 
       border: none; 
       border-radius: 18px; 
       cursor: pointer; 
-      box-shadow: 0 4px 22px var(--accent-glow); 
+      box-shadow: 0 6px 25px var(--accent-glow); 
       transition: all 0.2s; 
+      text-align: center;
     }
     .action-btn:active { transform: scale(0.97); }
     .action-btn:disabled { background: #334155 !important; color: #94a3b8 !important; box-shadow: none !important; cursor: not-allowed; }
@@ -553,7 +556,7 @@
       z-index: 2600;
     }
 
-    /* ডক বার */
+    /* ডক বার (গেমস ট্যাব বাদ দেওয়া হয়েছে) */
     .bottom-nav { 
       position: fixed; 
       bottom: 0; 
@@ -577,7 +580,7 @@
       justify-content: center; 
       gap: 5px; 
       color: var(--text-dim); 
-      font-size: 10.5px; 
+      font-size: 11px; 
       font-weight: 800; 
       border: none; 
       background: transparent; 
@@ -586,7 +589,7 @@
       transition: all 0.25s; 
     }
     .nav-item.active { color: #ffffff; transform: translateY(-3px); }
-    .nav-icon { font-size: 21px; }
+    .nav-icon { font-size: 22px; }
   </style>
 </head>
 <body>
@@ -642,8 +645,8 @@
     <div id="pageHome" class="view-page active">
       <div class="daily-card">
         <div>
-          <h4 style="font-size: 13.5px; font-weight: 800; color: #fff;">🎁 দৈনিক ফ্রি রিওয়ার্ড</h4>
-          <p style="font-size: 11.5px; color: var(--text-sub); margin-top: 2px;">প্রতিদিন পান ফ্রিতে +৫ কয়েন</p>
+          <h4 style="font-size: 14px; font-weight: 800; color: #fff;">🎁 দৈনিক ফ্রি রিওয়ার্ড</h4>
+          <p style="font-size: 12px; color: var(--text-sub); margin-top: 2px;">প্রতিদিন পান ফ্রিতে +৫ কয়েন</p>
         </div>
         <button class="daily-btn" id="btnDailyCheck" onclick="claimDailyReward()">ক্লেইম করুন</button>
       </div>
@@ -659,32 +662,7 @@
       <div class="grid" id="resourceGrid"></div>
     </div>
 
-    <!-- ২. গেম জোন পেজ -->
-    <div id="pageGames" class="view-page">
-      <div class="stat-card">
-        <h2 style="font-size: 18px; font-weight: 800; color: #fff;">🎡 লাকি হুইল স্পিন</h2>
-        <p style="font-size: 12.5px; color: var(--text-sub); margin-top: 4px;">চাকা ঘুরিয়ে জিতুন সর্বোচ্চ ১০ কয়েন!</p>
-        <div class="wheel-container">
-          <div class="wheel-arrow"></div>
-          <canvas id="wheelCanvas" width="240" height="240"></canvas>
-        </div>
-        <button class="action-btn" id="btnSpin" onclick="playLuckySpin()">🎯 স্পিন করুন</button>
-      </div>
-
-      <div class="stat-card">
-        <h2 style="font-size: 18px; font-weight: 800; color: #fff;">✨ দৈনিক স্ক্র্যাচ কার্ড</h2>
-        <p style="font-size: 12.5px; color: var(--text-sub); margin-top: 4px;">কার্ডটি ঘষে পেয়ে যান নিশ্চিত ৫ কয়েন</p>
-        <div class="scratch-container">
-          <div class="scratch-reward">
-            <span style="font-size: 12px; color: var(--text-sub);">সারপ্রাইজ রিওয়ার্ড</span>
-            <span id="scratchCoinText" style="font-size: 24px; margin-top: 4px; font-weight: 900;">+৫ কয়েন</span>
-          </div>
-          <canvas id="scratchCanvas" width="260" height="130"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- ৩. টাস্ক ও অ্যাড সেকশন (স্পিন ও স্ক্র্যাচ কার্ড সহ) -->
+    <!-- ২. টাস্ক, অ্যাড ও গেমস সেকশন (সবকিছু গোছানো এক জায়গায়) -->
     <div id="pageAds" class="view-page">
       <div class="stat-card" style="text-align: left;">
         <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 8px; color: #fff;">🚀 স্পেশাল চ্যানেল টাস্ক</h3>
@@ -699,23 +677,41 @@
 
       <div class="stat-card">
         <span style="font-size:40px;">💎</span>
-        <h2 style="font-size:18px; font-weight: 800; margin: 8px 0; color: #fff;">বিজ্ঞাপন বা গেম খেলে কয়েন সংগ্রহ</h2>
-        <p style="font-size:12.5px; color:var(--text-sub);">সম্পূর্ণ বিজ্ঞাপনটি দেখলে ওয়ালেটে ১০টি কয়েন যোগ হবে অথবা উপরে গেম জোন থেকে স্পিন ও স্ক্র্যাচ করতে পারেন।</p>
+        <h2 style="font-size:18px; font-weight: 800; margin: 8px 0; color: #fff;">বিজ্ঞাপন দেখে কয়েন সংগ্রহ</h2>
+        <p style="font-size:12.5px; color:var(--text-sub);">সম্পূর্ণ বিজ্ঞাপনটি দেখলে ওয়ালেটে ১০টি কয়েন যোগ হবে।</p>
         <div class="stat-number" id="adLimitDisplay">30/30</div>
         <p style="font-size:11px; color:var(--text-dim); text-transform: uppercase; font-weight: 800;">আজকের অবশিষ্ট অ্যাড সীমা</p>
-      </div>
-
-      <div class="stat-card" style="text-align: left; display: flex; flex-direction: column; gap: 12px;">
-        <button class="action-btn" id="btnWatchMonetag" onclick="watchVipAd()">
+        <button class="action-btn" id="btnWatchMonetag" onclick="watchVipAd()" style="margin-top: 14px;">
           🎬 বিজ্ঞাপন দেখুন (+১০ কয়েন)
         </button>
-        <button class="action-btn" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #020617;" onclick="switchNav('pageGames', document.querySelectorAll('.bottom-nav .nav-item')[1])">
-          🎡 লাকি স্পিন ও স্ক্র্যাচ করুন
-        </button>
+      </div>
+
+      <!-- লাকি হুইল স্পিন সেকশন -->
+      <div class="stat-card">
+        <h2 style="font-size: 18px; font-weight: 800; color: #fff;">🎡 লাকি হুইল স্পিন</h2>
+        <p style="font-size: 12.5px; color: var(--text-sub); margin-top: 4px;">চাকা ঘুরিয়ে জিতুন সর্বোচ্চ ১০ কয়েন!</p>
+        <div class="wheel-container">
+          <div class="wheel-arrow"></div>
+          <canvas id="wheelCanvas" width="220" height="220"></canvas>
+        </div>
+        <button class="action-btn" id="btnSpin" onclick="playLuckySpin()" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #020617;">🎯 স্পিন করুন</button>
+      </div>
+
+      <!-- দৈনিক স্ক্র্যাচ কার্ড সেকশন -->
+      <div class="stat-card">
+        <h2 style="font-size: 18px; font-weight: 800; color: #fff;">✨ দৈনিক স্ক্র্যাচ কার্ড</h2>
+        <p style="font-size: 12.5px; color: var(--text-sub); margin-top: 4px;">কার্ডটি ঘষে পেয়ে যান নিশ্চিত ৫ কয়েন</p>
+        <div class="scratch-container">
+          <div class="scratch-reward">
+            <span style="font-size: 12px; color: var(--text-sub);">সারপ্রাইজ রিওয়ার্ড</span>
+            <span id="scratchCoinText" style="font-size: 22px; margin-top: 4px; font-weight: 900;">+৫ কয়েন</span>
+          </div>
+          <canvas id="scratchCanvas" width="260" height="120"></canvas>
+        </div>
       </div>
     </div>
 
-    <!-- ৪. লিডারবোর্ড -->
+    <!-- ৩. লিডারবোর্ড -->
     <div id="pageLeaderboard" class="view-page">
       <div class="stat-card">
         <h3 style="font-size:17px; font-weight: 800; color: #fff;">🏆 শীর্ষ VIP ব্যবহারকারী</h3>
@@ -724,7 +720,7 @@
       <div id="leaderboardList"></div>
     </div>
 
-    <!-- ৫. রেফারেল পেজ -->
+    <!-- ৪. রেফারেল পেজ -->
     <div id="pageRefer" class="view-page">
       <div class="stat-card">
         <span style="font-size:36px;">🤝</span>
@@ -739,7 +735,7 @@
       <button class="action-btn" onclick="shareReferralLink()">🚀 রেফার লিংক শেয়ার করুন (+৫০ কয়েন)</button>
     </div>
 
-    <!-- ৬. প্রোফাইল ও আনলক হিস্ট্রি -->
+    <!-- ৫. প্রোফাইল ও আনলক হিস্ট্রি -->
     <div id="pageProfile" class="view-page">
       <div class="stat-card">
         <div class="user-avatar-wrap" style="width: 80px; height: 80px; margin: 0 auto 12px auto;">
@@ -776,7 +772,7 @@
       <button class="action-btn" style="background:rgba(255,255,255,0.08); color:#38bdf8; border-top:1px solid rgba(255,255,255,0.3);" onclick="openSupport()">💬 হেল্পলাইন ও সাপোর্ট গ্রুপ</button>
     </div>
 
-    <!-- ৭. এক্সক্লুসিভ অ্যাডমিন সেলস ও ডাউনলোডার অ্যানালিটিক্স প্যানেল -->
+    <!-- ৬. এক্সক্লুসিভ অ্যাডমিন সেলস ও ডাউনলোডার অ্যানালিটিক্স প্যানেল -->
     <div id="pageAdmin" class="view-page">
       <div class="stat-card">
         <span style="font-size: 36px;">👑</span>
@@ -842,10 +838,10 @@
     <video id="modalVideo" src="" controls playsinline style="display: none;"></video>
   </div>
 
+  <!-- ডক বার (গেমস ট্যাব সরিয়ে টাস্ক, র‍্যাংক, রেফার, প্রোফাইল রাখা হয়েছে) -->
   <div class="bottom-nav" id="bottomNavBar">
     <button class="nav-item active" onclick="switchNav('pageHome', this)"><span class="nav-icon">💎</span><span>রিসোর্স</span></button>
-    <button class="nav-item" onclick="switchNav('pageGames', this)"><span class="nav-icon">🎮</span><span>গেমস</span></button>
-    <button class="nav-item" onclick="switchNav('pageAds', this)"><span class="nav-icon">📺</span><span>টাস্ক</span></button>
+    <button class="nav-item" onclick="switchNav('pageAds', this)"><span class="nav-icon">📺</span><span>টাস্ক ও রিওয়ার্ড</span></button>
     <button class="nav-item" onclick="switchNav('pageLeaderboard', this)"><span class="nav-icon">🏆</span><span>র‍্যাংক</span></button>
     <button class="nav-item" onclick="switchNav('pageRefer', this)"><span class="nav-icon">👥</span><span>রেফার</span></button>
     <button class="nav-item" onclick="switchNav('pageProfile', this)"><span class="nav-icon">👤</span><span>প্রোফাইল</span></button>
@@ -1006,8 +1002,8 @@
         ctx.rotate(angle + arc / 2);
         ctx.textAlign = "right";
         ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 14px 'Plus Jakarta Sans', sans-serif";
-        ctx.fillText(seg.text, radius - 20, 5);
+        ctx.font = "bold 13px 'Plus Jakarta Sans', sans-serif";
+        ctx.fillText(seg.text, radius - 15, 4);
         ctx.restore();
       });
     }
@@ -1141,7 +1137,7 @@
         div.className = 'unlocked-item';
         div.innerHTML = `
           <span><b>${it.name}</b> (${it.type?.toUpperCase()})</span>
-          <button class="btn-claim" onclick="openClaimBot('${k}')">পুনরায় ইনবক্সে নিন ⚡</button>
+          <button class="btn-claim" onclick="openClaimBot('${k}')" style="padding:7px 12px; width:auto;">পুনরায় ইনবক্সে নিন ⚡</button>
         `;
         container.appendChild(div);
       });
@@ -1573,9 +1569,9 @@
       triggerHaptic();
       if ((userData.coins || 0) < cost) {
         triggerHaptic('warning');
-        // পর্যাপ্ত কয়েন না থাকলে ইউজারকে গাইড করে অ্যাড/টাস্ক পেজে নিয়ে যাওয়ার নির্দেশিকা ও অপশন দেওয়া হচ্ছে
-        if (confirm(`❌ পর্যাপ্ত কয়েন নেই! এই ফাইলটি ডাউনলোড করতে আরও ${cost - userData.coins} কয়েন প্রয়োজন।\n\n💡 ফ্রি কয়েন অর্জন করতে এখনই 'টাস্ক ও অ্যাড' পেজে যেতে চান?`)) {
-          switchNav('pageAds', document.querySelectorAll('.bottom-nav .nav-item')[2]);
+        // পর্যাপ্ত কয়েন না থাকলে ইউজারকে গাইড করে টাস্ক ও অ্যাড পেজে নিয়ে যাওয়ার নির্দেশিকা দেওয়া হচ্ছে
+        if (confirm(`❌ পর্যাপ্ত কয়েন নেই! এই ফাইলটি ডাউনলোড করতে আরও ${cost - userData.coins} কয়েন প্রয়োজন।\n\n💡 ফ্রি কয়েন অর্জন করতে এখনই 'টাস্ক ও রিওয়ার্ড' পেজে যেতে চান?`)) {
+          switchNav('pageAds', document.querySelectorAll('.bottom-nav .nav-item')[1]);
         }
         return;
       }
