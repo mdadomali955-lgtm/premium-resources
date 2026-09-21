@@ -13,7 +13,7 @@ from telebot.types import (
 from flask import Flask, jsonify
 from threading import Thread
 
-BOT_TOKEN = "8815920877:AAGoSTAtxPHWvEzmwfLobQYCDGe0tcyGc9U"
+BOT_TOKEN = "8815920877:AAHlGCVVXjFPnQ1R__cLI8PSN8qA0YxKGN4"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
 WEB_APP_URL = "https://premium-resources.vercel.app"
@@ -335,7 +335,6 @@ def redeem_promo_code(message):
             bot.reply_to(message, "⚠️ আপনি ইতিমধ্যে এই প্রোমো কোড ব্যবহার করেছেন!")
             return
             
-        # ইউজারের কয়েন যোগ করা
         u_data = requests.get(f"{FIREBASE_BASE}/users/{uid}.json").json() or {}
         cur_coins = u_data.get('coins', 0)
         coins_to_add = p_data.get('coins', 0)
@@ -343,7 +342,6 @@ def redeem_promo_code(message):
         
         requests.patch(f"{FIREBASE_BASE}/users/{uid}.json", json={"coins": new_coins})
         
-        # কোড ব্যবহার রেকর্ড রাখা
         used_by[str(uid)] = True
         requests.patch(f"{FIREBASE_BASE}/promo_codes/{code}.json", json={"used_by": used_by})
         
@@ -949,7 +947,7 @@ def collect_edit_files(message):
         count = len(edit_sessions[user_id]['file_ids'])
         bot.reply_to(
             message,
-            f"📥 ফাইল ({count}) গ্রহণ করা হয়েছে!\n\nআরও ফাইল থাকলে পাঠান, অথবা শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটনে চাপুন।"
+            f"📥 ফাইল ({count}) গ্রহণ করা হয়েছে!\n\nআরও ফাইল থাকলে পাঠান, অথবা শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটনে চাপুন."
         )
         bot.register_next_step_handler(message, collect_edit_files)
     else:
@@ -1122,7 +1120,7 @@ def get_image(message):
         bot.reply_to(
             message, 
             "📂 **PLP ফাইল বা লিঙ্ক পাঠান:**\n\n"
-            "• **ছোট ফাইল হলে:** ১টি বা একাধিক ফাইল পাঠান এবং সব পাঠানো শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটনে চাপুন।\n"
+            "• **ছোট ফাইল হলে:** ১টি বা একাধিক ফাইল পাঠান এবং সব পাঠানো শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটনে চাপুন。\n"
             "• **বড় ফাইল হলে:** সরাসরি ডাউনলোড লিঙ্ক পাঠিয়ে দিন।",
             reply_markup=get_file_collection_keyboard(),
             parse_mode="Markdown"
@@ -1353,4 +1351,4 @@ if __name__ == "__main__":
     bot.infinity_polling(
         skip_pending=True, 
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-        )
+    )
