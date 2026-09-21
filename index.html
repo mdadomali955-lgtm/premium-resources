@@ -16,24 +16,24 @@
   <style>
     :root {
       --bg-base: #02040a;
-      --liquid-glass: rgba(13, 17, 30, 0.76);
-      --liquid-glass-card: rgba(18, 24, 42, 0.82);
-      --liquid-border-top: rgba(255, 255, 255, 0.45);
+      --liquid-glass: rgba(13, 17, 30, 0.78);
+      --liquid-glass-card: rgba(18, 24, 42, 0.85);
+      --liquid-border-top: rgba(255, 255, 255, 0.5);
       --liquid-border-bot: rgba(255, 255, 255, 0.08);
-      --liquid-border-side: rgba(255, 255, 255, 0.18);
+      --liquid-border-side: rgba(255, 255, 255, 0.2);
       --liquid-specular: 
-        inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.4),
-        inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.8);
+        inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.45),
+        inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.85);
       --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.55);
+      --accent-glow: rgba(56, 189, 248, 0.6);
       --gold: #fbbf24;
-      --gold-glow: rgba(251, 191, 36, 0.5);
+      --gold-glow: rgba(251, 191, 36, 0.55);
       --green: #22c55e;
       --danger: #f43f5e;
       --text-main: #ffffff;
       --text-sub: #cbd5e1;
       --text-dim: #94a3b8;
-      --dock-glass: rgba(8, 11, 20, 0.88);
+      --dock-glass: rgba(8, 11, 20, 0.9);
     }
 
     * { 
@@ -49,7 +49,7 @@
       background: var(--bg-base); 
       min-height: 100vh; 
       color: var(--text-main); 
-      padding-bottom: 110px; 
+      padding-bottom: 115px; 
       overflow-x: hidden; 
       position: relative;
     }
@@ -63,12 +63,12 @@
       pointer-events: none;
       z-index: 0;
       background: 
-        radial-gradient(circle at 10% 15%, rgba(217, 70, 239, 0.35) 0%, transparent 45%),
-        radial-gradient(circle at 90% 20%, rgba(56, 189, 248, 0.35) 0%, transparent 40%),
-        radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.25) 0%, transparent 50%),
-        radial-gradient(circle at 15% 85%, rgba(245, 158, 11, 0.3) 0%, transparent 45%),
-        radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.25) 0%, transparent 45%);
-      filter: blur(60px);
+        radial-gradient(circle at 10% 15%, rgba(217, 70, 239, 0.4) 0%, transparent 45%),
+        radial-gradient(circle at 90% 20%, rgba(56, 189, 248, 0.4) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 15% 85%, rgba(245, 158, 11, 0.35) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.3) 0%, transparent 45%);
+      filter: blur(70px);
     }
 
     .bubbles-container {
@@ -86,20 +86,20 @@
       position: absolute;
       bottom: -100px;
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.28), rgba(56, 189, 248, 0.12) 60%, rgba(217, 70, 239, 0.05) 100%);
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.32), rgba(56, 189, 248, 0.15) 60%, rgba(217, 70, 239, 0.08) 100%);
       box-shadow: 
-        inset 0 2px 4px rgba(255, 255, 255, 0.4),
-        0 8px 24px rgba(56, 189, 248, 0.2);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+        inset 0 2px 5px rgba(255, 255, 255, 0.45),
+        0 8px 25px rgba(56, 189, 248, 0.25);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
       animation: floatUp 14s infinite linear;
     }
 
     @keyframes floatUp {
       0% { transform: translateY(0) scale(0.8) rotate(0deg); opacity: 0; }
-      15% { opacity: 0.8; }
-      85% { opacity: 0.7; }
-      100% { transform: translateY(-115vh) scale(1.15) rotate(360deg); opacity: 0; }
+      15% { opacity: 0.85; }
+      85% { opacity: 0.75; }
+      100% { transform: translateY(-115vh) scale(1.2) rotate(360deg); opacity: 0; }
     }
 
     #confettiCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4000; }
@@ -109,26 +109,26 @@
       top: -85px; 
       left: 50%; 
       transform: translateX(-50%); 
-      background: rgba(15, 23, 42, 0.96); 
+      background: rgba(15, 23, 42, 0.98); 
       border-top: 1px solid var(--liquid-border-top);
       border-bottom: 1px solid var(--liquid-border-bot);
       border-left: 1px solid var(--liquid-border-side);
       border-right: 1px solid var(--liquid-border-side);
       color: #ffffff; 
-      padding: 13px 26px; 
+      padding: 14px 28px; 
       border-radius: 99px; 
-      font-size: 13px; 
+      font-size: 13.5px; 
       font-weight: 800; 
       z-index: 3000; 
-      box-shadow: 0 20px 45px rgba(0,0,0,0.8), var(--liquid-specular); 
+      box-shadow: 0 20px 50px rgba(0,0,0,0.85), var(--liquid-specular); 
       transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
       display: flex; 
       align-items: center; 
-      gap: 10px; 
-      backdrop-filter: blur(30px); 
-      -webkit-backdrop-filter: blur(30px);
+      gap: 12px; 
+      backdrop-filter: blur(35px); 
+      -webkit-backdrop-filter: blur(35px);
       text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-      max-width: 90vw;
+      max-width: 92vw;
       text-align: center;
     }
     #toast.show { top: 22px; }
@@ -138,14 +138,14 @@
       justify-content: space-between; 
       align-items: center; 
       padding: 16px 20px; 
-      background: rgba(8, 11, 20, 0.78); 
-      backdrop-filter: blur(35px); 
-      -webkit-backdrop-filter: blur(35px);
+      background: rgba(8, 11, 20, 0.82); 
+      backdrop-filter: blur(40px); 
+      -webkit-backdrop-filter: blur(40px);
       border-bottom: 1px solid var(--liquid-border-bot); 
       position: sticky; 
       top: 0; 
       z-index: 100; 
-      box-shadow: 0 6px 30px rgba(0,0,0,0.6); 
+      box-shadow: 0 8px 35px rgba(0,0,0,0.65); 
     }
     .user-info { display: flex; align-items: center; gap: 12px; }
     
@@ -154,8 +154,8 @@
       height: 48px; 
       border-radius: 50%; 
       overflow: hidden; 
-      border: 2px solid rgba(255,255,255,0.4); 
-      box-shadow: 0 4px 16px rgba(0,0,0,0.6), var(--liquid-specular); 
+      border: 2px solid rgba(255,255,255,0.45); 
+      box-shadow: 0 4px 18px rgba(0,0,0,0.65), var(--liquid-specular); 
       background: linear-gradient(135deg, #a855f7, #38bdf8); 
       display: flex; 
       align-items: center; 
@@ -173,15 +173,15 @@
       font-weight: 800; 
       letter-spacing: 0.6px; 
       text-transform: uppercase; 
-      text-shadow: 0 0 12px var(--gold-glow); 
+      text-shadow: 0 0 14px var(--gold-glow); 
     }
     
     .balance-pill { 
-      background: rgba(251, 191, 36, 0.16); 
-      border-top: 1px solid rgba(251, 191, 36, 0.6); 
-      border-bottom: 1px solid rgba(251, 191, 36, 0.2); 
-      border-left: 1px solid rgba(251, 191, 36, 0.3); 
-      border-right: 1px solid rgba(251, 191, 36, 0.3); 
+      background: rgba(251, 191, 36, 0.18); 
+      border-top: 1px solid rgba(251, 191, 36, 0.65); 
+      border-bottom: 1px solid rgba(251, 191, 36, 0.25); 
+      border-left: 1px solid rgba(251, 191, 36, 0.35); 
+      border-right: 1px solid rgba(251, 191, 36, 0.35); 
       padding: 8px 18px; 
       border-radius: 99px; 
       display: flex; 
@@ -190,7 +190,7 @@
       font-weight: 900; 
       color: var(--gold); 
       font-size: 15px; 
-      box-shadow: 0 8px 25px rgba(251, 191, 36, 0.25), var(--liquid-specular); 
+      box-shadow: 0 8px 28px rgba(251, 191, 36, 0.3), var(--liquid-specular); 
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
       text-shadow: 0 1px 3px rgba(0,0,0,0.6);
@@ -243,11 +243,11 @@
 
     /* ডেইলি কার্ড */
     .daily-card { 
-      background: linear-gradient(135deg, rgba(25, 33, 56, 0.85), rgba(15, 23, 42, 0.9)); 
-      border-top: 1px solid rgba(255, 255, 255, 0.45); 
+      background: linear-gradient(135deg, rgba(25, 33, 56, 0.9), rgba(15, 23, 42, 0.95)); 
+      border-top: 1px solid rgba(255, 255, 255, 0.5); 
       border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
-      border-left: 1px solid rgba(255, 255, 255, 0.2); 
-      border-right: 1px solid rgba(255, 255, 255, 0.2); 
+      border-left: 1px solid rgba(255, 255, 255, 0.25); 
+      border-right: 1px solid rgba(255, 255, 255, 0.25); 
       border-radius: 24px; 
       padding: 18px 20px; 
       display: flex; 
@@ -256,7 +256,7 @@
       margin-bottom: 20px; 
       backdrop-filter: blur(35px); 
       -webkit-backdrop-filter: blur(35px);
-      box-shadow: 0 16px 45px rgba(0,0,0,0.5), var(--liquid-specular); 
+      box-shadow: 0 16px 45px rgba(0,0,0,0.55), var(--liquid-specular); 
     }
     .daily-btn { 
       background: linear-gradient(135deg, #fbbf24, #f59e0b); 
@@ -323,14 +323,14 @@
       white-space: nowrap;
     }
     .tab-btn.active { 
-      background: rgba(56, 189, 248, 0.22); 
+      background: rgba(56, 189, 248, 0.25); 
       color: #ffffff; 
       border-top: 1px solid #38bdf8; 
       box-shadow: 0 0 25px var(--accent-glow), var(--liquid-specular); 
       text-shadow: 0 1px 3px rgba(0,0,0,0.8);
     }
 
-    /* রিসোর্স গ্রিড ও সাধারণ কার্ড */
+    /* রিসোর্স গ্রিড ও কার্ড */
     .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
     .card { 
       background: var(--liquid-glass-card); 
@@ -409,7 +409,6 @@
       z-index: 2;
     }
 
-    /* কার্ডের উপরে লাইভ ডাউনলোড সংখ্যা ব্যাজ */
     .download-count-pill {
       position: absolute;
       top: 10px;
@@ -685,7 +684,7 @@
       </div>
     </div>
 
-    <!-- ৩. টাস্ক ও অ্যাড সেকশন -->
+    <!-- ৩. টাস্ক ও অ্যাড সেকশন (স্পিন ও স্ক্র্যাচ কার্ড সহ) -->
     <div id="pageAds" class="view-page">
       <div class="stat-card" style="text-align: left;">
         <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 8px; color: #fff;">🚀 স্পেশাল চ্যানেল টাস্ক</h3>
@@ -700,15 +699,18 @@
 
       <div class="stat-card">
         <span style="font-size:40px;">💎</span>
-        <h2 style="font-size:18px; font-weight: 800; margin: 8px 0; color: #fff;">বিজ্ঞাপন দেখে কয়েন সংগ্রহ</h2>
-        <p style="font-size:12.5px; color:var(--text-sub);">সম্পূর্ণ বিজ্ঞাপনটি দেখলে ওয়ালেটে ১০টি কয়েন যোগ হবে।</p>
+        <h2 style="font-size:18px; font-weight: 800; margin: 8px 0; color: #fff;">বিজ্ঞাপন বা গেম খেলে কয়েন সংগ্রহ</h2>
+        <p style="font-size:12.5px; color:var(--text-sub);">সম্পূর্ণ বিজ্ঞাপনটি দেখলে ওয়ালেটে ১০টি কয়েন যোগ হবে অথবা উপরে গেম জোন থেকে স্পিন ও স্ক্র্যাচ করতে পারেন।</p>
         <div class="stat-number" id="adLimitDisplay">30/30</div>
-        <p style="font-size:11px; color:var(--text-dim); text-transform: uppercase; font-weight: 800;">আজকের অবশিষ্ট সীমা</p>
+        <p style="font-size:11px; color:var(--text-dim); text-transform: uppercase; font-weight: 800;">আজকের অবশিষ্ট অ্যাড সীমা</p>
       </div>
 
-      <div class="stat-card" style="text-align: left;">
+      <div class="stat-card" style="text-align: left; display: flex; flex-direction: column; gap: 12px;">
         <button class="action-btn" id="btnWatchMonetag" onclick="watchVipAd()">
           🎬 বিজ্ঞাপন দেখুন (+১০ কয়েন)
+        </button>
+        <button class="action-btn" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #020617;" onclick="switchNav('pageGames', document.querySelectorAll('.bottom-nav .nav-item')[1])">
+          🎡 লাকি স্পিন ও স্ক্র্যাচ করুন
         </button>
       </div>
     </div>
@@ -728,7 +730,7 @@
         <span style="font-size:36px;">🤝</span>
         <h2 style="font-size:18px; font-weight: 800; margin: 8px 0; color: #fff;">বন্ধুকে রেফার করে আয়</h2>
         <p style="font-size:12.5px; color:var(--text-sub); line-height: 1.5;">
-          ⚠️ <b>নিয়ম:</b> আপনার রেফারে জয়েন করা মেম্বার কমপক্ষে <b>১টি রিসোর্স ক্লেইম করলে</b> তবেই আপনি পাবেন <b>৫০টি কয়েন</b>।
+          ⚠️ <b>নিয়ম:</b> আপনার রেফারে জয়েন করা মেম্বার কমপক্ষে <b>১টি রিসোর্স ডাউনলোড করলে</b> তবেই আপনি পাবেন <b>৫০টি কয়েন</b>।
         </p>
         <div class="stat-number" id="referCount">0</div>
         <p style="font-size:11px; color:var(--text-dim); text-transform: uppercase; font-weight: 800;">সফল ভেরিফাইড রেফার</p>
@@ -765,9 +767,9 @@
       </div>
 
       <div class="stat-card">
-        <h3 style="font-size: 14.5px; text-align: left; margin-bottom: 8px; font-weight: 800; color: #fff;">📂 আমার আনলক করা ফাইলসমূহ</h3>
+        <h3 style="font-size: 14.5px; text-align: left; margin-bottom: 8px; font-weight: 800; color: #fff;">📂 আমার ডাউনলোড করা ফাইলসমূহ</h3>
         <div class="unlocked-list" id="unlockedItemsContainer">
-          <p style="color:var(--text-sub); font-size: 12px;">এখনও কোনো ফাইল ক্লেইম করেননি।</p>
+          <p style="color:var(--text-sub); font-size: 12px;">এখনও কোনো ফাইল ডাউনলোড করেননি।</p>
         </div>
       </div>
 
@@ -812,9 +814,9 @@
         </div>
       </div>
 
-      <!-- কে কোন ফাইল ডাউনলোড করেছে (ইউজার হিস্ট্রি) -->
+      <!-- কে কোন ফাইল ডাউনলোড করেছে (ইউজার হিস্ট্রি - নতুন ডাউনলোড সবার উপরে) -->
       <div class="stat-card" style="padding: 16px; margin-top: 18px;">
-        <h3 style="font-size: 14.5px; text-align: left; margin-bottom: 8px; font-weight: 800; color: var(--gold);">🕵️‍♂️ কে কোন ফাইল ডাউনলোড করেছে (ইউজার হিস্ট্রি)</h3>
+        <h3 style="font-size: 14.5px; text-align: left; margin-bottom: 8px; font-weight: 800; color: var(--gold);">⚡ লাইভ ডাউনলোড হিস্ট্রি (সবার উপরে নতুন)</h3>
         <div style="overflow-x: auto;">
           <table class="admin-table">
             <thead>
@@ -1129,7 +1131,7 @@
       const items = userData.unlocked || {};
       const keys = Object.keys(items);
       if (keys.length === 0) {
-        container.innerHTML = '<p style="color:var(--text-sub); font-size: 12px; font-weight: 700;">এখনও কোনো ফাইল ক্লেইম করেননি।</p>';
+        container.innerHTML = '<p style="color:var(--text-sub); font-size: 12px; font-weight: 700;">এখনও কোনো ফাইল ডাউনলোড করেননি।</p>';
         return;
       }
       container.innerHTML = '';
@@ -1478,7 +1480,6 @@
         keys = keys.filter(k => allResources[k].name.toLowerCase().includes(searchFilter));
       }
 
-      // নতুন বা ইদানীং যোগ করা রিসোর্সগুলো যেন তালিকার সবার উপরে থাকে, সেজন্য রিভার্স বা সাজিয়ে নেওয়া হলো
       keys.reverse();
 
       if (keys.length === 0) {
@@ -1518,20 +1519,13 @@
             </div>`;
         }
 
-        let buttonText = 'ফাইল নিন ⚡';
-        if (item.download_link) {
-          buttonText = 'লিংক নিন 🔗';
-        } else if (isXml) {
-          buttonText = 'XML ফাইল ⚡';
-        }
-
         card.innerHTML = `
           ${mediaHtml}
           <div class="card-body">
             <div class="card-title">${item.name}</div>
             <div class="card-meta">
               <span class="price-tag">🪙 ${item.coins}</span>
-              <button class="btn-claim" onclick="claimResource('${k}', ${item.coins}, '${item.name}', '${item.type}')">${buttonText}</button>
+              <button class="btn-claim" onclick="claimResource('${k}', ${item.coins}, '${item.name}', '${item.type}')">ডাউনলোড করুন ⚡</button>
             </div>
           </div>`;
         container.appendChild(card);
@@ -1554,9 +1548,7 @@
         
         const playPromise = vid.play();
         if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            console.log("Autoplay prevented");
-          });
+          playPromise.catch(() => {});
         }
       } else {
         vid.pause();
@@ -1580,11 +1572,15 @@
     async function claimResource(key, cost, name, type) {
       triggerHaptic();
       if ((userData.coins || 0) < cost) {
-        showToast(`পর্যাপ্ত কয়েন নেই! আরও ${cost - userData.coins} কয়েন প্রয়োজন।`, "❌");
+        triggerHaptic('warning');
+        // পর্যাপ্ত কয়েন না থাকলে ইউজারকে গাইড করে অ্যাড/টাস্ক পেজে নিয়ে যাওয়ার নির্দেশিকা ও অপশন দেওয়া হচ্ছে
+        if (confirm(`❌ পর্যাপ্ত কয়েন নেই! এই ফাইলটি ডাউনলোড করতে আরও ${cost - userData.coins} কয়েন প্রয়োজন।\n\n💡 ফ্রি কয়েন অর্জন করতে এখনই 'টাস্ক ও অ্যাড' পেজে যেতে চান?`)) {
+          switchNav('pageAds', document.querySelectorAll('.bottom-nav .nav-item')[2]);
+        }
         return;
       }
 
-      if (confirm(`আপনি কি ${cost} কয়েন দিয়ে এই ফাইলটি নিতে চান?`)) {
+      if (confirm(`আপনি কি ${cost} কয়েন দিয়ে এই ফাইলটি ডাউনলোড করতে চান?`)) {
         triggerHaptic('success');
         userData.coins -= cost;
         userData.claimed_count = (userData.claimed_count || 0) + 1;
@@ -1626,14 +1622,22 @@
           user_id: user.id,
           name: user.first_name || "Unknown",
           username: user.username ? `@${user.username}` : "No Username",
-          time: new Date().toLocaleString('bn-BD')
+          file_name: name,
+          time: new Date().toLocaleString('bn-BD'),
+          timestamp: Date.now()
         };
+        
+        fetch(`${DB_BASE}/recent_downloads.json`, { 
+          method: 'POST', 
+          body: JSON.stringify(buyerInfo) 
+        });
+
         fetch(`${DB_BASE}/resources/${key}/buyers/${user.id}.json`, { 
           method: 'PUT', 
           body: JSON.stringify(buyerInfo) 
         });
 
-        showToast("🎉 কেনা সফল হয়েছে! ফাইলটি সরাসরি আপনার বটের ইনবক্সে দেওয়া হয়েছে।", "📥");
+        showToast("🎉 ডাউনলোড সফল হয়েছে! ফাইলটি সরাসরি আপনার বটের ইনবক্সে দেওয়া হয়েছে।", "📥");
 
         setTimeout(() => {
           openClaimBot(key);
@@ -1646,7 +1650,7 @@
       const buyersTbody = document.getElementById('adminBuyersTableBody');
       
       tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--accent); padding: 20px; font-weight: 700;">ডাটা বিশ্লেষণ করা হচ্ছে... ⏳</td></tr>';
-      buyersTbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--accent); padding: 20px; font-weight: 700;">ডাউনলোড হিস্ট্রি আনা হচ্ছে... ⏳</td></tr>';
+      buyersTbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--accent); padding: 20px; font-weight: 700;">লাইভ ডাউনলোড হিস্ট্রি আনা হচ্ছে... ⏳</td></tr>';
 
       try {
         const res = await fetch(`${DB_BASE}/resources.json`);
@@ -1655,58 +1659,58 @@
         let totalSales = 0;
         let totalCoins = 0;
         let rowsHtml = '';
-        let buyersHtml = '';
-        let hasBuyers = false;
 
         const keys = Object.keys(resources);
         if (keys.length === 0) {
           tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-sub); padding: 20px; font-weight: 700;">কোনো রিসোর্স পাওয়া যায়নি</td></tr>';
-          buyersTbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-sub); padding: 20px; font-weight: 700;">কোনো হিস্ট্রি পাওয়া যায়নি</td></tr>';
-          return;
+        } else {
+          keys.sort((a, b) => (resources[b].total_claims || 0) - (resources[a].total_claims || 0));
+
+          keys.forEach(k => {
+            const it = resources[k];
+            const claims = it.total_claims || 0;
+            const revenue = it.total_revenue || 0;
+            totalSales += claims;
+            totalCoins += revenue;
+
+            rowsHtml += `
+              <tr>
+                <td style="font-weight: 800; color: #ffffff;">${it.name || 'Unknown'}</td>
+                <td><span style="font-size: 10.5px; color: var(--text-sub); font-weight: 800;">${(it.type || 'N/A').toUpperCase()}</span></td>
+                <td><span class="badge-count">${claims} বার</span></td>
+                <td><span class="badge-rev">🪙 ${revenue}</span></td>
+              </tr>
+            `;
+          });
+          tbody.innerHTML = rowsHtml;
         }
 
-        keys.sort((a, b) => (resources[b].total_claims || 0) - (resources[a].total_claims || 0));
-
-        keys.forEach(k => {
-          const it = resources[k];
-          const claims = it.total_claims || 0;
-          const revenue = it.total_revenue || 0;
-          totalSales += claims;
-          totalCoins += revenue;
-
-          rowsHtml += `
-            <tr>
-              <td style="font-weight: 800; color: #ffffff;">${it.name || 'Unknown'}</td>
-              <td><span style="font-size: 10.5px; color: var(--text-sub); font-weight: 800;">${(it.type || 'N/A').toUpperCase()}</span></td>
-              <td><span class="badge-count">${claims} বার</span></td>
-              <td><span class="badge-rev">🪙 ${revenue}</span></td>
-            </tr>
-          `;
-
-          if (it.buyers) {
-            Object.values(it.buyers).forEach(b => {
-              hasBuyers = true;
-              buyersHtml += `
-                <tr>
-                  <td style="color:#ffffff; font-weight:800;">${it.name}</td>
-                  <td>
-                    <div style="color:var(--accent); font-weight:800;">${b.name} (${b.username})</div>
-                    <div style="font-size:10px; color:var(--text-dim);">ID: ${b.user_id}</div>
-                  </td>
-                  <td style="font-size:11px; color:var(--text-sub);">${b.time || 'N/A'}</td>
-                </tr>
-              `;
-            });
-          }
-        });
-
-        tbody.innerHTML = rowsHtml;
         document.getElementById('adminTotalSales').innerText = `${totalSales} টি`;
         document.getElementById('adminTotalCoinsSpent').innerText = `${totalCoins} 🪙`;
 
-        if (!hasBuyers) {
+        const recRes = await fetch(`${DB_BASE}/recent_downloads.json`);
+        const recentData = await recRes.json() || {};
+        
+        let buyersHtml = '';
+        const recentKeys = Object.keys(recentData);
+        
+        if (recentKeys.length === 0) {
           buyersTbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-sub); padding: 15px;">এখনও কেউ কোনো ফাইল ডাউনলোড করেনি।</td></tr>';
         } else {
+          const sortedDownloads = Object.values(recentData).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+          
+          sortedDownloads.forEach(b => {
+            buyersHtml += `
+              <tr>
+                <td style="color:#ffffff; font-weight:800;">${b.file_name || 'রিসোর্স ফাইল'}</td>
+                <td>
+                  <div style="color:var(--accent); font-weight:800;">${b.name} (${b.username})</div>
+                  <div style="font-size:10px; color:var(--text-dim);">ID: ${b.user_id}</div>
+                </td>
+                <td style="font-size:11px; color:var(--gold); font-weight:700;">${b.time || 'N/A'}</td>
+              </tr>
+            `;
+          });
           buyersTbody.innerHTML = buyersHtml;
         }
 
@@ -1738,7 +1742,7 @@
       document.querySelectorAll('.view-page').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.bottom-nav .nav-item').forEach(b => b.classList.remove('active'));
       document.getElementById(pageId).classList.add('active');
-      btn.classList.add('active');
+      if (btn) btn.classList.add('active');
       
       if (pageId === 'pageLeaderboard') loadLeaderboard();
       if (pageId === 'pageAdmin') loadAdminAnalytics();
