@@ -1345,10 +1345,13 @@ if __name__ == "__main__":
     
     try:
         bot.remove_webhook()
+        time.sleep(2)
     except Exception:
         pass
 
     bot.infinity_polling(
-        skip_pending=True, 
+        skip_pending=True,
+        timeout=60,
+        long_polling_timeout=60,
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-            )
+        )
