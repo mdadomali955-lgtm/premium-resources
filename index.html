@@ -646,7 +646,7 @@
   <canvas id="confettiCanvas"></canvas>
   <div id="toast"><span id="toastIcon">⭐</span><span id="toastMsg">বার্তা</span></div>
 
-  <!-- প্রথম ৫ সেকেন্ডের প্রিপেয়ারিং ওভারলে -->
+  <!-- প্রথম ৫ সেকেন্ড প্রিপেয়ারিং ওভারলে -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-card-box">
       <div class="spinner"></div>
@@ -1684,7 +1684,7 @@
       modal.classList.remove('active');
     }
 
-    // চূড়ান্ত নিখুঁত ডাউনলোড এবং বডে ফাইল ডেলিভারি লজিক
+    // ডাউনলোড বাটনে চাপলে প্রথমে ৫ সেকেন্ড প্রিপেয়ারিং, তারপর মুনট্যাগ অ্যাডস এবং সফলভাবে ফাইল ইনবক্সে পাঠানোর চূড়ান্ত লজিক
     async function claimResource(key, cost, name, type) {
       triggerHaptic();
       if ((userData.coins || 0) < cost) {
@@ -1702,7 +1702,7 @@
         const countdownText = document.getElementById('loadingCountdownText');
         loadingOverlay.classList.add('active');
 
-        // প্রথমে ৫ সেকেন্ডের প্রিপেয়ারিং কাউন্টডাউন
+        // ১. প্রথমে ৫ সেকেন্ডের প্রিপেয়ারিং কাউন্টডাউন
         let prepTime = 5;
         countdownText.innerText = `দয়া করে ৫ সেকেন্ড অপেক্ষা করুন (${prepTime}s)...`;
 
@@ -1718,7 +1718,7 @@
           }, 1000);
         });
 
-        // ৫ সেকেন্ড শেষ হওয়ার পর ওভারলে অফ হবে এবং মুনট্যাগ বিজ্ঞাপন কল হবে
+        // ২. ৫ সেকেন্ড শেষ হওয়ার সাথে সাথেই ওভারলে হাইড হবে এবং মুনট্যাগ বিজ্ঞাপন শুরু হবে
         loadingOverlay.classList.remove('active');
 
         if (typeof show_11750504 === 'function') {
@@ -1727,7 +1727,7 @@
           } catch(e) {}
         }
 
-        // ফায়ারবেস আপডেট
+        // ৩. ফায়ারবেস আপডেট ও বটের ইনবক্সে ফাইল পাঠানোর কাজ
         userData.coins -= cost;
         userData.claimed_count = (userData.claimed_count || 0) + 1;
         if (!userData.unlocked) userData.unlocked = {};
@@ -1783,12 +1783,13 @@
           body: JSON.stringify(buyerInfo) 
         });
 
+        // বিজ্ঞাপনের পর টোস্ট নোটিফিকেশন দেখাবে
         showToast("🎉 ডাউনলোড সফল হয়েছে! ফাইলটি সরাসরি আপনার বটের ইনবক্সে দেওয়া হয়েছে।", "📥");
 
-        // বটের ইনবক্সে রিডাইরেক্ট করে ফাইল ডেলিভারি নিশ্চিত করা
+        // বটের ইনবক্সে ফাইল পাঠানোর জন্য রিডাইরেক্ট ট্রিগার
         setTimeout(() => {
           openClaimBot(key);
-        }, 1000);
+        }, 1200);
       }
     }
 
@@ -1912,4 +1913,4 @@
     initApp();
   </script>
 </body>
-  </html>
+        </html>
