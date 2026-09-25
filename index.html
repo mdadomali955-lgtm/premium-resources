@@ -353,15 +353,18 @@
     .card img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; transition: transform 0.4s; display: block; }
     .card:hover img { transform: scale(1.05); }
 
-    /* ফুল-উইডথ সিনেমাটিক XML কার্ড */
+    /* ফুল-উইডথ XML কার্ড (ভিডিওর আসল অনুপাত বা আকার বজায় রাখার জন্য অটো হাইট ও অবজেক্ট-ফিট ব্যবহার করা হয়েছে) */
     .card.xml-fullwidth-card {
       grid-column: span 2;
       border-radius: 28px;
     }
     .card.xml-fullwidth-card .card-thumb-wrap {
       height: auto;
-      aspect-ratio: 16 / 9;
+      max-height: 480px;
       background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .card.xml-fullwidth-card .card-body {
       padding: 16px 18px;
@@ -1527,14 +1530,14 @@
             mediaHtml = `
               <div class="card-thumb-wrap" onclick="openMediaPreview('${mediaSource}', true)">
                 ${badgePills}
-                <iframe src="${embedUrl}" frameborder="0" allow="autoplay; encrypted-media" style="width:100%; height:100%; pointer-events: none; position: absolute; top:0; left:0; object-fit: cover;"></iframe>
+                <iframe src="${embedUrl}" frameborder="0" allow="autoplay; encrypted-media" style="width:100%; height:100%; pointer-events: none; position: absolute; top:0; left:0; object-fit: contain; background: #000;"></iframe>
                 <div class="video-play-indicator">▶</div>
               </div>`;
           } else {
             mediaHtml = `
               <div class="card-thumb-wrap" onclick="openMediaPreview('${mediaSource}', true)">
                 ${badgePills}
-                <video src="${mediaSource}#t=1" muted autoplay loop preload="auto" playsinline style="width:100%; height:100%; object-fit:cover; background:#000;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"></video>
+                <video src="${mediaSource}#t=1" muted autoplay loop preload="auto" playsinline style="width:100%; height:100%; object-fit:contain; background:#000;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"></video>
                 <div class="video-play-indicator" style="display:none; background: linear-gradient(135deg, rgba(56,189,248,0.85), rgba(2,132,199,0.95)); font-size: 24px;">▶</div>
               </div>`;
           }
@@ -1812,4 +1815,4 @@
     initApp();
   </script>
 </body>
-          </html>
+      </html>
