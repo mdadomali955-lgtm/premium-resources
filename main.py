@@ -347,7 +347,7 @@ def redeem_promo_code(message):
         
         bot.reply_to(
             message,
-            f"🎉 অভিনন্দন! প্রোমো কোড সফলভাবে রিডিম হয়েছে।\n"
+            f"🎉 অভিনন্দন! প্রোমো কোড সফলভাবে রিডিম হয়েছে。\n"
             f"আপনার অ্যাকাউন্টে যুক্ত হয়েছে *{coins_to_add}* কয়েন!\n"
             f"বর্তমান ব্যালেন্স: *{new_coins} 🪙*",
             parse_mode="Markdown",
@@ -498,7 +498,7 @@ def process_apply_coins(message):
         try:
             bot.send_message(
                 target_id, 
-                f"🎁 **অ্যাডমিন থেকে কয়েন আপডেট!**\n\nআপনার অ্যাকাউন্টে *{amount}* কয়েন যোগ করা হয়েছে।\nবর্তমান ব্যালেন্স: *{updated_c} 🪙*",
+                f"🎁 **অ্যাডমিন থেকে কয়েন আপডেট!**\n\nআপনার অ্যাকাউন্টে *{amount}* কয়েন যোগ করা হয়েছে。\nবর্তমান ব্যালেন্স: *{updated_c} 🪙*",
                 parse_mode="Markdown"
             )
         except Exception:
@@ -1284,7 +1284,7 @@ def handle_channel_post_decision(call):
             bot.send_message(
                 call.message.chat.id,
                 "🎉 **সফলভাবে টেলিগ্রাম চ্যানেলে পোস্ট করা হয়েছে!**",
-                reply_markup=get_admin_dashboard_keyboard()
+                reply_markup=get_admin_dashboard_keyword()
             )
         else:
             bot.send_message(call.message.chat.id, "❌ রিসোর্স ডেটা পাওয়া যায়নি।", reply_markup=get_admin_dashboard_keyboard())
@@ -1351,4 +1351,4 @@ if __name__ == "__main__":
     bot.infinity_polling(
         skip_pending=True, 
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-    )
+        )
