@@ -104,7 +104,6 @@
 
     #confettiCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4000; }
 
-    /* টোস্ট নোটিফিকেশন */
     #toast { 
       position: fixed; 
       top: -120px; 
@@ -135,7 +134,7 @@
     }
     #toast.show { top: 18px; }
 
-    /* বিজ্ঞাপন ও ১৫ সেকেন্ড কাউন্টডাউন প্রিমিয়াম ওভারলে */
+    /* প্রথম ৫ সেকেন্ড প্রিপেয়ারিং ওভারলে */
     .loading-overlay {
       display: none;
       position: fixed;
@@ -647,12 +646,12 @@
   <canvas id="confettiCanvas"></canvas>
   <div id="toast"><span id="toastIcon">⭐</span><span id="toastMsg">বার্তা</span></div>
 
-  <!-- ফাইল প্রস্তুতির প্রিমিয়াম লোডিং ওভারলে ও ১৫ সেকেন্ড কাউন্টডাউন টেক্সট (অর্ধেক স্ক্রিনে ওপরের অংশে সুন্দরভাবে শো করবে) -->
+  <!-- ফাইল প্রিপেয়ারিং ও ১৫ সেকেন্ড কাউন্টডাউন ব্যানার (বিজ্ঞাপন চলাকালীন স্ক্রিনে দৃশ্যমান থাকবে) -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-card-box">
       <div class="spinner"></div>
-      <div style="font-size: 15px; font-weight: 900; color: #fff; line-height: 1.4;">অপেক্ষা করুন, আপনার ফাইল প্রস্তুত করা হচ্ছে...</div>
-      <div style="font-size: 13px; color: var(--accent); font-weight: 900;" id="loadingCountdownText">বিজ্ঞাপন দেখা হচ্ছে (১৫ সেকেন্ড বাকি)...</div>
+      <div style="font-size: 16px; font-weight: 900; color: #fff; line-height: 1.5;">অপেক্ষা করুন, আপনার ফাইল প্রস্তুত করা হচ্ছে...</div>
+      <div style="font-size: 13.5px; color: var(--accent); font-weight: 900;" id="loadingCountdownText">বিজ্ঞাপন দেখা হচ্ছে (১৫ সেকেন্ড বাকি)...</div>
       <div style="font-size: 11px; color: var(--text-sub); font-weight: 600;">বিজ্ঞাপন শেষ হওয়ার পর ফাইলটি সরাসরি আপনার টেলিগ্রাম ইনবক্সে চলে যাবে 🚀</div>
     </div>
   </div>
@@ -1682,7 +1681,7 @@
       modal.classList.remove('active');
     }
 
-    // ডাউনলোড বাটনে চাপলে বিজ্ঞাপন ও ১৫ সেকেন্ড কাউন্টডাউন একসাথে চালু হওয়ার চূড়ান্ত লজিক
+    // ডাউনলোড বাটনে চাপলে বিজ্ঞাপন ও ১৫ সেকেন্ড কাউন্টডাউন একসাথে চালু হওয়ার চূড়ান্ত ফিক্সড লজিক
     async function claimResource(key, cost, name, type) {
       triggerHaptic();
       if ((userData.coins || 0) < cost) {
@@ -1700,14 +1699,14 @@
         const countdownText = document.getElementById('loadingCountdownText');
         loadingOverlay.classList.add('active');
 
-        // বিজ্ঞাপন সাথে সাথে কল করা হচ্ছে
+        // বিজ্ঞাপন সাথে সাথে কল করা হচ্ছে যাতে বিজ্ঞাপন চলাকালীন কাউন্টডাউন হতে থাকে
         if (typeof show_11750504 === 'function') {
           try {
             show_11750504();
           } catch(e) {}
         }
 
-        // বিজ্ঞাপন চলাকালীন ১৫ সেকেন্ডের লাইভ কাউন্টডাউন
+        // ১৫ সেকেন্ড কাউন্টডাউন
         let timeLeft = 15;
         await new Promise((resolve) => {
           const countdownTimer = setInterval(() => {
