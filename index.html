@@ -104,13 +104,13 @@
 
     #confettiCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4000; }
 
-    /* নিখুঁত টোস্ট নোটিফিকেশন স্টাইল (স্ক্রিনের উপরে ঠিকমতো পজিশন করা) */
+    /* টোস্ট নোটিফিকেশন */
     #toast { 
       position: fixed; 
       top: -100px; 
       left: 50%; 
       transform: translateX(-50%); 
-      background: rgba(15, 23, 42, 0.96); 
+      background: rgba(15, 23, 42, 0.98); 
       border-top: 1px solid var(--liquid-border-top);
       border-bottom: 1px solid var(--liquid-border-bot);
       border-left: 1px solid var(--liquid-border-side);
@@ -120,7 +120,7 @@
       border-radius: 99px; 
       font-size: 13px; 
       font-weight: 800; 
-      z-index: 5000; 
+      z-index: 99999; 
       box-shadow: 0 15px 40px rgba(0,0,0,0.85), var(--liquid-specular); 
       transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
       display: flex; 
@@ -135,7 +135,7 @@
     }
     #toast.show { top: 18px; }
 
-    /* প্রিমিয়াম লোডিং / প্রিপেয়ারিং ওভারলে (খুব সুন্দর ডিজাইনে) */
+    /* প্রিমিয়াম ফাইল প্রিপেয়ারিং ও ১৫ সেকেন্ড কাউন্টডাউন ওভারলে (সবার উপরে দৃশ্যমান থাকবে) */
     .loading-overlay {
       display: none;
       position: fixed;
@@ -143,39 +143,39 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(2, 4, 10, 0.92);
-      z-index: 4500;
+      background: rgba(2, 4, 10, 0.95);
+      z-index: 99998;
       align-items: center;
       justify-content: center;
       flex-direction: column;
       gap: 20px;
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
+      backdrop-filter: blur(35px);
+      -webkit-backdrop-filter: blur(35px);
     }
     .loading-overlay.active { display: flex; }
     
     .loading-card-box {
-      background: rgba(18, 24, 42, 0.9);
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      padding: 28px 24px;
-      border-radius: 24px;
+      background: rgba(18, 24, 42, 0.95);
+      border: 1.5px solid rgba(56, 189, 248, 0.5);
+      padding: 32px 24px;
+      border-radius: 28px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 16px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.8), var(--liquid-specular);
-      max-width: 85vw;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.9), var(--liquid-specular);
+      max-width: 88vw;
       text-align: center;
     }
 
     .spinner {
-      width: 50px;
-      height: 50px;
+      width: 52px;
+      height: 52px;
       border: 4px solid rgba(56, 189, 248, 0.2);
       border-top: 4px solid var(--accent);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
-      box-shadow: 0 0 20px var(--accent-glow);
+      box-shadow: 0 0 25px var(--accent-glow);
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -649,12 +649,13 @@
   <canvas id="confettiCanvas"></canvas>
   <div id="toast"><span id="toastIcon">⭐</span><span id="toastMsg">বার্তা</span></div>
 
-  <!-- ফাইল প্রস্তুতির প্রিমিয়াম লোডিং ওভারলে ও সুন্দর টেক্সট -->
+  <!-- ফাইল প্রস্তুতির প্রিমিয়াম লোডিং ওভারলে ও ১৫ সেকেন্ড কাউন্টডাউন টেক্সট -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-card-box">
       <div class="spinner"></div>
-      <div style="font-size: 15px; font-weight: 800; color: #fff; line-height: 1.5;">অপেক্ষা করুন, আপনার ফাইল প্রস্তুত করা হচ্ছে...</div>
-      <div style="font-size: 11.5px; color: var(--text-sub); font-weight: 600;">বিজ্ঞাপন শেষ হওয়ার পর ফাইলটি আপনার টেলিগ্রাম ইনবক্সে পৌঁছে যাবে 🚀</div>
+      <div style="font-size: 16px; font-weight: 900; color: #fff; line-height: 1.5;">অপেক্ষা করুন, আপনার ফাইল প্রস্তুত করা হচ্ছে...</div>
+      <div style="font-size: 12px; color: var(--accent); font-weight: 800;" id="loadingCountdownText">বিজ্ঞাপন লোড হচ্ছে (১৫ সেকেন্ড)...</div>
+      <div style="font-size: 11px; color: var(--text-sub); font-weight: 600;">বিজ্ঞাপন শেষ হওয়ার পর ফাইলটি আপনার টেলিগ্রাম ইনবক্সে পৌঁছে যাবে 🚀</div>
     </div>
   </div>
 
@@ -1682,12 +1683,12 @@
       modal.classList.remove('active');
     }
 
-    // ডাউনলোড বাটনে চাপলে অ্যাড ও প্রিমিয়াম প্রিপেয়ারিং স্ক্রিন দেখানোর লজিক
+    // ডাউনলোড বাটনে চাপলে অ্যাড ও ১৫ সেকেন্ডের লাইভ টাইমারসহ প্রিমিয়াম প্রিপেয়ারিং স্ক্রিন দেখানোর লজিক
     async function claimResource(key, cost, name, type) {
       triggerHaptic();
       if ((userData.coins || 0) < cost) {
         triggerHaptic('warning');
-        if (confirm(`❌ পর্যাপ্ত কয়েন নেই! এই ফাইলটি ডাউনলোড করতে আরও ${cost - userData.coins} কয়েন প্রয়োজন。\n\n💡 ফ্রি কয়েন অর্জন করতে এখনই 'টাস্ক ও রিওয়ার্ড' পেজে যেতে চান?`)) {
+        if (confirm(`❌ পর্যাপ্ত কয়েন নেই! এই ফাইলটি ডাউনলোড করতে আরও ফাইলটির জন্য ${cost - userData.coins} কয়েন প্রয়োজন。\n\n💡 ফ্রি কয়েন অর্জন করতে এখনই 'টাস্ক ও রিওয়ার্ড' পেজে যেতে চান?`)) {
           switchNav('pageAds', document.querySelectorAll('.bottom-nav .nav-item')[1]);
         }
         return;
@@ -1696,9 +1697,22 @@
       if (confirm(`আপনি কি ${cost} কয়েন দিয়ে এই ফাইলটি ডাউনলোড করতে চান?`)) {
         triggerHaptic('success');
         
-        // প্রিমিয়াম লোডিং ওভারলে ওপেন করা হচ্ছে যাতে লেখা থাকে "অপেক্ষা করুন, আপনার ফাইল প্রস্তুত করা হচ্ছে..."
+        // প্রিমিয়াম লোডিং ওভারলে ওপেন করা হচ্ছে
         const loadingOverlay = document.getElementById('loadingOverlay');
+        const countdownText = document.getElementById('loadingCountdownText');
         loadingOverlay.classList.add('active');
+
+        let timeLeft = 15;
+        countdownText.innerText = `অপেক্ষা করুন, আপনার ফাইল প্রস্তুত করা হচ্ছে... (${timeLeft}s)`;
+        
+        const countdownInterval = setInterval(() => {
+          timeLeft--;
+          if (timeLeft > 0) {
+            countdownText.innerText = `অপেক্ষা করুন, আপনার ফাইল প্রস্তুত করা হচ্ছে... (${timeLeft}s)`;
+          } else {
+            countdownText.innerText = `ফাইল পাঠানো হচ্ছে... 🚀`;
+          }
+        }, 1000);
 
         // বিজ্ঞাপন দেখানোর প্রক্রিয়া শুরু
         if (typeof show_11750504 === 'function') {
@@ -1706,9 +1720,10 @@
             await show_11750504();
           } catch(e) {}
         } else {
-          await new Promise(r => setTimeout(r, 2000));
+          await new Promise(r => setTimeout(r, 3000));
         }
 
+        clearInterval(countdownInterval);
         loadingOverlay.classList.remove('active');
 
         userData.coins -= cost;
