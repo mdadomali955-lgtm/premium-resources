@@ -450,7 +450,7 @@
     }
     .btn-claim:active { transform: scale(0.94); }
 
-    /* প্রিমিয়াম গেমস উপাদান (টাস্ক পেজের ভেতরের জন্য) */
+    /* প্রিমিয়াম গেমস উপাদান */
     .wheel-container { position: relative; width: 220px; height: 220px; margin: 16px auto; display: flex; align-items: center; justify-content: center; }
     #wheelCanvas { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 30px rgba(251, 191, 36, 0.35); transition: transform 4s cubic-bezier(0.15, 0.9, 0.25, 1); }
     .wheel-arrow { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 22px solid var(--danger); z-index: 20; filter: drop-shadow(0 3px 8px rgba(0,0,0,0.8)); }
@@ -835,12 +835,9 @@
   <div class="preview-modal" id="mediaModal" onclick="closeMediaPreview()">
     <span class="preview-close">&times;</span>
     <img id="modalImg" src="" alt="preview" style="display: none;">
-    
-    <!-- ইউটিউব শর্টস এম্বেড প্রিভিউ অথবা সরাসরি ভিডিও ট্যাগ -->
     <div id="youtubeEmbedWrapper" style="display: none; width: 100%; max-width: 320px; aspect-ratio: 9/16; border-radius: 12px; overflow: hidden; background: #000; position: relative;" onclick="event.stopPropagation()">
       <iframe id="modalYoutubeIframe" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"></iframe>
     </div>
-    
     <video id="modalVideo" src="" controls playsinline style="display: none;"></video>
   </div>
 
@@ -982,7 +979,7 @@
       return url.includes('youtube.com') || url.includes('youtu.be');
     }
 
-    function getYoutubeEmbedUrl(url) {
+    function getYoutubeEmbedUrl(url, autoplay = true) {
       let videoId = '';
       if (url.includes('shorts/')) {
         videoId = url.split('shorts/')[1].split('?')[0];
@@ -992,7 +989,8 @@
         videoId = url.split('youtu.be/')[1].split('?')[0];
       }
       if (!videoId) videoId = '1X3jihLvjY0';
-      return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0`;
+      const ap = autoplay ? 1 : 0;
+      return `https://www.youtube.com/embed/${videoId}?autoplay=${ap}&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0`;
     }
 
     function isVideoUrl(url) {
@@ -1525,19 +1523,19 @@
         let mediaHtml = '';
         if (isVideo) {
           if (isYoutubeUrl(mediaSource)) {
+            const embedUrl = getYoutubeEmbedUrl(mediaSource, true);
             mediaHtml = `
               <div class="card-thumb-wrap" onclick="openMediaPreview('${mediaSource}', true)">
                 ${badgePills}
-                <div style="width:100%; height:100%; background:#000; display:flex; align-items:center; justify-content:center; color:#38bdf8; font-size:32px; font-weight:900;">▶ YouTube</div>
+                <iframe src="${embedUrl}" frameborder="0" allow="autoplay; encrypted-media" style="width:100%; height:100%; pointer-events: none; position: absolute; top:0; left:0; object-fit: cover;"></iframe>
                 <div class="video-play-indicator">▶</div>
               </div>`;
           } else {
             mediaHtml = `
               <div class="card-thumb-wrap" onclick="openMediaPreview('${mediaSource}', true)">
                 ${badgePills}
-                <video src="${mediaSource}#t=1" muted preload="auto" playsinline style="width:100%; height:100%; object-fit:contain; background:#000;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"></video>
+                <video src="${mediaSource}#t=1" muted autoplay loop preload="auto" playsinline style="width:100%; height:100%; object-fit:cover; background:#000;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"></video>
                 <div class="video-play-indicator" style="display:none; background: linear-gradient(135deg, rgba(56,189,248,0.85), rgba(2,132,199,0.95)); font-size: 24px;">▶</div>
-                <div class="video-play-indicator">▶</div>
               </div>`;
           }
         } else {
@@ -1576,7 +1574,7 @@
           vid.pause();
           vid.style.display = 'none';
           ytWrapper.style.display = 'block';
-          ytIframe.src = getYoutubeEmbedUrl(src);
+          ytIframe.src = getYoutubeEmbedUrl(src, true);
         } else {
           ytWrapper.style.display = 'none';
           ytIframe.src = '';
@@ -1814,4 +1812,4 @@
     initApp();
   </script>
 </body>
-  </html>
+          </html>
