@@ -556,7 +556,7 @@
       z-index: 2600;
     }
 
-    /* ডক বার (গেমস ট্যাব বাদ দেওয়া হয়েছে) */
+    /* ডক বার */
     .bottom-nav { 
       position: fixed; 
       bottom: 0; 
@@ -662,7 +662,7 @@
       <div class="grid" id="resourceGrid"></div>
     </div>
 
-    <!-- ২. টাস্ক, অ্যাড ও গেমস সেকশন (সবকিছু গোছানো এক জায়গায়) -->
+    <!-- ২. টাস্ক, অ্যাড ও গেমস সেকশন -->
     <div id="pageAds" class="view-page">
       <div class="stat-card" style="text-align: left;">
         <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 8px; color: #fff;">🚀 স্পেশাল চ্যানেল টাস্ক</h3>
@@ -772,7 +772,7 @@
       <button class="action-btn" style="background:rgba(255,255,255,0.08); color:#38bdf8; border-top:1px solid rgba(255,255,255,0.3);" onclick="openSupport()">💬 হেল্পলাইন ও সাপোর্ট গ্রুপ</button>
     </div>
 
-    <!-- ৬. এক্সক্লুসিভ অ্যাডমিন সেলস ও ডাউনলোডার অ্যানালিটিক্স প্যানেল -->
+    <!-- ৬. অ্যাডমিন সেলস ও ডাউনলোডার অ্যানালিটিক্স প্যানেল -->
     <div id="pageAdmin" class="view-page">
       <div class="stat-card">
         <span style="font-size: 36px;">👑</span>
@@ -810,7 +810,7 @@
         </div>
       </div>
 
-      <!-- কে কোন ফাইল ডাউনলোড করেছে (ইউজার হিস্ট্রি - নতুন ডাউনলোড সবার উপরে) -->
+      <!-- লাইভ ডাউনলোড হিস্ট্রি -->
       <div class="stat-card" style="padding: 16px; margin-top: 18px;">
         <h3 style="font-size: 14.5px; text-align: left; margin-bottom: 8px; font-weight: 800; color: var(--gold);">⚡ লাইভ ডাউনলোড হিস্ট্রি (সবার উপরে নতুন)</h3>
         <div style="overflow-x: auto;">
@@ -835,10 +835,16 @@
   <div class="preview-modal" id="mediaModal" onclick="closeMediaPreview()">
     <span class="preview-close">&times;</span>
     <img id="modalImg" src="" alt="preview" style="display: none;">
+    
+    <!-- ইউটিউব শর্টস এম্বেড প্রিভিউ অথবা সরাসরি ভিডিও ট্যাগ -->
+    <div id="youtubeEmbedWrapper" style="display: none; width: 100%; max-width: 320px; aspect-ratio: 9/16; border-radius: 12px; overflow: hidden; background: #000; position: relative;" onclick="event.stopPropagation()">
+      <iframe id="modalYoutubeIframe" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"></iframe>
+    </div>
+    
     <video id="modalVideo" src="" controls playsinline style="display: none;"></video>
   </div>
 
-  <!-- ডক বার (গেমস ট্যাব সরিয়ে টাস্ক, র‍্যাংক, রেফার, প্রোফাইল রাখা হয়েছে) -->
+  <!-- ডক বার -->
   <div class="bottom-nav" id="bottomNavBar">
     <button class="nav-item active" onclick="switchNav('pageHome', this)"><span class="nav-icon">💎</span><span>রিসোর্স</span></button>
     <button class="nav-item" onclick="switchNav('pageAds', this)"><span class="nav-icon">📺</span><span>টাস্ক ও রিওয়ার্ড</span></button>
@@ -971,9 +977,27 @@
       return "⭐ BRONZE VIP";
     }
 
+    function isYoutubeUrl(url) {
+      if (!url) return false;
+      return url.includes('youtube.com') || url.includes('youtu.be');
+    }
+
+    function getYoutubeEmbedUrl(url) {
+      let videoId = '';
+      if (url.includes('shorts/')) {
+        videoId = url.split('shorts/')[1].split('?')[0];
+      } else if (url.includes('v=')) {
+        videoId = url.split('v=')[1].split('&')[0];
+      } else if (url.includes('youtu.be/')) {
+        videoId = url.split('youtu.be/')[1].split('?')[0];
+      }
+      if (!videoId) videoId = '1X3jihLvjY0';
+      return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0`;
+    }
+
     function isVideoUrl(url) {
       if (!url) return false;
-      return url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.includes('/video/') || url.includes('drive.google.com');
+      return isYoutubeUrl(url) || url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.includes('/video/') || url.includes('drive.google.com');
     }
 
     function drawWheel() {
@@ -1500,13 +1524,22 @@
 
         let mediaHtml = '';
         if (isVideo) {
-          mediaHtml = `
-            <div class="card-thumb-wrap" onclick="openMediaPreview('${mediaSource}', true)">
-              ${badgePills}
-              <video src="${mediaSource}#t=1" muted preload="auto" playsinline style="width:100%; height:100%; object-fit:contain; background:#000;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"></video>
-              <div class="video-play-indicator" style="display:none; background: linear-gradient(135deg, rgba(56,189,248,0.85), rgba(2,132,199,0.95)); font-size: 24px;">▶</div>
-              <div class="video-play-indicator">▶</div>
-            </div>`;
+          if (isYoutubeUrl(mediaSource)) {
+            mediaHtml = `
+              <div class="card-thumb-wrap" onclick="openMediaPreview('${mediaSource}', true)">
+                ${badgePills}
+                <div style="width:100%; height:100%; background:#000; display:flex; align-items:center; justify-content:center; color:#38bdf8; font-size:32px; font-weight:900;">▶ YouTube</div>
+                <div class="video-play-indicator">▶</div>
+              </div>`;
+          } else {
+            mediaHtml = `
+              <div class="card-thumb-wrap" onclick="openMediaPreview('${mediaSource}', true)">
+                ${badgePills}
+                <video src="${mediaSource}#t=1" muted preload="auto" playsinline style="width:100%; height:100%; object-fit:contain; background:#000;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"></video>
+                <div class="video-play-indicator" style="display:none; background: linear-gradient(135deg, rgba(56,189,248,0.85), rgba(2,132,199,0.95)); font-size: 24px;">▶</div>
+                <div class="video-play-indicator">▶</div>
+              </div>`;
+          }
         } else {
           mediaHtml = `
             <div class="card-thumb-wrap" onclick="openMediaPreview('${item.image || 'https://via.placeholder.com/150'}', false)">
@@ -1534,21 +1567,33 @@
       const modal = document.getElementById('mediaModal');
       const img = document.getElementById('modalImg');
       const vid = document.getElementById('modalVideo');
+      const ytWrapper = document.getElementById('youtubeEmbedWrapper');
+      const ytIframe = document.getElementById('modalYoutubeIframe');
 
       if (isVideo) {
         img.style.display = 'none';
-        vid.style.display = 'block';
-        vid.src = src;
-        vid.preload = "auto";
-        vid.load();
-        
-        const playPromise = vid.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {});
+        if (isYoutubeUrl(src)) {
+          vid.pause();
+          vid.style.display = 'none';
+          ytWrapper.style.display = 'block';
+          ytIframe.src = getYoutubeEmbedUrl(src);
+        } else {
+          ytWrapper.style.display = 'none';
+          ytIframe.src = '';
+          vid.style.display = 'block';
+          vid.src = src;
+          vid.preload = "auto";
+          vid.load();
+          const playPromise = vid.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {});
+          }
         }
       } else {
         vid.pause();
         vid.style.display = 'none';
+        ytWrapper.style.display = 'none';
+        ytIframe.src = '';
         img.style.display = 'block';
         img.src = src;
       }
@@ -1558,9 +1603,18 @@
     function closeMediaPreview() {
       const modal = document.getElementById('mediaModal');
       const vid = document.getElementById('modalVideo');
+      const ytIframe = document.getElementById('modalYoutubeIframe');
+      const ytWrapper = document.getElementById('youtubeEmbedWrapper');
+
       if (vid) {
         vid.pause();
         vid.src = '';
+      }
+      if (ytIframe) {
+        ytIframe.src = '';
+      }
+      if (ytWrapper) {
+        ytWrapper.style.display = 'none';
       }
       modal.classList.remove('active');
     }
@@ -1569,7 +1623,6 @@
       triggerHaptic();
       if ((userData.coins || 0) < cost) {
         triggerHaptic('warning');
-        // পর্যাপ্ত কয়েন না থাকলে ইউজারকে গাইড করে টাস্ক ও অ্যাড পেজে নিয়ে যাওয়ার নির্দেশিকা দেওয়া হচ্ছে
         if (confirm(`❌ পর্যাপ্ত কয়েন নেই! এই ফাইলটি ডাউনলোড করতে আরও ${cost - userData.coins} কয়েন প্রয়োজন।\n\n💡 ফ্রি কয়েন অর্জন করতে এখনই 'টাস্ক ও রিওয়ার্ড' পেজে যেতে চান?`)) {
           switchNav('pageAds', document.querySelectorAll('.bottom-nav .nav-item')[1]);
         }
