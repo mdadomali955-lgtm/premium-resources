@@ -353,14 +353,13 @@
     .card img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; transition: transform 0.4s; display: block; }
     .card:hover img { transform: scale(1.05); }
 
-    /* ফুল-উইডথ XML কার্ড (ভিডিওর আসল অনুপাত বা আকার বজায় রাখার জন্য অটো হাইট ও অবজেক্ট-ফিট ব্যবহার করা হয়েছে) */
+    /* ফুল-উইডথ XML কার্ড (ভিডিও বা শর্টস সম্পূর্ণ সঠিক আকারে দেখানোর জন্য ফিক্সড হাইট) */
     .card.xml-fullwidth-card {
       grid-column: span 2;
       border-radius: 28px;
     }
     .card.xml-fullwidth-card .card-thumb-wrap {
-      height: auto;
-      max-height: 480px;
+      height: 240px;
       background: #000;
       display: flex;
       align-items: center;
@@ -1624,7 +1623,7 @@
       triggerHaptic();
       if ((userData.coins || 0) < cost) {
         triggerHaptic('warning');
-        if (confirm(`❌ পর্যাপ্ত কয়েন নেই! এই ফাইলটি ডাউনলোড করতে আরও ${cost - userData.coins} কয়েন প্রয়োজন।\n\n💡 ফ্রি কয়েন অর্জন করতে এখনই 'টাস্ক ও রিওয়ার্ড' পেজে যেতে চান?`)) {
+        if (confirm(`❌ পর্যাপ্ত কয়েন নেই! এই ফাইলটি ডাউনলোড করতে আরও ${cost - userData.coins} কয়েন প্রয়োজন。\n\n💡 ফ্রি কয়েন অর্জন করতে এখনই 'টাস্ক ও রিওয়ার্ড' পেজে যেতে চান?`)) {
           switchNav('pageAds', document.querySelectorAll('.bottom-nav .nav-item')[1]);
         }
         return;
@@ -1815,4 +1814,4 @@
     initApp();
   </script>
 </body>
-      </html>
+  </html>
