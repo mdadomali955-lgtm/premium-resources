@@ -646,13 +646,13 @@
   <canvas id="confettiCanvas"></canvas>
   <div id="toast"><span id="toastIcon">⭐</span><span id="toastMsg">বার্তা</span></div>
 
-  <!-- ফাইল প্রিপেয়ারিং ও ১৫ সেকেন্ড কাউন্টডাউন ব্যানার (বিজ্ঞাপন চলাকালীন স্ক্রিনে দৃশ্যমান থাকবে) -->
+  <!-- প্রথম ৫ সেকেন্ডের প্রিপেয়ারিং ওভারলে -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-card-box">
       <div class="spinner"></div>
-      <div style="font-size: 16px; font-weight: 900; color: #fff; line-height: 1.5;">অপেক্ষা করুন, আপনার ফাইল প্রস্তুত করা হচ্ছে...</div>
-      <div style="font-size: 13.5px; color: var(--accent); font-weight: 900;" id="loadingCountdownText">বিজ্ঞাপন দেখা হচ্ছে (১৫ সেকেন্ড বাকি)...</div>
-      <div style="font-size: 11px; color: var(--text-sub); font-weight: 600;">বিজ্ঞাপন শেষ হওয়ার পর ফাইলটি সরাসরি আপনার টেলিগ্রাম ইনবক্সে চলে যাবে 🚀</div>
+      <div style="font-size: 16px; font-weight: 900; color: #fff; line-height: 1.5;">দয়া করে ৫ সেকেন্ড অপেক্ষা করুন</div>
+      <div style="font-size: 13.5px; color: var(--accent); font-weight: 900;" id="loadingCountdownText">আপনার ফাইল প্রস্তুত করা হচ্ছে...</div>
+      <div style="font-size: 11px; color: var(--text-sub); font-weight: 600;">এরপর বিজ্ঞাপন দেখানো হবে এবং ফাইল ইনবক্সে চলে যাবে 🚀</div>
     </div>
   </div>
 
@@ -1681,7 +1681,7 @@
       modal.classList.remove('active');
     }
 
-    // ডাউনলোড বাটনে চাপলে বিজ্ঞাপন ও ১৫ সেকেন্ড কাউন্টডাউন একসাথে চালু হওয়ার চূড়ান্ত ফিক্সড লজিক
+    // ডাউনলোড বাটনে চাপলে প্রথমে ৫ সেকেন্ড প্রিপেয়ারিং, তারপর মুনট্যাগ অ্যাডস এবং সফলভাবে ফাইল ইনবক্সে পাঠানোর চূড়ান্ত লজিক
     async function claimResource(key, cost, name, type) {
       triggerHaptic();
       if ((userData.coins || 0) < cost) {
@@ -1699,30 +1699,32 @@
         const countdownText = document.getElementById('loadingCountdownText');
         loadingOverlay.classList.add('active');
 
-        // বিজ্ঞাপন সাথে সাথে কল করা হচ্ছে যাতে বিজ্ঞাপন চলাকালীন কাউন্টডাউন হতে থাকে
-        if (typeof show_11750504 === 'function') {
-          try {
-            show_11750504();
-          } catch(e) {}
-        }
+        // ১. প্রথমে ৫ সেকেন্ডের প্রিপেয়ারিং কাউন্টডাউন
+        let prepTime = 5;
+        countdownText.innerText = `দয়া করে ৫ সেকেন্ড অপেক্ষা করুন (${prepTime}s)...`;
 
-        // ১৫ সেকেন্ড কাউন্টডাউন
-        let timeLeft = 15;
         await new Promise((resolve) => {
-          const countdownTimer = setInterval(() => {
-            timeLeft--;
-            if (timeLeft > 0) {
-              countdownText.innerText = `বিজ্ঞাপন দেখা হচ্ছে... (${timeLeft} সেকেন্ড বাকি)`;
+          const prepTimer = setInterval(() => {
+            prepTime--;
+            if (prepTime > 0) {
+              countdownText.innerText = `দয়া করে ৫ সেকেন্ড অপেক্ষা করুন (${prepTime}s)...`;
             } else {
-              clearInterval(countdownTimer);
-              countdownText.innerText = `ফাইল ইনবক্সে পাঠানো হচ্ছে... 🚀`;
+              clearInterval(prepTimer);
               resolve();
             }
           }, 1000);
         });
 
+        // ২. ৫ সেকেন্ড শেষ হওয়ার সাথে সাথেই ওভারলে হাইড হবে এবং মুনট্যাগ বিজ্ঞাপন শুরু হবে
         loadingOverlay.classList.remove('active');
 
+        if (typeof show_11750504 === 'function') {
+          try {
+            await show_11750504();
+          } catch(e) {}
+        }
+
+        // ৩. ফায়ারবেস আপডেট ও বটের ইনবক্সে ফাইল পাঠানোর কাজ
         userData.coins -= cost;
         userData.claimed_count = (userData.claimed_count || 0) + 1;
         if (!userData.unlocked) userData.unlocked = {};
@@ -1730,15 +1732,15 @@
         updateUI();
         fireConfetti();
 
-        fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
-        fetch(`${DB_BASE}/users/${user.id}/claimed_count.json`, { method: 'PUT', body: JSON.stringify(userData.claimed_count) });
-        fetch(`${DB_BASE}/users/${user.id}/unlocked/${key}.json`, { method: 'PUT', body: JSON.stringify(userData.unlocked[key]) });
+        await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await fetch(`${DB_BASE}/users/${user.id}/claimed_count.json`, { method: 'PUT', body: JSON.stringify(userData.claimed_count) });
+        await fetch(`${DB_BASE}/users/${user.id}/unlocked/${key}.json`, { method: 'PUT', body: JSON.stringify(userData.unlocked[key]) });
 
         try {
           const cRes = await fetch(`${DB_BASE}/stats/total_claims.json`);
           let tClaims = (await cRes.json()) || 0;
           tClaims += 1;
-          fetch(`${DB_BASE}/stats/total_claims.json`, { method: 'PUT', body: JSON.stringify(tClaims) });
+          await fetch(`${DB_BASE}/stats/total_claims.json`, { method: 'PUT', body: JSON.stringify(tClaims) });
           document.getElementById('statClaims').innerText = tClaims;
         } catch(e) {}
 
@@ -1749,8 +1751,8 @@
             const newClaimCount = (fileData.total_claims || 0) + 1;
             const newRevenue = (fileData.total_revenue || 0) + cost;
             
-            fetch(`${DB_BASE}/resources/${key}/total_claims.json`, { method: 'PUT', body: JSON.stringify(newClaimCount) });
-            fetch(`${DB_BASE}/resources/${key}/total_revenue.json`, { method: 'PUT', body: JSON.stringify(newRevenue) });
+            await fetch(`${DB_BASE}/resources/${key}/total_claims.json`, { method: 'PUT', body: JSON.stringify(newClaimCount) });
+            await fetch(`${DB_BASE}/resources/${key}/total_revenue.json`, { method: 'PUT', body: JSON.stringify(newRevenue) });
             
             if (allResources[key]) {
               allResources[key].total_claims = newClaimCount;
@@ -1768,12 +1770,12 @@
           timestamp: Date.now()
         };
         
-        fetch(`${DB_BASE}/recent_downloads.json`, { 
+        await fetch(`${DB_BASE}/recent_downloads.json`, { 
           method: 'POST', 
           body: JSON.stringify(buyerInfo) 
         });
 
-        fetch(`${DB_BASE}/resources/${key}/buyers/${user.id}.json`, { 
+        await fetch(`${DB_BASE}/resources/${key}/buyers/${user.id}.json`, { 
           method: 'PUT', 
           body: JSON.stringify(buyerInfo) 
         });
@@ -1782,7 +1784,7 @@
 
         setTimeout(() => {
           openClaimBot(key);
-        }, 500);
+        }, 800);
       }
     }
 
@@ -1906,4 +1908,4 @@
     initApp();
   </script>
 </body>
-</html>
+          </html>
