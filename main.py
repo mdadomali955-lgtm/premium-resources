@@ -13,7 +13,8 @@ from telebot.types import (
 from flask import Flask, jsonify
 from threading import Thread
 
-BOT_TOKEN = "8815920877:AAHlGCVVXjFPnQ1R__cLI8PSN8qA0YxKGN4"
+# --- নতুন আপডেট করা বট টোকেন ও কনফিগারেশন ---
+BOT_TOKEN = "8815920877:AAGA75IkJkFPeZECE1K8fIpUCuj1y8Cg5lc"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
 WEB_APP_URL = "https://premium-resources.vercel.app"
@@ -388,7 +389,7 @@ def process_user_inspection(message):
         )
         bot.reply_to(message, info, parse_mode="Markdown", reply_markup=get_admin_dashboard_keyboard())
     except Exception as e:
-        bot.reply_to(message, f"❌ তথ্য লোড করতে সমস্যা হয়েছে: {e}", reply_markup=get_admin_dashboard_keyboard())
+        bot.reply_to(message, f"❌ তথ্য লোড করতে সমস্যা হয়েছে: {e}", parse_mode="Markdown", reply_markup=get_admin_dashboard_keyboard())
 
 # --- কয়েন ম্যানেজমেন্ট ফ্লো ---
 def start_coin_management_flow(message):
@@ -1354,4 +1355,4 @@ if __name__ == "__main__":
         timeout=60,
         long_polling_timeout=60,
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-        )
+                   )
