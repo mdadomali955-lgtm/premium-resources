@@ -1233,7 +1233,7 @@
       if (tg && tg.openTelegramLink) {
         tg.openTelegramLink(botUrl);
       } else {
-        window.open(botUrl, '_blank');
+        window.location.href = botUrl;
       }
     }
 
@@ -1684,7 +1684,7 @@
       modal.classList.remove('active');
     }
 
-    // ডাউনলোড বাটনে চাপ দিলে ৫ সেকেন্ড প্রিপেয়ারিং, তারপর বিজ্ঞাপন, তারপর টোস্ট নোটিফিকেশন এবং বটে ফাইল পাঠানোর চূড়ান্ত লজিক
+    // ডাউনলোড বাটনে চাপ দিলে ৫ সেকেন্ড অপেক্ষা, তারপর অ্যাডস, তারপর নোটিফিকেশন এবং বটে ফাইল পাঠানোর লজিক
     async function claimResource(key, cost, name, type) {
       triggerHaptic();
       if ((userData.coins || 0) < cost) {
@@ -1788,7 +1788,7 @@
 
         setTimeout(() => {
           openClaimBot(key);
-        }, 1200);
+        }, 1000);
       }
     }
 
@@ -1912,4 +1912,4 @@
     initApp();
   </script>
 </body>
-            </html>
+</html>
