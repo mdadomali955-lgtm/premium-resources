@@ -347,7 +347,7 @@ def redeem_promo_code(message):
         
         bot.reply_to(
             message,
-            f"🎉 অভিনন্দন! প্রোমো কোড সফলভাবে রিডিম হয়েছে。\n"
+            f"🎉 অভিনন্দন! প্রোমো কোড সফলভাবে রিডিম হয়েছে।\n"
             f"আপনার অ্যাকাউন্টে যুক্ত হয়েছে *{coins_to_add}* কয়েন!\n"
             f"বর্তমান ব্যালেন্স: *{new_coins} 🪙*",
             parse_mode="Markdown",
@@ -498,7 +498,7 @@ def process_apply_coins(message):
         try:
             bot.send_message(
                 target_id, 
-                f"🎁 **অ্যাডমিন থেকে কয়েন আপডেট!**\n\nআপনার অ্যাকাউন্টে *{amount}* কয়েন যোগ করা হয়েছে。\nবর্তমান ব্যালেন্স: *{updated_c} 🪙*",
+                f"🎁 **অ্যাডমিন থেকে কয়েন আপডেট!**\n\nআপনার অ্যাকাউন্টে *{amount}* কয়েন যোগ করা হয়েছে।\nবর্তমান ব্যালেন্স: *{updated_c} 🪙*",
                 parse_mode="Markdown"
             )
         except Exception:
@@ -896,7 +896,7 @@ def prompt_for_field(call):
         "name": "নতুন নামটি লিখে পাঠান:",
         "coins": "নতুন কয়েন সংখ্যাটি লিখে পাঠান (যেমন: 15):",
         "image": "নতুন থাম্বনেইল ছবি অথবা ডাইরেক্ট লিংক (ড্রাইভ লিংক) পাঠান:",
-        "video": "নতুন প্রিভিউ ভিডিও ফাইল অথবা ডাইরেক্ট লিংক (ড্রাইভ লিংক) পাঠান:",
+        "video": "নতুন প্রিভিউ ভিডিও ফাইল, ইউটিউব লিংক অথবা ডাইরেক্ট লিংক পাঠান:",
         "download_link": "নতুন গুগল ড্রাইভ বা অন্য যেকোনো ডাউনলোড লিংক পাঠান:"
     }
     
@@ -1003,7 +1003,7 @@ def save_updated_field(message):
         elif message.text and message.text.strip().startswith("http"):
             new_val = message.text.strip()
         else:
-            bot.reply_to(message, "⚠️ দয়া করে ভিডিও ফাইল অথবা ডাইরেক্ট লিংক (https://...) পাঠান:")
+            bot.reply_to(message, "⚠️ দয়া করে ভিডিও ফাইল, ইউটিউব লিংক অথবা ডাইরেক্ট লিংক পাঠান:")
             bot.register_next_step_handler(message, save_updated_field)
             return
 
@@ -1089,7 +1089,7 @@ def get_coins(message):
         cat = admin_temp_data[message.from_user.id]['type']
         
         if cat == 'xml':
-            bot.reply_to(message, "🎬 **XML থাম্বনেইল ভিডিও পাঠান (অথবা ড্রাইভের ডাইরেক্ট লিংক দিন):**")
+            bot.reply_to(message, "🎬 **XML প্রিভিউ ভিডিও পাঠান (ভিডিও ফাইল অথবা ইউটিউব/ডাইরেক্ট লিংক দিন):**")
             bot.register_next_step_handler(message, get_xml_video)
         else:
             bot.reply_to(message, "🖼️ **থাম্বনেইল ছবি পাঠান (অথবা ড্রাইভের ডাইরেক্ট লিংক দিন):**")
@@ -1148,7 +1148,7 @@ def get_xml_video(message):
     elif message.text and message.text.strip().startswith("http"):
         admin_temp_data[message.from_user.id]['video'] = message.text.strip()
     else:
-        bot.reply_to(message, "⚠️ দয়া করে ভিডিও ফাইল অথবা সঠিক ডাইরেক্ট লিংক (https://...) পাঠান:")
+        bot.reply_to(message, "⚠️ দয়া করে ভিডিও ফাইল, ইউটিউব লিংক অথবা সঠিক ডাইরেক্ট লিংক (https://...) পাঠান:")
         bot.register_next_step_handler(message, get_xml_video)
         return
     
@@ -1284,7 +1284,7 @@ def handle_channel_post_decision(call):
             bot.send_message(
                 call.message.chat.id,
                 "🎉 **সফলভাবে টেলিগ্রাম চ্যানেলে পোস্ট করা হয়েছে!**",
-                reply_markup=get_admin_dashboard_keyword()
+                reply_markup=get_admin_dashboard_keyboard()
             )
         else:
             bot.send_message(call.message.chat.id, "❌ রিসোর্স ডেটা পাওয়া যায়নি।", reply_markup=get_admin_dashboard_keyboard())
@@ -1351,4 +1351,4 @@ if __name__ == "__main__":
     bot.infinity_polling(
         skip_pending=True, 
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-        )
+            )
