@@ -119,7 +119,7 @@
       border-radius: 99px; 
       font-size: 13px; 
       font-weight: 800; 
-      z-index: 99999; 
+      z-index: 2147483647; 
       box-shadow: 0 15px 40px rgba(0,0,0,0.85), var(--liquid-specular); 
       transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
       display: flex; 
@@ -143,7 +143,7 @@
       width: 100%;
       height: 100%;
       background: rgba(2, 4, 10, 0.96);
-      z-index: 2147483647;
+      z-index: 2147483646;
       align-items: center;
       justify-content: center;
       flex-direction: column;
@@ -184,8 +184,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(2, 4, 10, 0.94);
-      z-index: 999999;
+      background: rgba(2, 4, 10, 0.92);
+      z-index: 2000000;
       align-items: center;
       justify-content: center;
       padding: 20px;
@@ -1060,7 +1060,7 @@
       if (toastTimeout) clearTimeout(toastTimeout);
       toastTimeout = setTimeout(() => { 
         toast.classList.remove('show'); 
-      }, 3000);
+      }, 3500);
     }
 
     function getTodayKey() {
@@ -1734,7 +1734,7 @@
       modal.classList.remove('active');
     }
 
-    // ডাউনলোড বাটনে চাপ দিলে ৫ সেকেন্ড অপেক্ষা, তারপর বিজ্ঞাপন, তারপর টোস্ট নোটিফিকেশন এবং বটে ফাইল পাঠানোর লজিক
+    // ডাউনলোড বাটনে চাপ দিলে ৫ সেকেন্ড অপেক্ষা, বিজ্ঞাপন, সফল নোটিফিকেশন এবং বটে ফাইল পাঠানোর লজিক
     async function claimResource(key, cost, name, type) {
       triggerHaptic();
       if ((userData.coins || 0) < cost) {
@@ -1773,7 +1773,7 @@
 
         if (typeof show_11750504 === 'function') {
           try {
-            show_11750504();
+            await show_11750504();
           } catch(e) {}
         }
 
@@ -1833,7 +1833,7 @@
           body: JSON.stringify(buyerInfo) 
         });
 
-        // বিজ্ঞাপন দেখা শেষ হওয়ার পরেই নোটিফিকেশন দেখাবে এবং ইনবক্সে ফাইল পাঠাবে
+        // ৪. নিশ্চিতভাবে টোস্ট নোটিফিকেশন প্রদর্শন এবং সিকিউরড মোডাল ওপেন করা
         showToast("🎉 ডাউনলোড সফল হয়েছে! ফাইলটি সরাসরি আপনার বটের ইনবক্সে দেওয়া হয়েছে।", "📥");
 
         pendingClaimUrl = `https://t.me/${BOT_USERNAME}?start=get_${key}_from_${user.id}`;
@@ -1961,4 +1961,4 @@
     initApp();
   </script>
 </body>
-        </html>
+  </html>
