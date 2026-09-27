@@ -1,7 +1,6 @@
 import os
 import requests
 import telebot
-import time
 from datetime import datetime
 from telebot.types import (
     InlineKeyboardMarkup, 
@@ -10,10 +9,10 @@ from telebot.types import (
     ReplyKeyboardMarkup, 
     KeyboardButton
 )
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify
 from threading import Thread
 
-# --- নতুন আপডেট করা বট টোকেন ও কনফিগারেশন ---
+# --- কনফিগারেশন ও নতুন বট টোকেন ---
 BOT_TOKEN = "8815920877:AAFGwxjKGoo9HhcsVOcbBhi9JMqXT-LLMsY"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
@@ -21,6 +20,9 @@ WEB_APP_URL = "https://premium-resources.vercel.app"
 CHANNEL_ID = "@PLPStoreBD0"
 CHANNEL_URL = "https://t.me/PLPStoreBD0"
 BOT_USERNAME = "PLPStoreOfficialBot"
+
+# Render-এর নিজস্ব URL (অটোমেটিক ওয়েবুকের জন্য)
+RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL", "")
 
 bot = telebot.TeleBot(BOT_TOKEN)
 admin_temp_data = {}
@@ -31,16 +33,27 @@ ban_sessions = {}
 promo_sessions = {}
 user_inspect_sessions = {}
 
-# --- UptimeRobot ও চ্যানেল ভেরিফিকেশন API সার্ভার ---
+# --- Flask সার্ভার ও ওয়েবুক রাউট ---
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Bot is running perfectly!", 200
+    return "Bot is running perfectly with Webhook!", 200
 
 @app.route('/health')
 def health():
     return "OK", 200
+
+# Telegram থেকে আপডেট রিসিভ করার জন্য ওয়েবুক এন্ডপয়েন্ট
+@app.route(f'/{BOT_TOKEN}', methods=['POST'])
+def webhook():
+    if request.headers.get('content-type') == 'application/json':
+        json_string = request.get_data().decode('utf-8')
+        update = telebot.types.Update.de_json(json_string)
+        bot.process_new_updates([update])
+        return '', 200
+    else:
+        return 'Forbidden', 403
 
 @app.route('/verify-channel/<int:user_id>', methods=['GET'])
 def verify_channel_member(user_id):
@@ -55,15 +68,6 @@ def verify_channel_member(user_id):
     
     res.headers.add("Access-Control-Allow-Origin", "*")
     return res, 200
-
-def run_server():
-    port = int(os.environ.get("PORT", 8080))
-    app.run(host='0.0.0.0', port=port)
-
-def keep_alive():
-    t = Thread(target=run_server)
-    t.daemon = True
-    t.start()
 
 def is_user_banned(user_id):
     try:
@@ -1330,24 +1334,38 @@ def reply_to_user_from_admin(message):
 def forward_user_message_to_admin(message):
     if is_user_banned(message.from_user.id):
         return
-    print(message)
+    print(message)  # Render লগ থেকে file_id পাওয়ার জন্য প্রিন্ট স্টেটমেন্ট
     user_info = f"👤 *মেসেজ প্রেরক:* {message.from_user.first_name}\n🆔 User ID: `{message.from_user.id}`\n\n📝 *টেক্সট:* {message.text}"
     bot.send_message(ADMIN_ID, user_info, parse_mode="Markdown")
     bot.reply_to(message, "✅ আপনার মেসেজটি সাপোর্ট টিমে পৌঁছেছে।")
 
+def run_server():
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
+
 if __name__ == "__main__":
-    keep_alive()
-    print("Premium Resource Delivery Bot is running with Web Server...")
-    
+    # পুরোনো যেকোনো ওয়েবুক বা পোলিং ক্লিয়ার করতে
     try:
         bot.remove_webhook()
-        time.sleep(2)
+        time.sleep(1)
     except Exception:
         pass
 
-    bot.infinity_polling(
-        skip_pending=True,
-        timeout=60,
-        long_polling_timeout=60,
-        allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-    )
+    # Flask সার্ভার ব্যাকগ্রাউন্ডে চালু করা
+    server_thread = Thread(target=run_server)
+    server_thread.daemon = True
+    server_thread.start()
+
+    # ওয়েবুক সেটআপ করা (Conflict এরর চিরতরে দূর করার জন্য)
+    if RENDER_EXTERNAL_URL:
+        webhook_url = f"{RENDER_EXTERNAL_URL}/{BOT_TOKEN}"
+        bot.set_webhook(url=webhook_url)
+        print(f"Webhook set to: {webhook_url}")
+    else:
+        print("RENDER_EXTERNAL_URL not found, falling back or running polling.")
+        # যদি রেন্ডার ইউআরএল না থাকে তবেই কেবল পোলিং চলবে
+        bot.infinity_polling(skip_pending=True)
+
+    # মেইন থ্রেড সচল রাখতে
+    while True:
+        time.sleep(10)
