@@ -1363,8 +1363,7 @@ if __name__ == "__main__":
         bot.set_webhook(url=webhook_url)
         print(f"Webhook set to: {webhook_url}")
     else:
-        print("RENDER_EXTERNAL_URL not found, falling back or running polling.")
-        bot.infinity_polling(skip_pending=True)
+        print("RENDER_EXTERNAL_URL not found.")
 
     # মেইন থ্রেড সচল রাখতে
     while True:
