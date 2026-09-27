@@ -348,7 +348,7 @@ def redeem_promo_code(message):
         
         bot.reply_to(
             message,
-            f"🎉 অভিনন্দন! প্রোমো কোড সফলভাবে রিডিম হয়েছে।\n"
+            f"🎉 অভিনন্দন! প্রোমো কোড সফলভাবে রিডিম হয়েছে。\n"
             f"আপনার অ্যাকাউন্টে যুক্ত হয়েছে *{coins_to_add}* কয়েন!\n"
             f"বর্তমান ব্যালেন্স: *{new_coins} 🪙*",
             parse_mode="Markdown",
@@ -499,7 +499,7 @@ def process_apply_coins(message):
         try:
             bot.send_message(
                 target_id, 
-                f"🎁 **অ্যাডমিন থেকে কয়েন আপডেট!**\n\nআপনার অ্যাকাউন্টে *{amount}* কয়েন যোগ করা হয়েছে।\nবর্তমান ব্যালেন্স: *{updated_c} 🪙*",
+                f"🎁 **অ্যাডমিন থেকে কয়েন আপডেট!**\n\nআপনার অ্যাকাউন্টে *{amount}* কয়েন যোগ করা হয়েছে。\nবর্তমান ব্যালেন্স: *{updated_c} 🪙*",
                 parse_mode="Markdown"
             )
         except Exception:
@@ -580,7 +580,7 @@ def handle_verify_subscription(call):
     else:
         bot.answer_callback_query(call.id, "❌ আপনি এখনও চ্যানেলে জয়েন করেননি! আগে জয়েন করুন।", show_alert=True)
 
-# মূল ফাইল ডেলিভারি ফাংশন ও ট্র্যাকিং লগ সেভ
+# মূল ফাইল ডেলিভারি ফাংশন ও ট্র্যাকিং লগ সেভ (সাথে অ্যাডমিন ইনবক্সে ইনস্ট্যান্ট নোটিফিকেশন লজিক যুক্ত)
 def process_resource_delivery(chat_id, arg_text, user_obj=None):
     file_key = arg_text.replace("get_", "").split("_from_")[0]
     bot.send_message(chat_id, "⏳ আপনার ফাইল প্রস্তুত করা হচ্ছে...")
@@ -591,6 +591,8 @@ def process_resource_delivery(chat_id, arg_text, user_obj=None):
             res_name = item.get('name', 'রিসোর্স')
             res_type = item.get("type", "plp").upper()
             
+            current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
             if user_obj:
                 try:
                     log_data = {
@@ -598,9 +600,20 @@ def process_resource_delivery(chat_id, arg_text, user_obj=None):
                         "user_name": user_obj.first_name,
                         "resource_name": res_name,
                         "category": res_type,
-                        "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        "time": current_time
                     }
                     requests.post(f"{FIREBASE_BASE}/download_logs.json", json=log_data)
+                    
+                    # --- অ্যাডমিন ইনবক্সে ইনস্ট্যান্ট ডাউনলোড নোটিফিকেশন পাঠানোর কোড ---
+                    admin_alert = (
+                        f"🔔 **নতুন ফাইল ডাউনলোড হয়েছে!**\n\n"
+                        f"👤 ইউজার: *{user_obj.first_name}*\n"
+                        f"🆔 ইউজার আইডি: `{user_obj.id}`\n"
+                        f"📦 রিসোর্স: {res_name}\n"
+                        f"📁 ক্যাটাগরি: {res_type}\n"
+                        f"⏰ সময়: {current_time}"
+                    )
+                    bot.send_message(ADMIN_ID, admin_alert, parse_mode="Markdown")
                 except Exception:
                     pass
 
@@ -1355,4 +1368,4 @@ if __name__ == "__main__":
         timeout=60,
         long_polling_timeout=60,
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-                   )
+    )
