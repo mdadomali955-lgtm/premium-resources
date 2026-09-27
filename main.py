@@ -1,4 +1,5 @@
 import os
+import time
 import requests
 import telebot
 from datetime import datetime
@@ -12,7 +13,7 @@ from telebot.types import (
 from flask import Flask, request, jsonify
 from threading import Thread
 
-# --- কনফিগারেশন ও নতুন বট টোকেন ---
+# --- কনফিগারেশন ও বট টোকেন ---
 BOT_TOKEN = "8815920877:AAFGwxjKGoo9HhcsVOcbBhi9JMqXT-LLMsY"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
@@ -1363,7 +1364,6 @@ if __name__ == "__main__":
         print(f"Webhook set to: {webhook_url}")
     else:
         print("RENDER_EXTERNAL_URL not found, falling back or running polling.")
-        # যদি রেন্ডার ইউআরএল না থাকে তবেই কেবল পোলিং চলবে
         bot.infinity_polling(skip_pending=True)
 
     # মেইন থ্রেড সচল রাখতে
