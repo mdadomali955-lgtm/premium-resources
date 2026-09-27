@@ -14,7 +14,7 @@ from flask import Flask, jsonify
 from threading import Thread
 
 # --- নতুন আপডেট করা বট টোকেন ও কনফিগারেশন ---
-BOT_TOKEN = "8815920877:AAGA75IkJkFPeZECE1K8fIpUCuj1y8Cg5lc"
+BOT_TOKEN = "8815920877:AAFGwxjKGoo9HhcsVOcbBhi9JMqXT-LLMsY"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
 WEB_APP_URL = "https://premium-resources.vercel.app"
@@ -118,7 +118,6 @@ def get_file_collection_keyboard():
     )
     return markup
 
-# --- ক্যানসেল হ্যান্ডলার ---
 def cancel_process(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     uid = message.from_user.id
@@ -131,7 +130,6 @@ def cancel_process(message):
     else:
         bot.send_message(message.chat.id, "❌ বাতিল করা হয়েছে।", reply_markup=get_main_keyboard())
 
-# --- সরাসরি ক্যাটাগরি কমান্ড হ্যান্ডলার ---
 @bot.message_handler(commands=['add_xml', 'xml', 'add_plp', 'plp', 'add_font', 'font'])
 def handle_direct_add_commands(message):
     if int(message.from_user.id) != int(ADMIN_ID):
@@ -151,7 +149,6 @@ def handle_direct_add_commands(message):
     )
     bot.register_next_step_handler(msg, get_name)
 
-# --- ডাউনলোড হিস্ট্রি দেখার ফাংশন ---
 @bot.message_handler(commands=['download_logs', 'logs'])
 def show_download_logs_cmd(message):
     if int(message.from_user.id) != int(ADMIN_ID):
@@ -177,7 +174,6 @@ def show_download_logs_cmd(message):
     except Exception as e:
         bot.reply_to(message, f"❌ লগ লোড করতে সমস্যা হয়েছে: {e}")
 
-# --- ফিচার ১: ব্রডকাস্ট সিস্টেম ---
 def start_broadcast_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     msg = bot.reply_to(
@@ -228,7 +224,6 @@ def process_broadcast_message(message):
         reply_markup=get_admin_dashboard_keyboard()
     )
 
-# --- ফিচার ২: ইউজার ব্যান/আনব্যান সিস্টেম ---
 def start_ban_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     markup = InlineKeyboardMarkup(row_width=2)
@@ -270,7 +265,6 @@ def process_ban_unban_id(message):
         requests.delete(f"{FIREBASE_BASE}/banned_users/{target_id}.json")
         bot.reply_to(message, f"✅ ইউজার আইডি `{target_id}` আনব্যান করা হয়েছে!", parse_mode="Markdown", reply_markup=get_admin_dashboard_keyboard())
 
-# --- ফিচার ৩: প্রোমো কোড / রিডিম কোড সিস্টেম ---
 def start_promo_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     msg = bot.reply_to(message, "🎁 নতুন প্রোমো কোডের নাম লিখুন (যেমন: `FREECOIN50`):", parse_mode="Markdown", reply_markup=get_admin_dashboard_keyboard())
@@ -357,7 +351,6 @@ def redeem_promo_code(message):
     except Exception as e:
         bot.reply_to(message, f"❌ ত্রুটি হয়েছে: {e}")
 
-# --- ফিচার ৫: ইউজার প্রোফাইল ইন্সপেক্টর ---
 def start_user_inspect_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     msg = bot.reply_to(message, "🔍 যে ইউজারের তথ্য দেখতে চান তার **Telegram User ID** লিখে পাঠান:", parse_mode="Markdown", reply_markup=get_admin_dashboard_keyboard())
@@ -391,7 +384,6 @@ def process_user_inspection(message):
     except Exception as e:
         bot.reply_to(message, f"❌ তথ্য লোড করতে সমস্যা হয়েছে: {e}", parse_mode="Markdown", reply_markup=get_admin_dashboard_keyboard())
 
-# --- কয়েন ম্যানেজমেন্ট ফ্লো ---
 def start_coin_management_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     markup = InlineKeyboardMarkup(row_width=1)
@@ -509,7 +501,6 @@ def process_apply_coins(message):
         bot.reply_to(message, "⚠️ কয়েন সংখ্যায় দিন (যেমন: 500)। আবার লিখুন:")
         bot.register_next_step_handler(message, process_apply_coins)
 
-# সরাসরি কমান্ড সাপোর্ট
 @bot.message_handler(commands=['mycoins'])
 def set_admin_my_coins_cmd(message):
     if int(message.from_user.id) != int(ADMIN_ID):
@@ -555,7 +546,6 @@ def give_user_coins_cmd(message):
     except Exception as e:
         bot.reply_to(message, f"❌ এরর: {e}")
 
-# --- ফোর্স সাবস্ক্রিপশন ভেরিফিকেশন বাটন হ্যান্ডলার ---
 @bot.callback_query_handler(func=lambda call: call.data.startswith('check_sub:'))
 def handle_verify_subscription(call):
     user_id = call.from_user.id
@@ -580,7 +570,6 @@ def handle_verify_subscription(call):
     else:
         bot.answer_callback_query(call.id, "❌ আপনি এখনও চ্যানেলে জয়েন করেননি! আগে জয়েন করুন।", show_alert=True)
 
-# মূল ফাইল ডেলিভারি ফাংশন ও ট্র্যাকিং লগ সেভ (সাথে অ্যাডমিন ইনবক্সে ইনস্ট্যান্ট নোটিফিকেশন লজিক যুক্ত)
 def process_resource_delivery(chat_id, arg_text, user_obj=None):
     file_key = arg_text.replace("get_", "").split("_from_")[0]
     bot.send_message(chat_id, "⏳ আপনার ফাইল প্রস্তুত করা হচ্ছে...")
@@ -604,7 +593,6 @@ def process_resource_delivery(chat_id, arg_text, user_obj=None):
                     }
                     requests.post(f"{FIREBASE_BASE}/download_logs.json", json=log_data)
                     
-                    # --- অ্যাডমিন ইনবক্সে ইনস্ট্যান্ট ডাউনলোড নোটিফিকেশন পাঠানোর কোড ---
                     admin_alert = (
                         f"🔔 **নতুন ফাইল ডাউনলোড হয়েছে!**\n\n"
                         f"👤 ইউজার: *{user_obj.first_name}*\n"
@@ -650,7 +638,6 @@ def process_resource_delivery(chat_id, arg_text, user_obj=None):
     except Exception as e:
         bot.send_message(chat_id, f"❌ রিসোর্স ডেলিভারিতে সমস্যা দেখা দিয়েছে: {e}", reply_markup=get_main_keyboard())
 
-# --- স্টার্ট ও ডেলিভারি হ্যান্ডলার ---
 @bot.message_handler(commands=['start'])
 def start_cmd(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
@@ -722,7 +709,6 @@ def start_cmd(message):
         reply_markup=get_main_keyboard()
     )
 
-# --- সেন্ট্রাল অ্যাডমিন টেক্সট কন্ট্রোলার ---
 @bot.message_handler(func=lambda m: int(m.from_user.id) == int(ADMIN_ID) and m.text and not m.reply_to_message)
 def handle_all_admin_text(message):
     text = message.text.strip().lower()
@@ -767,7 +753,6 @@ def handle_all_admin_text(message):
         start_ad_flow(message)
         return
 
-# --- এডিট ফ্লো ---
 def start_edit_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     edit_sessions[message.from_user.id] = {}
@@ -1062,7 +1047,6 @@ def delete_item(call):
 def close_edit_box(call):
     bot.delete_message(call.message.chat.id, call.message.message_id)
 
-# --- রিসোর্স যুক্ত করার ফ্লো ---
 def start_add_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     admin_temp_data[message.from_user.id] = {'file_ids': []}
@@ -1305,7 +1289,6 @@ def handle_channel_post_decision(call):
     except Exception as e:
         bot.send_message(call.message.chat.id, f"❌ চ্যানেলে পোস্ট করতে সমস্যা হয়েছে: {e}", reply_markup=get_admin_dashboard_keyboard())
 
-# --- বিজ্ঞাপন ফ্লো ---
 def start_ad_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     admin_temp_data[message.from_user.id] = {}
@@ -1332,7 +1315,6 @@ def get_ad_link(message):
     requests.put(f"{FIREBASE_BASE}/active_ad.json", json=ad_data)
     bot.reply_to(message, "✅ বিজ্ঞাপন সফলভাবে মিনি অ্যাপে সেট হয়েছে!", reply_markup=get_admin_dashboard_keyboard())
 
-# --- সাপোর্ট রিপ্লাই ---
 @bot.message_handler(func=lambda message: message.reply_to_message is not None and int(message.from_user.id) == int(ADMIN_ID))
 def reply_to_user_from_admin(message):
     try:
@@ -1344,12 +1326,10 @@ def reply_to_user_from_admin(message):
     except Exception as e:
         bot.reply_to(message, f"❌ উত্তর পাঠানো যায়নি: {e}")
 
-# --- ইউজার মেসেজ ফরওয়ার্ড ---
 @bot.message_handler(func=lambda message: message.chat.type == 'private' and int(message.from_user.id) != int(ADMIN_ID) and not (message.text and message.text.startswith('/')))
 def forward_user_message_to_admin(message):
     if is_user_banned(message.from_user.id):
         return
-    # আপনি যদি মেসেজ অবজেক্ট বা ফাইল আইডি লগ দেখতে চান, নিচের লাইনে প্রিন্ট স্টেটমেন্ট কাজ করবে
     print(message)
     user_info = f"👤 *মেসেজ প্রেরক:* {message.from_user.first_name}\n🆔 User ID: `{message.from_user.id}`\n\n📝 *টেক্সট:* {message.text}"
     bot.send_message(ADMIN_ID, user_info, parse_mode="Markdown")
@@ -1370,4 +1350,4 @@ if __name__ == "__main__":
         timeout=60,
         long_polling_timeout=60,
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-            )
+    )
