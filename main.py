@@ -13,7 +13,7 @@ from telebot.types import (
 from flask import Flask, request, jsonify
 from threading import Thread
 
-# --- Konfigaresan o bot token ---
+# --- Bot Configuration ---
 BOT_TOKEN = "8815920877:AAFGwxjKGoo9HhcsVOcbBhi9JMqXT-LLMsY"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
@@ -22,7 +22,7 @@ CHANNEL_ID = "@PLPStoreBD0"
 CHANNEL_URL = "https://t.me/PLPStoreBD0"
 BOT_USERNAME = "PLPStoreOfficialBot"
 
-# Render-nisvanta URL
+# Render External URL
 RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL", "")
 
 bot = telebot.TeleBot(BOT_TOKEN, threaded=True)
@@ -34,7 +34,7 @@ ban_sessions = {}
 promo_sessions = {}
 user_inspect_sessions = {}
 
-# --- Flask server o webhook rout ---
+# --- Flask Server & Webhook Route ---
 app = Flask(__name__)
 
 @app.route('/')
@@ -88,8 +88,8 @@ def is_user_member(user_id):
 def get_force_sub_keyboard(target_arg=""):
     markup = InlineKeyboardMarkup(row_width=1)
     markup.add(
-        InlineKeyboardButton("📢 Channel-alli jayen karun", url=CHANNEL_URL),
-        InlineKeyboardButton("🔄 Verify karun", callback_data=f"check_sub:{target_arg}")
+        InlineKeyboardButton("📢 চ্যানেলে জয়েন করুন", url=CHANNEL_URL),
+        InlineKeyboardButton("🔄 ভেরিফাই করুন", callback_data=f"check_sub:{target_arg}")
     )
     return markup
 
@@ -101,24 +101,24 @@ def get_main_keyboard():
 def get_admin_dashboard_keyboard():
     markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     markup.add(
-        KeyboardButton("➕ Hosa resource jukta karun"),
-        KeyboardButton("✏️ Resource edit/update"),
-        KeyboardButton("🪙 Coin update/manage"),
-        KeyboardButton("📊 Download history nodi"),
-        KeyboardButton("📢 Broadcast message"),
-        KeyboardButton("🚫 User ban/unban"),
-        KeyboardButton("🎁 Promo code tayari"),
-        KeyboardButton("🔍 User check"),
-        KeyboardButton("📢 Advertisement set karun"),
-        KeyboardButton("❌ Cancel karun")
+        KeyboardButton("➕ নতুন রিসোর্স যুক্ত করুন"),
+        KeyboardButton("✏️ রিসোর্স এডিট/আপডেট"),
+        KeyboardButton("🪙 কয়েন আপডেট/ম্যানেজ"),
+        KeyboardButton("📊 ডাউনলোড হিস্ট্রি দেখুন"),
+        KeyboardButton("📢 ব্রডকাস্ট মেসেজ"),
+        KeyboardButton("🚫 ইউজার ব্যান/আনব্যান"),
+        KeyboardButton("🎁 প্রোমো কোড তৈরি"),
+        KeyboardButton("🔍 ইউজার চেক"),
+        KeyboardButton("📢 অ্যাডভারটাইজমেন্ট সেট করুন"),
+        KeyboardButton("❌ বাতিল করুন")
     )
     return markup
 
 def get_file_collection_keyboard():
     markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     markup.add(
-        KeyboardButton("✅ Upload sampurna"),
-        KeyboardButton("❌ Cancel karun")
+        KeyboardButton("✅ আপলোড সম্পন্ন"),
+        KeyboardButton("❌ বাতিল করুন")
     )
     return markup
 
@@ -130,9 +130,9 @@ def cancel_process(message):
             del s_dict[uid]
 
     if int(uid) == int(ADMIN_ID):
-        bot.send_message(message.chat.id, "❌ Calana prakriya cancel madalagide.", reply_markup=get_admin_dashboard_keyboard())
+        bot.send_message(message.chat.id, "❌ প্রসেসটি বাতিল করা হয়েছে।", reply_markup=get_admin_dashboard_keyboard())
     else:
-        bot.send_message(message.chat.id, "❌ Cancel madalagide.", reply_markup=get_main_keyboard())
+        bot.send_message(message.chat.id, "❌ বাতিল করা হয়েছে।", reply_markup=get_main_keyboard())
 
 @bot.message_handler(commands=['add_xml', 'xml', 'add_plp', 'plp', 'add_font', 'font'])
 def handle_direct_add_commands(message):
@@ -145,10 +145,10 @@ def handle_direct_add_commands(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     admin_temp_data[message.from_user.id] = {'type': cat_type, 'file_ids': []}
 
-    cat_title = "⚡ XML project" if cat_type == 'xml' else ("🎨 PLP project" if cat_type == 'plp' else "🔤 Font file")
+    cat_title = "⚡ XML প্রজেক্ট" if cat_type == 'xml' else ("🎨 PLP প্রজেক্ট" if cat_type == 'plp' else "🔤 ফন্ট ফাইল")
     msg = bot.send_message(
         message.chat.id,
-        f"✅ Command sweekarisalagide: *{cat_title}*\n\nIga resource-ina hesaru bareda kalsi:\n(Cancel madalu /cancel odi)",
+        f"✅ কমান্ড গ্রহণ করা হয়েছে: *{cat_title}*\n\nএখন রিসোর্সের নাম লিখে পাঠান:\n(বাতিল করতে /cancel লিখুন)",
         parse_mode="Markdown"
     )
     bot.register_next_step_handler(msg, get_name)
@@ -161,52 +161,52 @@ def show_download_logs_cmd(message):
     try:
         res = requests.get(f"{FIREBASE_BASE}/download_logs.json").json()
         if not res:
-            bot.reply_to(message, "📂 Innu yavude download record jama agilla.")
+            bot.reply_to(message, "📂 এখনো কোনো ডাউনলোড রেকর্ড জমা হয়নি।")
             return
 
-        log_text = "📊 **Koneya 10 download history:**\n\n"
+        log_text = "📊 **শেষ ১০টি ডাউনলোড হিস্ট্রি:**\n\n"
         items = list(res.items())[-10:]
         for key, log in items:
             log_text += (
-                f"👤 User: *{log.get('user_name', 'Unknown')}*\n"
-                f"🆔 ID: `{log.get('user_id')}`\n"
-                f"📦 File: {log.get('resource_name')}\n"
-                f"⏰ Samaya: {log.get('time')}\n"
+                f"👤 ইউজার: *{log.get('user_name', 'Unknown')}*\n"
+                f"🆔 আইডি: `{log.get('user_id')}`\n"
+                f"📦 ফাইল: {log.get('resource_name')}\n"
+                f"⏰ সময়: {log.get('time')}\n"
                 f"-----------------------------------\n"
             )
         bot.reply_to(message, log_text, parse_mode="Markdown")
     except Exception as e:
-        bot.reply_to(message, f"❌ Log load madalu samasye agide: {e}")
+        bot.reply_to(message, f"❌ লগ লোড করতে সমস্যা হয়েছে: {e}")
 
 def start_broadcast_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     msg = bot.reply_to(
         message,
-        "📢 **Broadcast message panel**\n\nElla user-galige kalsalu icchisuva message athava notice bareda kalsi:",
+        "📢 **ব্রডকাস্ট মেসেজ প্যানেল**\n\nসকল ইউজারের কাছে পাঠানোর জন্য মেসেজ বা নোটিশ লিখে পাঠান:",
         parse_mode="Markdown",
         reply_markup=get_admin_dashboard_keyboard()
     )
     bot.register_next_step_handler(msg, process_broadcast_message)
 
 def process_broadcast_message(message):
-    if message.text and (message.text.startswith('/') or message.text == "❌ Cancel karun"):
+    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
         return
 
     users_data = requests.get(f"{FIREBASE_BASE}/users.json").json()
     if not users_data:
-        bot.reply_to(message, "⚠️ Database-alli yava user sikkilla!", reply_markup=get_admin_dashboard_keyboard())
+        bot.reply_to(message, "⚠️ ডাটাবেজে কোনো ইউজার পাওয়া যায়নি!", reply_markup=get_admin_dashboard_keyboard())
         return
 
     sent_count = 0
     fail_count = 0
 
-    wait_msg = bot.reply_to(message, "⏳ Broadcast message kalsalaguttide, dayavittu kayiri...")
+    wait_msg = bot.reply_to(message, "⏳ ব্রডকাস্ট মেসেজ পাঠানো হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...")
 
     for uid in users_data.keys():
         try:
             if message.content_type == 'text':
-                bot.send_message(uid, f"📢 **Official notice:**\n\n{message.text}", parse_mode="Markdown")
+                bot.send_message(uid, f"📢 **অফিসিয়াল নোটিশ:**\n\n{message.text}", parse_mode="Markdown")
             elif message.content_type == 'photo':
                 bot.send_photo(uid, message.photo[-1].file_id, caption=message.caption or "", parse_mode="Markdown")
             elif message.content_type == 'video':
@@ -221,9 +221,9 @@ def process_broadcast_message(message):
     bot.delete_message(message.chat.id, wait_msg.message_id)
     bot.reply_to(
         message,
-        f"✅ **Broadcast sampurna vagide!**\n\n"
-        f"📤 Successfully kalsalagide: *{sent_count}* janarige\n"
-        f"⚠️ Fail agide: *{fail_count}* janarige",
+        f"✅ **ব্রডকাস্ট সম্পন্ন হয়েছে!**\n\n"
+        f"📤 সফলভাবে পাঠানো হয়েছে: *{sent_count}* জনের কাছে\n"
+        f"⚠️ ব্যর্থ হয়েছে: *{fail_count}* জনের কাছে",
         parse_mode="Markdown",
         reply_markup=get_admin_dashboard_keyboard()
     )
@@ -232,10 +232,10 @@ def start_ban_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     markup = InlineKeyboardMarkup(row_width=2)
     markup.add(
-        InlineKeyboardButton("🚫 User ban madun", callback_data="ban_action:ban"),
-        InlineKeyboardButton("✅ User unban madun", callback_data="ban_action:unban")
+        InlineKeyboardButton("🚫 ইউজার ব্যান করুন", callback_data="ban_action:ban"),
+        InlineKeyboardButton("✅ ইউজার আনব্যান করুন", callback_data="ban_action:unban")
     )
-    bot.send_message(message.chat.id, "🚫 **User management panel**\n\nNeevu en madalu icchisuteera?", reply_markup=markup, parse_mode="Markdown")
+    bot.send_message(message.chat.id, "🚫 **ইউজার ম্যানেজমেন্ট প্যানেল**\n\nআপনি কী করতে চান?", reply_markup=markup, parse_mode="Markdown")
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('ban_action:'))
 def handle_ban_action(call):
@@ -245,12 +245,12 @@ def handle_ban_action(call):
     bot.delete_message(call.message.chat.id, call.message.message_id)
     ban_sessions[call.from_user.id] = {'action': action}
 
-    txt = "🚫 Yaava user-ina ID ban madalu icchisuteera adu bareda kalsi:" if action == "ban" else "✅ Yaava user-ina ID unban madalu icchisuteera adu bareda kalsi:"
+    txt = "🚫 যে ইউজারের আইডি ব্যান করতে চান তা লিখে পাঠান:" if action == "ban" else "✅ যে ইউজারের আইডি আনব্যান করতে চান তা লিখে পাঠান:"
     msg = bot.send_message(call.message.chat.id, txt, parse_mode="Markdown")
     bot.register_next_step_handler(msg, process_ban_unban_id)
 
 def process_ban_unban_id(message):
-    if message.text and (message.text.startswith('/') or message.text == "❌ Cancel karun"):
+    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
         return
 
@@ -264,27 +264,27 @@ def process_ban_unban_id(message):
 
     if action == "ban":
         requests.put(f"{FIREBASE_BASE}/banned_users/{target_id}.json", json=True)
-        bot.reply_to(message, f"🚫 User ID `{target_id}` successagi ban madalagide!", parse_mode="Markdown", reply_markup=get_admin_dashboard_keyboard())
+        bot.reply_to(message, f"🚫 ইউজার আইডি `{target_id}` সফলভাবে ব্যান করা হয়েছে!", parse_mode="Markdown", reply_markup=get_admin_dashboard_keyboard())
     else:
         requests.delete(f"{FIREBASE_BASE}/banned_users/{target_id}.json")
-        bot.reply_to(message, f"✅ User ID `{target_id}` unban madalagide!", parse_mode="Markdown", reply_markup=get_admin_dashboard_keyboard())
+        bot.reply_to(message, f"✅ ইউজার আইডি `{target_id}` আনব্যান করা হয়েছে!", parse_mode="Markdown", reply_markup=get_admin_dashboard_keyboard())
 
 def start_promo_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
-    msg = bot.reply_to(message, "🎁 Hosa promo code-ina hesaru bareda kalsi (udaharanage: `FREECOIN50`):", parse_mode="Markdown", reply_markup=get_admin_dashboard_keyboard())
+    msg = bot.reply_to(message, "🎁 নতুন প্রোমো কোডের নাম লিখে পাঠান (যেমন: `FREECOIN50`):", parse_mode="Markdown", reply_markup=get_admin_dashboard_keyboard())
     bot.register_next_step_handler(msg, get_promo_code_name)
 
 def get_promo_code_name(message):
-    if message.text and (message.text.startswith('/') or message.text == "❌ Cancel karun"):
+    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
         return
     code = message.text.strip().upper()
     promo_sessions[message.from_user.id] = {'code': code}
-    msg = bot.reply_to(message, f"🪙 Code: *{code}*\n\nEe code use madidre user eshtu coin padeyuttane enba sankhye bareda kalsi (udaharanage: 100):", parse_mode="Markdown")
+    msg = bot.reply_to(message, f"🪙 কোড: *{code}*\n\nএই কোড ব্যবহার করলে ইউজার কত কয়েন পাবে তার সংখ্যা লিখে পাঠান (যেমন: 100):", parse_mode="Markdown")
     bot.register_next_step_handler(msg, get_promo_code_amount)
 
 def get_promo_code_amount(message):
-    if message.text and (message.text.startswith('/') or message.text == "❌ Cancel karun"):
+    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
         return
 
@@ -300,15 +300,15 @@ def get_promo_code_amount(message):
         requests.put(f"{FIREBASE_BASE}/promo_codes/{code}.json", json={"coins": coins, "used_by": {}})
         bot.reply_to(
             message,
-            f"🎉 **Promo code successagi tayaragide!**\n\n"
-            f"🎁 Code: `{code}`\n"
-            f"🪙 Coin bele: *{coins}*\n\n"
-            f"User-galu `/redeem {code}` antu use madabahudu.",
+            f"🎉 **প্রোমো কোড সফলভাবে তৈরি হয়েছে!**\n\n"
+            f"🎁 কোড: `{code}`\n"
+            f"🪙 কয়েন মূল্য: *{coins}*\n\n"
+            f"ইউজারগণ `/redeem {code}` কমান্ড ব্যবহার করতে পারবে।",
             parse_mode="Markdown",
             reply_markup=get_admin_dashboard_keyboard()
         )
     except ValueError:
-        bot.reply_to(message, "⚠️ Coin sankhye roopadalli irabekku. Matte bareda kalsi:")
+        bot.reply_to(message, "⚠️ কয়েনের পরিমাণ সংখ্যায় হতে হবে। আবার লিখে পাঠান:")
         bot.register_next_step_handler(message, get_promo_code_amount)
 
 @bot.message_handler(commands=['redeem'])
@@ -319,19 +319,19 @@ def redeem_promo_code(message):
         return
 
     if len(args) < 2:
-        bot.reply_to(message, "⚠️ Balake: `/redeem [promo_code]`\nUdaharanage: `/redeem FREECOIN50`", parse_mode="Markdown")
+        bot.reply_to(message, "⚠️ ব্যবহার: `/redeem [promo_code]`\nউদাহরণ: `/redeem FREECOIN50`", parse_mode="Markdown")
         return
 
     code = args[1].strip().upper()
     try:
         p_data = requests.get(f"{FIREBASE_BASE}/promo_codes/{code}.json").json()
         if not p_data:
-            bot.reply_to(message, "❌ Thappu athava expired promo code!")
+            bot.reply_to(message, "❌ ভুল অথবা মেয়াদোত্তীর্ণ প্রোমো কোড!")
             return
 
         used_by = p_data.get('used_by') or {}
         if str(uid) in used_by:
-            bot.reply_to(message, "⚠️ Neevu eegaagale ee promo code use madiddire!")
+            bot.reply_to(message, "⚠️ আপনি ইতিমধ্যে এই প্রোমো কোড ব্যবহার করেছেন!")
             return
 
         u_data = requests.get(f"{FIREBASE_BASE}/users/{uid}.json").json() or {}
@@ -346,22 +346,22 @@ def redeem_promo_code(message):
 
         bot.reply_to(
             message,
-            f"🎉 Abhinandanagalu! Promo code successagi redeem agide.\n"
-            f"Nimma account-ige jukta vagide *{coins_to_add}* coin!\n"
-            f"Prastuta balance: *{new_coins} 🪙*",
+            f"🎉 অভিনন্দন! প্রোমো কোড সফলভাবে রিডিম হয়েছে।\n"
+            f"আপনার অ্যাকাউন্টে যুক্ত হয়েছে *{coins_to_add}* কয়েন!\n"
+            f"বর্তমান ব্যালেন্স: *{new_coins} 🪙*",
             parse_mode="Markdown",
             reply_markup=get_main_keyboard()
         )
     except Exception as e:
-        bot.reply_to(message, f"❌ Dosha undagide: {e}")
+        bot.reply_to(message, f"❌ ত্রুটি দেখা দিয়েছে: {e}")
 
 def start_user_inspect_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
-    msg = bot.reply_to(message, "🔍 Yaava user-ina mahiti nodalu icchisuteera avara **Telegram User ID** bareda kalsi:", parse_mode="Markdown", reply_markup=get_admin_dashboard_keyboard())
+    msg = bot.reply_to(message, "🔍 যে ইউজারের তথ্য দেখতে চান তার **Telegram User ID** লিখে পাঠান:", parse_mode="Markdown", reply_markup=get_admin_dashboard_keyboard())
     bot.register_next_step_handler(msg, process_user_inspection)
 
 def process_user_inspection(message):
-    if message.text and (message.text.startswith('/') or message.text == "❌ Cancel karun"):
+    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
         return
 
@@ -369,35 +369,35 @@ def process_user_inspection(message):
     try:
         u_data = requests.get(f"{FIREBASE_BASE}/users/{target_id}.json").json()
         if not u_data:
-            bot.reply_to(message, f"❌ ID `{target_id}` database-alli sikkilla!", parse_mode="Markdown", reply_markup=get_admin_dashboard_keyboard())
+            bot.reply_to(message, f"❌ আইডি `{target_id}` ডাটাবেজে পাওয়া যায়নি!", parse_mode="Markdown", reply_markup=get_admin_dashboard_keyboard())
             return
 
         banned = is_user_banned(target_id)
-        status_text = "🚫 Ban madalagide" if banned else "✅ Sacha (Active)"
+        status_text = "🚫 ব্যান করা হয়েছে" << "✅ সচল (Active)" if banned else "✅ সচল (Active)"
 
         info = (
-            f"👤 **User profile mahiti**\n\n"
-            f"📌 Hesaru: {u_data.get('name', 'Unknown')}\n"
-            f"🔗 Username: @{u_data.get('username', 'None')}\n"
-            f"🆔 ID: `{target_id}`\n"
-            f"🪙 Prastuta coin: {u_data.get('coins', 0)}\n"
-            f"👥 Mot refer: {u_data.get('refers', 0)}\n"
-            f"⚙️ Status: {status_text}"
+            f"👤 **ইউজার প্রোফাইল তথ্য**\n\n"
+            f"📌 নাম: {u_data.get('name', 'Unknown')}\n"
+            f"🔗 ইউজারনেম: @{u_data.get('username', 'None')}\n"
+            f"🆔 আইডি: `{target_id}`\n"
+            f"🪙 বর্তমান কয়েন: {u_data.get('coins', 0)}\n"
+            f"👥 মোট রেফার: {u_data.get('refers', 0)}\n"
+            f"⚙️ স্ট্যাটাস: {status_text}"
         )
         bot.reply_to(message, info, parse_mode="Markdown", reply_markup=get_admin_dashboard_keyboard())
     except Exception as e:
-        bot.reply_to(message, f"❌ Mahiti load madalu samasye agide: {e}", parse_mode="Markdown", reply_markup=get_admin_dashboard_keyboard())
+        bot.reply_to(message, f"❌ তথ্য লোড করতে সমস্যা হয়েছে: {e}", parse_mode="Markdown", reply_markup=get_admin_dashboard_keyboard())
 
 def start_coin_management_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     markup = InlineKeyboardMarkup(row_width=1)
     markup.add(
-        InlineKeyboardButton("👑 Nanna sontha coin set madun", callback_data="coin_act:self"),
-        InlineKeyboardButton("👤 Verre user-ige coin kodi/kammadi", callback_data="coin_act:other")
+        InlineKeyboardButton("👑 নিজের কয়েন সেট করুন", callback_data="coin_act:self"),
+        InlineKeyboardButton("👤 অন্য ইউজারের কয়েন যোগ/বাদ দিন", callback_data="coin_act:other")
     )
     bot.send_message(
         message.chat.id,
-        "🪙 **Coin management panel**\n\nNeevu sontha coin update madalu icchisuteera athava yaru user-ige coin kodalu icchisuteera?",
+        "🪙 **কয়েন ম্যানেজমেন্ট প্যানেল**\n\nআপনি কি নিজের কয়েন আপডেট করতে চান নাকি অন্য ইউজারের কয়েন দিতে চান?",
         parse_mode="Markdown",
         reply_markup=markup
     )
@@ -412,20 +412,20 @@ def handle_coin_action(call):
     if act == "self":
         msg = bot.send_message(
             call.message.chat.id,
-            "👑 **Nimma account-alli eshtu coin set madalu icchisuteera?**\n(Udaharanage: `2000` bareda kalsi athava '❌ Cancel karun' odi)",
+            "👑 **আপনার অ্যাকাউন্টে কত কয়েন সেট করতে চান?**\n(উদাহরণস্বরূপ: `2000` লিখে পাঠান অথবা '❌ বাতিল করুন' চাপুন)",
             parse_mode="Markdown"
         )
         bot.register_next_step_handler(msg, process_self_coins)
     else:
         msg = bot.send_message(
             call.message.chat.id,
-            "👤 **Yaava user-ige coin kodalu icchisuteera avara Telegram User ID bareda kalsi:**\n(Cancel madalu '❌ Cancel karun' odi)",
+            "👤 **যে ইউজারের কয়েন দিতে চান তার Telegram User ID লিখে পাঠান:**\n(বাতিল করতে '❌ বাতিল করুন' চাপুন)",
             parse_mode="Markdown"
         )
         bot.register_next_step_handler(msg, process_user_id_for_coins)
 
 def process_self_coins(message):
-    if message.text and (message.text.startswith('/') or message.text == "❌ Cancel karun"):
+    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
         return
     try:
@@ -433,37 +433,37 @@ def process_self_coins(message):
         requests.patch(f"{FIREBASE_BASE}/users/{ADMIN_ID}.json", json={"coins": amount})
         bot.reply_to(
             message,
-            f"🎉 Nimma account-alli successagi *{amount} 🪙* coin set madalagide!",
+            f"🎉 আপনার অ্যাকাউন্টে সফলভাবে *{amount} 🪙* কয়েন সেট করা হয়েছে!",
             parse_mode="Markdown",
             reply_markup=get_admin_dashboard_keyboard()
         )
     except ValueError:
-        bot.reply_to(message, "⚠️ Coin sankhye roopadalli kodi. Matte bareda kalsi:")
+        bot.reply_to(message, "⚠️ কয়েন সংখ্যায় দিন। আবার লিখে পাঠান:")
         bot.register_next_step_handler(message, process_self_coins)
 
 def process_user_id_for_coins(message):
-    if message.text and (message.text.startswith('/') or message.text == "❌ Cancel karun"):
+    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
         return
 
     target_id = message.text.strip()
     u_data = requests.get(f"{FIREBASE_BASE}/users/{target_id}.json").json()
     if not u_data:
-        bot.reply_to(message, f"❌ ID `{target_id}` database-alli kandu bandilla! Sariya ada ID kodi:")
+        bot.reply_to(message, f"❌ আইডি `{target_id}` ডাটাবেজে পাওয়া যায়নি! সঠিক আইডি দিন:")
         bot.register_next_step_handler(message, process_user_id_for_coins)
         return
 
     coin_sessions[message.from_user.id] = {'target_id': target_id, 'user_name': u_data.get('name', 'User')}
     msg = bot.send_message(
         message.chat.id,
-        f"✅ User sikkiddare: *{u_data.get('name', 'User')}* (Prastuta coin: {u_data.get('coins', 0)})\n\n"
-        f"🪙 **Eshtu coin jukta athava kaledu hakalu icchisuteera?** (Udaharanage: Jukta madalu `500` athava kaledu hakalu `-200`):",
+        f"✅ ইউজার পাওয়া গেছে: *{u_data.get('name', 'User')}* (বর্তমান কয়েন: {u_data.get('coins', 0)})\n\n"
+        f"🪙 **কত কয়েন যোগ বা বাদ করতে চান?** (উদাহরণ: যোগ করতে `500` অথবা বাদ দিতে `-200`):",
         parse_mode="Markdown"
     )
     bot.register_next_step_handler(msg, process_apply_coins)
 
 def process_apply_coins(message):
-    if message.text and (message.text.startswith('/') or message.text == "❌ Cancel karun"):
+    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
         return
 
@@ -483,11 +483,11 @@ def process_apply_coins(message):
         del coin_sessions[user_id]
         bot.reply_to(
             message,
-            f"🎉 **Successagi sampurna vagide!**\n\n"
-            f"👤 User: {u_data.get('name', 'User')}\n"
-            f"🆔 ID: `{target_id}`\n"
-            f"🪙 Muncheya coin: {current_c}\n"
-            f"✨ Prastuta coin: *{updated_c}*",
+            f"🎉 **সফলভাবে সম্পন্ন হয়েছে!**\n\n"
+            f"👤 ইউজার: {u_data.get('name', 'User')}\n"
+            f"🆔 আইডি: `{target_id}`\n"
+            f"🪙 আগের কয়েন: {current_c}\n"
+            f"✨ বর্তমান কয়েন: *{updated_c}*",
             parse_mode="Markdown",
             reply_markup=get_admin_dashboard_keyboard()
         )
@@ -495,14 +495,14 @@ def process_apply_coins(message):
         try:
             bot.send_message(
                 target_id,
-                f"🎁 **Admin-inda coin update!**\n\nNimma account-ige *{amount}* coin jukta madalagide.\nPrastuta balance: *{updated_c} 🪙*",
+                f"🎁 **অ্যাডমিনের পক্ষ থেকে কয়েন আপডেট!**\n\nআপনার অ্যাকাউন্টে *{amount}* কয়েন যোগ করা হয়েছে।\nবর্তমান ব্যালেন্স: *{updated_c} 🪙*",
                 parse_mode="Markdown"
             )
         except Exception:
             pass
 
     except ValueError:
-        bot.reply_to(message, "⚠️ Coin sankhye roopadalli kodi (udaharanage: 500). Matte bareda kalsi:")
+        bot.reply_to(message, "⚠️ কয়েন সংখ্যায় দিন (যেমন: 500)। আবার লিখে পাঠান:")
         bot.register_next_step_handler(message, process_apply_coins)
 
 @bot.message_handler(commands=['mycoins'])
@@ -515,14 +515,14 @@ def set_admin_my_coins_cmd(message):
         try:
             amount = int(args[1].strip())
         except ValueError:
-            bot.reply_to(message, "⚠️ Coin sankhye roopadalli kodi. Daharanage: `/mycoins 2500`", parse_mode="Markdown")
+            bot.reply_to(message, "⚠️ কয়েন সংখ্যায় দিন। যেমন: `/mycoins 2500`", parse_mode="Markdown")
             return
 
     try:
         requests.patch(f"{FIREBASE_BASE}/users/{ADMIN_ID}.json", json={"coins": amount})
-        bot.reply_to(message, f"🎉 Nimma account-alli successagi *{amount} 🪙* coin set madalagide!", parse_mode="Markdown")
+        bot.reply_to(message, f"🎉 আপনার অ্যাকাউন্টে সফলভাবে *{amount} 🪙* কয়েন সেট করা হয়েছে!", parse_mode="Markdown")
     except Exception as e:
-        bot.reply_to(message, f"❌ Database error: {e}")
+        bot.reply_to(message, f"❌ ডাটাবেজ ত্রুটি: {e}")
 
 @bot.message_handler(commands=['givecoins'])
 def give_user_coins_cmd(message):
@@ -530,7 +530,7 @@ def give_user_coins_cmd(message):
         return
     args = message.text.split()
     if len(args) < 3:
-        bot.reply_to(message, "⚠️ Balake: `/givecoins [User_ID] [Coins]`\nUdaharanage: `/givecoins 7481264433 500`", parse_mode="Markdown")
+        bot.reply_to(message, "⚠️ ব্যবহার: `/givecoins [User_ID] [Coins]`\nউদাহরণ: `/givecoins 7481264433 500`", parse_mode="Markdown")
         return
 
     target_uid = args[1].strip()
@@ -538,17 +538,17 @@ def give_user_coins_cmd(message):
         coins_to_add = int(args[2].strip())
         u_data = requests.get(f"{FIREBASE_BASE}/users/{target_uid}.json").json()
         if not u_data:
-            bot.reply_to(message, f"❌ ID `{target_uid}` kandu bandilla!")
+            bot.reply_to(message, f"❌ আইডি `{target_uid}` পাওয়া যায়নি!")
             return
 
         current_c = u_data.get('coins', 0)
         updated_c = max(0, current_c + coins_to_add)
         requests.patch(f"{FIREBASE_BASE}/users/{target_uid}.json", json={"coins": updated_c})
-        bot.reply_to(message, f"✅ Success! Prastuta coin: *{updated_c}*", parse_mode="Markdown")
+        bot.reply_to(message, f"✅ সফল! বর্তমান কয়েন: *{updated_c}*", parse_mode="Markdown")
     except ValueError:
-        bot.reply_to(message, "⚠️ Coin sankhye roopadalli kodi.")
+        bot.reply_to(message, "⚠️ কয়েনের পরিমাণ সংখ্যায় দিন।")
     except Exception as e:
-        bot.reply_to(message, f"❌ Error: {e}")
+        bot.reply_to(message, f"❌ ত্রুটি: {e}")
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('check_sub:'))
 def handle_verify_subscription(call):
@@ -556,27 +556,27 @@ def handle_verify_subscription(call):
     target_arg = call.data.split("check_sub:")[1]
 
     if is_user_banned(user_id):
-        bot.answer_callback_query(call.id, "❌ Neevu ee bot-inda ban agiddire!", show_alert=True)
+        bot.answer_callback_query(call.id, "❌ আপনি এই বটের পক্ষ থেকে ব্যান হয়েছেন!", show_alert=True)
         return
 
     if is_user_member(user_id):
         bot.delete_message(call.message.chat.id, call.message.message_id)
-        bot.answer_callback_query(call.id, "✅ Verification success agide!", show_alert=False)
+        bot.answer_callback_query(call.id, "✅ ভেরিফিকেশন সফল হয়েছে!", show_alert=False)
 
         if target_arg.startswith("get_"):
             process_resource_delivery(call.message.chat.id, target_arg, call.from_user)
         else:
             bot.send_message(
                 call.message.chat.id,
-                f"👋 Swagatam {call.from_user.first_name}!\n\n💎 Premium resource app-ige swagatam. Kelagina button otti app open madi:",
+                f"👋 স্বাগতম {call.from_user.first_name}!\n\n💎 প্রিমিয়াম রিসোর্স অ্যাপে স্বাগতম। নিচের বাটনে ক্লিক করে অ্যাপ ওপেন করুন:",
                 reply_markup=get_main_keyboard()
             )
     else:
-        bot.answer_callback_query(call.id, "❌ Neevu innu channel-alli jayen agilla! Munde jayen agi.", show_alert=True)
+        bot.answer_callback_query(call.id, "❌ আপনি এখনো চ্যানেলে জয়েন করেননি! আগে জয়েন করুন।", show_alert=True)
 
 def process_resource_delivery(chat_id, arg_text, user_obj=None):
     file_key = arg_text.replace("get_", "").split("_from_")[0]
-    bot.send_message(chat_id, "⏳ Nimma file siddha madalaguttide...")
+    bot.send_message(chat_id, "⏳ আপনার ফাইল প্রস্তুত করা হচ্ছে...")
     try:
         res = requests.get(f"{FIREBASE_BASE}/resources/{file_key}.json")
         item = res.json()
@@ -598,12 +598,12 @@ def process_resource_delivery(chat_id, arg_text, user_obj=None):
                     requests.post(f"{FIREBASE_BASE}/download_logs.json", json=log_data)
 
                     admin_alert = (
-                        f"🔔 **Hosa file download agide!**\n\n"
-                        f"👤 User: *{user_obj.first_name}*\n"
-                        f"🆔 User ID: `{user_obj.id}`\n"
-                        f"📦 Resource: {res_name}\n"
-                        f"📁 Category: {res_type}\n"
-                        f"⏰ Samaya: {current_time}"
+                        f"🔔 **নতুন ফাইল ডাউনলোড হয়েছে!**\n\n"
+                        f"👤 ইউজার: *{user_obj.first_name}*\n"
+                        f"🆔 ইউজার আইডি: `{user_obj.id}`\n"
+                        f"📦 রিসোর্স: {res_name}\n"
+                        f"📁 ক্যাটাগরি: {res_type}\n"
+                        f"⏰ সময়: {current_time}"
                     )
                     bot.send_message(ADMIN_ID, admin_alert, parse_mode="Markdown")
                 except Exception:
@@ -611,14 +611,14 @@ def process_resource_delivery(chat_id, arg_text, user_obj=None):
 
             if item.get("download_link"):
                 markup = InlineKeyboardMarkup()
-                markup.add(InlineKeyboardButton("📥 Direct file download madi", url=item["download_link"]))
-                markup.add(InlineKeyboardButton("🚀 Punah app open madi", web_app=WebAppInfo(url=WEB_APP_URL)))
+                markup.add(InlineKeyboardButton("📥 সরাসরি ফাইল ডাউনলোড করুন", url=item["download_link"]))
+                markup.add(InlineKeyboardButton("🚀 পুনরায় অ্যাপ ওপেন করুন", web_app=WebAppInfo(url=WEB_APP_URL)))
                 bot.send_message(
                     chat_id,
-                    f"🎁 Nimma resource: *{res_name}*\n"
-                    f"📁 Category: *{res_type}*\n"
-                    f"🪙 Upayogisida coin: {item.get('coins', 0)}\n\n"
-                    "🔗 Kelagina button otti file sangraha madi:",
+                    f"🎁 আপনার রিসোর্স: *{res_name}*\n"
+                    f"📁 ক্যাটাগরি: *{res_type}*\n"
+                    f"🪙 খরচ হওয়া কয়েন: {item.get('coins', 0)}\n\n"
+                    "🔗 নিচের বাটন থেকে ফাইল সংগ্রহ করুন:",
                     parse_mode="Markdown",
                     reply_markup=markup
                 )
@@ -629,18 +629,18 @@ def process_resource_delivery(chat_id, arg_text, user_obj=None):
                 total_f = len(file_ids)
                 for idx, fid in enumerate(file_ids, 1):
                     cap = (
-                        f"🎁 File ({idx}/{total_f}): *{res_name}*\n"
-                        f"📁 Category: *{res_type}*\n\n"
-                        "📂 Save madalu file mele tap madi o download konedalli 3-dot (⋮) otti **'Save to Downloads'** madi."
+                        f"🎁 ফাইল ({idx}/{total_f}): *{res_name}*\n"
+                        f"📁 ক্যাটাগরি: *{res_type}*\n\n"
+                        "📂 সেভ করতে ফাইলের ওপর ট্যাপ করুন অথবা ডাউনলোড কোণায় ৩-ডট (⋮) এ ক্লিক করে **'Save to Downloads'** করুন।"
                     )
                     bot.send_document(chat_id, fid, caption=cap, parse_mode="Markdown")
                     time.sleep(0.3)
-                bot.send_message(chat_id, "✅ Nimma ella file successagi inbox-ige delivery madalagide!", reply_markup=get_main_keyboard())
+                bot.send_message(chat_id, "✅ আপনার সমস্ত ফাইল সফলভাবে ইনবক্সে ডেলিভারি করা হয়েছে!", reply_markup=get_main_keyboard())
                 return
         else:
-            bot.send_message(chat_id, "❌ File database-alli kandu bandilla.", reply_markup=get_main_keyboard())
+            bot.send_message(chat_id, "❌ ফাইলটি ডাটাবেজে পাওয়া যায়নি।", reply_markup=get_main_keyboard())
     except Exception as e:
-        bot.send_message(chat_id, f"❌ Resource delivery-alli samasye kanisikolluttide: {e}", reply_markup=get_main_keyboard())
+        bot.send_message(chat_id, f"❌ রিসোর্স ডেলিভারিতে সমস্যা দেখা দিচ্ছে: {e}", reply_markup=get_main_keyboard())
 
 @bot.message_handler(commands=['start'])
 def start_cmd(message):
@@ -650,7 +650,7 @@ def start_cmd(message):
     user_name = message.from_user.first_name
 
     if is_user_banned(user_id):
-        bot.send_message(message.chat.id, "❌ Dukhadavagide, neevu ee bot-inda ban agiddire!")
+        bot.send_message(message.chat.id, "❌ দুঃখিত, আপনি এই বট থেকে ব্যান হয়েছেন!")
         return
 
     try:
@@ -680,28 +680,28 @@ def start_cmd(message):
                         "coins": ref_data.get('coins', 0) + 50,
                         "refers": ref_data.get('refers', 0) + 1
                     })
-                    bot.send_message(referrer_id, "🎉 Abhinandanagalu! Hosa member nimma refer-alli jayen agiddare. Neevu padediddiri +50 🪙 coin!")
+                    bot.send_message(referrer_id, "🎉 অভিনন্দন! নতুন মেম্বার আপনার রেফারলের মাধ্যমে জয়েন করেছেন। আপনি পেয়েছেন +50 🪙 কয়েন!")
             except Exception:
                 pass
 
     if int(user_id) == int(ADMIN_ID):
         bot.send_message(
             message.chat.id,
-            "👑 **Swagatam admin panel-ige!**\n\n"
-            "Kelagina button athava command upayogisi yavude kelasa nirvahisabahudu:",
+            "👑 **অ্যাডমিন প্যানেলে স্বাগতম!**\n\n"
+            "নিচের বাটন অথবা কমান্ড ব্যবহার করে যেকোনো কাজ পরিচালনা করতে পারেন:",
             parse_mode="Markdown",
             reply_markup=get_admin_dashboard_keyboard()
         )
-        bot.send_message(message.chat.id, "Mini app-ige hogalu kelagina button otti:", reply_markup=get_main_keyboard())
+        bot.send_message(message.chat.id, "মিনি অ্যাপে যেতে নিচের বাটন চাপুন:", reply_markup=get_main_keyboard())
         return
 
     target_arg = args[1] if len(args) > 1 else ""
     if not is_user_member(user_id):
         bot.send_message(
             message.chat.id,
-            f"👋 Hello *{user_name}*!\n\n"
-            "⚠️ **Bot mattu mini app upayogisalu namma official telegram channel-alli jayen agiruvudu kaddaya.**\n\n"
-            "👉 Kelagina button click madi channel-alli jayen agi mattu nantara **'🔄 Verify karun'** button otti:",
+            f"👋 হ্যালো *{user_name}*!\n\n"
+            "⚠️ **বট এবং মিনি অ্যাপ ব্যবহার করতে আমাদের অফিসিয়াল টেলিগ্রাম চ্যানেলে জয়েন করা বাধ্যতামূলক।**\n\n"
+            "👉 নিচের বাটনে ক্লিক করে চ্যানেলে জয়েন করুন এবং পরবর্তীতে **'🔄 ভেরিফাই করুন'** বাটন চাপুন:",
             parse_mode="Markdown",
             reply_markup=get_force_sub_keyboard(target_arg)
         )
@@ -709,7 +709,7 @@ def start_cmd(message):
 
     bot.send_message(
         message.chat.id,
-        f"👋 Hello {user_name}!\n\n💎 Premium resource app-ige swagatam. Kelagina button otti app open madi:",
+        f"👋 হ্যালো {user_name}!\n\n💎 প্রিমিয়াম রিসোর্স অ্যাপে স্বাগতম। নিচের বাটনে ক্লিক করে অ্যাপ ওপেন করুন:",
         reply_markup=get_main_keyboard()
     )
 
@@ -717,43 +717,43 @@ def start_cmd(message):
 def handle_all_admin_text(message):
     text = message.text.strip().lower()
 
-    if text in ['/cancel', 'cancel', 'badal', '❌ Cancel karun']:
+    if text in ['/cancel', 'cancel', 'বাতিল', '❌ বাতিল করুন']:
         cancel_process(message)
         return
 
-    if text in ['/edit', 'edit', 'edit', '✏️ Resource edit/update', 'update']:
+    if text in ['/edit', 'edit', '✏️ রিসোর্স এডিট/আপডেট', 'update']:
         start_edit_flow(message)
         return
 
-    if text in ['/add', 'add', 'jokta', '➕ Hosa resource jukta karun']:
+    if text in ['/add', 'add', '➕ নতুন রিসোর্স যুক্ত করুন']:
         start_add_flow(message)
         return
 
-    if text in ['🪙 Coin update/manage', 'coin', 'coins', '/coins']:
+    if text in ['🪙 কয়েন আপডেট/ম্যানেজ', 'coin', 'coins', '/coins']:
         start_coin_management_flow(message)
         return
 
-    if text in ['📊 Download history nodi', 'logs', 'download_logs', '/logs']:
+    if text in ['📊 ডাউনলোড হিস্ট্রি দেখুন', 'logs', 'download_logs', '/logs']:
         show_download_logs_cmd(message)
         return
 
-    if text in ['📢 Broadcast message', 'broadcast', '/broadcast']:
+    if text in ['📢 ব্রডকাস্ট মেসেজ', 'broadcast', '/broadcast']:
         start_broadcast_flow(message)
         return
 
-    if text in ['🚫 User ban/unban', 'ban', '/ban']:
+    if text in ['🚫 ইউজার ব্যান/আনব্যান', 'ban', '/ban']:
         start_ban_flow(message)
         return
 
-    if text in ['🎁 Promo code tayari', 'promo', '/promo']:
+    if text in ['🎁 প্রোমো কোড তৈরি', 'promo', '/promo']:
         start_promo_flow(message)
         return
 
-    if text in ['🔍 User check', 'inspect', '/inspect']:
+    if text in ['🔍 ইউজার চেক', 'inspect', '/inspect']:
         start_user_inspect_flow(message)
         return
 
-    if text in ['/setad', 'setad', 'vijnapan', '📢 Advertisement set karun']:
+    if text in ['/setad', 'setad', '📢 অ্যাডভারটাইজমেন্ট সেট করুন']:
         start_ad_flow(message)
         return
 
@@ -767,7 +767,7 @@ def start_edit_flow(message):
         InlineKeyboardButton("🔤 Font", callback_data="edcat:font"),
         InlineKeyboardButton("⚡ XML", callback_data="edcat:xml")
     )
-    bot.send_message(message.chat.id, "🛠️ **Yava category-ina file update madalu icchisuteera?**", parse_mode="Markdown", reply_markup=markup)
+    bot.send_message(message.chat.id, "🛠️ **কোন ক্যাটাগরির ফাইল আপডেট করতে চান?**", parse_mode="Markdown", reply_markup=markup)
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('edcat:'))
 def handle_edit_category(call):
@@ -779,21 +779,21 @@ def handle_edit_category(call):
 
     msg = bot.send_message(
         call.message.chat.id,
-        f"✅ Ayke madiro category: *{cat.upper()}*\n\n"
-        "Iga yaava file update madalu icchisuteera adara **hesaru athava hesarina kelavu bhaga** bareda kalsi:",
+        f"✅ নির্বাচিত ক্যাটাগরি: *{cat.upper()}*\n\n"
+        "এখন কোন ফাইল আপডেট করতে চান তার **নাম অথবা নামের কিছু অংশ** লিখে পাঠান:",
         parse_mode="Markdown"
     )
     bot.register_next_step_handler(msg, find_resource_by_name)
 
 def find_resource_by_name(message):
-    if message.text and (message.text.startswith('/') or message.text == "❌ Cancel karun"):
+    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
         return
 
     search_name = (message.text or "").strip().lower()
     selected_type = edit_sessions.get(message.from_user.id, {}).get('type', 'plp')
 
-    wait_msg = bot.reply_to(message, "🔍 Database-alli file hudukalaguttide...")
+    wait_msg = bot.reply_to(message, "🔍 ডাটাবেজে ফাইল খোঁজা হচ্ছে...")
 
     try:
         res = requests.get(f"{FIREBASE_BASE}/resources.json").json() or {}
@@ -809,8 +809,8 @@ def find_resource_by_name(message):
         if not matched_items:
             msg = bot.send_message(
                 message.chat.id,
-                f"❌ *{selected_type.upper()}* category-alli '{message.text}' hesarina file sikkilla!\n\n"
-                "Sariya ada hesaru bareda matte kalsi (athava '❌ Cancel karun' odi):",
+                f"❌ *{selected_type.upper()}* ক্যাটাগরিতে '{message.text}' নামের কোনো ফাইল পাওয়া যায়নি!\n\n"
+                "সঠিক নাম লিখে আবার পাঠান (অথवा '❌ বাতিল করুন' চাপুন):",
                 parse_mode="Markdown"
             )
             bot.register_next_step_handler(msg, find_resource_by_name)
@@ -824,10 +824,10 @@ def find_resource_by_name(message):
             markup = InlineKeyboardMarkup(row_width=1)
             for k, it in matched_items.items():
                 markup.add(InlineKeyboardButton(f"📁 {it.get('name')}", callback_data=f"selres:{k}"))
-            bot.send_message(message.chat.id, "🎯 Halavaru file-galu siktive. Nirdista file ayke madi:", reply_markup=markup)
+            bot.send_message(message.chat.id, "🎯 একাধিক ফাইল পাওয়া গেছে। নির্দিষ্ট ফাইলটি নির্বাচন করুন:", reply_markup=markup)
 
     except Exception as e:
-        bot.reply_to(message, f"❌ Dosha: {e}")
+        bot.reply_to(message, f"❌ ত্রুটি: {e}")
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('selres:'))
 def select_from_matched(call):
@@ -839,38 +839,38 @@ def select_from_matched(call):
 def show_edit_options(chat_id, res_key, item_data):
     markup = InlineKeyboardMarkup(row_width=2)
     markup.add(
-        InlineKeyboardButton("📝 Hesaru badalavane", callback_data=f"do_upd:{res_key}:name"),
-        InlineKeyboardButton("🪙 Coin badalavane", callback_data=f"do_upd:{res_key}:coins")
+        InlineKeyboardButton("📝 নাম পরিবর্তন", callback_data=f"do_upd:{res_key}:name"),
+        InlineKeyboardButton("🪙 কয়েন পরিবর্তন", callback_data=f"do_upd:{res_key}:coins")
     )
 
     r_type = item_data.get('type')
     if r_type == 'xml':
         markup.add(
-            InlineKeyboardButton("🎬 Preview video badalavane", callback_data=f"do_upd:{res_key}:video"),
-            InlineKeyboardButton("🖼️ Thumbnail image", callback_data=f"do_upd:{res_key}:image"),
-            InlineKeyboardButton("⚡ Mula XML file badalavane", callback_data=f"do_upd:{res_key}:files")
+            InlineKeyboardButton("🎬 প্রিভিউ ভিডিও পরিবর্তন", callback_data=f"do_upd:{res_key}:video"),
+            InlineKeyboardButton("🖼️ থাম্বনেইল ইমেজ", callback_data=f"do_upd:{res_key}:image"),
+            InlineKeyboardButton("⚡ মূল XML ফাইল পরিবর্তন", callback_data=f"do_upd:{res_key}:files")
         )
     elif r_type == 'plp':
         markup.add(
-            InlineKeyboardButton("🖼️ Thumbnail image", callback_data=f"do_upd:{res_key}:image"),
-            InlineKeyboardButton("🔗 Drive link badalavane", callback_data=f"do_upd:{res_key}:download_link"),
-            InlineKeyboardButton("📂 PLP file badalavane", callback_data=f"do_upd:{res_key}:files")
+            InlineKeyboardButton("🖼️ থাম্বনেইল ইমেজ", callback_data=f"do_upd:{res_key}:image"),
+            InlineKeyboardButton("🔗 ড্রাইভ লিংক পরিবর্তন", callback_data=f"do_upd:{res_key}:download_link"),
+            InlineKeyboardButton("📂 PLP ফাইল পরিবর্তন", callback_data=f"do_upd:{res_key}:files")
         )
     else:
         markup.add(
-            InlineKeyboardButton("🖼️ Thumbnail image", callback_data=f"do_upd:{res_key}:image"),
-            InlineKeyboardButton("📁 Font file badalavane", callback_data=f"do_upd:{res_key}:files")
+            InlineKeyboardButton("🖼️ থাম্বনেইল ইমেজ", callback_data=f"do_upd:{res_key}:image"),
+            InlineKeyboardButton("📁 ফন্ট ফাইল পরিবর্তন", callback_data=f"do_upd:{res_key}:files")
         )
 
-    markup.add(InlineKeyboardButton("🗑️ Resource delete madi", callback_data=f"do_del:{res_key}"))
-    markup.add(InlineKeyboardButton("❌ Bandh madi", callback_data="close_edit"))
+    markup.add(InlineKeyboardButton("🗑️ রিসোর্স ডিলিট করুন", callback_data=f"do_del:{res_key}"))
+    markup.add(InlineKeyboardButton("❌ বন্ধ করুন", callback_data="close_edit"))
 
     details = (
-        f"🎯 **Resource sikkide!**\n\n"
-        f"📌 **Hesaru:** {item_data.get('name')}\n"
-        f"📁 **Category:** {item_data.get('type', '').upper()}\n"
-        f"🪙 **Coin:** {item_data.get('coins')}\n\n"
-        f"👇 **Neevu yavadannu update madalu icchisuteera?**"
+        f"🎯 **রিসোর্স পাওয়া গেছে!**\n\n"
+        f"📌 **নাম:** {item_data.get('name')}\n"
+        f"📁 **ক্যাটাগরি:** {item_data.get('type', '').upper()}\n"
+        f"🪙 **কয়েন:** {item_data.get('coins')}\n\n"
+        f"👇 **আপনি কোনটি আপডেট করতে চান?**"
     )
     bot.send_message(chat_id, details, parse_mode="Markdown", reply_markup=markup)
 
@@ -887,8 +887,8 @@ def prompt_for_field(call):
     if field == "files":
         msg = bot.send_message(
             call.message.chat.id,
-            "📂 **Hosa file(galu) kalsi:**\n\n"
-            "Neevu ondu athava halavaru document file kalsabahudu. Ella file kalsi mugididdare kelagina **✅ Upload sampurna** button otti:",
+            "📂 **নতুন ফাইল(গুলো) পাঠান:**\n\n"
+            "আপনি এক বা একাধিক ডকুমেন্ট ফাইল পাঠাতে পারেন। সব ফাইল পাঠানো শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটন চাপুন:",
             reply_markup=get_file_collection_keyboard(),
             parse_mode="Markdown"
         )
@@ -896,16 +896,16 @@ def prompt_for_field(call):
         return
 
     prompts = {
-        "name": "Hosa hesaru bareda kalsi:",
-        "coins": "Hosa coin sankhye bareda kalsi (udaharanage: 15):",
-        "image": "Hosa thumbnail image athava direct link (drive link) kalsi:",
-        "video": "Hosa preview video file, youtube link athava direct link kalsi:",
-        "download_link": "Hosa google drive athava bere yavude download link kalsi:"
+        "name": "নতুন নাম লিখে পাঠান:",
+        "coins": "নতুন কয়েনের সংখ্যা লিখে পাঠান (যেমন: 15):",
+        "image": "নতুন থাম্বনেইল ইমেজ অথবা সরাসরি লিংক (ড্রাইভ লিংক) পাঠান:",
+        "video": "নতুন প্রিভিউ ভিডিও ফাইল, ইউটিউব লিংক অথবা সরাসরি লিংক পাঠান:",
+        "download_link": "নতুন গুগল ড্রাইভ বা অন্য যেকোনো ডাউনলোড লিংক পাঠান:"
     }
 
     msg = bot.send_message(
         call.message.chat.id,
-        f"✍️ **{prompts.get(field, 'Hosa mana kalsi:')}**",
+        f"✍️ **{prompts.get(field, 'নতুন মান পাঠান:')}**",
         parse_mode="Markdown"
     )
     bot.register_next_step_handler(msg, save_updated_field)
@@ -915,14 +915,14 @@ def collect_edit_files(message):
     if user_id not in edit_sessions:
         return
 
-    if message.text and message.text.strip().lower() in ['/cancel', 'cancel', '❌ Cancel karun']:
+    if message.text and message.text.strip().lower() in ['/cancel', 'cancel', '❌ বাতিল করুন']:
         cancel_process(message)
         return
 
-    if message.text and message.text.strip() in ['/done', 'done', '✅ Upload sampurna']:
+    if message.text and message.text.strip() in ['/done', 'done', '✅ আপলোড সম্পন্ন']:
         session = edit_sessions.pop(user_id, None)
         if not session or not session.get('file_ids'):
-            bot.reply_to(message, "⚠️ Neevu yavude file upload madilla! Cancel madalagide.", reply_markup=get_admin_dashboard_keyboard())
+            bot.reply_to(message, "⚠️ আপনি কোনো ফাইল আপলোড করেননি! বাতিল করা হয়েছে।", reply_markup=get_admin_dashboard_keyboard())
             return
 
         res_key = session['key']
@@ -937,12 +937,12 @@ def collect_edit_files(message):
             requests.patch(f"{FIREBASE_BASE}/resources/{res_key}.json", json=patch_data)
             bot.reply_to(
                 message,
-                f"🎉 **Successagi file update agide!**\n\nMot file: **{len(file_list)}ti** save madalagide.",
+                f"🎉 **সফলভাবে ফাইল আপডেট হয়েছে!**\n\nমোট ফাইল: **{len(file_list)}টি** সেভ করা হয়েছে।",
                 parse_mode="Markdown",
                 reply_markup=get_admin_dashboard_keyboard()
             )
         except Exception as e:
-            bot.reply_to(message, f"❌ Database dosha: {e}", reply_markup=get_admin_dashboard_keyboard())
+            bot.reply_to(message, f"❌ ডাটাবেজ ত্রুটি: {e}", reply_markup=get_admin_dashboard_keyboard())
         return
 
     if message.document:
@@ -950,15 +950,15 @@ def collect_edit_files(message):
         count = len(edit_sessions[user_id]['file_ids'])
         bot.reply_to(
             message,
-            f"📥 File ({count}) sweekarisalagide!\n\nInnu file-galu iddare kalsi, athava mugididdare kelagina **✅ Upload sampurna** button otti."
+            f"📥 ফাইল ({count}) গ্রহণ করা হয়েছে!\n\nআরও ফাইল থাকলে পাঠান, অথবা শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটন চাপুন।"
         )
         bot.register_next_step_handler(message, collect_edit_files)
     else:
-        bot.reply_to(message, "⚠️ Dayavittu file-annu document roopadalli kalsi athava mugididdare kelagina **✅ Upload sampurna** button otti:")
+        bot.reply_to(message, "⚠️ অনুগ্রহ করে ফাইলটি ডকুমেন্ট হিসেবে পাঠান অথবা শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটন চাপুন:")
         bot.register_next_step_handler(message, collect_edit_files)
 
 def save_updated_field(message):
-    if message.text and (message.text.startswith('/') or message.text == "❌ Cancel karun"):
+    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
         return
 
@@ -975,13 +975,13 @@ def save_updated_field(message):
         try:
             new_val = int(message.text.strip())
         except (ValueError, AttributeError):
-            bot.reply_to(message, "⚠️ Coin sankhye roopadalli irabekku. Matte bareda kalsi:")
+            bot.reply_to(message, "⚠️ কয়েনের পরিমাণ সংখ্যায় হতে হবে। আবার লিখে পাঠান:")
             bot.register_next_step_handler(message, save_updated_field)
             return
 
     elif field == "name":
         if not message.text:
-            bot.reply_to(message, "⚠️ Text roopadalli hesaru kalsi:")
+            bot.reply_to(message, "⚠️ টেক্সট আকারে নাম পাঠান:")
             bot.register_next_step_handler(message, save_updated_field)
             return
         new_val = message.text.strip()
@@ -994,7 +994,7 @@ def save_updated_field(message):
         elif message.text and message.text.strip().startswith("http"):
             new_val = message.text.strip()
         else:
-            bot.reply_to(message, "⚠️ Dayavittu photo athava sariya ada direct link (https://...) kalsi:")
+            bot.reply_to(message, "⚠️ অনুগ্রহ করে ছবি অথবা সঠিক সরাসরি লিংক (https://...) পাঠান:")
             bot.register_next_step_handler(message, save_updated_field)
             return
 
@@ -1006,13 +1006,13 @@ def save_updated_field(message):
         elif message.text and message.text.strip().startswith("http"):
             new_val = message.text.strip()
         else:
-            bot.reply_to(message, "⚠️ Dayavittu video file, youtube link athava sariya ada direct link (https://...) kalsi:")
+            bot.reply_to(message, "⚠️ অনুগ্রহ করে ভিডিও ফাইল, ইউটিউব লিংক অথবা সঠিক সরাসরি লিংক (https://...) পাঠান:")
             bot.register_next_step_handler(message, save_updated_field)
             return
 
     elif field == "download_link":
         if not message.text or not message.text.strip().startswith("http"):
-            bot.reply_to(message, "⚠️ Sariya ada link kalsi (udaharanage: https://...):")
+            bot.reply_to(message, "⚠️ সঠিক লিংক পাঠান (যেমন: https://...):")
             bot.register_next_step_handler(message, save_updated_field)
             return
         new_val = message.text.strip()
@@ -1028,12 +1028,12 @@ def save_updated_field(message):
             del edit_sessions[user_id]
             bot.reply_to(
                 message,
-                f"🎉 **Successagi update agide!**\n\nFile-ina **{field}** successagi badalavane madalagide.",
+                f"🎉 **সফলভাবে আপডেট হয়েছে!**\n\nফাইলের **{field}** সফলভাবে পরিবর্তন করা হয়েছে।",
                 parse_mode="Markdown",
                 reply_markup=get_admin_dashboard_keyboard()
             )
         except Exception as e:
-            bot.reply_to(message, f"❌ Database dosha: {e}")
+            bot.reply_to(message, f"❌ ডাটাবেজ ত্রুটি: {e}")
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('do_del:'))
 def delete_item(call):
@@ -1042,10 +1042,10 @@ def delete_item(call):
     res_key = call.data.split(":")[1]
     try:
         requests.delete(f"{FIREBASE_BASE}/resources/{res_key}.json")
-        bot.answer_callback_query(call.id, "Resource-annu kaledu hakalagide!", show_alert=True)
+        bot.answer_callback_query(call.id, "রিসোর্সটি ডিলিট করা হয়েছে!", show_alert=True)
         bot.delete_message(call.message.chat.id, call.message.message_id)
     except Exception as e:
-        bot.answer_callback_query(call.id, f"Dosha: {e}", show_alert=True)
+        bot.answer_callback_query(call.id, f"ত্রুটি: {e}", show_alert=True)
 
 @bot.callback_query_handler(func=lambda call: call.data == "close_edit")
 def close_edit_box(call):
@@ -1057,11 +1057,11 @@ def start_add_flow(message):
 
     markup = InlineKeyboardMarkup(row_width=3)
     markup.add(
-        InlineKeyboardButton("🎨 PLP project", callback_data="addcat:plp"),
-        InlineKeyboardButton("🔤 Font file", callback_data="addcat:font"),
-        InlineKeyboardButton("⚡ XML file", callback_data="addcat:xml")
+        InlineKeyboardButton("🎨 PLP প্রজেক্ট", callback_data="addcat:plp"),
+        InlineKeyboardButton("🔤 ফন্ট ফাইল", callback_data="addcat:font"),
+        InlineKeyboardButton("⚡ XML ফাইল", callback_data="addcat:xml")
     )
-    bot.send_message(message.chat.id, "📦 **Yava category-ina resource jukta madalu icchisuteera?**", parse_mode="Markdown", reply_markup=markup)
+    bot.send_message(message.chat.id, "📦 **কোন ক্যাটাগরির রিসোর্স যুক্ত করতে চান?**", parse_mode="Markdown", reply_markup=markup)
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('addcat:'))
 def handle_add_category(call):
@@ -1071,19 +1071,19 @@ def handle_add_category(call):
     admin_temp_data[call.from_user.id] = {'type': cat, 'file_ids': []}
     bot.delete_message(call.message.chat.id, call.message.message_id)
 
-    msg = bot.send_message(call.message.chat.id, f"✅ Category: *{cat.upper()}*\n\nIga resource-ina hesaru bareda kalsi:", parse_mode="Markdown")
+    msg = bot.send_message(call.message.chat.id, f"✅ ক্যাটাগরি: *{cat.upper()}*\n\nএখন রিসোর্সের নাম লিখে পাঠান:", parse_mode="Markdown")
     bot.register_next_step_handler(msg, get_name)
 
 def get_name(message):
-    if message.text and (message.text.startswith('/') or message.text == "❌ Cancel karun"):
+    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
         return
     admin_temp_data[message.from_user.id]['name'] = message.text.strip()
-    bot.reply_to(message, "🪙 Ee resource unlock madalu user-ige eshtu coin bekagutte? (udaharanage: 15):")
+    bot.reply_to(message, "🪙 এই রিসোর্স আনলক করতে ইউজারের কত কয়েন লাগবে? (উদাহরণ: 15):")
     bot.register_next_step_handler(message, get_coins)
 
 def get_coins(message):
-    if message.text and (message.text.startswith('/') or message.text == "❌ Cancel karun"):
+    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
         return
     try:
@@ -1091,17 +1091,17 @@ def get_coins(message):
         cat = admin_temp_data[message.from_user.id]['type']
 
         if cat == 'xml':
-            bot.reply_to(message, "🎬 **XML preview video kalsi (Video file athava youtube/direct link kodi):**")
+            bot.reply_to(message, "🎬 **XML প্রিভিউ ভিডিও পাঠান (ভিডিও ফাইল অথবা ইউটিউব/সরাসরি লিংক দিন):**")
             bot.register_next_step_handler(message, get_xml_video)
         else:
-            bot.reply_to(message, "🖼️ **Thumbnail image kalsi (athava drive-ina direct link kodi):**")
+            bot.reply_to(message, "🖼️ **থাম্বনেইল ইমেজ পাঠান (অথवा ড্রাইভের সরাসরি লিংক দিন):**")
             bot.register_next_step_handler(message, get_image)
     except ValueError:
-        bot.reply_to(message, "Coin sankhye roopadalli kodi (udaharanage: 15). Matte bareda kalsi:")
+        bot.reply_to(message, "কয়েনের পরিমাণ সংখ্যায় দিন (যেমন: 15)। আবার লিখে পাঠান:")
         bot.register_next_step_handler(message, get_coins)
 
 def get_image(message):
-    if message.text and (message.text.startswith('/') or message.text == "❌ Cancel karun"):
+    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
         return
 
@@ -1113,7 +1113,7 @@ def get_image(message):
     elif message.text and message.text.strip().startswith("http"):
         admin_temp_data[message.from_user.id]['image'] = message.text.strip()
     else:
-        bot.reply_to(message, "⚠️ Dayavittu photo athava sariya ada direct link (https://...) kalsi:")
+        bot.reply_to(message, "⚠️ অনুগ্রহ করে ছবি অথবা সঠিক সরাসরি লিংক (https://...) পাঠান:")
         bot.register_next_step_handler(message, get_image)
         return
 
@@ -1121,9 +1121,9 @@ def get_image(message):
     if cat == 'plp':
         bot.reply_to(
             message,
-            "📂 **PLP file athava link kalsi:**\n\n"
-            "• **Chikk file iddare:** 1 athava halavaru file kalsi mattu ella kalsi mugididdare kelagina **✅ Upload sampurna** button otti.\n"
-            "• **Dodda file iddare:** Direct download link kalsi.",
+            "📂 **PLP ফাইল অথবা লিংক পাঠান:**\n\n"
+            "• **ছোট ফাইল হলে:** ১ বা একাধিক ফাইল পাঠান এবং সব পাঠানো শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটন চাপুন।\n"
+            "• **বড় ফাইল হলে:** সরাসরি ডাউনলোড লিংক পাঠান।",
             reply_markup=get_file_collection_keyboard(),
             parse_mode="Markdown"
         )
@@ -1131,14 +1131,14 @@ def get_image(message):
     else:
         bot.reply_to(
             message,
-            "📁 Mula **font file kalsi:**\n\n(1 athava halavaru font kalsabahudu. Ella file kalsi mugididdare kelagina **✅ Upload sampurna** button otti)",
+            "📁 মূল **ফন্ট ফাইল পাঠান:**\n\n(১ বা একাধিক ফন্ট পাঠাতে পারেন। সব পাঠানো শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটন চাপুন)",
             reply_markup=get_file_collection_keyboard(),
             parse_mode="Markdown"
         )
         bot.register_next_step_handler(message, get_batch_files_or_link)
 
 def get_xml_video(message):
-    if message.text and (message.text.startswith('/') or message.text == "❌ Cancel karun"):
+    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
         return
 
@@ -1150,13 +1150,13 @@ def get_xml_video(message):
     elif message.text and message.text.strip().startswith("http"):
         admin_temp_data[message.from_user.id]['video'] = message.text.strip()
     else:
-        bot.reply_to(message, "⚠️ Dayavittu video file, youtube link athava sariya ada direct link (https://...) kalsi:")
+        bot.reply_to(message, "⚠️ অনুগ্রহ করে ভিডিও ফাইল, ইউটিউব লিংক অথবা সঠিক সরাসরি লিংক (https://...) পাঠান:")
         bot.register_next_step_handler(message, get_xml_video)
         return
 
     bot.reply_to(
         message,
-        "📁 Preview video jukta vagide!\n\nIga **XML file(galu) kalsi** mattu ella kalsi mugididdare kelagina **✅ Upload sampurna** button otti:",
+        "📁 প্রিভিউ ভিডিও যুক্ত হয়েছে!\n\nএখন **XML ফাইল(গুলো) পাঠান** এবং সব পাঠানো শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটন চাপুন:",
         reply_markup=get_file_collection_keyboard(),
         parse_mode="Markdown"
     )
@@ -1167,7 +1167,7 @@ def get_batch_files_or_link(message):
     if user_id not in admin_temp_data:
         return
 
-    if message.text and message.text.strip().lower() in ['/cancel', 'cancel', '❌ Cancel karun']:
+    if message.text and message.text.strip().lower() in ['/cancel', 'cancel', '❌ বাতিল করুন']:
         cancel_process(message)
         return
 
@@ -1177,9 +1177,9 @@ def get_batch_files_or_link(message):
         save_resource_to_firebase(message)
         return
 
-    if message.text and message.text.strip() in ['/done', 'done', '✅ Upload sampurna']:
+    if message.text and message.text.strip() in ['/done', 'done', '✅ আপলোড সম্পন্ন']:
         if not admin_temp_data[user_id].get('file_ids'):
-            bot.reply_to(message, "⚠️ Neevu innu yavude file kalsilla! Munde file upload madi:")
+            bot.reply_to(message, "⚠️ আপনি এখনো কোনো ফাইল পাঠাননি! ফাইল আপলোড করুন:")
             bot.register_next_step_handler(message, get_batch_files_or_link)
             return
         save_resource_to_firebase(message)
@@ -1190,11 +1190,11 @@ def get_batch_files_or_link(message):
         count = len(admin_temp_data[user_id]['file_ids'])
         bot.reply_to(
             message,
-            f"📥 File ({count}) sweekarisalagide!\n\nInnu file iddare kalsi, athava mugididdare kelagina **✅ Upload sampurna** button otti."
+            f"📥 ফাইল ({count}) গ্রহণ করা হয়েছে!\n\nআরও ফাইল থাকলে পাঠান, অথবা শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটন চাপুন।"
         )
         bot.register_next_step_handler(message, get_batch_files_or_link)
     else:
-        bot.reply_to(message, "⚠️ Dayavittu document file kalsi, link kalsi athava mugididdare kelagina **✅ Upload sampurna** button otti:")
+        bot.reply_to(message, "⚠️ অনুগ্রহ করে ডকুমেন্ট ফাইল পাঠান, লিংক দিন অথবা শেষ হলে নিচের **✅ আপলোড সম্পন্ন** বাটন চাপুন:")
         bot.register_next_step_handler(message, get_batch_files_or_link)
 
 def save_resource_to_firebase(message):
@@ -1214,27 +1214,27 @@ def save_resource_to_firebase(message):
     if res.status_code == 200:
         res_key = res.json().get("name")
         total_files = len(resource.get('file_ids', []))
-        file_info_msg = f"📦 Mot file: {total_files}ti" if total_files > 0 else "🔗 Link jukta vagide"
+        file_info_msg = f"📦 মোট ফাইল: {total_files}টি" if total_files > 0 else "🔗 লিংক যুক্ত হয়েছে"
 
         markup = InlineKeyboardMarkup(row_width=2)
         markup.add(
-            InlineKeyboardButton("✅ Houdu, channel-alli post madi", callback_data=f"ch_post:yes:{res_key}"),
-            InlineKeyboardButton("❌ Illa, agatyavilla", callback_data=f"ch_post:no:{res_key}")
+            InlineKeyboardButton("✅ হ্যাঁ, চ্যানেলে পোস্ট করুন", callback_data=f"ch_post:yes:{res_key}"),
+            InlineKeyboardButton("❌ না, প্রয়োজন নেই", callback_data=f"ch_post:no:{res_key}")
         )
 
         bot.reply_to(
             message,
-            f"🎉 **Resource successagi mini app-ige jukta vagide!**\n\n"
-            f"📌 Hesaru: {resource['name']}\n"
-            f"📁 Category: {resource['type'].upper()}\n"
-            f"🪙 Bele: {resource['coins']} coin\n"
+            f"🎉 **রিসোর্স সফলভাবে মিনি অ্যাপে যুক্ত হয়েছে!**\n\n"
+            f"📌 নাম: {resource['name']}\n"
+            f"📁 ক্যাটাগরি: {resource['type'].upper()}\n"
+            f"🪙 মূল্য: {resource['coins']} কয়েন\n"
             f"{file_info_msg}\n\n"
-            f"📢 **Neevu ee resource-annu telegram channel-alli post madalu icchisuteera?**",
+            f"📢 **আপনি কি এই রিসোর্সটি টেলিগ্রাম চ্যানেলে পোস্ট করতে চান?**",
             parse_mode="Markdown",
             reply_markup=markup
         )
     else:
-        bot.reply_to(message, "❌ Firebase-alli mahiti sanrakshane madalu agilla.", reply_markup=get_admin_dashboard_keyboard())
+        bot.reply_to(message, "❌ ফায়ারবেজে তথ্য সংরক্ষণ করা যায়নি।", reply_markup=get_admin_dashboard_keyboard())
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('ch_post:'))
 def handle_channel_post_decision(call):
@@ -1250,7 +1250,7 @@ def handle_channel_post_decision(call):
     if decision == "no":
         bot.send_message(
             call.message.chat.id,
-            "✅ Resource-annu keval mini app-alli save madalagide (Channel-alli yavude post madalagilla).",
+            "✅ রিসোর্সটি কেবল মিনি অ্যাপে সেভ করা হয়েছে (চ্যানেলে কোনো পোস্ট করা হয়নি)।",
             reply_markup=get_admin_dashboard_keyboard()
         )
         return
@@ -1262,15 +1262,15 @@ def handle_channel_post_decision(call):
         if resource:
             res_type_upper = resource['type'].upper()
             channel_caption = (
-                f"🔥 *Hosa premium {res_type_upper} jukta vagide!*\n\n"
-                f"📌 *Hesaru:* {resource['name']}\n"
-                f"📁 *Category:* {res_type_upper}\n"
-                f"🪙 *Bele:* {resource['coins']} coin\n\n"
-                f"🚀 Free-yagi sangraha madalu kelagina button otti bot-ige pravesha madi:"
+                f"🔥 *নতুন প্রিমিয়াম {res_type_upper} যুক্ত হয়েছে!*\n\n"
+                f"📌 *নাম:* {resource['name']}\n"
+                f"📁 *ক্যাটাগরি:* {res_type_upper}\n"
+                f"🪙 *মূল্য:* {resource['coins']} কয়েন\n\n"
+                f"🚀 ফ্রিতে সংগ্রহ করতে নিচের বাটন চাপুন এবং বটে প্রবেশ করুন:"
             )
 
             markup = InlineKeyboardMarkup()
-            markup.add(InlineKeyboardButton("📥 Download madi", url=f"https://t.me/{BOT_USERNAME}?start=ref_{ADMIN_ID}"))
+            markup.add(InlineKeyboardButton("📥 ডাউনলোড করুন", url=f"https://t.me/{BOT_USERNAME}?start=ref_{ADMIN_ID}"))
 
             if resource.get('video_file_id'):
                 bot.send_video(CHANNEL_ID, resource['video_file_id'], caption=channel_caption, parse_mode="Markdown", reply_markup=markup)
@@ -1285,30 +1285,30 @@ def handle_channel_post_decision(call):
 
             bot.send_message(
                 call.message.chat.id,
-                "🎉 **Successagi telegram channel-alli post madalagide!**",
+                "🎉 **সফলভাবে টেলিগ্রাম চ্যানেলে পোস্ট করা হয়েছে!**",
                 reply_markup=get_admin_dashboard_keyboard()
             )
         else:
-            bot.send_message(call.message.chat.id, "❌ Resource data sikkilla.", reply_markup=get_admin_dashboard_keyboard())
+            bot.send_message(call.message.chat.id, "❌ রিসোর্স ডেটা পাওয়া যায়নি।", reply_markup=get_admin_dashboard_keyboard())
     except Exception as e:
-        bot.send_message(call.message.chat.id, f"❌ Channel-alli post madalu samasye agide: {e}", reply_markup=get_admin_dashboard_keyboard())
+        bot.send_message(call.message.chat.id, f"❌ চ্যানেলে পোস্ট করতে সমস্যা হয়েছে: {e}", reply_markup=get_admin_dashboard_keyboard())
 
 def start_ad_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     admin_temp_data[message.from_user.id] = {}
-    bot.reply_to(message, "📢 Advertisement shirshike athava text bareda kalsi:\n(Cancel madalu '❌ Cancel karun' odi)", reply_markup=get_admin_dashboard_keyboard())
+    bot.reply_to(message, "📢 অ্যাডভারটাইজমেন্ট শিরোনাম বা টেক্সট লিখে পাঠান:\n(বাতিল করতে '❌ বাতিল করুন' চাপুন)", reply_markup=get_admin_dashboard_keyboard())
     bot.register_next_step_handler(message, get_ad_text)
 
 def get_ad_text(message):
-    if message.text and (message.text.startswith('/') or message.text == "❌ Cancel karun"):
+    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
         return
     admin_temp_data[message.from_user.id]['text'] = message.text.strip()
-    bot.reply_to(message, "🔗 Advertisement click link kalsi (udaharanage: https://...):")
+    bot.reply_to(message, "🔗 অ্যাডভারটাইজমেন্ট ক্লিক লিংক পাঠান (যেমন: https://...):")
     bot.register_next_step_handler(message, get_ad_link)
 
 def get_ad_link(message):
-    if message.text and (message.text.startswith('/') or message.text == "❌ Cancel karun"):
+    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
         cancel_process(message)
         return
     link = message.text.strip()
@@ -1317,7 +1317,7 @@ def get_ad_link(message):
         "link": link
     }
     requests.put(f"{FIREBASE_BASE}/active_ad.json", json=ad_data)
-    bot.reply_to(message, "✅ Advertisement successagi mini app-alli set agide!", reply_markup=get_admin_dashboard_keyboard())
+    bot.reply_to(message, "✅ অ্যাডভারটাইজমেন্ট সফলভাবে মিনি অ্যাপে সেট হয়েছে!", reply_markup=get_admin_dashboard_keyboard())
 
 @bot.message_handler(func=lambda message: message.reply_to_message is not None and int(message.from_user.id) == int(ADMIN_ID))
 def reply_to_user_from_admin(message):
@@ -1325,39 +1325,25 @@ def reply_to_user_from_admin(message):
         reply_header = message.reply_to_message.text or message.reply_to_message.caption
         if reply_header and "User ID:" in reply_header:
             target_id = int(reply_header.split("User ID:")[1].split()[0])
-            bot.send_message(target_id, f"💬 *Support team reply:*\n\n{message.text}", parse_mode="Markdown")
-            bot.reply_to(message, "✅ User-ina hatra uttara talupide!")
+            bot.send_message(target_id, f"💬 *সাপোর্ট টিম উত্তর দিয়েছে:*\n\n{message.text}", parse_mode="Markdown")
+            bot.reply_to(message, "✅ ইউজারের কাছে উত্তর পৌঁছে গেছে!")
     except Exception as e:
-        bot.reply_to(message, f"❌ Uttara kalsalu agilla: {e}")
+        bot.reply_to(message, f"❌ উত্তর পাঠানো যায়নি: {e}")
 
 @bot.message_handler(func=lambda message: message.chat.type == 'private' and int(message.from_user.id) != int(ADMIN_ID) and not (message.text and message.text.startswith('/')))
 def forward_user_message_to_admin(message):
     if is_user_banned(message.from_user.id):
         return
     print(message)
-    user_info = f"👤 *Message preraka:* {message.from_user.first_name}\n🆔 User ID: `{message.from_user.id}`\n\n📝 *Text:* {message.text}"
+    user_info = f"👤 *মেসেজ প্রেরক:* {message.from_user.first_name}\n🆔 User ID: `{message.from_user.id}`\n\n📝 *টেキスト:* {message.text}"
     bot.send_message(ADMIN_ID, user_info, parse_mode="Markdown")
-    bot.reply_to(message, "✅ Nimma message support team-ige talupide.")
+    bot.reply_to(message, "✅ আপনার মেসেজ সাপোর্ট টিমের কাছে পৌঁছে গেছে।")
 
 def run_server():
     port = int(os.environ.get("PORT", 10000))
-    # NOTE: single-threaded, single-process Flask dev server.
-    # Do NOT put this app behind gunicorn with more than 1 worker,
-    # and do NOT run more than one Render instance/replica of this
-    # service — multiple live processes hitting the same bot token
-    # is the #1 real-world cause of "Conflict: terminated by other
-    # getUpdates request", even in webhook mode, because Telegram
-    # will also reject overlapping setWebhook/getUpdates calls from
-    # more than one process using the same token at the same time.
     app.run(host='0.0.0.0', port=port, threaded=True)
 
 def setup_webhook():
-    """
-    Cleanly tear down any previous webhook/polling state, then set the
-    webhook for this instance. Retries a few times because right after
-    a Render redeploy the old instance may still briefly hold the
-    connection to Telegram's servers.
-    """
     if not RENDER_EXTERNAL_URL:
         print("RENDER_EXTERNAL_URL not found. Webhook not set.")
         return
@@ -1366,9 +1352,6 @@ def setup_webhook():
 
     for attempt in range(1, 6):
         try:
-            # drop_pending_updates=True clears any backlog left over
-            # from a previous polling/webhook session, which is what
-            # actually triggers the "Conflict" error on the next call.
             bot.remove_webhook(drop_pending_updates=True)
             time.sleep(2)
             bot.set_webhook(url=webhook_url, drop_pending_updates=True)
@@ -1381,9 +1364,6 @@ def setup_webhook():
     print("Could not set webhook after 5 attempts.")
 
 if __name__ == "__main__":
-    # No polling anywhere in this file — bot.polling() /
-    # bot.infinity_polling() are intentionally never called.
-    # Everything runs through the Flask webhook route above.
     setup_webhook()
 
     server_thread = Thread(target=run_server)
