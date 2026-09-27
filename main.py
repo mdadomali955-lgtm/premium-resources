@@ -1349,6 +1349,8 @@ def reply_to_user_from_admin(message):
 def forward_user_message_to_admin(message):
     if is_user_banned(message.from_user.id):
         return
+    # আপনি যদি মেসেজ অবজেক্ট বা ফাইল আইডি লগ দেখতে চান, নিচের লাইনে প্রিন্ট স্টেটমেন্ট কাজ করবে
+    print(message)
     user_info = f"👤 *মেসেজ প্রেরক:* {message.from_user.first_name}\n🆔 User ID: `{message.from_user.id}`\n\n📝 *টেক্সট:* {message.text}"
     bot.send_message(ADMIN_ID, user_info, parse_mode="Markdown")
     bot.reply_to(message, "✅ আপনার মেসেজটি সাপোর্ট টিমে পৌঁছেছে।")
@@ -1368,4 +1370,4 @@ if __name__ == "__main__":
         timeout=60,
         long_polling_timeout=60,
         allowed_updates=['message', 'callback_query', 'my_chat_member', 'chat_member']
-    )
+            )
