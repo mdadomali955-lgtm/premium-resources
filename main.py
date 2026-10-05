@@ -105,7 +105,6 @@ def compress_image_data(image_input):
 
         img = Image.open(io.BytesIO(img_bytes))
         img = img.convert("RGB")
-        
         img.thumbnail((200, 200), Image.Resampling.LANCZOS)
         
         output = io.BytesIO()
@@ -227,24 +226,27 @@ def handle_earn_type(call):
     uid = call.from_user.id
     cat = call.data.split(":")[1]
     user_earn_sessions[uid] = {'type': cat, 'file_ids': []}
-    bot.delete_message(call.message.chat.id, call.message.message_id)
+    try:
+        bot.delete_message(call.message.chat.id, call.message.message_id)
+    except Exception:
+        pass
 
     msg = bot.send_message(call.message.chat.id, f"✅ ক্যাটাগরি: *{cat.upper()}*\n\nএখন এই ফাইলের একটি সুন্দর নাম লিখে পাঠান:", parse_mode="Markdown")
     bot.register_next_step_handler(msg, get_user_earn_name)
 
 def get_user_earn_name(message):
-    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
+    if message.text and (message.text.startswith('/') or 'বাতিল' in message.text):
         cancel_process(message)
         return
     uid = message.from_user.id
     if uid not in user_earn_sessions:
         return
     user_earn_sessions[uid]['name'] = message.text.strip()
-    msg = bot.reply_to(message, "🖼️️ **ফাইলের প্রিভিউ থাম্বনেইল ছবি পাঠান (ছবি পাঠানোর সাথে সাথে এটি অটো কম্প্রেস হয়ে যাবে):**")
+    msg = bot.reply_to(message, "🖼️ **ফাইলের প্রিভিউ থাম্বনেইল ছবি পাঠান (ছবি পাঠানোর সাথে সাথে এটি অটো কম্প্রেস হয়ে যাবে):**")
     bot.register_next_step_handler(msg, get_user_earn_image)
 
 def get_user_earn_image(message):
-    if message.text and (message.text.startswith('/') or message.text == "❌ বাতিল করুন"):
+    if message.text and (message.text.startswith('/') or 'বাতিল' in message.text):
         cancel_process(message)
         return
     uid = message.from_user.id
@@ -263,7 +265,7 @@ def get_user_earn_image(message):
     elif message.text and message.text.strip().startswith("http"):
         user_earn_sessions[uid]['image'] = compress_image_data(message.text.strip())
     else:
-        bot.reply_to(message, "⚠️️ অনুগ্রহ করে ছবি পাঠান:")
+        bot.reply_to(message, "⚠️ অনুগ্রহ করে ছবি পাঠান:")
         bot.register_next_step_handler(message, get_user_earn_image)
         return
 
@@ -280,14 +282,14 @@ def collect_user_earn_files(message):
     if uid not in user_earn_sessions:
         return
 
-    if message.text and message.text.strip().lower() in ['/cancel', 'cancel', '❌ বাতিল করুন']:
+    if message.text and (message.text.startswith('/') or 'বাতিল' in message.text):
         cancel_process(message)
         return
 
-    if message.text and message.text.strip() in ['/done', 'done', '✅ আপলোড সম্পন্ন']:
+    if message.text and ('আপলোড সম্পন্ন' in message.text or 'done' in message.text.lower()):
         session = user_earn_sessions.pop(uid, None)
         if not session or not session.get('file_ids'):
-            bot.reply_to(message, "⚠️ আপনি কোনো ফাইল আপলোড করেননি! প্রসেস বাতিল করা হলো।", reply_markup=get_main_keyboard())
+            bot.reply_to(message, "⚠️ আপনি কোনো ফাইল আপলোড করেননি!", reply_markup=get_main_keyboard())
             return
 
         submit_to_admin_review(message, session, uid)
@@ -360,7 +362,10 @@ def handle_admin_review_action(call):
 
         if action == "reject":
             requests.delete(f"{FIREBASE_BASE}/pending_submissions/{sub_key}.json")
-            bot.delete_message(call.message.chat.id, call.message.message_id)
+            try:
+                bot.delete_message(call.message.chat.id, call.message.message_id)
+            except Exception:
+                pass
             bot.send_message(target_id, f"❌ দুঃখিত! আপনার সাবমিট করা ফাইল '{sub_data['name']}' অ্যাডমিন কর্তৃক রিজেক্ট করা হয়েছে।")
             bot.answer_callback_query(call.id, "সফলভাবে রিজেক্ট করা হয়েছে।", show_alert=False)
             return
@@ -384,7 +389,10 @@ def handle_admin_review_action(call):
 
         requests.delete(f"{FIREBASE_BASE}/pending_submissions/{sub_key}.json")
 
-        bot.delete_message(call.message.chat.id, call.message.message_id)
+        try:
+            bot.delete_message(call.message.chat.id, call.message.message_id)
+        except Exception:
+            pass
         bot.send_message(
             target_uid,
             f"🎉 **অভিনন্দন! আপনার ফাইল এপ্রুভ হয়েছে।**\n\n"
@@ -393,7 +401,7 @@ def handle_admin_review_action(call):
             f"বর্তমান ব্যালেন্স: *{new_c} 🪙*",
             parse_mode="Markdown"
         )
-        bot.answer_callback_query(call.id, f"સফল! ইউজারকে {reward_coins} কয়েন দেওয়া হয়েছে।", show_alert=True)
+        bot.answer_callback_query(call.id, f"সফল! ইউজারকে {reward_coins} কয়েন দেওয়া হয়েছে।", show_alert=True)
 
     except Exception as e:
         bot.answer_callback_query(call.id, f"ত্রুটি: {e}", show_alert=True)
@@ -456,7 +464,10 @@ def handle_help_menu(call):
             "• **XML ফাইল:** Sketchware বা প্রজেক্টে ইম্পোর্ট করে ব্যবহার করা যায়।"
         )
     elif data == "help_back":
-        bot.delete_message(call.message.chat.id, call.message.message_id)
+        try:
+            bot.delete_message(call.message.chat.id, call.message.message_id)
+        except Exception:
+            pass
         bot.send_message(call.message.chat.id, "👋 মূল মেনুতে স্বাগতম:", reply_markup=get_main_keyboard())
         return
 
@@ -529,7 +540,7 @@ def process_resource_delivery(chat_id, arg_text, user_obj=None):
                 bot.send_message(chat_id, "✅ আপনার সমস্ত ফাইল সফলভাবে ইনবক্সে ডেলিভারি করা হয়েছে!", reply_markup=get_main_keyboard())
                 return
         else:
-            bot.send_message(chat_id, "❌ ফাইলটি ডাটাবেজে পাওয়া যায়নি।", reply_markup=get_main_keyboard())
+            bot.send_message(chat_id, "❌ ফাইলটি ডাটাবেজে পাওয়া যায়নি.", reply_markup=get_main_keyboard())
     except Exception as e:
         bot.send_message(chat_id, f"❌ রিসোর্স ডেলিভারিতে সমস্যা দেখা দিচ্ছে: {e}", reply_markup=get_main_keyboard())
 
@@ -604,7 +615,7 @@ def start_cmd(message):
         reply_markup=get_main_keyboard()
     )
 
-# --- Safe Admin Reply/Text Handler (Fixed Button Clicks) ---
+# --- Universal Safe Admin Reply/Text Handler (Fixed All Button Clicks) ---
 @bot.message_handler(func=lambda message: int(message.from_user.id) == int(ADMIN_ID) and message.text and not message.reply_to_message)
 def handle_all_admin_text(message):
     text = message.text.strip().lower()
@@ -1032,7 +1043,7 @@ def get_image(message):
     elif message.text and message.text.strip().startswith("http"):
         admin_temp_data[message.from_user.id]['image'] = compress_image_data(message.text.strip())
     else:
-        bot.reply_to(message, "⚠️️ অনুগ্রহ করে ছবি পাঠান:")
+        bot.reply_to(message, "⚠️ অনুগ্রহ করে ছবি পাঠান:")
         bot.register_next_step_handler(message, get_image)
         return
 
