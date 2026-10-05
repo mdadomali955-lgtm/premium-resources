@@ -508,7 +508,7 @@ def get_image_first(message):
     elif message.text and message.text.strip().startswith("http"):
         admin_temp_data[message.from_user.id]['image'] = compress_image_data(message.text.strip())
     else:
-        bot.reply_to(message, "⚠️️ অনুগ্রহ করে ছবি অথবা সঠিক সরাসরি লিংক পাঠান:")
+        bot.reply_to(message, "⚠️ অনুগ্রহ করে ছবি অথবা সঠিক সরাসরি লিংক পাঠান:")
         bot.register_next_step_handler(message, get_image_first)
         return
 
@@ -530,7 +530,7 @@ def get_xml_video(message):
         bot.register_next_step_handler(message, get_xml_video)
         return
 
-    msg = bot.reply_to(message, "📁 ভিডিও যুক্ত হয়েছে! এখন **XML ফাইল পাঠান** (শেষ হলে 'done' লিখুন):", parse_Mode="Markdown")
+    msg = bot.reply_to(message, "📁 ভিডিও যুক্ত হয়েছে! এখন **XML ফাইল পাঠান** (শেষ হলে 'done' লিখুন):", parse_mode="Markdown")
     bot.register_next_step_handler(msg, get_batch_files_or_link)
 
 def get_batch_files_or_link(message):
@@ -554,7 +554,7 @@ def get_batch_files_or_link(message):
     if message.document:
         admin_temp_data[user_id]['file_ids'].append(message.document.file_id)
         count = len(admin_temp_data[user_id]['file_ids'])
-        bot.reply_to(message, f"📥 ফাইল ({count}) যুক্ত হয়েছে! আরও থাকলে পাঠান অথবা শেষ হলে 'done' লিখুন.")
+        bot.reply_to(message, f"📥 ফাইল ({count}) যুক্ত হয়েছে! আরও থাকলে পাঠান অথবা শেষ হলে 'done' লিখুন।")
         bot.register_next_step_handler(message, get_batch_files_or_link)
     else:
         bot.reply_to(message, "⚠️ ডকুমেন্ট ফাইল পাঠান অথবা কাজ শেষ হলে 'done' লিখুন:")
@@ -921,4 +921,4 @@ if __name__ == "__main__":
 
     print("Starting Telegram Bot Polling...")
     bot.remove_webhook()
-    bot.infinity_polling(skip_pending_updates=True)
+    bot.infinity_polling()
