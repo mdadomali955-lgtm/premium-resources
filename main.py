@@ -10,6 +10,8 @@ from telebot.types import (
     InlineKeyboardButton,
     WebAppInfo
 )
+from flask import Flask, request, jsonify
+from threading import Thread
 
 # --- Bot Configuration ---
 BOT_TOKEN = "8815920877:AAFGwxjKGoo9HhcsVOcbBhi9JMqXT-LLMsY"
@@ -30,6 +32,31 @@ ban_sessions = {}
 promo_sessions = {}
 user_inspect_sessions = {}
 user_earn_sessions = {}
+
+# --- Flask Server to keep Render Web Service Happy ---
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Bot is running perfectly with Polling & Flask!", 200
+
+@app.route('/health')
+def health():
+    return "OK", 200
+
+@app.route('/verify-channel/<int:user_id>', methods=['GET'])
+def verify_channel_member(user_id):
+    try:
+        member = bot.get_chat_member(chat_id=CHANNEL_ID, user_id=user_id)
+        if member.status in ['member', 'administrator', 'creator']:
+            res = jsonify({"joined": True})
+        else:
+            res = jsonify({"joined": False})
+    except Exception as e:
+        res = jsonify({"joined": False, "error": str(e)})
+
+    res.headers.add("Access-Control-Allow-Origin", "*")
+    return res, 200
 
 def is_user_banned(user_id):
     try:
@@ -416,7 +443,7 @@ def handle_accidental_reply_clicks(message):
     elif 'ইউজার চেক' in text:
         start_user_inspect_flow(message)
 
-# --- Admin Flow Functions (PLP/Font Image First, XML Video First) ---
+# --- Admin Flow Functions ---
 def start_add_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     admin_temp_data[message.from_user.id] = {'file_ids': []}
@@ -465,7 +492,6 @@ def get_coins(message):
         bot.reply_to(message, "⚠️ কয়েনের পরিমাণ সংখ্যায় দিন:")
         bot.register_next_step_handler(message, get_coins)
 
-# PLP / Font-এর ক্ষেত্রে আগে ইমেজ বা লিংক নেওয়া
 def get_image_first(message):
     if message.text and message.text.startswith('/'):
         return
@@ -482,14 +508,13 @@ def get_image_first(message):
     elif message.text and message.text.strip().startswith("http"):
         admin_temp_data[message.from_user.id]['image'] = compress_image_data(message.text.strip())
     else:
-        bot.reply_to(message, "⚠️ অনুগ্রহ করে ছবি অথবা সঠিক সরাসরি লিংক পাঠান:")
+        bot.reply_to(message, "⚠️️ অনুগ্রহ করে ছবি অথবা সঠিক সরাসরি লিংক পাঠান:")
         bot.register_next_step_handler(message, get_image_first)
         return
 
     msg = bot.reply_to(message, "📂 **এখন মূল ফন্ট বা PLP ফাইল (ডকুমেন্ট হিসেবে) পাঠান (শেষ হলে 'done' লিখুন):**", parse_mode="Markdown")
     bot.register_next_step_handler(msg, get_batch_files_or_link)
 
-# XML-এর ক্ষেত্রে আগে ভিডিও লিংক নেওয়া
 def get_xml_video(message):
     if message.text and message.text.startswith('/'):
         return
@@ -505,7 +530,7 @@ def get_xml_video(message):
         bot.register_next_step_handler(message, get_xml_video)
         return
 
-    msg = bot.reply_to(message, "📁 ভিডিও যুক্ত হয়েছে! এখন **XML ফাইল পাঠান** (শেষ হলে 'done' লিখুন):", parse_mode="Markdown")
+    msg = bot.reply_to(message, "📁 ভিডিও যুক্ত হয়েছে! এখন **XML ফাইল পাঠান** (শেষ হলে 'done' লিখুন):", parse_Mode="Markdown")
     bot.register_next_step_handler(msg, get_batch_files_or_link)
 
 def get_batch_files_or_link(message):
@@ -529,7 +554,7 @@ def get_batch_files_or_link(message):
     if message.document:
         admin_temp_data[user_id]['file_ids'].append(message.document.file_id)
         count = len(admin_temp_data[user_id]['file_ids'])
-        bot.reply_to(message, f"📥 ফাইল ({count}) যুক্ত হয়েছে! আরও থাকলে পাঠান অথবা শেষ হলে 'done' লিখুন।")
+        bot.reply_to(message, f"📥 ফাইল ({count}) যুক্ত হয়েছে! আরও থাকলে পাঠান অথবা শেষ হলে 'done' লিখুন.")
         bot.register_next_step_handler(message, get_batch_files_or_link)
     else:
         bot.reply_to(message, "⚠️ ডকুমেন্ট ফাইল পাঠান অথবা কাজ শেষ হলে 'done' লিখুন:")
@@ -811,7 +836,7 @@ def process_inspect(message):
     info = f"👤 নাম: {u.get('name')}\n🪙 কয়েন: {u.get('coins')}\n👥 রেফার: {u.get('refers')}"
     bot.reply_to(message, info)
 
-# --- Start Command Handler (Polling Mode with ReplyKeyboardRemove) ---
+# --- Start Command Handler ---
 @bot.message_handler(commands=['start'])
 def start_cmd(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
@@ -883,7 +908,17 @@ def process_resource_delivery(chat_id, arg_text, user_obj=None):
     except Exception as e:
         bot.send_message(chat_id, f"❌ ত্রুটি: {e}")
 
+# --- Background Flask Thread + Polling Loop ---
+def run_flask():
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port, threaded=True)
+
 if __name__ == "__main__":
-    print("Bot is starting with Polling mode...")
+    print("Starting Flask web server thread...")
+    flask_thread = Thread(target=run_flask)
+    flask_thread.daemon = True
+    flask_thread.start()
+
+    print("Starting Telegram Bot Polling...")
     bot.remove_webhook()
     bot.infinity_polling(skip_pending_updates=True)
