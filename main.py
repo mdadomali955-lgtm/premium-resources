@@ -401,7 +401,7 @@ def handle_admin_review_action(call):
             f"বর্তমান ব্যালেন্স: *{new_c} 🪙*",
             parse_mode="Markdown"
         )
-        bot.answer_callback_query(call.id, f"সফল! ইউজারকে {reward_coins} কয়েন দেওয়া হয়েছে।", show_alert=True)
+        bot.answer_callback_query(call.id, f"સফল! ইউজারকে {reward_coins} কয়েন দেওয়া হয়েছে।", show_alert=True)
 
     except Exception as e:
         bot.answer_callback_query(call.id, f"ত্রুটি: {e}", show_alert=True)
@@ -456,7 +456,7 @@ def handle_help_menu(call):
             "• আপনার লিংকের মাধ্যমে কোনো নতুন মেম্বার জয়েন করলে এবং সে মিনি অ্যাপ থেকে কমপক্ষে **১টি রিসোর্স ডাউনলোড করলে** আপনি পাবেন **৫০ কয়েন** বোনাস!"
         )
     elif data == "help_usage":
-        markup.add(InlineKeyboardButton("◀️ পেছনের মেনুতে যান", callback_data="help_menu"))
+        markup.add(InlineKeyboardButton("◀️️ পেছনের মেনুতে যান", callback_data="help_menu"))
         text = (
             "📂 **ফন্ট ও পিএলপি ফাইল ব্যবহারের নিয়ম**\n\n"
             "• **PLP ফাইল:** পিক্সেল ল্যাব (PixelLab) অ্যাপের .plp প্রজেক্ট ফোল্ডারে রেখে ওপেন করতে হয়।\n"
@@ -615,44 +615,44 @@ def start_cmd(message):
         reply_markup=get_main_keyboard()
     )
 
-# --- Universal Safe Admin Reply/Text Handler (Fixed All Button Clicks) ---
+# --- Universal Safe Admin Reply/Text Handler (Fixed All Button Clicks with Exact Emoji Matches) ---
 @bot.message_handler(func=lambda message: int(message.from_user.id) == int(ADMIN_ID) and message.text and not message.reply_to_message)
 def handle_all_admin_text(message):
-    text = message.text.strip().lower()
+    text = message.text.strip()
 
     if any(k in text for k in ['cancel', 'বাতিল', '❌ বাতিল করুন']):
         cancel_process(message)
         return
 
-    if any(k in text for k in ['edit', 'রিসোর্স এডিট']):
+    if any(k in text for k in ['✏️ রিসোর্স এডিট/আপডেট', 'edit']):
         start_edit_flow(message)
         return
 
-    if any(k in text for k in ['add', 'নতুন রিসোর্স যুক্ত']):
+    if any(k in text for k in ['➕ নতুন রিসোর্স যুক্ত করুন', 'add']):
         start_add_flow(message)
         return
 
-    if any(k in text for k in ['coin', 'কয়েন আপডেট']):
+    if any(k in text for k in ['🪙 কয়েন আপডেট/ম্যানেজ', 'coin']):
         start_coin_management_flow(message)
         return
 
-    if any(k in text for k in ['logs', 'ডাউনলোড হিস্ট্রি']):
+    if any(k in text for k in ['📊 ডাউনলোড হিস্ট্রি দেখুন', 'logs']):
         show_download_logs_cmd(message)
         return
 
-    if any(k in text for k in ['broadcast', 'ব্রডকাস্ট']):
+    if any(k in text for k in ['📢 ব্রডকাস্ট মেসেজ', 'broadcast']):
         start_broadcast_flow(message)
         return
 
-    if any(k in text for k in ['ban', 'ইউজার ব্যান']):
+    if any(k in text for k in ['🚫 ইউজার ব্যান/আনব্যান', 'ban']):
         start_ban_flow(message)
         return
 
-    if any(k in text for k in ['promo', 'প্রোমো কোড']):
+    if any(k in text for k in ['🎁 প্রোমো কোড তৈরি', 'promo']):
         start_promo_flow(message)
         return
 
-    if any(k in text for k in ['inspect', 'ইউজার চেক']):
+    if any(k in text for k in ['🔍 ইউজার চেক', 'inspect']):
         start_user_inspect_flow(message)
         return
 
@@ -1098,7 +1098,7 @@ def get_batch_files_or_link(message):
 
     if message.text and ('আপলোড সম্পন্ন' in message.text or 'done' in message.text.lower()):
         if not admin_temp_data[user_id].get('file_ids'):
-            bot.reply_to(message, "⚠️ কোনো ফাইল আপলোড করা হয়নি!")
+            bot.reply_to(message, "⚠️️ কোনো ফাইল আপলোড করা হয়নি!")
             bot.register_next_step_handler(message, get_batch_files_or_link)
             return
         save_resource_to_firebase(message)
@@ -1107,7 +1107,7 @@ def get_batch_files_or_link(message):
     if message.document:
         admin_temp_data[user_id]['file_ids'].append(message.document.file_id)
         count = len(admin_temp_data[user_id]['file_ids'])
-        bot.reply_to(message, f"📥 ফাইল ({count}) যুক্ত হয়েছে! আরও থাকলে পাঠান অথবা **✅ আপলোড সম্পন্ন** চাপুন।")
+        bot.reply_to(message, f"📥 ফাইল ({count}) যুক্ত হয়েছে! আরও থাকলে পাঠান অথবা **✅ আপলোড সম্পন্ন** চাপুন.")
         bot.register_next_step_handler(message, get_batch_files_or_link)
     else:
         bot.reply_to(message, "⚠️ ডকুমেন্ট ফাইল পাঠান অথবা **✅ আপলোড সম্পন্ন** চাপুন:")
