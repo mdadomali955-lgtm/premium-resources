@@ -13,8 +13,8 @@ from telebot.types import (
 from flask import Flask, request, jsonify
 from threading import Thread
 
-# --- Bot Configuration ---
-BOT_TOKEN = "8815920877:AAFGwxjKGoo9HhcsVOcbBhi9JMqXT-LLMsY"
+# --- Bot Configuration (Updated with New Token) ---
+BOT_TOKEN = "8815920877:AAH3GeJEPbOMy2LNugxvQKY2Dnzjly_xFl8"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
 WEB_APP_URL = "https://premium-resources.vercel.app"
@@ -508,7 +508,7 @@ def get_image_first(message):
     elif message.text and message.text.strip().startswith("http"):
         admin_temp_data[message.from_user.id]['image'] = compress_image_data(message.text.strip())
     else:
-        bot.reply_to(message, "⚠️ অনুগ্রহ করে ছবি অথবা সঠিক সরাসরি লিংক পাঠান:")
+        bot.reply_to(message, "⚠️️ অনুগ্রহ করে ছবি অথবা সঠিক সরাসরি লিংক পাঠান:")
         bot.register_next_step_handler(message, get_image_first)
         return
 
@@ -546,7 +546,7 @@ def get_batch_files_or_link(message):
         return
     if message.text and ('done' in message.text.lower() or 'শেষ' in message.text):
         if not admin_temp_data[user_id].get('file_ids'):
-            bot.reply_to(message, "⚠️ কোনো ফাইল আপলোড করা হয়নি!")
+            bot.reply_to(message, "⚠️️ কোনো ফাইল আপলোড করা হয়নি!")
             bot.register_next_step_handler(message, get_batch_files_or_link)
             return
         save_resource_to_firebase(message)
