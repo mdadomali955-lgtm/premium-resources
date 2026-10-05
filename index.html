@@ -253,6 +253,12 @@
     .action-btn:active { transform: scale(0.97); }
     .action-btn:disabled { background: #334155 !important; color: #94a3b8 !important; cursor: not-allowed; }
 
+    .compressor-box {
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      padding: 16px; border-radius: 16px; margin-top: 14px; text-align: left;
+    }
+
     .task-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; margin-bottom: 10px; }
     .unlocked-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; text-align: left; }
     .unlocked-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; font-size: 12px; color: #ffffff; font-weight: 700; }
@@ -462,7 +468,7 @@
       <button class="action-btn" onclick="shareReferralLink()">🚀 রেফার লিংক শেয়ার করুন (+৫০ কয়েন)</button>
     </div>
 
-    <!-- ৫. প্রোফাইল -->
+    <!-- ৫. প্রোফাইল (ইউজার ইমেজ কম্প্রেসর টুলসহ) -->
     <div id="pageProfile" class="view-page">
       <div class="stat-card">
         <div class="user-avatar-wrap" style="width: 72px; height: 72px; margin: 0 auto 10px auto;">
@@ -487,6 +493,15 @@
             <div style="font-size:9.5px; color:var(--text-sub); text-transform: uppercase; font-weight: 800;">অ্যাড ভিউ</div>
           </div>
         </div>
+
+        <!-- ইমেজ কম্প্রেসর টুল -->
+        <div class="compressor-box">
+          <h4 style="font-size: 13px; color: var(--accent); margin-bottom: 6px; font-weight: 800;">⚡ ইমেজ কম্প্রেসর (200x200 HD)</h4>
+          <p style="font-size: 10.5px; color: var(--text-sub); margin-bottom: 8px;">ফটো সিলেক্ট করে লাইটওয়েট এইচডি লিংক বানিয়ে নিন।</p>
+          <input type="file" id="userImageInput" accept="image/*" style="font-size: 11px; color: #fff; margin-bottom: 6px; width: 100%;">
+          <button class="action-btn" onclick="compressUserImage()" style="padding: 8px; font-size: 11.5px;">কম্প্রেস করুন 🔄</button>
+          <div id="userCompressedResult" style="margin-top: 8px; font-size: 10.5px; word-break: break-all; color: #4ade80;"></div>
+        </div>
       </div>
 
       <div class="stat-card">
@@ -499,7 +514,7 @@
       <button class="action-btn" style="background:rgba(255,255,255,0.06); color:#38bdf8; border:1px solid rgba(255,255,255,0.2);" onclick="openSupport()">💬 হেল্পলাইন ও সাপোর্ট গ্রুপ</button>
     </div>
 
-    <!-- ৬. অ্যাডমিন প্যানেল -->
+    <!-- ৬. অ্যাডমিন প্যানেল (বিজ্ঞাপনের বাটন সম্পূর্ণ রিমুভ করা হয়েছে এবং অ্যাডমিন ইমেজ কম্প্রেসর টুল রাখা হয়েছে) -->
     <div id="pageAdmin" class="view-page">
       <div class="stat-card">
         <span style="font-size: 32px;">👑</span>
@@ -514,6 +529,13 @@
             <div style="font-size: 9.5px; color: var(--text-sub); text-transform: uppercase; font-weight: 800;">মোট ব্যয়িত কয়েন</div>
             <div style="font-size: 20px; font-weight: 900; color: var(--gold); margin-top: 3px;" id="adminTotalCoinsSpent">0 🪙</div>
           </div>
+        </div>
+
+        <div class="compressor-box">
+          <h4 style="font-size: 13px; color: var(--accent); margin-bottom: 6px; font-weight: 800;">⚡ অ্যাডমিন ইমেজ কম্প্রেসর (200x200 HD)</h4>
+          <input type="file" id="adminImageInput" accept="image/*" style="font-size: 11px; color: #fff; margin-bottom: 6px; width: 100%;">
+          <button class="action-btn" onclick="compressAdminImage()" style="padding: 8px; font-size: 11.5px;">কম্প্রেস করুন 🔄</button>
+          <div id="adminCompressedResult" style="margin-top: 8px; font-size: 10.5px; word-break: break-all; color: #4ade80;"></div>
         </div>
       </div>
 
@@ -619,11 +641,55 @@
       document.getElementById('guideModal').classList.remove('active');
     }
 
-    /* অটো-কম্প্রেশন ও রিসাইজার (বট নিজে থেকেই বড় ছবি ছোট ও এইচডি করে নেবে) */
-    function getAutoCompressedImage(originalUrl) {
-      if (!originalUrl) return 'https://via.placeholder.com/150';
-      return originalUrl;
+    /* ইমেজ কম্প্রেসর ফাংশন (২০০x২০০ সাইজ এবং এইচডি কোয়ালিটি) */
+    function processImageCompression(inputId, resultId) {
+      const fileInput = document.getElementById(inputId);
+      const resultDiv = document.getElementById(resultId);
+      
+      if (!fileInput.files || fileInput.files.length === 0) {
+        showToast("দয়া করে প্রথমে একটি ছবি সিলেক্ট করুন!", "⚠");
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      
+      reader.onload = function(event) {
+        const img = new Image();
+        img.src = event.target.result;
+        
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          let width = img.width;
+          let height = img.height;
+          const maxSize = 200;
+
+          if (width > height) {
+            if (width > maxSize) { height *= maxSize / width; width = maxSize; }
+          } else {
+            if (height > maxSize) { width *= maxSize / height; height = maxSize; }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.75);
+          
+          resultDiv.innerHTML = `
+            <b>సফলভাবে কম্প্রেস হয়েছে! (${Math.round(compressedDataUrl.length / 1024)} KB)</b><br>
+            <input type="text" value="${compressedDataUrl}" readonly style="width:100%; background:#000; color:#38bdf8; border:1px solid #38bdf8; padding:4px; margin-top:4px; border-radius:6px;" onclick="this.select(); document.execCommand('copy'); showToast('লিংক কপি হয়েছে!', '📋');">
+          `;
+          showToast("ইমেজ সফলভাবে কম্প্রেস হয়েছে!", "✅");
+        };
+      };
+      reader.readAsDataURL(file);
     }
+
+    function compressUserImage() { processImageCompression('userImageInput', 'userCompressedResult'); }
+    function compressAdminImage() { processImageCompression('adminImageInput', 'adminCompressedResult'); }
 
     function fireConfetti() {
       const canvas = document.getElementById('confettiCanvas');
@@ -1052,46 +1118,6 @@
       }
     }
 
-    function watchVipAd() {
-      triggerHaptic();
-      const today = getTodayKey();
-      if ((userData.daily_ads?.[today] || 0) >= AD_LIMIT) {
-        showToast("আজকের বিজ্ঞাপন সীমা শেষ!", "⚠️");
-        return;
-      }
-
-      const btn = document.getElementById('btnWatchMonetag');
-      btn.disabled = true;
-
-      if (typeof show_11750504 === 'function') {
-        show_11750504().then(async () => {
-          triggerHaptic('success');
-          userData.coins = (userData.coins || 0) + AD_REWARD;
-          userData.total_ads_watched = (userData.total_ads_watched || 0) + 1;
-          if (!userData.daily_ads) userData.daily_ads = {};
-          userData.daily_ads[today] = (userData.daily_ads[today] || 0) + 1;
-          updateUI();
-          fireConfetti();
-
-          fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
-          fetch(`${DB_BASE}/users/${user.id}/daily_ads/${today}.json`, { method: 'PUT', body: JSON.stringify(userData.daily_ads[today]) });
-          fetch(`${DB_BASE}/users/${user.id}/total_ads_watched.json`, { method: 'PUT', body: JSON.stringify(userData.total_ads_watched) });
-
-          showToast("বিজ্ঞাপন সম্পন্ন! +১০ কয়েন যোগ হয়েছে", "🎉");
-          btn.disabled = false;
-          btn.innerText = "🎬 বিজ্ঞাপন দেখুন (+১০ কয়েন)";
-        }).catch(() => {
-          btn.disabled = false;
-          btn.innerText = "🎬 বিজ্ঞাপন দেখুন (+১০ কয়েন)";
-          showToast("বিজ্ঞাপনটি সম্পূর্ণ দেখা হয়নি!", "❌");
-        });
-      } else {
-        btn.disabled = false;
-        btn.innerText = "🎬 বিজ্ঞাপন দেখুন (+১০ কয়েন)";
-        showToast("বিজ্ঞাপন লোড হয়নি, আবার চেষ্টা করুন।", "⏳");
-      }
-    }
-
     async function fetchResources() {
       try {
         const res = await fetch(`${DB_BASE}/resources.json`);
@@ -1134,7 +1160,6 @@
         const isXml = item.type === 'xml';
         const mediaSource = item.video || item.image || '';
         const isVideo = isVideoUrl(mediaSource) || (isXml && item.video);
-        const optimizedImg = getAutoCompressedImage(item.image);
         const card = document.createElement('div');
         card.className = isXml ? 'card xml-fullwidth-card' : 'card';
         
@@ -1162,10 +1187,10 @@
           }
         } else {
           mediaHtml = `
-            <div class="card-thumb-wrap" onclick="openMediaPreview('${optimizedImg}', false)">
+            <div class="card-thumb-wrap" onclick="openMediaPreview('${item.image}', false)">
               <span class="type-pill">${item.type?.toUpperCase()}</span>
               <span class="download-count-pill">📥 ${item.total_claims || 0}</span>
-              <img src="${optimizedImg}" alt="thumb" loading="lazy" onerror="this.src='https://via.placeholder.com/150';">
+              <img src="${item.image || 'https://via.placeholder.com/150'}" alt="thumb" loading="lazy" onerror="this.src='https://via.placeholder.com/150';">
             </div>`;
         }
 
@@ -1255,10 +1280,6 @@
 
         loadingOverlay.classList.remove('active');
 
-        if (typeof show_11750504 === 'function') {
-          try { await show_11750504(); } catch(e) {}
-        }
-
         userData.coins -= cost;
         userData.claimed_count = (userData.claimed_count || 0) + 1;
         if (!userData.unlocked) userData.unlocked = {};
@@ -1340,4 +1361,4 @@
     initApp();
   </script>
 </body>
-  </html>
+</html>
