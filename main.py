@@ -436,6 +436,27 @@ def handle_admin_inline_actions(call):
 
     bot.answer_callback_query(call.id)
 
+# --- Universal Text Fallback (To catch accidental clicks from old Reply Keyboards) ---
+@bot.message_handler(func=lambda message: int(message.from_user.id) == int(ADMIN_ID) and message.text)
+def handle_accidental_reply_clicks(message):
+    text = message.text.strip()
+    if 'নতুন রিসোর্স' in text:
+        start_add_flow(message)
+    elif 'রিসোর্স এডিট' in text:
+        start_edit_flow(message)
+    elif 'কয়েন আপডেট' in text:
+        start_coin_management_flow(message)
+    elif 'ডাউনলোড হিস্ট্রি' in text:
+        show_download_logs_cmd(message)
+    elif 'ব্রডকাস্ট' in text:
+        start_broadcast_flow(message)
+    elif 'ইউজার ব্যান' in text:
+        start_ban_flow(message)
+    elif 'প্রোমো কোড' in text:
+        start_promo_flow(message)
+    elif 'ইউজার চেক' in text:
+        start_user_inspect_flow(message)
+
 # --- Admin Flow Functions ---
 def start_add_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
@@ -501,7 +522,7 @@ def get_image_first(message):
     elif message.text and message.text.strip().startswith("http"):
         admin_temp_data[message.from_user.id]['image'] = compress_image_data(message.text.strip())
     else:
-        bot.reply_to(message, "⚠️️ অনুগ্রহ করে ছবি অথবা সঠিক সরাসরি লিংক পাঠান:")
+        bot.reply_to(message, "⚠️ অনুগ্রহ করে ছবি অথবা সঠিক সরাসরি লিংক পাঠান:")
         bot.register_next_step_handler(message, get_image_first)
         return
 
@@ -864,7 +885,6 @@ def start_cmd(message):
         )
         return
 
-    # আগের পুরোনো কিবোর্ড পুরোপুরি মুছে ফেলার জন্য
     clear_markup = ReplyKeyboardRemove()
 
     # --- ADMIN VIEW VS USER VIEW ---
