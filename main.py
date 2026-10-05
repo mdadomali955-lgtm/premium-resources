@@ -11,8 +11,9 @@ from telebot.types import (
     WebAppInfo
 )
 from flask import Flask, request, jsonify
+from threading import Thread
 
-# --- Bot Configuration ---
+# --- Bot Configuration (Updated with New Token) ---
 BOT_TOKEN = "8815920877:AAH3GeJEPbOMy2LNugxvQKY2Dnzjly_xFl8"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
@@ -21,9 +22,6 @@ CHANNEL_ID = "@PLPStoreBD0"
 CHANNEL_URL = "https://t.me/PLPStoreBD0"
 BOT_USERNAME = "PLPStoreOfficialBot"
 SUPPORT_URL = "https://t.me/PLPSTOREAI"
-
-# Render External URL (Automatic)
-RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL", "https://premium-resources-wprw.onrender.com")
 
 bot = telebot.TeleBot(BOT_TOKEN, threaded=True)
 admin_temp_data = {}
@@ -35,26 +33,16 @@ promo_sessions = {}
 user_inspect_sessions = {}
 user_earn_sessions = {}
 
-# --- Flask Webhook Server ---
+# --- Flask Server to keep Render Web Service Happy ---
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Bot is running perfectly with Webhook!", 200
+    return "Bot is running perfectly with Polling & Flask!", 200
 
 @app.route('/health')
 def health():
     return "OK", 200
-
-@app.route(f'/{BOT_TOKEN}', methods=['POST'])
-def webhook():
-    if request.headers.get('content-type') == 'application/json':
-        json_string = request.get_data().decode('utf-8')
-        update = telebot.types.Update.de_json(json_string)
-        bot.process_new_updates([update])
-        return '', 200
-    else:
-        return 'Forbidden', 403
 
 @app.route('/verify-channel/<int:user_id>', methods=['GET'])
 def verify_channel_member(user_id):
@@ -151,6 +139,34 @@ def get_user_dashboard_keyboard():
         InlineKeyboardButton("💬 সাপোর্ট ও হেল্পলাইন", url=SUPPORT_URL)
     )
     return markup
+
+# --- Compress All Previous Images Command (/compress_all) ---
+@bot.message_handler(commands=['compress_all'])
+def compress_all_cmd(message):
+    if int(message.from_user.id) != int(ADMIN_ID):
+        return
+
+    status_msg = bot.reply_to(message, "⏳ ডেটাবেজের আগের সব পুরোনো ইমেজ খুঁজে বের করে কম্প্রেস করা শুরু হচ্ছে...")
+
+    try:
+        res = requests.get(f"{FIREBASE_BASE}/resources.json").json() or {}
+        count = 0
+        for key, item in res.items():
+            if "image" in item and item["image"]:
+                old_img = item["image"]
+                if not (old_img.startswith("data:image") and len(old_img) < 15000):
+                    new_img = compress_image_data(old_img)
+                    requests.put(f"{FIREBASE_BASE}/resources/{key}/image.json", json=new_img)
+                    count += 1
+
+        bot.edit_message_text(
+            f"✅ **সফলভাবে সম্পন্ন হয়েছে!**\n\nডেটাবেজের আগের মোট ফাইলগুলোর বড় ইমেজ অটো কম্প্রেস হয়ে গেছে! 🚀",
+            message.chat.id,
+            status_msg.message_id,
+            parse_mode="Markdown"
+        )
+    except Exception as e:
+        bot.edit_message_text(f"❌ সমস্যা হয়েছে: {str(e)}", message.chat.id, status_msg.message_id)
 
 # --- User Earn Coins Flow ---
 @bot.callback_query_handler(func=lambda call: call.data == "earn_coins_start")
@@ -406,7 +422,28 @@ def handle_admin_inline_actions(call):
 
     bot.answer_callback_query(call.id)
 
-# --- Admin Flow Functions (PLP/Font Image First, XML Video First) ---
+# --- Universal Text Fallback for Old Keyboards ---
+@bot.message_handler(func=lambda message: int(message.from_user.id) == int(ADMIN_ID) and message.text)
+def handle_accidental_reply_clicks(message):
+    text = message.text.strip()
+    if 'নতুন রিসোর্স' in text:
+        start_add_flow(message)
+    elif 'রিসোর্স এডিট' in text:
+        start_edit_flow(message)
+    elif 'কয়েন আপডেট' in text:
+        start_coin_management_flow(message)
+    elif 'ডাউনলোড হিস্ট্রি' in text:
+        show_download_logs_cmd(message)
+    elif 'ব্রডকাস্ট' in text:
+        start_broadcast_flow(message)
+    elif 'ইউজার ব্যান' in text:
+        start_ban_flow(message)
+    elif 'প্রোমো কোড' in text:
+        start_promo_flow(message)
+    elif 'ইউজার চেক' in text:
+        start_user_inspect_flow(message)
+
+# --- Admin Flow Functions ---
 def start_add_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     admin_temp_data[message.from_user.id] = {'file_ids': []}
@@ -455,7 +492,6 @@ def get_coins(message):
         bot.reply_to(message, "⚠️ কয়েনের পরিমাণ সংখ্যায় দিন:")
         bot.register_next_step_handler(message, get_coins)
 
-# PLP / Font-এর ক্ষেত্রে আগে থাম্বনেইল ইমেজ বা লিংক নেওয়া
 def get_image_first(message):
     if message.text and message.text.startswith('/'):
         return
@@ -472,14 +508,13 @@ def get_image_first(message):
     elif message.text and message.text.strip().startswith("http"):
         admin_temp_data[message.from_user.id]['image'] = compress_image_data(message.text.strip())
     else:
-        bot.reply_to(message, "⚠️ অনুগ্রহ করে ছবি অথবা সঠিক সরাসরি লিংক পাঠান:")
+        bot.reply_to(message, "⚠️️ অনুগ্রহ করে ছবি অথবা সঠিক সরাসরি লিংক পাঠান:")
         bot.register_next_step_handler(message, get_image_first)
         return
 
     msg = bot.reply_to(message, "📂 **এখন মূল ফন্ট বা PLP ফাইল (ডকুমেন্ট হিসেবে) পাঠান (শেষ হলে 'done' লিখুন):**", parse_mode="Markdown")
     bot.register_next_step_handler(msg, get_batch_files_or_link)
 
-# XML-এর ক্ষেত্রে আগে ভিডিও লিংক নেওয়া
 def get_xml_video(message):
     if message.text and message.text.startswith('/'):
         return
@@ -873,24 +908,17 @@ def process_resource_delivery(chat_id, arg_text, user_obj=None):
     except Exception as e:
         bot.send_message(chat_id, f"❌ ত্রুটি: {e}")
 
-# --- Set Webhook Automatically on Startup ---
-def setup_webhook():
-    if not RENDER_EXTERNAL_URL:
-        return
-    webhook_url = f"{RENDER_EXTERNAL_URL}/{BOT_TOKEN}"
-    for attempt in range(1, 6):
-        try:
-            bot.remove_webhook(drop_pending_updates=True)
-            time.sleep(1)
-            bot.set_webhook(url=webhook_url, drop_pending_updates=True)
-            print(f"Webhook successfully set to: {webhook_url}")
-            return
-        except Exception as e:
-            print(f"Webhook setup attempt {attempt} failed: {e}")
-            time.sleep(2)
-
-if __name__ == "__main__":
-    print("Setting up Webhook and starting Flask Server...")
-    setup_webhook()
+# --- Background Flask Thread + Polling Loop ---
+def run_flask():
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port, threaded=True)
+
+if __name__ == "__main__":
+    print("Starting Flask web server thread...")
+    flask_thread = Thread(target=run_flask)
+    flask_thread.daemon = True
+    flask_thread.start()
+
+    print("Starting Telegram Bot Polling...")
+    bot.remove_webhook()
+    bot.infinity_polling()
