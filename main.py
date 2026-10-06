@@ -3,7 +3,6 @@ import time
 import io
 import requests
 import telebot
-import threading
 from PIL import Image
 from datetime import datetime
 from telebot.types import (
@@ -13,9 +12,8 @@ from telebot.types import (
     KeyboardButton,
     WebAppInfo
 )
-from flask import Flask
 
-# --- Bot Configuration ---
+# --- Bot Configuration (Pure Polling Mode) ---
 BOT_TOKEN = "8815920877:AAHK0aaPhEUUINy74c7fMlOvm20_By3EzI8"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
@@ -34,21 +32,6 @@ ban_sessions = {}
 promo_sessions = {}
 user_inspect_sessions = {}
 user_earn_sessions = {}
-
-# --- Dummy Flask Server to satisfy Render Web Service Port Requirement ---
-app = Flask(__name__)
-
-@app.route('/')
-def home():
-    return "Bot is running live!", 200
-
-@app.route('/health')
-def health():
-    return "OK", 200
-
-def run_flask():
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port=port)
 
 def is_user_banned(user_id):
     try:
@@ -109,7 +92,7 @@ def get_admin_reply_keyboard():
     markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     markup.add(
         KeyboardButton("➕ নতুন রিসোর্স যুক্ত করুন"),
-        KeyboardButton("✏️️ রিসোর্স এডিট/আপডেট"),
+        KeyboardButton("✏️ রিসোর্স এডিট/আপডেট"),
         KeyboardButton("🪙 কয়েন আপডেট/ম্যানেজ"),
         KeyboardButton("📊 ডাউনলোড হিস্ট্রি"),
         KeyboardButton("📢 ব্রডকাস্ট মেসেজ"),
@@ -765,7 +748,7 @@ def start_coin_management_flow(message):
 def process_coin_uid(message):
     uid = message.text.strip()
     coin_sessions[message.from_user.id] = {'target_id': uid}
-    msg = bot.send_message(message.chat.id, "🪙 কত কয়েন যোগ করতে চান লিখে পাঠান যেমন: 100:")
+    msg = bot.send_message(message.chat.id, "🪙 কত কয়েন যোগ করতে চান লিখে পাঠান (যেমন: 100):")
     bot.register_next_step_handler(msg, process_coin_amount)
 
 def process_coin_amount(message):
@@ -924,18 +907,13 @@ def process_resource_delivery(chat_id, arg_text, user_obj=None):
                 return
             file_ids = item.get("file_ids") or ([] if not item.get("file_id") else [item.get("file_id")])
             for idx, fid in enumerate(file_ids, 1):
-                bot.send_document(chat_id, fid, caption=f"🎁 ফাইল ({idx}): *{res_name}*", parse_mode="Markdown", mode="Markdown")
+                bot.send_document(chat_id, fid, caption=f"🎁 ফাইল ({idx}): *{res_name}*", parse_mode="Markdown")
                 time.sleep(0.3)
             bot.send_message(chat_id, "✅ সমস্ত ফাইল সফলভাবে পাঠানো হয়েছে!", reply_markup=get_user_reply_keyboard())
     except Exception as e:
         bot.send_message(chat_id, f"❌ ত্রুটি: {e}")
 
 if __name__ == "__main__":
-    print("Starting background Flask server thread for Render port binding...")
-    flask_thread = threading.Thread(target=run_flask)
-    flask_thread.daemon = True
-    flask_thread.start()
-
     print("Clearing old webhooks and starting Pure Polling...")
     try:
         requests.get(f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook?drop_pending_updates=true")
