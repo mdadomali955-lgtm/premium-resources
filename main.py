@@ -35,12 +35,12 @@ promo_sessions = {}
 user_inspect_sessions = {}
 user_earn_sessions = {}
 
-# --- Flask Server for Render Port Binding ---
+# --- Flask Server for Render Port Binding (Web Service Compatibility) ---
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Bot is running perfectly!", 200
+    return "Bot is running live and successfully!", 200
 
 @app.route('/health')
 def health():
@@ -50,6 +50,7 @@ def run_flask():
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port, threaded=True)
 
+# --- Security & Verification Functions ---
 def is_user_banned(user_id):
     try:
         banned = requests.get(f"{FIREBASE_BASE}/banned_users/{user_id}.json").json()
@@ -66,7 +67,7 @@ def is_user_member(user_id):
     except Exception:
         return True
 
-# --- Auto Image Compression Feature ---
+# --- Auto Image Compression Function (200x200 HD) ---
 def compress_image_data(image_input):
     try:
         if isinstance(image_input, str) and image_input.startswith("http"):
@@ -104,7 +105,7 @@ def get_force_sub_keyboard(target_arg=""):
     )
     return markup
 
-# --- Reply Keyboards ---
+# --- Permanent Reply Keyboards ---
 def get_admin_reply_keyboard():
     markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     markup.add(
@@ -292,7 +293,7 @@ def collect_user_earn_files(message):
         bot.reply_to(message, f"📥 ফাইল ({count}) যুক্ত হয়েছে! আরও থাকলে পাঠান অথবা শেষ হলে 'done' লিখুন।")
         bot.register_next_step_handler(message, collect_user_earn_files)
     else:
-        bot.reply_to(message, "⚠️ ডকুমেন্ট ফাইল পাঠান অথবা কাজ শেষ হলে 'done' লিখুন:")
+        bot.reply_to(message, "⚠️️ ডকুমেন্ট ফাইল পাঠান অথবা কাজ শেষ হলে 'done' লিখুন:")
         bot.register_next_step_handler(message, collect_user_earn_files)
 
 def submit_to_admin_review(message, session, uid):
@@ -706,7 +707,7 @@ def prompt_for_field(call):
         bot.delete_message(call.message.chat.id, call.message.message_id)
     except Exception:
         pass
-    msg = bot.send_message(call.message.chat.id, f"✍️️ নতুন মান লিখে পাঠান:")
+    msg = bot.send_message(call.message.chat.id, f"✍️ নতুন মান লিখে পাঠান:")
     bot.register_next_step_handler(msg, save_updated_field)
 
 def save_updated_field(message):
