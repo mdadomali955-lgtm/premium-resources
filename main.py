@@ -14,8 +14,8 @@ from telebot.types import (
 )
 from flask import Flask, request, jsonify
 
-# --- Bot Configuration ---
-BOT_TOKEN = "8815920877:AAG8a6ylHwr76jHmkxe2956GD641nvnytw8"
+# --- Bot Configuration (Brand New Token) ---
+BOT_TOKEN = "8815920877:AAHK0aaPhEUUINy74c7fMlOvm20_By3EzI8"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
 WEB_APP_URL = "https://premium-resources.vercel.app"
@@ -285,7 +285,7 @@ def collect_user_earn_files(message):
         bot.reply_to(message, f"📥 ফাইল ({count}) যুক্ত হয়েছে! আরও থাকলে পাঠান অথবা শেষ হলে 'done' লিখুন।")
         bot.register_next_step_handler(message, collect_user_earn_files)
     else:
-        bot.reply_to(message, "⚠️️ ডকুমেন্ট ফাইল পাঠান অথবা কাজ শেষ হলে 'done' লিখুন:")
+        bot.reply_to(message, "⚠️ ডকুমেন্ট ফাইল পাঠান অথবা কাজ শেষ হলে 'done' লিখুন:")
         bot.register_next_step_handler(message, collect_user_earn_files)
 
 def submit_to_admin_review(message, session, uid):
@@ -552,7 +552,7 @@ def get_image_first(message):
     elif message.text and message.text.strip().startswith("http"):
         admin_temp_data[message.from_user.id]['image'] = compress_image_data(message.text.strip())
     else:
-        bot.reply_to(message, "⚠️ অনুগ্রহ করে ছবি অথবা সঠিক সরাসরি লিংক পাঠান:")
+        bot.reply_to(message, "⚠️️ অনুগ্রহ করে ছবি অথবা সঠিক সরাসরি লিংক পাঠান:")
         bot.register_next_step_handler(message, get_image_first)
         return
 
@@ -598,7 +598,7 @@ def get_batch_files_or_link(message):
     if message.document:
         admin_temp_data[user_id]['file_ids'].append(message.document.file_id)
         count = len(admin_temp_data[user_id]['file_ids'])
-        bot.reply_to(message, f"📥 ফাইল ({count}) যুক্ত হয়েছে! আরও থাকলে পাঠান অথবা শেষ হলে 'done' লিখুন።")
+        bot.reply_to(message, f"📥 ফাইল ({count}) যুক্ত হয়েছে! আরও থাকলে পাঠান অথবা শেষ হলে 'done' লিখুন।")
         bot.register_next_step_handler(message, get_batch_files_or_link)
     else:
         bot.reply_to(message, "⚠️ ডকুমেন্ট ফাইল পাঠান অথবা কাজ শেষ হলে 'done' লিখুন:")
@@ -864,7 +864,7 @@ def get_promo_coins(message):
         bot.reply_to(message, f"🎉 প্রোমো কোড `{code}` তৈরি হয়েছে!", parse_mode="Markdown", reply_markup=get_admin_reply_keyboard())
     except ValueError:
         bot.reply_to(message, "⚠️ সংখ্যায় দিন:")
-        bot.register_next_step_handler(msg, get_promo_coins)
+        bot.register_next_step_handler(message, get_promo_coins)
 
 def start_user_inspect_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
