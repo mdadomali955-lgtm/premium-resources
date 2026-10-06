@@ -12,9 +12,8 @@ from telebot.types import (
     KeyboardButton,
     WebAppInfo
 )
-from flask import Flask, request, jsonify
 
-# --- Bot Configuration (Brand New Token) ---
+# --- Bot Configuration (Pure Polling Mode) ---
 BOT_TOKEN = "8815920877:AAHK0aaPhEUUINy74c7fMlOvm20_By3EzI8"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
@@ -23,9 +22,6 @@ CHANNEL_ID = "@PLPStoreBD0"
 CHANNEL_URL = "https://t.me/PLPStoreBD0"
 BOT_USERNAME = "PLPStoreOfficialBot"
 SUPPORT_URL = "https://t.me/PLPSTOREAI"
-
-# Render External URL (Automatic)
-RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL", "https://premium-resources-wprw.onrender.com")
 
 bot = telebot.TeleBot(BOT_TOKEN, threaded=True)
 admin_temp_data = {}
@@ -36,41 +32,6 @@ ban_sessions = {}
 promo_sessions = {}
 user_inspect_sessions = {}
 user_earn_sessions = {}
-
-# --- Flask Server (Runs with python main.py) ---
-app = Flask(__name__)
-
-@app.route('/')
-def home():
-    return "Bot is running perfectly with Flask & Webhook via python main.py!", 200
-
-@app.route('/health')
-def health():
-    return "OK", 200
-
-@app.route(f'/{BOT_TOKEN}', methods=['POST'])
-def webhook():
-    if request.headers.get('content-type') == 'application/json':
-        json_string = request.get_data().decode('utf-8')
-        update = telebot.types.Update.de_json(json_string)
-        bot.process_new_updates([update])
-        return '', 200
-    else:
-        return 'Forbidden', 403
-
-@app.route('/verify-channel/<int:user_id>', methods=['GET'])
-def verify_channel_member(user_id):
-    try:
-        member = bot.get_chat_member(chat_id=CHANNEL_ID, user_id=user_id)
-        if member.status in ['member', 'administrator', 'creator']:
-            res = jsonify({"joined": True})
-        else:
-            res = jsonify({"joined": False})
-    except Exception as e:
-        res = jsonify({"joined": False, "error": str(e)})
-
-    res.headers.add("Access-Control-Allow-Origin", "*")
-    return res, 200
 
 def is_user_banned(user_id):
     try:
@@ -552,7 +513,7 @@ def get_image_first(message):
     elif message.text and message.text.strip().startswith("http"):
         admin_temp_data[message.from_user.id]['image'] = compress_image_data(message.text.strip())
     else:
-        bot.reply_to(message, "⚠️️ অনুগ্রহ করে ছবি অথবা সঠিক সরাসরি লিংক পাঠান:")
+        bot.reply_to(message, "⚠️ অনুগ্রহ করে ছবি অথবা সঠিক সরাসরি লিংক পাঠান:")
         bot.register_next_step_handler(message, get_image_first)
         return
 
@@ -864,7 +825,7 @@ def get_promo_coins(message):
         bot.reply_to(message, f"🎉 প্রোমো কোড `{code}` তৈরি হয়েছে!", parse_mode="Markdown", reply_markup=get_admin_reply_keyboard())
     except ValueError:
         bot.reply_to(message, "⚠️ সংখ্যায় দিন:")
-        bot.register_next_step_handler(message, get_promo_coins)
+        bot.register_next_step_handler(msg, get_promo_coins)
 
 def start_user_inspect_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
@@ -952,24 +913,11 @@ def process_resource_delivery(chat_id, arg_text, user_obj=None):
     except Exception as e:
         bot.send_message(chat_id, f"❌ ত্রুটি: {e}")
 
-# --- Setup Webhook automatically when python main.py runs ---
-def setup_webhook():
-    if not RENDER_EXTERNAL_URL:
-        return
-    webhook_url = f"{RENDER_EXTERNAL_URL}/{BOT_TOKEN}"
-    for attempt in range(1, 6):
-        try:
-            bot.remove_webhook(drop_pending_updates=True)
-            time.sleep(1)
-            bot.set_webhook(url=webhook_url, drop_pending_updates=True)
-            print(f"Webhook successfully set to: {webhook_url}")
-            return
-        except Exception as e:
-            print(f"Webhook setup attempt {attempt} failed: {e}")
-            time.sleep(2)
-
 if __name__ == "__main__":
-    print("Setting up Webhook and starting Flask App via python main.py...")
-    setup_webhook()
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port=port, threaded=True)
+    print("Clearing old webhooks and starting Pure Polling...")
+    try:
+        requests.get(f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook?drop_pending_updates=true")
+    except Exception as e:
+        print(f"Webhook clear warning: {e}")
+
+    bot.infinity_polling()
