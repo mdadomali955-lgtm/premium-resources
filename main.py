@@ -13,8 +13,8 @@ from telebot.types import (
 from flask import Flask, request, jsonify
 from threading import Thread
 
-# --- Bot Configuration (Updated with New Token) ---
-BOT_TOKEN = "8815920877:AAH3GeJEPbOMy2LNugxvQKY2Dnzjly_xFl8"
+# --- Bot Configuration (Updated with New Fresh Token) ---
+BOT_TOKEN = "8815920877:AAFBHF1E0QSBUY9mT1KkOECvEN4UYW6ZbIQ"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
 WEB_APP_URL = "https://premium-resources.vercel.app"
@@ -443,7 +443,7 @@ def handle_accidental_reply_clicks(message):
     elif 'ইউজার চেক' in text:
         start_user_inspect_flow(message)
 
-# --- Admin Flow Functions ---
+# --- Admin Flow Functions (PLP/Font Image First, XML Video First) ---
 def start_add_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     admin_temp_data[message.from_user.id] = {'file_ids': []}
@@ -508,7 +508,7 @@ def get_image_first(message):
     elif message.text and message.text.strip().startswith("http"):
         admin_temp_data[message.from_user.id]['image'] = compress_image_data(message.text.strip())
     else:
-        bot.reply_to(message, "⚠️️ অনুগ্রহ করে ছবি অথবা সঠিক সরাসরি লিংক পাঠান:")
+        bot.reply_to(message, "⚠️ অনুগ্রহ করে ছবি অথবা সঠিক সরাসরি লিংক পাঠান:")
         bot.register_next_step_handler(message, get_image_first)
         return
 
@@ -546,7 +546,7 @@ def get_batch_files_or_link(message):
         return
     if message.text and ('done' in message.text.lower() or 'শেষ' in message.text):
         if not admin_temp_data[user_id].get('file_ids'):
-            bot.reply_to(message, "⚠️️ কোনো ফাইল আপলোড করা হয়নি!")
+            bot.reply_to(message, "⚠️ কোনো ফাইল আপলোড করা হয়নি!")
             bot.register_next_step_handler(message, get_batch_files_or_link)
             return
         save_resource_to_firebase(message)
@@ -908,7 +908,7 @@ def process_resource_delivery(chat_id, arg_text, user_obj=None):
     except Exception as e:
         bot.send_message(chat_id, f"❌ ত্রুটি: {e}")
 
-# --- Background Flask Thread + Polling Loop ---
+# --- Background Flask Thread + Safe Polling ---
 def run_flask():
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port, threaded=True)
@@ -919,6 +919,10 @@ if __name__ == "__main__":
     flask_thread.daemon = True
     flask_thread.start()
 
-    print("Starting Telegram Bot Polling...")
-    bot.remove_webhook()
+    print("Clearing old webhooks via Telegram API and starting Polling...")
+    try:
+        requests.get(f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook?drop_pending_updates=true")
+    except Exception as e:
+        print(f"Webhook clear warning: {e}")
+
     bot.infinity_polling()
