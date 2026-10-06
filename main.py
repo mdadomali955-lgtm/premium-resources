@@ -13,7 +13,7 @@ from telebot.types import (
 from flask import Flask, request, jsonify
 from threading import Thread
 
-# --- Bot Configuration (Updated with New Fresh Token) ---
+# --- Bot Configuration ---
 BOT_TOKEN = "8815920877:AAFBHF1E0QSBUY9mT1KkOECvEN4UYW6ZbIQ"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
@@ -421,27 +421,6 @@ def handle_admin_inline_actions(call):
         start_user_inspect_flow(call.message)
 
     bot.answer_callback_query(call.id)
-
-# --- Universal Text Fallback for Old Keyboards ---
-@bot.message_handler(func=lambda message: int(message.from_user.id) == int(ADMIN_ID) and message.text)
-def handle_accidental_reply_clicks(message):
-    text = message.text.strip()
-    if 'নতুন রিসোর্স' in text:
-        start_add_flow(message)
-    elif 'রিসোর্স এডিট' in text:
-        start_edit_flow(message)
-    elif 'কয়েন আপডেট' in text:
-        start_coin_management_flow(message)
-    elif 'ডাউনলোড হিস্ট্রি' in text:
-        show_download_logs_cmd(message)
-    elif 'ব্রডকাস্ট' in text:
-        start_broadcast_flow(message)
-    elif 'ইউজার ব্যান' in text:
-        start_ban_flow(message)
-    elif 'প্রোমো কোড' in text:
-        start_promo_flow(message)
-    elif 'ইউজার চেক' in text:
-        start_user_inspect_flow(message)
 
 # --- Admin Flow Functions (PLP/Font Image First, XML Video First) ---
 def start_add_flow(message):
@@ -908,7 +887,7 @@ def process_resource_delivery(chat_id, arg_text, user_obj=None):
     except Exception as e:
         bot.send_message(chat_id, f"❌ ত্রুটি: {e}")
 
-# --- Background Flask Thread + Safe Polling ---
+# --- Background Flask Thread + Polling Loop ---
 def run_flask():
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port, threaded=True)
