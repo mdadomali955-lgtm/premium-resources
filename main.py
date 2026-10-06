@@ -3,7 +3,6 @@ import time
 import io
 import requests
 import telebot
-import threading
 from PIL import Image
 from datetime import datetime
 from telebot.types import (
@@ -13,9 +12,9 @@ from telebot.types import (
     KeyboardButton,
     WebAppInfo
 )
-from flask import Flask
+from flask import Flask, request, jsonify
 
-# --- Bot Configuration ---
+# --- Bot & Database Configuration ---
 BOT_TOKEN = "8815920877:AAHK0aaPhEUUINy74c7fMlOvm20_By3EzI8"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
@@ -25,7 +24,12 @@ CHANNEL_URL = "https://t.me/PLPStoreBD0"
 BOT_USERNAME = "PLPStoreOfficialBot"
 SUPPORT_URL = "https://t.me/PLPSTOREAI"
 
-bot = telebot.TeleBot(BOT_TOKEN, threaded=True)
+# Render-এর দেওয়া ওয়েবসাইটের মূল URL (Render Dashboard থেকে তোর Web Service-এর URL টা এখানে বসিয়ে দিবি, যেমন: https://xxxx.onrender.com)
+RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL", "https://premium-resources-wprw.onrender.com")
+
+bot = telebot.TeleBot(BOT_TOKEN, threaded=False)
+app = Flask(__name__)
+
 admin_temp_data = {}
 edit_sessions = {}
 coin_sessions = {}
@@ -34,21 +38,6 @@ ban_sessions = {}
 promo_sessions = {}
 user_inspect_sessions = {}
 user_earn_sessions = {}
-
-# --- Flask Server for Render Port Binding (Web Service Compatibility) ---
-app = Flask(__name__)
-
-@app.route('/')
-def home():
-    return "Bot is running live and successfully!", 200
-
-@app.route('/health')
-def health():
-    return "OK", 200
-
-def run_flask():
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port=port, threaded=True)
 
 # --- Security & Verification Functions ---
 def is_user_banned(user_id):
@@ -130,7 +119,7 @@ def get_user_reply_keyboard():
     )
     return markup
 
-# --- Detailed Bengali Help Guides Inline Menu ---
+# --- Detailed Bengali Help Guides & Separate Inline Buttons ---
 def get_help_inline_keyboard():
     markup = InlineKeyboardMarkup(row_width=1)
     markup.add(
@@ -293,7 +282,7 @@ def collect_user_earn_files(message):
         bot.reply_to(message, f"📥 ফাইল ({count}) যুক্ত হয়েছে! আরও থাকলে পাঠান অথবা শেষ হলে 'done' লিখুন।")
         bot.register_next_step_handler(message, collect_user_earn_files)
     else:
-        bot.reply_to(message, "⚠️️ ডকুমেন্ট ফাইল পাঠান অথবা কাজ শেষ হলে 'done' লিখুন:")
+        bot.reply_to(message, "⚠️ ডকুমেন্ট ফাইল পাঠান অথবা কাজ শেষ হলে 'done' লিখুন:")
         bot.register_next_step_handler(message, collect_user_earn_files)
 
 def submit_to_admin_review(message, session, uid):
@@ -920,16 +909,28 @@ def process_resource_delivery(chat_id, arg_text, user_obj=None):
     except Exception as e:
         bot.send_message(chat_id, f"❌ ত্রুটি: {e}")
 
+# --- Flask Webhook Routes ---
+@app.route('/')
+def home():
+    return "Bot Webhook Server is running successfully!", 200
+
+@app.route(f"/{BOT_TOKEN}", methods=['POST'])
+def webhook_listener():
+    if request.headers.get('content-type') == 'application/json':
+        json_string = request.get_data().decode('utf-8')
+        update = telebot.types.Update.de_json(json_string)
+        bot.process_new_updates([update])
+        return '', 200
+    else:
+        return 'Forbidden', 403
+
 if __name__ == "__main__":
-    print("Starting background Flask server thread for Render port binding...")
-    flask_thread = threading.Thread(target=run_flask)
-    flask_thread.daemon = True
-    flask_thread.start()
+    # Webhook সেটআপ করে নেওয়া হচ্ছে যাতে পোলিং কনফ্লিক্ট বা 409 এরর আর না আসে
+    bot.remove_webhook()
+    time.sleep(1)
+    webhook_url = f"{RENDER_EXTERNAL_URL.rstrip('/')}/{BOT_TOKEN}"
+    bot.set_webhook(url=webhook_url)
+    print(f"Webhook set to: {webhook_url}")
 
-    print("Clearing old webhooks and starting Polling...")
-    try:
-        requests.get(f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook?drop_pending_updates=true")
-    except Exception as e:
-        print(f"Webhook clear warning: {e}")
-
-    bot.infinity_polling(skip_pending=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
