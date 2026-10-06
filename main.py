@@ -3,6 +3,7 @@ import time
 import io
 import requests
 import telebot
+import threading
 from PIL import Image
 from datetime import datetime
 from telebot.types import (
@@ -12,8 +13,9 @@ from telebot.types import (
     KeyboardButton,
     WebAppInfo
 )
+from flask import Flask
 
-# --- Bot Configuration (Pure Polling Mode) ---
+# --- Bot Configuration ---
 BOT_TOKEN = "8815920877:AAHK0aaPhEUUINy74c7fMlOvm20_By3EzI8"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
@@ -33,6 +35,21 @@ promo_sessions = {}
 user_inspect_sessions = {}
 user_earn_sessions = {}
 
+# --- Flask Server for Render Port Binding ---
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Bot is running perfectly!", 200
+
+@app.route('/health')
+def health():
+    return "OK", 200
+
+def run_flask():
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port, threaded=True)
+
 def is_user_banned(user_id):
     try:
         banned = requests.get(f"{FIREBASE_BASE}/banned_users/{user_id}.json").json()
@@ -49,7 +66,7 @@ def is_user_member(user_id):
     except Exception:
         return True
 
-# --- Auto Image Compression Function (200x200 HD) ---
+# --- Auto Image Compression Feature ---
 def compress_image_data(image_input):
     try:
         if isinstance(image_input, str) and image_input.startswith("http"):
@@ -87,7 +104,7 @@ def get_force_sub_keyboard(target_arg=""):
     )
     return markup
 
-# --- Reply Keyboards (Bottom Permanent Keyboards) ---
+# --- Reply Keyboards ---
 def get_admin_reply_keyboard():
     markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     markup.add(
@@ -112,7 +129,7 @@ def get_user_reply_keyboard():
     )
     return markup
 
-# --- Help Guides Inline Menu ---
+# --- Detailed Bengali Help Guides Inline Menu ---
 def get_help_inline_keyboard():
     markup = InlineKeyboardMarkup(row_width=1)
     markup.add(
@@ -124,33 +141,62 @@ def get_help_inline_keyboard():
     )
     return markup
 
-# --- Compress All Previous Images Command (/compress_all) ---
-@bot.message_handler(commands=['compress_all'])
-def compress_all_cmd(message):
-    if int(message.from_user.id) != int(ADMIN_ID):
+@bot.callback_query_handler(func=lambda call: call.data.startswith('help_'))
+def handle_user_help_guides(call):
+    data = call.data
+    
+    if data == "help_download":
+        text = (
+            "📥 **কিভাবে ফাইল ডাউনলোড করবেন?**\n\n"
+            "1️⃣ প্রথমে আমাদের মিনি অ্যাপে প্রবেশ করুন ('🚀 প্রিমিয়াম রিসোর্স 💎' বাটন চাপ দিয়ে)।\n"
+            "2️⃣ আপনার পছন্দের PLP প্রজেক্ট, ফন্ট বা XML ফাইলটি বেছে নিন।\n"
+            "3️⃣ 'ডাউনলোড' বাটনে চাপ দিন (আপনার অ্যাকাউন্ট থেকে প্রয়োজনীয় কয়েন কেটে নেওয়া হবে)।\n"
+            "4️⃣ মাত্র ৫ সেকেন্ডের মধ্যে ফাইলটি সরাসরি আপনার টেলিগ্রাম ইনবক্সে ডকুমেন্ট আকারে চলে আসবে!"
+        )
+    elif data == "help_usage":
+        text = (
+            "📖 **ফন্ট ও পিএলপি ব্যবহারের গাইড**\n\n"
+            "🎨 **PLP ফাইল ব্যবহারের নিয়ম:**\n"
+            "• প্রথমে PixelLab অ্যাপ ওপেন করুন।\n"
+            "• ডাউনলোড করা `.plp` প্রজেক্ট ফাইলটি আপনার ফোনের `PixelLab/Presets` ফোল্ডারে রাখুন।\n"
+            "• এরপর PixelLab থেকে প্রজেক্ট অপশনে গিয়ে ফাইলটি ওপেন করে এডিট করুন।\n\n"
+            "🔤 **ফন্ট ফাইল ব্যবহারের নিয়ম:**\n"
+            "• ফন্টগুলো ডাউনলোড করে ইন্টারনাল স্টোরেজের যেকোনো ফোল্ডারে রাখুন।\n"
+            "• PixelLab অ্যাপে ফন্ট সেকশনে গিয়ে কাঙ্ক্ষিত ফন্ট যুক্ত করে যেকোনো ডিজাইনে ব্যবহার করুন।"
+        )
+    elif data == "help_coins":
+        text = (
+            "🪙 **ফ্রি কয়েন পাওয়ার উপায়**\n\n"
+            "1️⃣ **ফাইল আপলোড করে আয়:** নিজে প্রিমিয়াম PLP, ফন্ট বা XML ফাইল আপলোড করে অ্যাডমিনের এপ্রুভালের মাধ্যমে প্রতি ফাইলে ৫০ কয়েন পর্যন্ত ফ্রি আর্ন করতে পারবেন! (নিচের '📂 ফাইল দিয়ে কয়েন আয় করুন' অপশন ব্যবহার করুন)।\n"
+            "2️⃣ **রেফার করে আয়:** আপনার নিজস্ব রেফারেল লিংক বন্ধুদের সাথে শেয়ার করে সহজে কয়েন সংগ্রহ করুন।"
+        )
+    elif data == "help_back":
+        try:
+            bot.delete_message(call.message.chat.id, call.message.message_id)
+        except Exception:
+            pass
+        bot.send_message(call.message.chat.id, "👋 সহায়তা মেনু বন্ধ করা হয়েছে। নিচের বাটন থেকে যেকোনো অপশন বেছে নিন:", reply_markup=get_user_reply_keyboard())
+        return
+    else:
         return
 
-    status_msg = bot.reply_to(message, "⏳ ডেটাবেজের আগের সব পুরোনো ইমেজ খুঁজে বের করে কম্প্রেস করা শুরু হচ্ছে...")
-
+    markup = InlineKeyboardMarkup(row_width=1)
+    markup.add(
+        InlineKeyboardButton("🔙 গাইড মেনুতে ফিরুন", callback_data="help_menu_back"),
+        InlineKeyboardButton("◀️ মূল মেনুতে ফিরুন", callback_data="help_back")
+    )
     try:
-        res = requests.get(f"{FIREBASE_BASE}/resources.json").json() or {}
-        count = 0
-        for key, item in res.items():
-            if "image" in item and item["image"]:
-                old_img = item["image"]
-                if not (old_img.startswith("data:image") and len(old_img) < 15000):
-                    new_img = compress_image_data(old_img)
-                    requests.put(f"{FIREBASE_BASE}/resources/{key}/image.json", json=new_img)
-                    count += 1
+        bot.edit_message_text(text, call.message.chat.id, call.message.message_id, parse_mode="Markdown", reply_markup=markup)
+    except Exception:
+        bot.send_message(call.message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
 
-        bot.edit_message_text(
-            f"✅ **সফলভাবে সম্পন্ন হয়েছে!**\n\nডেটাবেজের আগের মোট ফাইলগুলোর বড় ইমেজ অটো কম্প্রেস হয়ে গেছে! 🚀",
-            message.chat.id,
-            status_msg.message_id,
-            parse_mode="Markdown"
-        )
-    except Exception as e:
-        bot.edit_message_text(f"❌ সমস্যা হয়েছে: {str(e)}", message.chat.id, status_msg.message_id)
+@bot.callback_query_handler(func=lambda call: call.data == "help_menu_back")
+def handle_help_menu_back(call):
+    text = "📖 **সহায়তা ও নির্দেশিকা সেন্টার**\n\nবটের যেকোনো বিষয় জানতে নিচের বাটনগুলোতে চাপ দিন:"
+    try:
+        bot.edit_message_text(text, call.message.chat.id, call.message.message_id, parse_mode="Markdown", reply_markup=get_help_inline_keyboard())
+    except Exception:
+        bot.send_message(call.message.chat.id, text, parse_mode="Markdown", reply_markup=get_help_inline_keyboard())
 
 # --- User Earn Coins Flow ---
 def start_user_earn_flow(message):
@@ -168,7 +214,7 @@ def start_user_earn_flow(message):
     )
     bot.send_message(
         message.chat.id,
-        "📂 **ফাইল দিয়ে কয়েন আয় প্যানেল**\n\nআপনি কোন ক্যাটাগরির ফাইল আপলোড করতে চান?",
+        "📂 **ফাইল দিয়ে কয়েন আয় প্যানেল (Earn)**\n\nআপনি কোন ক্যাটাগরির ফাইল আপলোড করতে চান?",
         parse_mode="Markdown",
         reply_markup=markup
     )
@@ -345,46 +391,7 @@ def handle_admin_review_action(call):
     except Exception as e:
         bot.answer_callback_query(call.id, f"ত্রুটি: {e}", show_alert=True)
 
-# --- User Help Guide Handlers ---
-@bot.callback_query_handler(func=lambda call: call.data.startswith('help_'))
-def handle_user_help_guides(call):
-    data = call.data
-    
-    if data == "help_download":
-        text = "📥 **কিভাবে ফাইল ডাউনলোড করবেন?**\n\n1️⃣ প্রথমে আমাদের মিনি অ্যাপে প্রবেশ করুন।\n2️⃣ আপনার পছন্দের PLP, ফন্ট বা XML ফাইলটি বেছে নিন।\n3️⃣ 'ডাউনলোড' বাটনে চাপ দিন (প্রয়োজনীয় কয়েন কেটে নেওয়া হবে)।\n4️⃣ ৫ সেকেন্ডের মধ্যে ফাইলটি সরাসরি আপনার টেলিগ্রাম ইনবক্সে চলে আসবে!"
-    elif data == "help_usage":
-        text = "📖 **ফন্ট ও পিএলপি ব্যবহারের গাইড**\n\n🎨 **PLP ফাইল:** PixelLab অ্যাপ ওপেন করে .plp প্রজেক্ট ফাইলটি PixelLab/Presets ফোল্ডারে রেখে ওপেন করুন।\n🔤 **ফন্ট ফাইল:** ফন্টগুলো ডাউনলোড করে Internal Storage/Fonts ফোল্ডারে রাখুন অথবা PixelLab-এর ফন্ট ফোল্ডারে যুক্ত করে ব্যবহার করুন।"
-    elif data == "help_coins":
-        text = "🪙 **ফ্রি কয়েন পাওয়ার উপায়**\n\n1️⃣ **ফাইল আপলোড করে:** নিজে প্রিমিয়াম PLP বা ফন্ট আপলোড করে অ্যাডমিনের এপ্রুভালের মাধ্যমে প্রতি ফাইলে ৫০ কয়েন পর্যন্ত আর্ন করুন!\n2️⃣ **রেফার করে:** আপনার রেফার লিংক বন্ধুদের সাথে শেয়ার করে ফ্রি কয়েন সংগ্রহ করুন।"
-    elif data == "help_back":
-        try:
-            bot.delete_message(call.message.chat.id, call.message.message_id)
-        except Exception:
-            pass
-        bot.send_message(call.message.chat.id, "👋 সহায়তা মেনু বন্ধ করা হয়েছে। নিচের বাটন থেকে যেকোনো অপশন বেছে নিন:", reply_markup=get_user_reply_keyboard())
-        return
-    else:
-        return
-
-    markup = InlineKeyboardMarkup(row_width=1)
-    markup.add(
-        InlineKeyboardButton("🔙 গাইড মেনুতে ফিরুন", callback_data="help_menu_back"),
-        InlineKeyboardButton("◀️ মূল মেনুতে ফিরুন", callback_data="help_back")
-    )
-    try:
-        bot.edit_message_text(text, call.message.chat.id, call.message.message_id, parse_mode="Markdown", reply_markup=markup)
-    except Exception:
-        bot.send_message(call.message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
-
-@bot.callback_query_handler(func=lambda call: call.data == "help_menu_back")
-def handle_help_menu_back(call):
-    text = "📖 **সহায়তা ও নির্দেশিকা সেন্টার**\n\nবটের যেকোনো বিষয় জানতে নিচের বাটনগুলোতে চাপ দিন:"
-    try:
-        bot.edit_message_text(text, call.message.chat.id, call.message.message_id, parse_mode="Markdown", reply_markup=get_help_inline_keyboard())
-    except Exception:
-        bot.send_message(call.message.chat.id, text, parse_mode="Markdown", reply_markup=get_help_inline_keyboard())
-
-# --- Text Router for Reply Keyboard Buttons ---
+# --- Text Router for Reply Keyboards ---
 @bot.message_handler(func=lambda message: True)
 def handle_reply_keyboard_text(message):
     uid = message.from_user.id
@@ -394,7 +401,6 @@ def handle_reply_keyboard_text(message):
         bot.send_message(message.chat.id, "❌ আপনি ব্যান হয়েছেন!")
         return
 
-    # Cancel command handler
     if text == "❌ বাতিল করুন":
         bot.clear_step_handler_by_chat_id(message.chat.id)
         if uid == int(ADMIN_ID):
@@ -700,7 +706,7 @@ def prompt_for_field(call):
         bot.delete_message(call.message.chat.id, call.message.message_id)
     except Exception:
         pass
-    msg = bot.send_message(call.message.chat.id, f"✍️ নতুন মান লিখে পাঠান:")
+    msg = bot.send_message(call.message.chat.id, f"✍️️ নতুন মান লিখে পাঠান:")
     bot.register_next_step_handler(msg, save_updated_field)
 
 def save_updated_field(message):
@@ -914,10 +920,15 @@ def process_resource_delivery(chat_id, arg_text, user_obj=None):
         bot.send_message(chat_id, f"❌ ত্রুটি: {e}")
 
 if __name__ == "__main__":
-    print("Clearing old webhooks and starting Pure Polling...")
+    print("Starting background Flask server thread for Render port binding...")
+    flask_thread = threading.Thread(target=run_flask)
+    flask_thread.daemon = True
+    flask_thread.start()
+
+    print("Clearing old webhooks and starting Polling...")
     try:
         requests.get(f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook?drop_pending_updates=true")
     except Exception as e:
         print(f"Webhook clear warning: {e}")
 
-    bot.infinity_polling()
+    bot.infinity_polling(skip_pending=True)
