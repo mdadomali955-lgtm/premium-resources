@@ -15,8 +15,8 @@ from telebot.types import (
 from flask import Flask, request, jsonify
 from threading import Thread
 
-# --- Bot Configuration ---
-BOT_TOKEN = "8815920877:AAFBHF1E0QSBUY9mT1KkOECvEN4UYW6ZbIQ"
+# --- Bot Configuration (Updated with New Token) ---
+BOT_TOKEN = "8815920877:AAG8a6ylHwr76jHmkxe2956GD641nvnytw8"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
 WEB_APP_URL = "https://premium-resources.vercel.app"
@@ -273,7 +273,7 @@ def collect_user_earn_files(message):
         bot.reply_to(message, f"📥 ফাইল ({count}) যুক্ত হয়েছে! আরও থাকলে পাঠান অথবা শেষ হলে 'done' লিখুন।")
         bot.register_next_step_handler(message, collect_user_earn_files)
     else:
-        bot.reply_to(message, "⚠️ ডকুমেন্ট ফাইল পাঠান অথবা কাজ শেষ হলে 'done' লিখুন:")
+        bot.reply_to(message, "⚠️️ ডকুমেন্ট ফাইল পাঠান অথবা কাজ শেষ হলে 'done' লিখুন:")
         bot.register_next_step_handler(message, collect_user_earn_files)
 
 def submit_to_admin_review(message, session, uid):
@@ -518,7 +518,7 @@ def get_coins(message):
             bot.reply_to(message, "🎬 **XML প্রিভিউ ভিডিও লিংক (অথবা ইউটিউব লিংক) পাঠান:**")
             bot.register_next_step_handler(message, get_xml_video)
         else:
-            bot.reply_to(message, "🖼️️ **থাম্বনেইল ইমেজ দিন (সরাসরি ছবি অথবা ফ্রি হোস্টিং ইমেজ লিংক পাঠান):**")
+            bot.reply_to(message, "🖼️ **থাম্বনেইল ইমেজ দিন (সরাসরি ছবি অথবা ফ্রি হোস্টিং ইমেজ লিংক পাঠান):**")
             bot.register_next_step_handler(message, get_image_first)
     except ValueError:
         bot.reply_to(message, "⚠️ কয়েনের পরিমাণ সংখ্যায় দিন:")
@@ -578,7 +578,7 @@ def get_batch_files_or_link(message):
         return
     if message.text and ('done' in message.text.lower() or 'শেষ' in message.text):
         if not admin_temp_data[user_id].get('file_ids'):
-            bot.reply_to(message, "⚠️️ কোনো ফাইল আপলোড করা হয়নি!")
+            bot.reply_to(message, "⚠️ কোনো ফাইল আপলোড করা হয়নি!")
             bot.register_next_step_handler(message, get_batch_files_or_link)
             return
         save_resource_to_firebase(message)
@@ -626,7 +626,7 @@ def handle_channel_post_decision(call):
     except Exception:
         pass
     if decision == "no":
-        bot.send_message(call.message.chat.id, "✅ কেবল মিনি অ্যাপে সেভ করা হয়েছে。", reply_markup=get_admin_reply_keyboard())
+        bot.send_message(call.message.chat.id, "✅ কেবল মিনি অ্যাপে সেভ করা হয়েছে।", reply_markup=get_admin_reply_keyboard())
         return
     try:
         item_res = requests.get(f"{FIREBASE_BASE}/resources/{res_key}.json")
@@ -798,7 +798,7 @@ def process_coin_amount(message):
 def show_download_logs_cmd(message):
     res = requests.get(f"{FIREBASE_BASE}/download_logs.json").json() or {}
     if not res:
-        bot.reply_to(message, "📂 এখনো কোনো ডাউনলোড হিস্ট্রি নেই。", reply_markup=get_admin_reply_keyboard())
+        bot.reply_to(message, "📂 এখনো কোনো ডাউনলোড হিস্ট্রি নেই।", reply_markup=get_admin_reply_keyboard())
         return
     txt = "📊 **শেষ ১০টি ডাউনলোড লগ:**\n\n"
     for k, log in list(res.items())[-10:]:
@@ -951,7 +951,7 @@ if __name__ == "__main__":
     flask_thread.daemon = True
     flask_thread.start()
 
-    print("Clearing old webhooks via Telegram API and starting Polling...")
+    print("Forcefully clearing old webhooks to take exclusive control and starting Polling...")
     try:
         requests.get(f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook?drop_pending_updates=true")
     except Exception as e:
