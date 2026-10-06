@@ -12,7 +12,7 @@ from telebot.types import (
     KeyboardButton,
     WebAppInfo
 )
-from flask import Flask, request, jsonify
+from flask import Flask, request
 
 # --- Bot & Database Configuration ---
 BOT_TOKEN = "8815920877:AAHK0aaPhEUUINy74c7fMlOvm20_By3EzI8"
@@ -24,19 +24,18 @@ CHANNEL_URL = "https://t.me/PLPStoreBD0"
 BOT_USERNAME = "PLPStoreOfficialBot"
 SUPPORT_URL = "https://t.me/PLPSTOREAI"
 
-# Render-এর দেওয়া ওয়েবসাইটের মূল URL (Render Dashboard থেকে তোর Web Service-এর URL টা এখানে বসিয়ে দিবি, যেমন: https://xxxx.onrender.com)
+# Render-এর এক্সটার্নাল URL
 RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL", "https://premium-resources-wprw.onrender.com")
 
 bot = telebot.TeleBot(BOT_TOKEN, threaded=False)
 app = Flask(__name__)
 
+# --- In-Memory State Dictionaries ---
 admin_temp_data = {}
 edit_sessions = {}
 coin_sessions = {}
 broadcast_sessions = {}
-ban_sessions = {}
 promo_sessions = {}
-user_inspect_sessions = {}
 user_earn_sessions = {}
 
 # --- Security & Verification Functions ---
@@ -94,7 +93,7 @@ def get_force_sub_keyboard(target_arg=""):
     )
     return markup
 
-# --- Permanent Reply Keyboards ---
+# --- Reply Keyboards ---
 def get_admin_reply_keyboard():
     markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     markup.add(
@@ -119,7 +118,7 @@ def get_user_reply_keyboard():
     )
     return markup
 
-# --- Detailed Bengali Help Guides & Separate Inline Buttons ---
+# --- Detailed Bengali Help Guides ---
 def get_help_inline_keyboard():
     markup = InlineKeyboardMarkup(row_width=1)
     markup.add(
@@ -157,7 +156,7 @@ def handle_user_help_guides(call):
     elif data == "help_coins":
         text = (
             "🪙 **ফ্রি কয়েন পাওয়ার উপায়**\n\n"
-            "1️⃣ **ফাইল আপলোড করে আয়:** নিজে প্রিমিয়াম PLP, ফন্ট বা XML ফাইল আপলোড করে অ্যাডমিনের এপ্রুভালের মাধ্যমে প্রতি ফাইলে ৫০ কয়েন পর্যন্ত ফ্রি আর্ন করতে পারবেন! (নিচের '📂 ফাইল দিয়ে কয়েন আয় করুন' অপশন ব্যবহার করুন)।\n"
+            "1️⃣ **ফাইল আপলোড করে আয়:** নিজে প্রিমিয়াম PLP, ফন্ট বা XML ফাইল আপলোড করে অ্যাডমিনের এপ্রুভালের মাধ্যমে প্রতি ফাইলে ৫০ কয়েন পর্যন্ত ফ্রি আর্ন করতে পারবেন!\n"
             "2️⃣ **রেফার করে আয়:** আপনার নিজস্ব রেফারেল লিংক বন্ধুদের সাথে শেয়ার করে সহজে কয়েন সংগ্রহ করুন।"
         )
     elif data == "help_back":
@@ -229,7 +228,7 @@ def get_user_earn_name(message):
     if uid not in user_earn_sessions:
         return
     user_earn_sessions[uid]['name'] = message.text.strip()
-    msg = bot.reply_to(message, "🖼️ **থাম্বনেইল ইমেজ দিন (সরাসরি ছবি অথবা ফ্রি হোস্টিং ইমেজ লিংক পাঠান):**")
+    msg = bot.reply_to(message, "🖼️️ **থাম্বনেইল ইমেজ দিন (সরাসরি ছবি অথবা ফ্রি হোস্টিং ইমেজ লিংক পাঠান):**")
     bot.register_next_step_handler(msg, get_user_earn_image)
 
 def get_user_earn_image(message):
@@ -381,7 +380,7 @@ def handle_admin_review_action(call):
     except Exception as e:
         bot.answer_callback_query(call.id, f"ত্রুটি: {e}", show_alert=True)
 
-# --- Text Router for Reply Keyboards ---
+# --- Universal Message / Text Router ---
 @bot.message_handler(func=lambda message: True)
 def handle_reply_keyboard_text(message):
     uid = message.from_user.id
@@ -444,7 +443,7 @@ def handle_reply_keyboard_text(message):
         )
         return
 
-# --- Admin Flow Functions ---
+# --- Admin Add Resource Flow ---
 def start_add_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     admin_temp_data[message.from_user.id] = {'file_ids': []}
@@ -555,7 +554,7 @@ def get_batch_files_or_link(message):
     if message.document:
         admin_temp_data[user_id]['file_ids'].append(message.document.file_id)
         count = len(admin_temp_data[user_id]['file_ids'])
-        bot.reply_to(message, f"📥 ফাইল ({count}) যুক্ত হয়েছে! আরও থাকলে পাঠান অথবা শেষ হলে 'done' লিখুন।")
+        bot.reply_to(message, f"📥 ফাইল ({count}) যুক্ত হয়েছে! আরও থাকলে পাঠান অথবা শেষ হলে 'done' লিখুন።")
         bot.register_next_step_handler(message, get_batch_files_or_link)
     else:
         bot.reply_to(message, "⚠️ ডকুমেন্ট ফাইল পাঠান অথবা কাজ শেষ হলে 'done' লিখুন:")
@@ -615,7 +614,7 @@ def handle_channel_post_decision(call):
     except Exception as e:
         bot.send_message(call.message.chat.id, f"❌ সমস্যা: {e}", reply_markup=get_admin_reply_keyboard())
 
-# --- Other Admin Flow Functions ---
+# --- Edit / Update Flow ---
 def start_edit_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     edit_sessions[message.from_user.id] = {}
@@ -736,6 +735,7 @@ def delete_item(call):
     except Exception:
         pass
 
+# --- Other Admin Tools ---
 def start_coin_management_flow(message):
     bot.clear_step_handler_by_chat_id(message.chat.id)
     msg = bot.send_message(message.chat.id, "👤 যে ইউজারের কয়েন দিতে চান তার **Telegram User ID** লিখে পাঠান:")
@@ -887,7 +887,21 @@ def start_cmd(message):
             reply_markup=get_user_reply_keyboard()
         )
 
-# --- Resource Delivery Logic ---
+@bot.callback_query_handler(func=lambda call: call.data.startswith('check_sub:'))
+def handle_check_subscription(call):
+    user_id = call.from_user.id
+    target_arg = call.data.split(":")[1]
+    if is_user_member(user_id):
+        try:
+            bot.delete_message(call.message.chat.id, call.message.message_id)
+        except Exception:
+            pass
+        bot.send_message(call.message.chat.id, "🎉 ধন্যবাদ! আপনার সাবস্ক্রিপশন ভেরিফাই হয়েছে।", reply_markup=get_user_reply_keyboard())
+        if target_arg:
+            process_resource_delivery(call.message.chat.id, target_arg, call.from_user)
+    else:
+        bot.answer_callback_query(call.id, "❌ আপনি এখনো চ্যানেলে জয়েন করেননি!", show_alert=True)
+
 def process_resource_delivery(chat_id, arg_text, user_obj=None):
     file_key = arg_text.replace("get_", "").split("_from_")[0]
     bot.send_message(chat_id, "⏳ আপনার ফাইল প্রস্তুত করা হচ্ছে...")
@@ -909,23 +923,23 @@ def process_resource_delivery(chat_id, arg_text, user_obj=None):
     except Exception as e:
         bot.send_message(chat_id, f"❌ ত্রুটি: {e}")
 
-# --- Flask Webhook Routes ---
+# --- Flask Webhook Routes (Optimized for Render) ---
 @app.route('/')
 def home():
     return "Bot Webhook Server is running successfully!", 200
 
 @app.route(f"/{BOT_TOKEN}", methods=['POST'])
 def webhook_listener():
-    if request.headers.get('content-type') == 'application/json':
-        json_string = request.get_data().decode('utf-8')
-        update = telebot.types.Update.de_json(json_string)
-        bot.process_new_updates([update])
-        return '', 200
-    else:
-        return 'Forbidden', 403
+    try:
+        json_data = request.get_json(force=True, silent=True)
+        if json_data:
+            update = telebot.types.Update.de_json(json_data)
+            bot.process_new_updates([update])
+    except Exception as e:
+        print(f"Webhook error: {e}")
+    return '', 200
 
 if __name__ == "__main__":
-    # Webhook সেটআপ করে নেওয়া হচ্ছে যাতে পোলিং কনফ্লিক্ট বা 409 এরর আর না আসে
     bot.remove_webhook()
     time.sleep(1)
     webhook_url = f"{RENDER_EXTERNAL_URL.rstrip('/')}/{BOT_TOKEN}"
