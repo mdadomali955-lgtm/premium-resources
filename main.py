@@ -13,9 +13,8 @@ from telebot.types import (
     WebAppInfo
 )
 from flask import Flask, request, jsonify
-from threading import Thread
 
-# --- Bot Configuration (Updated with New Token) ---
+# --- Bot Configuration (New Token) ---
 BOT_TOKEN = "8815920877:AAG8a6ylHwr76jHmkxe2956GD641nvnytw8"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
@@ -24,6 +23,9 @@ CHANNEL_ID = "@PLPStoreBD0"
 CHANNEL_URL = "https://t.me/PLPStoreBD0"
 BOT_USERNAME = "PLPStoreOfficialBot"
 SUPPORT_URL = "https://t.me/PLPSTOREAI"
+
+# Render External URL (Automatic)
+RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL", "https://premium-resources-wprw.onrender.com")
 
 bot = telebot.TeleBot(BOT_TOKEN, threaded=True)
 admin_temp_data = {}
@@ -35,16 +37,26 @@ promo_sessions = {}
 user_inspect_sessions = {}
 user_earn_sessions = {}
 
-# --- Flask Server to keep Render Web Service Happy ---
+# --- Flask Webhook Server ---
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Bot is running perfectly with Polling & Flask!", 200
+    return "Bot is running perfectly with Webhook!", 200
 
 @app.route('/health')
 def health():
     return "OK", 200
+
+@app.route(f'/{BOT_TOKEN}', methods=['POST'])
+def webhook():
+    if request.headers.get('content-type') == 'application/json':
+        json_string = request.get_data().decode('utf-8')
+        update = telebot.types.Update.de_json(json_string)
+        bot.process_new_updates([update])
+        return '', 200
+    else:
+        return 'Forbidden', 403
 
 @app.route('/verify-channel/<int:user_id>', methods=['GET'])
 def verify_channel_member(user_id):
@@ -273,7 +285,7 @@ def collect_user_earn_files(message):
         bot.reply_to(message, f"📥 ফাইল ({count}) যুক্ত হয়েছে! আরও থাকলে পাঠান অথবা শেষ হলে 'done' লিখুন।")
         bot.register_next_step_handler(message, collect_user_earn_files)
     else:
-        bot.reply_to(message, "⚠️️ ডকুমেন্ট ফাইল পাঠান অথবা কাজ শেষ হলে 'done' লিখুন:")
+        bot.reply_to(message, "⚠️ ডকুমেন্ট ফাইল পাঠান অথবা কাজ শেষ হলে 'done' লিখুন:")
         bot.register_next_step_handler(message, collect_user_earn_files)
 
 def submit_to_admin_review(message, session, uid):
@@ -940,21 +952,24 @@ def process_resource_delivery(chat_id, arg_text, user_obj=None):
     except Exception as e:
         bot.send_message(chat_id, f"❌ ত্রুটি: {e}")
 
-# --- Background Flask Thread + Polling Loop ---
-def run_flask():
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port=port, threaded=True)
+# --- Setup Webhook Automatically on Startup ---
+def setup_webhook():
+    if not RENDER_EXTERNAL_URL:
+        return
+    webhook_url = f"{RENDER_EXTERNAL_URL}/{BOT_TOKEN}"
+    for attempt in range(1, 6):
+        try:
+            bot.remove_webhook(drop_pending_updates=True)
+            time.sleep(1)
+            bot.set_webhook(url=webhook_url, drop_pending_updates=True)
+            print(f"Webhook successfully bound to: {webhook_url}")
+            return
+        except Exception as e:
+            print(f"Webhook setup attempt {attempt} failed: {e}")
+            time.sleep(2)
 
 if __name__ == "__main__":
-    print("Starting Flask web server thread...")
-    flask_thread = Thread(target=run_flask)
-    flask_thread.daemon = True
-    flask_thread.start()
-
-    print("Forcefully clearing old webhooks to take exclusive control and starting Polling...")
-    try:
-        requests.get(f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook?drop_pending_updates=true")
-    except Exception as e:
-        print(f"Webhook clear warning: {e}")
-
-    bot.infinity_polling()
+    print("Setting up Webhook and starting Flask Web Server...")
+    setup_webhook()
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port, threaded=True)
