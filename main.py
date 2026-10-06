@@ -14,7 +14,7 @@ from telebot.types import (
 )
 from flask import Flask, request, jsonify
 
-# --- Bot Configuration (New Token) ---
+# --- Bot Configuration ---
 BOT_TOKEN = "8815920877:AAG8a6ylHwr76jHmkxe2956GD641nvnytw8"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
@@ -37,12 +37,12 @@ promo_sessions = {}
 user_inspect_sessions = {}
 user_earn_sessions = {}
 
-# --- Flask Webhook Server ---
+# --- Flask Server (Runs with python main.py) ---
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Bot is running perfectly with Webhook!", 200
+    return "Bot is running perfectly with Flask & Webhook via python main.py!", 200
 
 @app.route('/health')
 def health():
@@ -285,7 +285,7 @@ def collect_user_earn_files(message):
         bot.reply_to(message, f"📥 ফাইল ({count}) যুক্ত হয়েছে! আরও থাকলে পাঠান অথবা শেষ হলে 'done' লিখুন।")
         bot.register_next_step_handler(message, collect_user_earn_files)
     else:
-        bot.reply_to(message, "⚠️ ডকুমেন্ট ফাইল পাঠান অথবা কাজ শেষ হলে 'done' লিখুন:")
+        bot.reply_to(message, "⚠️️ ডকুমেন্ট ফাইল পাঠান অথবা কাজ শেষ হলে 'done' লিখুন:")
         bot.register_next_step_handler(message, collect_user_earn_files)
 
 def submit_to_admin_review(message, session, uid):
@@ -598,7 +598,7 @@ def get_batch_files_or_link(message):
     if message.document:
         admin_temp_data[user_id]['file_ids'].append(message.document.file_id)
         count = len(admin_temp_data[user_id]['file_ids'])
-        bot.reply_to(message, f"📥 ফাইল ({count}) যুক্ত হয়েছে! আরও থাকলে পাঠান অথবা শেষ হলে 'done' লিখুন।")
+        bot.reply_to(message, f"📥 ফাইল ({count}) যুক্ত হয়েছে! আরও থাকলে পাঠান অথবা শেষ হলে 'done' লিখুন።")
         bot.register_next_step_handler(message, get_batch_files_or_link)
     else:
         bot.reply_to(message, "⚠️ ডকুমেন্ট ফাইল পাঠান অথবা কাজ শেষ হলে 'done' লিখুন:")
@@ -952,7 +952,7 @@ def process_resource_delivery(chat_id, arg_text, user_obj=None):
     except Exception as e:
         bot.send_message(chat_id, f"❌ ত্রুটি: {e}")
 
-# --- Setup Webhook Automatically on Startup ---
+# --- Setup Webhook automatically when python main.py runs ---
 def setup_webhook():
     if not RENDER_EXTERNAL_URL:
         return
@@ -962,14 +962,14 @@ def setup_webhook():
             bot.remove_webhook(drop_pending_updates=True)
             time.sleep(1)
             bot.set_webhook(url=webhook_url, drop_pending_updates=True)
-            print(f"Webhook successfully bound to: {webhook_url}")
+            print(f"Webhook successfully set to: {webhook_url}")
             return
         except Exception as e:
             print(f"Webhook setup attempt {attempt} failed: {e}")
             time.sleep(2)
 
 if __name__ == "__main__":
-    print("Setting up Webhook and starting Flask Web Server...")
+    print("Setting up Webhook and starting Flask App via python main.py...")
     setup_webhook()
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port, threaded=True)
