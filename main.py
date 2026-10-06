@@ -15,7 +15,7 @@ from telebot.types import (
 from flask import Flask, request
 
 # --- Bot & Database Configuration ---
-BOT_TOKEN = "8815920877:AAHK0aaPhEUUINy74c7fMlOvm20_By3EzI8"
+BOT_TOKEN = "8815920877:AAH7JMRNXspZ93a3Vw_aL64_hiDk-XOPuUA"
 ADMIN_ID = 7481264433
 FIREBASE_BASE = "https://premium-resources-default-rtdb.firebaseio.com"
 WEB_APP_URL = "https://premium-resources.vercel.app"
@@ -228,7 +228,7 @@ def get_user_earn_name(message):
     if uid not in user_earn_sessions:
         return
     user_earn_sessions[uid]['name'] = message.text.strip()
-    msg = bot.reply_to(message, "🖼️️ **থাম্বনেইল ইমেজ দিন (সরাসরি ছবি অথবা ফ্রি হোস্টিং ইমেজ লিংক পাঠান):**")
+    msg = bot.reply_to(message, "🖼 **থাম্বনেইল ইমেজ দিন (সরাসরি ছবি অথবা ফ্রি হোস্টিং ইমেজ লিংক পাঠান):**")
     bot.register_next_step_handler(msg, get_user_earn_image)
 
 def get_user_earn_image(message):
@@ -554,7 +554,7 @@ def get_batch_files_or_link(message):
     if message.document:
         admin_temp_data[user_id]['file_ids'].append(message.document.file_id)
         count = len(admin_temp_data[user_id]['file_ids'])
-        bot.reply_to(message, f"📥 ফাইল ({count}) যুক্ত হয়েছে! আরও থাকলে পাঠান অথবা শেষ হলে 'done' লিখুন።")
+        bot.reply_to(message, f"📥 ফাইল ({count}) যুক্ত হয়েছে! আরও থাকলে পাঠান অথবা শেষ হলে 'done' লিখুন।")
         bot.register_next_step_handler(message, get_batch_files_or_link)
     else:
         bot.reply_to(message, "⚠️ ডকুমেন্ট ফাইল পাঠান অথবা কাজ শেষ হলে 'done' লিখুন:")
