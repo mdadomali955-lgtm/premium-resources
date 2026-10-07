@@ -583,8 +583,6 @@
     const BOT_USERNAME = "PLPStoreOfficialBot";
     const SUPPORT_URL = "https://t.me/PLPSTOREAI";
     const CHANNEL_URL = "https://t.me/PLPStoreBD0";
-    
-    // ✅ সক্রিয় ব্যাকএন্ড ইউআরএল আপডেট করা হয়েছে যাতে ভেরিফিকেশন সফল হয়
     const RENDER_BACKEND_URL = "https://premium-resources-qxtv.onrender.com";
     const DB_BASE = "https://premium-resources-default-rtdb.firebaseio.com";
 
@@ -595,7 +593,7 @@
     let currentWheelRotation = 0;
     let scratchCardReward = 5;
     let scratchCardScratched = false;
-    let pendingClaimUrl = "";
+    let pendingFileKey = "";
     let searchTimeout = null;
 
     const AD_LIMIT = 30;
@@ -611,7 +609,6 @@
       { text: "+10 🪙", coins: 10, bg: "#eab308" }
     ];
 
-    // ✅ Monetag অ্যাড প্লেয়ার ফাংশন
     function triggerMonetagAd() {
       return new Promise((resolve) => {
         if (typeof show_11750504 === 'function') {
@@ -895,13 +892,25 @@
       });
     }
 
-    // ✅ সঠিক ডিপ-লিংক হ্যান্ডলার
+    // সরাসরি বটে কমান্ড পাঠানো এবং ব্যাকআপ ডিপ-লিংক
     function openClaimBot(key) {
       triggerHaptic();
-      const botUrl = `https://t.me/${BOT_USERNAME}?start=get_${key}`;
+      const cmdText = `📥 প্রিমিয়াম ফাইল রিকোয়েস্ট: ${key}`;
+      
+      if (tg && typeof tg.sendData === 'function') {
+        try {
+          tg.sendData(cmdText);
+          setTimeout(() => { tg.close(); }, 300);
+          return;
+        } catch (e) {
+          console.warn("sendData failed, falling back to link:", e);
+        }
+      }
+
+      const botUrl = `https://t.me/${BOT_USERNAME}?start=get_${key}_from_${user.id}`;
       if (tg && tg.openTelegramLink) {
         tg.openTelegramLink(botUrl);
-        tg.close();
+        setTimeout(() => { tg.close(); }, 300);
       } else {
         window.location.href = botUrl;
       }
@@ -909,13 +918,8 @@
 
     function executeBotDelivery() {
       document.getElementById('claimSuccessModal').classList.remove('active');
-      if (pendingClaimUrl) {
-        if (tg && tg.openTelegramLink) {
-          tg.openTelegramLink(pendingClaimUrl);
-          tg.close();
-        } else {
-          window.location.href = pendingClaimUrl;
-        }
+      if (pendingFileKey) {
+        openClaimBot(pendingFileKey);
       }
     }
 
@@ -1058,7 +1062,6 @@
       }
     }
 
-    // ✅ চ্যানেল ভেরিফিকেশন ফিক্সড
     async function claimChannelTask() {
       triggerHaptic();
       if (userData.joined_channel) return;
@@ -1235,7 +1238,6 @@
       modal.classList.remove('active');
     }
 
-    // ✅ বিজ্ঞাপনসহ ফাইল কেনার সংশোধিত ফাংশন
     async function claimResource(key, cost, name, type) {
       triggerHaptic();
       if ((userData.coins || 0) < cost) {
@@ -1260,7 +1262,6 @@
           }, 1000);
         });
 
-        // ৫ সেকেন্ড কাউন্টডাউন শেষ হওয়ার সাথে সাথে Monetag বিজ্ঞাপন প্রদর্শন
         await triggerMonetagAd();
 
         loadingOverlay.classList.remove('active');
@@ -1275,10 +1276,9 @@
         await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
         await fetch(`${DB_BASE}/users/${user.id}/unlocked/${key}.json`, { method: 'PUT', body: JSON.stringify(userData.unlocked[key]) });
 
-        showToast("🎉 ডাউনলোড সফল! ফাইলটি বটের ইনবক্সে পাঠানো হয়েছে।", "📥");
+        showToast("🎉 ডাউনলোড সফল! ফাইলটি বটের ইনবক্সে পাঠানো হচ্ছে।", "📥");
         
-        // বটের স্বীকৃত ডিপ-লিংক
-        pendingClaimUrl = `https://t.me/${BOT_USERNAME}?start=get_${key}`;
+        pendingFileKey = key;
         document.getElementById('claimSuccessModal').classList.add('active');
       }
     }
@@ -1350,4 +1350,4 @@
     initApp();
   </script>
 </body>
-          </html>
+                                                                                                                    </html>
