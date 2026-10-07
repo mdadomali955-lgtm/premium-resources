@@ -892,21 +892,29 @@
       });
     }
 
-    // সরাসরি বটে কমান্ড পাঠানো এবং ব্যাকআপ ডিপ-লিংক
-    function openClaimBot(key) {
+    // ব্যাকএন্ড API-এর মাধ্যমে সরাসরি টেলিগ্রাম ইনবক্সে ফাইল পাঠানোর ফাংশন
+    async function openClaimBot(key) {
       triggerHaptic();
-      const cmdText = `📥 প্রিমিয়াম ফাইল রিকোয়েস্ট: ${key}`;
-      
-      if (tg && typeof tg.sendData === 'function') {
-        try {
-          tg.sendData(cmdText);
-          setTimeout(() => { tg.close(); }, 300);
+      showToast("ইনবক্সে ফাইল পাঠানো হচ্ছে... ⏳", "📥");
+
+      try {
+        const res = await fetch(`${RENDER_BACKEND_URL}/deliver-resource`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: user.id, file_key: key })
+        });
+        const resData = await res.json();
+        
+        if (resData.success) {
+          showToast("🎉 আপনার ইনবক্সে ফাইল চলে গেছে!", "✅");
+          if (tg && tg.close) setTimeout(() => { tg.close(); }, 800);
           return;
-        } catch (e) {
-          console.warn("sendData failed, falling back to link:", e);
         }
+      } catch (err) {
+        console.warn("Direct delivery error, opening bot link:", err);
       }
 
+      // ব্যাকআপ ডিপ-লিংক
       const botUrl = `https://t.me/${BOT_USERNAME}?start=get_${key}_from_${user.id}`;
       if (tg && tg.openTelegramLink) {
         tg.openTelegramLink(botUrl);
@@ -1276,8 +1284,15 @@
         await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
         await fetch(`${DB_BASE}/users/${user.id}/unlocked/${key}.json`, { method: 'PUT', body: JSON.stringify(userData.unlocked[key]) });
 
-        showToast("🎉 ডাউনলোড সফল! ফাইলটি বটের ইনবক্সে পাঠানো হচ্ছে।", "📥");
-        
+        // ডাউনলোড সম্পন্ন হওয়া মাত্রই অটোমেটিক ব্যাকএন্ডকে ফাইল পাঠাতে ট্রিগার করা
+        fetch(`${RENDER_BACKEND_URL}/deliver-resource`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: user.id, file_key: key })
+        }).then(r => r.json()).then(res => {
+          if (res.success) showToast("🎉 ফাইলটি সরাসরি ইনবক্সে পাঠিয়ে দেওয়া হয়েছে!", "📥");
+        }).catch(e => console.warn("Auto deliver err:", e));
+
         pendingFileKey = key;
         document.getElementById('claimSuccessModal').classList.add('active');
       }
@@ -1350,4 +1365,4 @@
     initApp();
   </script>
 </body>
-                                                                                                                    </html>
+  </html>
