@@ -195,14 +195,15 @@
     .card img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; display: block; }
 
     .card.xml-fullwidth-card { grid-column: span 2; border-radius: 24px; }
-    .card.xml-fullwidth-card .card-thumb-wrap { height: auto; max-height: 450px; background: #000; display: flex; align-items: center; justify-content: center; }
+    .card.xml-fullwidth-card .card-thumb-wrap { height: 210px; max-height: 450px; background: #000; display: flex; align-items: center; justify-content: center; }
     .card.xml-fullwidth-card .card-body { padding: 14px 16px; }
     .card.xml-fullwidth-card .card-title { font-size: 14px; -webkit-line-clamp: 2; }
 
     .video-play-indicator {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-      width: 44px; height: 44px; background: rgba(0, 0, 0, 0.7); border-radius: 50%; 
-      display: flex; align-items: center; justify-content: center; color: #38bdf8; font-size: 18px; pointer-events: none; border: 1px solid rgba(255,255,255,0.3);
+      width: 48px; height: 48px; background: rgba(0, 0, 0, 0.75); border-radius: 50%; 
+      display: flex; align-items: center; justify-content: center; color: #38bdf8; font-size: 20px; pointer-events: none; border: 1.5px solid rgba(56, 189, 248, 0.8);
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
     }
 
     .type-pill {
@@ -297,20 +298,23 @@
       <div class="spinner"></div>
       <div style="font-size: 15px; font-weight: 900; color: #fff;">দয়া করে ৫ সেকেন্ড অপেক্ষা করুন</div>
       <div style="font-size: 12.5px; color: var(--accent); font-weight: 900;" id="loadingCountdownText">আপনার ফাইল প্রস্তুত করা হচ্ছে...</div>
-      <div style="font-size: 10.5px; color: var(--text-sub);">এরপর বিজ্ঞাপন দেখানো হবে এবং ফাইল ইনবক্সে চলে যাবে 🚀</div>
+      <div style="font-size: 10.5px; color: var(--text-sub);">বিজ্ঞাপন শেষে ফাইল সরাসরি আপনার টেলিগ্রাম ইনবক্সে পৌঁছে যাবে 🚀</div>
     </div>
   </div>
 
+  <!-- পরিবর্তিত সাকসেস পপ-আপ: ডাবল ফাইল ডেলিভারি রোধ করার জন্য -->
   <div class="claim-success-modal" id="claimSuccessModal">
     <div class="claim-success-box">
-      <div style="font-size: 40px; margin-bottom: 8px;">🎉</div>
-      <h3 style="font-size: 17px; font-weight: 900; color: #fff; margin-bottom: 6px;">ডাউনলোড সফল হয়েছে!</h3>
-      <p style="font-size: 12px; color: var(--text-sub); margin-bottom: 18px;">আপনার ফাইলটি টেলিগ্রাম ইনবক্সে নিতে নিচের বাটনে চাপ দিন:</p>
-      <button class="action-btn" id="modalClaimBtn" onclick="executeBotDelivery()">ইনবক্সে ফাইল নিন 📥</button>
+      <div style="font-size: 42px; margin-bottom: 8px;">🎉</div>
+      <h3 style="font-size: 17px; font-weight: 900; color: #fff; margin-bottom: 6px;">অভিনন্দন! ডাউনলোড সফল</h3>
+      <p style="font-size: 12px; color: var(--text-sub); margin-bottom: 18px; line-height: 1.5;">
+        ফাইলটি সরাসরি আপনার <b>টেলিগ্রাম ইনবক্সে</b> পাঠিয়ে দেওয়া হয়েছে! 📥<br>ইনবক্স চেক করুন।
+      </p>
+      <button class="action-btn" onclick="closeClaimModal()" style="background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff;">ঠিক আছে 👍</button>
     </div>
   </div>
 
-  <!-- কিভাবে ডাউনলোড করবেন গাইড মোডাল -->
+  <!-- কিভাবে ডাউনলোড করবেন নির্দেশিকা মোডাল -->
   <div class="guide-modal" id="guideModal" onclick="closeGuideModal()">
     <div class="guide-box" onclick="event.stopPropagation()">
       <div style="font-size: 38px; margin-bottom: 6px;">📖</div>
@@ -318,8 +322,8 @@
       <div style="font-size: 12px; color: var(--text-sub); text-align: left; line-height: 1.6; display: flex; flex-direction: column; gap: 8px;">
         <div><b>১. কয়েন অর্জন করুন:</b> ডেইলি চেক-ইন, স্পিন, স্ক্র্যাচ বা টাস্ক পূরণ করে পর্যাপ্ত কয়েন সংগ্রহ করুন।</div>
         <div><b>২. ডাউনলোড বাটনে চাপ দিন:</b> পছন্দের ফন্ট, PLP বা XML ফাইলের নিচের **"ডাউনলোড করুন"** বাটনে ক্লিক করুন।</div>
-        <div><b>৩. ৫ সেকেন্ড অপেক্ষা:</b> নিয়ম অনুযায়ী ৫ সেকেন্ডের প্রিপেয়ারিং কাউন্টডাউন শেষ হবে।</div>
-        <div><b>৪. ইনবক্সে ফাইল নিন:</b> সফলভাবে রিওয়ার্ড সম্পন্ন হওয়ার পর পপ-আপ আসলে **"ইনবক্সে ফাইল নিন"** বাটনে চাপ দিলেই বট আপনার টেলিগ্রাম ইনবক্সে ফাইল পাঠিয়ে দেবে! 🚀</div>
+        <div><b>৩. ৫ সেকেন্ড অপেক্ষা:</b> নিয়ম অনুযায়ী ৫ সেকেন্ডের কাউন্টডাউন শেষ হবে ও বিজ্ঞাপন আসবে।</div>
+        <div><b>৪. অটো ইনবক্স ডেলিভারি:</b> বিজ্ঞাপন শেষ হওয়া মাত্রই ফাইলটি নিজে থেকে আপনার টেলিগ্রাম ইনবক্সে ডেলিভারি হয়ে যাবে! 🚀</div>
       </div>
       <button class="action-btn" onclick="closeGuideModal()" style="margin-top: 18px; padding: 10px;">বুঝেছি 👍</button>
     </div>
@@ -346,7 +350,7 @@
       <span id="noticeText">স্বাগতম! নতুন প্রিমিয়াম PLP, XML ও ফন্ট যুক্ত করা হয়েছে।</span>
     </div>
 
-    <!-- কিভাবে ডাউনলোড করবেন নির্দেশিকা বাটন -->
+    <!-- গাইড বাটন -->
     <button class="guide-btn" onclick="openGuideModal()">
       <span>💡</span><span>কীভাবে ফাইল ডাউনলোড করবেন? (গাইড দেখুন)</span>
     </button>
@@ -593,7 +597,6 @@
     let currentWheelRotation = 0;
     let scratchCardReward = 5;
     let scratchCardScratched = false;
-    let pendingFileKey = "";
     let searchTimeout = null;
 
     const AD_LIMIT = 30;
@@ -657,6 +660,10 @@
 
     function closeGuideModal() {
       document.getElementById('guideModal').classList.remove('active');
+    }
+
+    function closeClaimModal() {
+      document.getElementById('claimSuccessModal').classList.remove('active');
     }
 
     function fireConfetti() {
@@ -730,7 +737,8 @@
       return url.includes('youtube.com') || url.includes('youtu.be');
     }
 
-    function getYoutubeEmbedUrl(url, autoplay = true) {
+    function getYoutubeVideoId(url) {
+      if (!url) return '';
       let videoId = '';
       if (url.includes('shorts/')) {
         videoId = url.split('shorts/')[1].split('?')[0];
@@ -739,9 +747,13 @@
       } else if (url.includes('youtu.be/')) {
         videoId = url.split('youtu.be/')[1].split('?')[0];
       }
-      if (!videoId) videoId = '1X3jihLvjY0';
+      return videoId;
+    }
+
+    function getYoutubeEmbedUrl(url, autoplay = true) {
+      let videoId = getYoutubeVideoId(url) || '1X3jihLvjY0';
       const ap = autoplay ? 1 : 0;
-      return `https://www.youtube.com/embed/${videoId}?autoplay=${ap}&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0`;
+      return `https://www.youtube.com/embed/${videoId}?autoplay=${ap}&controls=1&showinfo=0&rel=0`;
     }
 
     function isVideoUrl(url) {
@@ -892,7 +904,6 @@
       });
     }
 
-    // ব্যাকএন্ড API-এর মাধ্যমে সরাসরি টেলিগ্রাম ইনবক্সে ফাইল পাঠানোর ফাংশন
     async function openClaimBot(key) {
       triggerHaptic();
       showToast("ইনবক্সে ফাইল পাঠানো হচ্ছে... ⏳", "📥");
@@ -907,27 +918,10 @@
         
         if (resData.success) {
           showToast("🎉 আপনার ইনবক্সে ফাইল চলে গেছে!", "✅");
-          if (tg && tg.close) setTimeout(() => { tg.close(); }, 800);
           return;
         }
       } catch (err) {
-        console.warn("Direct delivery error, opening bot link:", err);
-      }
-
-      // ব্যাকআপ ডিপ-লিংক
-      const botUrl = `https://t.me/${BOT_USERNAME}?start=get_${key}_from_${user.id}`;
-      if (tg && tg.openTelegramLink) {
-        tg.openTelegramLink(botUrl);
-        setTimeout(() => { tg.close(); }, 300);
-      } else {
-        window.location.href = botUrl;
-      }
-    }
-
-    function executeBotDelivery() {
-      document.getElementById('claimSuccessModal').classList.remove('active');
-      if (pendingFileKey) {
-        openClaimBot(pendingFileKey);
+        console.warn("Direct delivery error:", err);
       }
     }
 
@@ -1158,14 +1152,15 @@
         let mediaHtml = '';
         if (isVideo) {
           if (isYoutubeUrl(mediaSource)) {
-            const embedUrl = getYoutubeEmbedUrl(mediaSource, true);
+            // ৪ বা ৫ সেকেন্ডের প্রিভিউ থাম্বনেইল হিসেবে ইউটিউবের অটোমেটিক এইচডি থাম্বনেইল ফ্রেম নেওয়া হচ্ছে
+            const ytId = getYoutubeVideoId(mediaSource);
+            const thumbUrl = ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : (item.image || 'https://via.placeholder.com/300x180');
+            
             mediaHtml = `
               <div class="card-thumb-wrap" onclick="openMediaPreview('${mediaSource}', true)">
                 <span class="type-pill">${item.type?.toUpperCase()}</span>
                 <span class="download-count-pill">📥 ${item.total_claims || 0}</span>
-                <div style="position: relative; width: 100%; padding-bottom: 125%; background: #000;">
-                  <iframe src="${embedUrl}" frameborder="0" allow="autoplay; encrypted-media" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events: none; object-fit: cover;"></iframe>
-                </div>
+                <img src="${thumbUrl}" alt="thumb" loading="lazy" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/300x180';">
                 <div class="video-play-indicator">▶</div>
               </div>`;
           } else {
@@ -1173,7 +1168,7 @@
               <div class="card-thumb-wrap" onclick="openMediaPreview('${mediaSource}', true)">
                 <span class="type-pill">${item.type?.toUpperCase()}</span>
                 <span class="download-count-pill">📥 ${item.total_claims || 0}</span>
-                <video src="${mediaSource}#t=1" muted autoplay loop preload="auto" playsinline style="width:100%; height:auto; display:block; max-height:400px; background:#000;"></video>
+                <video src="${mediaSource}#t=4" muted preload="metadata" playsinline style="width:100%; height:100%; object-fit:cover; display:block; background:#000;"></video>
                 <div class="video-play-indicator">▶</div>
               </div>`;
           }
@@ -1246,6 +1241,7 @@
       modal.classList.remove('active');
     }
 
+    // সংশোধিত ক্লেইম ফাংশন: একবারই ফাইল যাবে এবং ডাবল ডেলিভারি হবে না
     async function claimResource(key, cost, name, type) {
       triggerHaptic();
       if ((userData.coins || 0) < cost) {
@@ -1284,16 +1280,18 @@
         await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
         await fetch(`${DB_BASE}/users/${user.id}/unlocked/${key}.json`, { method: 'PUT', body: JSON.stringify(userData.unlocked[key]) });
 
-        // ডাউনলোড সম্পন্ন হওয়া মাত্রই অটোমেটিক ব্যাকএন্ডকে ফাইল পাঠাতে ট্রিগার করা
+        // শুধুমাত্র একবারই সরাসরি ডেলিভারি কল হবে
         fetch(`${RENDER_BACKEND_URL}/deliver-resource`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ user_id: user.id, file_key: key })
         }).then(r => r.json()).then(res => {
-          if (res.success) showToast("🎉 ফাইলটি সরাসরি ইনবক্সে পাঠিয়ে দেওয়া হয়েছে!", "📥");
+          if (res.success) {
+            showToast("🎉 ফাইলটি সরাসরি ইনবক্সে পৌঁছে গেছে!", "📥");
+          }
         }).catch(e => console.warn("Auto deliver err:", e));
 
-        pendingFileKey = key;
+        // সুন্দর পপ-আপ প্রদর্শন (যেখানে কোনো এক্সট্রা ডেলিভারি বাটন থাকবে না)
         document.getElementById('claimSuccessModal').classList.add('active');
       }
     }
@@ -1365,4 +1363,4 @@
     initApp();
   </script>
 </body>
-  </html>
+                                                     </html>
