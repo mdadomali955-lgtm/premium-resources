@@ -1152,14 +1152,13 @@
         let mediaHtml = '';
         if (isVideo) {
           if (isYoutubeUrl(mediaSource)) {
-            // ৪ বা ৫ সেকেন্ডের প্রিভিউ থাম্বনেইল হিসেবে ইউটিউবের অটোমেটিক এইচডি থাম্বনেইল ফ্রেম নেওয়া হচ্ছে
             const ytId = getYoutubeVideoId(mediaSource);
             const thumbUrl = ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : (item.image || 'https://via.placeholder.com/300x180');
             
             mediaHtml = `
               <div class="card-thumb-wrap" onclick="openMediaPreview('${mediaSource}', true)">
                 <span class="type-pill">${item.type?.toUpperCase()}</span>
-                <span class="download-count-pill">📥 ${item.total_claims || 0}</span>
+                <span class="download-count-pill" id="claim-count-${k}">📥 ${item.total_claims || 0}</span>
                 <img src="${thumbUrl}" alt="thumb" loading="lazy" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/300x180';">
                 <div class="video-play-indicator">▶</div>
               </div>`;
@@ -1167,7 +1166,7 @@
             mediaHtml = `
               <div class="card-thumb-wrap" onclick="openMediaPreview('${mediaSource}', true)">
                 <span class="type-pill">${item.type?.toUpperCase()}</span>
-                <span class="download-count-pill">📥 ${item.total_claims || 0}</span>
+                <span class="download-count-pill" id="claim-count-${k}">📥 ${item.total_claims || 0}</span>
                 <video src="${mediaSource}#t=4" muted preload="metadata" playsinline style="width:100%; height:100%; object-fit:cover; display:block; background:#000;"></video>
                 <div class="video-play-indicator">▶</div>
               </div>`;
@@ -1176,7 +1175,7 @@
           mediaHtml = `
             <div class="card-thumb-wrap" onclick="openMediaPreview('${item.image}', false)">
               <span class="type-pill">${item.type?.toUpperCase()}</span>
-              <span class="download-count-pill">📥 ${item.total_claims || 0}</span>
+              <span class="download-count-pill" id="claim-count-${k}">📥 ${item.total_claims || 0}</span>
               <img src="${item.image || 'https://via.placeholder.com/150'}" alt="thumb" loading="lazy" onerror="this.src='https://via.placeholder.com/150';">
             </div>`;
         }
@@ -1241,7 +1240,7 @@
       modal.classList.remove('active');
     }
 
-    // সংশোধিত ক্লেইম ফাংশন: একবারই ফাইল যাবে এবং ডাবল ডেলিভারি হবে না
+    // সংশোধিত ক্লেইম ফাংশন: ডাউনলোড সংখ্যা সাথে সাথে কার্ডের ওপর লাইভ আপডেট হবে
     async function claimResource(key, cost, name, type) {
       triggerHaptic();
       if ((userData.coins || 0) < cost) {
@@ -1280,7 +1279,7 @@
         await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
         await fetch(`${DB_BASE}/users/${user.id}/unlocked/${key}.json`, { method: 'PUT', body: JSON.stringify(userData.unlocked[key]) });
 
-        // শুধুমাত্র একবারই সরাসরি ডেলিভারি কল হবে
+        // শুধুমাত্র একবারই সরাসরি ডেলিভারি কল হবে এবং সফল হলে কার্ডে লাইভ সংখ্যা বাড়বে
         fetch(`${RENDER_BACKEND_URL}/deliver-resource`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1288,10 +1287,46 @@
         }).then(r => r.json()).then(res => {
           if (res.success) {
             showToast("🎉 ফাইলটি সরাসরি ইনবক্সে পৌঁছে গেছে!", "📥");
+
+            // ১. ফ্রন্টএন্ডের লোকাল অবজেক্টে ডাউনলোড সংখ্যা ও রাজস্ব বৃদ্ধি
+            if (allResources[key]) {
+              allResources[key].total_claims = (allResources[key].total_claims || 0) + 1;
+              allResources[key].total_revenue = (allResources[key].total_revenue || 0) + cost;
+
+              // ২. কার্ডের ওপরে লাইভ ডাউনলোড ব্যাজ আপডেট
+              const pillEl = document.getElementById(`claim-count-${key}`);
+              if (pillEl) {
+                pillEl.innerHTML = `📥 ${allResources[key].total_claims}`;
+                pillEl.style.transform = 'scale(1.2)';
+                pillEl.style.transition = '0.3s ease';
+                setTimeout(() => { pillEl.style.transform = 'scale(1)'; }, 400);
+              }
+
+              // ৩. ফায়ারবেজে ফাইলের ডাউনলোড ও রেভিনিউ কাউন্ট পার্মানেন্ট আপডেট
+              fetch(`${DB_BASE}/resources/${key}/total_claims.json`, {
+                method: 'PUT',
+                body: JSON.stringify(allResources[key].total_claims)
+              });
+              fetch(`${DB_BASE}/resources/${key}/total_revenue.json`, {
+                method: 'PUT',
+                body: JSON.stringify(allResources[key].total_revenue)
+              });
+            }
+
+            // ৪. হোম পেজের গ্লোবাল স্ট্যাটাস বারে মোট ডাউনলোড সংখ্যা লাইভ বাড়ানো
+            const globalClaimsEl = document.getElementById('statClaims');
+            if (globalClaimsEl) {
+              const currentTotal = parseInt(globalClaimsEl.innerText) || 0;
+              globalClaimsEl.innerText = currentTotal + 1;
+              fetch(`${DB_BASE}/stats/total_claims.json`, {
+                method: 'PUT',
+                body: JSON.stringify(currentTotal + 1)
+              });
+            }
           }
         }).catch(e => console.warn("Auto deliver err:", e));
 
-        // সুন্দর পপ-আপ প্রদর্শন (যেখানে কোনো এক্সট্রা ডেলিভারি বাটন থাকবে না)
+        // সুন্দর পপ-আপ প্রদর্শন
         document.getElementById('claimSuccessModal').classList.add('active');
       }
     }
@@ -1363,4 +1398,4 @@
     initApp();
   </script>
 </body>
-                                                     </html>
+      </html>
