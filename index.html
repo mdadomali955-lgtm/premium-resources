@@ -302,7 +302,6 @@
     </div>
   </div>
 
-  <!-- পরিবর্তিত সাকসেস পপ-আপ: ডাবল ফাইল ডেলিভারি রোধ করার জন্য -->
   <div class="claim-success-modal" id="claimSuccessModal">
     <div class="claim-success-box">
       <div style="font-size: 42px; margin-bottom: 8px;">🎉</div>
@@ -314,7 +313,6 @@
     </div>
   </div>
 
-  <!-- কিভাবে ডাউনলোড করবেন নির্দেশিকা মোডাল -->
   <div class="guide-modal" id="guideModal" onclick="closeGuideModal()">
     <div class="guide-box" onclick="event.stopPropagation()">
       <div style="font-size: 38px; margin-bottom: 6px;">📖</div>
@@ -350,7 +348,6 @@
       <span id="noticeText">স্বাগতম! নতুন প্রিমিয়াম PLP, XML ও ফন্ট যুক্ত করা হয়েছে।</span>
     </div>
 
-    <!-- গাইড বাটন -->
     <button class="guide-btn" onclick="openGuideModal()">
       <span>💡</span><span>কীভাবে ফাইল ডাউনলোড করবেন? (গাইড দেখুন)</span>
     </button>
@@ -374,7 +371,6 @@
       </div>
     </div>
 
-    <!-- ১. রিসোর্স হোম পেজ -->
     <div id="pageHome" class="view-page active">
       <div class="daily-card">
         <div>
@@ -395,7 +391,6 @@
       <div class="grid" id="resourceGrid"></div>
     </div>
 
-    <!-- ২. টাস্ক, অ্যাড ও গেমস -->
     <div id="pageAds" class="view-page">
       <div class="stat-card" style="text-align: left;">
         <h3 style="font-size: 14.5px; font-weight: 800; margin-bottom: 8px; color: #fff;">🚀 স্পেশাল চ্যানেল টাস্ক</h3>
@@ -442,7 +437,6 @@
       </div>
     </div>
 
-    <!-- ৩. লিডারবোর্ড -->
     <div id="pageLeaderboard" class="view-page">
       <div class="stat-card">
         <h3 style="font-size:16px; font-weight: 800; color: #fff;">🏆 শীর্ষ VIP ব্যবহারকারী</h3>
@@ -451,7 +445,6 @@
       <div id="leaderboardList"></div>
     </div>
 
-    <!-- ৪. রেফারেল পেজ -->
     <div id="pageRefer" class="view-page">
       <div class="stat-card">
         <span style="font-size:32px;">🤝</span>
@@ -466,7 +459,6 @@
       <button class="action-btn" onclick="shareReferralLink()">🚀 রেফার লিংক শেয়ার করুন (+৫০ কয়েন)</button>
     </div>
 
-    <!-- ৫. প্রোফাইল -->
     <div id="pageProfile" class="view-page">
       <div class="stat-card">
         <div class="user-avatar-wrap" style="width: 72px; height: 72px; margin: 0 auto 10px auto;">
@@ -503,7 +495,6 @@
       <button class="action-btn" style="background:rgba(255,255,255,0.06); color:#38bdf8; border:1px solid rgba(255,255,255,0.2);" onclick="openSupport()">💬 হেল্পলাইন ও সাপোর্ট গ্রুপ</button>
     </div>
 
-    <!-- ৬. অ্যাডমিন প্যানেল -->
     <div id="pageAdmin" class="view-page">
       <div class="stat-card">
         <span style="font-size: 32px;">👑</span>
@@ -534,7 +525,7 @@
               </tr>
             </thead>
             <tbody id="adminSalesTableBody">
-              <tr><td colspan="4" style="text-align: center; color: var(--text-sub); padding: 15px;">লোড হচ্ছে... ⏳</td></tr>
+              <tr><td colspan="4" style="text-align: center; color: var(--accent); padding: 15px;">লোড হচ্ছে... ⏳</td></tr>
             </tbody>
           </table>
         </div>
@@ -584,7 +575,8 @@
     if (tg) { tg.ready(); tg.expand(); }
 
     const ADMIN_TELEGRAM_ID = 7481264433;
-    const BOT_USERNAME = "PLPStoreOfficialBot";
+    // নতুন বটের ইউজারনেম আপডেট করা হয়েছে
+    const BOT_USERNAME = "Premiumresoures_bot";
     const SUPPORT_URL = "https://t.me/PLPSTOREAI";
     const CHANNEL_URL = "https://t.me/PLPStoreBD0";
     const RENDER_BACKEND_URL = "https://premium-resources-qxtv.onrender.com";
@@ -1240,7 +1232,6 @@
       modal.classList.remove('active');
     }
 
-    // সংশোধিত ক্লেইম ফাংশন: ডাউনলোড সংখ্যা সাথে সাথে কার্ডের ওপর লাইভ আপডেট হবে
     async function claimResource(key, cost, name, type) {
       triggerHaptic();
       if ((userData.coins || 0) < cost) {
@@ -1279,7 +1270,6 @@
         await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
         await fetch(`${DB_BASE}/users/${user.id}/unlocked/${key}.json`, { method: 'PUT', body: JSON.stringify(userData.unlocked[key]) });
 
-        // শুধুমাত্র একবারই সরাসরি ডেলিভারি কল হবে এবং সফল হলে কার্ডে লাইভ সংখ্যা বাড়বে
         fetch(`${RENDER_BACKEND_URL}/deliver-resource`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1288,12 +1278,10 @@
           if (res.success) {
             showToast("🎉 ফাইলটি সরাসরি ইনবক্সে পৌঁছে গেছে!", "📥");
 
-            // ১. ফ্রন্টএন্ডের লোকাল অবজেক্টে ডাউনলোড সংখ্যা ও রাজস্ব বৃদ্ধি
             if (allResources[key]) {
               allResources[key].total_claims = (allResources[key].total_claims || 0) + 1;
               allResources[key].total_revenue = (allResources[key].total_revenue || 0) + cost;
 
-              // ২. কার্ডের ওপরে লাইভ ডাউনলোড ব্যাজ আপডেট
               const pillEl = document.getElementById(`claim-count-${key}`);
               if (pillEl) {
                 pillEl.innerHTML = `📥 ${allResources[key].total_claims}`;
@@ -1302,7 +1290,6 @@
                 setTimeout(() => { pillEl.style.transform = 'scale(1)'; }, 400);
               }
 
-              // ৩. ফায়ারবেজে ফাইলের ডাউনলোড ও রেভিনিউ কাউন্ট পার্মানেন্ট আপডেট
               fetch(`${DB_BASE}/resources/${key}/total_claims.json`, {
                 method: 'PUT',
                 body: JSON.stringify(allResources[key].total_claims)
@@ -1313,7 +1300,6 @@
               });
             }
 
-            // ৪. হোম পেজের গ্লোবাল স্ট্যাটাস বারে মোট ডাউনলোড সংখ্যা লাইভ বাড়ানো
             const globalClaimsEl = document.getElementById('statClaims');
             if (globalClaimsEl) {
               const currentTotal = parseInt(globalClaimsEl.innerText) || 0;
@@ -1326,7 +1312,6 @@
           }
         }).catch(e => console.warn("Auto deliver err:", e));
 
-        // সুন্দর পপ-আপ প্রদর্শন
         document.getElementById('claimSuccessModal').classList.add('active');
       }
     }
@@ -1398,4 +1383,4 @@
     initApp();
   </script>
 </body>
-      </html>
+  </html>
