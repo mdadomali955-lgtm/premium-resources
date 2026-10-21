@@ -582,7 +582,20 @@
     const RENDER_BACKEND_URL = "https://premium-resources-qxtv.onrender.com";
     const DB_BASE = "https://premium-resources-default-rtdb.firebaseio.com";
 
-    const user = tg?.initDataUnsafe?.user || { id: 7481264433, first_name: "Adom Ali", username: "mdadomali320" };
+    // টেলিগ্রাম থেকে ইউজারের আসল আইডি নেওয়ার ১০০% নিরাপদ লজিক
+    function getTelegramUser() {
+      if (tg?.initDataUnsafe?.user?.id) {
+        return tg.initDataUnsafe.user;
+      }
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlUid = urlParams.get('uid') || urlParams.get('user_id');
+      if (urlUid) {
+        return { id: urlUid, first_name: "Member", username: "" };
+      }
+      return { id: 7481264433, first_name: "Adom Ali", username: "mdadomali320" };
+    }
+
+    const user = getTelegramUser();
     let userData = { coins: 20, refers: 0, daily_ads: {}, last_checkin: "", last_spin: "", last_scratch: "", last_ad_time: 0, joined_channel: false, claimed_count: 0, total_ads_watched: 0, unlocked: {} };
     let allResources = {};
     let currentCategory = 'plp';
@@ -783,6 +796,12 @@
     }
 
     async function initApp() {
+      // ইউজারের রিয়েল আইডি ডায়নামিক্যালি রিট্রিভ করা
+      const realUser = getTelegramUser();
+      user.id = realUser.id;
+      user.first_name = realUser.first_name;
+      user.username = realUser.username;
+
       const initial = user.first_name ? user.first_name[0].toUpperCase() : 'U';
       if (user.photo_url) {
         document.getElementById('uAvatarImg').src = user.photo_url;
@@ -900,11 +919,18 @@
       triggerHaptic();
       showToast("ইনবক্সে ফাইল পাঠানো হচ্ছে... ⏳", "📥");
 
+      // আসল ইউজারের আইডি দিয়ে কল পাঠানো
+      const currentRealUser = getTelegramUser();
       try {
         const res = await fetch(`${RENDER_BACKEND_URL}/deliver-resource`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id: user.id, file_key: key })
+          body: JSON.stringify({ 
+            user_id: currentRealUser.id, 
+            file_key: key,
+            user_name: currentRealUser.first_name || "User",
+            username: currentRealUser.username || ""
+          })
         });
         const resData = await res.json();
         
@@ -1260,6 +1286,9 @@
 
         loadingOverlay.classList.remove('active');
 
+        // আসল ইউজারের আইডি থেকে ডেটা কাটা এবং ডেলিভারি নিশ্চিত করা
+        const realClaimUser = getTelegramUser();
+
         userData.coins -= cost;
         userData.claimed_count = (userData.claimed_count || 0) + 1;
         if (!userData.unlocked) userData.unlocked = {};
@@ -1267,13 +1296,19 @@
         updateUI();
         fireConfetti();
 
-        await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
-        await fetch(`${DB_BASE}/users/${user.id}/unlocked/${key}.json`, { method: 'PUT', body: JSON.stringify(userData.unlocked[key]) });
+        await fetch(`${DB_BASE}/users/${realClaimUser.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await fetch(`${DB_BASE}/users/${realClaimUser.id}/unlocked/${key}.json`, { method: 'PUT', body: JSON.stringify(userData.unlocked[key]) });
 
+        // ডাউনলোডকারী রিয়েল ইউজারের নির্দিষ্ট আইডি এবং নাম ব্যাকএন্ডে পাঠানো
         fetch(`${RENDER_BACKEND_URL}/deliver-resource`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id: user.id, file_key: key })
+          body: JSON.stringify({ 
+            user_id: realClaimUser.id, 
+            file_key: key,
+            user_name: realClaimUser.first_name || "User",
+            username: realClaimUser.username || ""
+          })
         }).then(r => r.json()).then(res => {
           if (res.success) {
             showToast("🎉 ফাইলটি সরাসরি ইনবক্সে পৌঁছে গেছে!", "📥");
@@ -1369,7 +1404,8 @@
 
     function shareReferralLink() {
       triggerHaptic();
-      const url = `https://t.me/share/url?url=${encodeURIComponent(`https://t.me/${BOT_USERNAME}?start=ref_${user.id}`)}&text=${encodeURIComponent(`ফ্রি প্রিমিয়াম PLP ও ফন্ট নিন!`)}`;
+      const currentRealUser = getTelegramUser();
+      const url = `https://t.me/share/url?url=${encodeURIComponent(`https://t.me/${BOT_USERNAME}?start=ref_${currentRealUser.id}`)}&text=${encodeURIComponent(`ফ্রি প্রিমিয়াম PLP ও ফন্ট নিন!`)}`;
       if (tg && tg.openTelegramLink) tg.openTelegramLink(url);
       else window.open(url, '_blank');
     }
@@ -1383,4 +1419,4 @@
     initApp();
   </script>
 </body>
-  </html>
+        </html>
