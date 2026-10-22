@@ -582,17 +582,54 @@
     const RENDER_BACKEND_URL = "https://premium-resources-qxtv.onrender.com";
     const DB_BASE = "https://premium-resources-default-rtdb.firebaseio.com";
 
-    // টেলিগ্রাম থেকে ইউজারের আসল আইডি নেওয়ার ১০০% নিরাপদ লজিক
+    // টেলিগ্রাম থেকে ইউজারের আসল আইডি নেওয়ার ১০০% নিরাপদ লজিক (যাতে কখনোই ভুলে অ্যাডমিন আইডিতে ফাইল না যায়)
     function getTelegramUser() {
+      // ১. টেলিগ্রামের সরাসরি initDataUnsafe চেক
       if (tg?.initDataUnsafe?.user?.id) {
-        return tg.initDataUnsafe.user;
+        const u = tg.initDataUnsafe.user;
+        try { localStorage.setItem('tg_verified_user', JSON.stringify(u)); } catch(e) {}
+        return u;
       }
+
+      // ২. টেলিগ্রাম URL Hash (#tgWebAppData) থেকে ইউজার ডেটা ডিকোড করা
+      try {
+        if (window.location.hash) {
+          const hashParams = new URLSearchParams(window.location.hash.substring(1));
+          const tgWebAppData = hashParams.get('tgWebAppData');
+          if (tgWebAppData) {
+            const dataParams = new URLSearchParams(tgWebAppData);
+            const userJson = dataParams.get('user');
+            if (userJson) {
+              const parsedUser = JSON.parse(decodeURIComponent(userJson));
+              if (parsedUser && parsedUser.id) {
+                try { localStorage.setItem('tg_verified_user', JSON.stringify(parsedUser)); } catch(e) {}
+                return parsedUser;
+              }
+            }
+          }
+        }
+      } catch (e) {}
+
+      // ৩. বটের পাঠানো URL প্যারামিটার (?uid=...) চেক করা
       const urlParams = new URLSearchParams(window.location.search);
       const urlUid = urlParams.get('uid') || urlParams.get('user_id');
-      if (urlUid) {
-        return { id: urlUid, first_name: "Member", username: "" };
+      if (urlUid && urlUid !== "None" && urlUid !== "null" && urlUid !== "undefined") {
+        const uObj = { id: Number(urlUid), first_name: "Member", username: "" };
+        try { localStorage.setItem('tg_verified_user', JSON.stringify(uObj)); } catch(e) {}
+        return uObj;
       }
-      return { id: 7481264433, first_name: "Adom Ali", username: "mdadomali320" };
+
+      // ৪. আগে কখনো ঢুকে থাকলে ফোনের লোকাল মেমোরি থেকে তার আসল আইডি নেওয়া
+      try {
+        const saved = localStorage.getItem('tg_verified_user');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && parsed.id) return parsed;
+        }
+      } catch (e) {}
+
+      // ৫. কোনোভাবেই আইডি না পাওয়া গেলে অ্যাডমিন আইডি (7481264433) না বসিয়ে null রাখা, যাতে ভুলেও আপনার ইনবক্সে ফাইল না যায়
+      return { id: null, first_name: "VIP সদস্য", username: "" };
     }
 
     const user = getTelegramUser();
@@ -653,9 +690,11 @@
       fireConfetti();
       showToast(`অভিনন্দন! +${AD_REWARD} কয়েন যোগ হয়েছে!`, "🎉");
 
-      await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
-      await fetch(`${DB_BASE}/users/${user.id}/daily_ads/${today}.json`, { method: 'PUT', body: JSON.stringify(userData.daily_ads[today]) });
-      await fetch(`${DB_BASE}/users/${user.id}/total_ads_watched.json`, { method: 'PUT', body: JSON.stringify(userData.total_ads_watched) });
+      if (user.id) {
+        await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await fetch(`${DB_BASE}/users/${user.id}/daily_ads/${today}.json`, { method: 'PUT', body: JSON.stringify(userData.daily_ads[today]) });
+        await fetch(`${DB_BASE}/users/${user.id}/total_ads_watched.json`, { method: 'PUT', body: JSON.stringify(userData.total_ads_watched) });
+      }
     }
 
     function openGuideModal() {
@@ -801,6 +840,7 @@
       user.id = realUser.id;
       user.first_name = realUser.first_name;
       user.username = realUser.username;
+      user.photo_url = realUser.photo_url;
 
       const initial = user.first_name ? user.first_name[0].toUpperCase() : 'U';
       if (user.photo_url) {
@@ -817,22 +857,33 @@
 
       document.getElementById('uName').innerText = user.first_name || "VIP User";
       document.getElementById('profName').innerText = user.first_name || "VIP User";
-      document.getElementById('profTag').innerText = user.username ? `@${user.username}` : `ID: ${user.id}`;
+      document.getElementById('profTag').innerText = user.username ? `@${user.username}` : (user.id ? `ID: ${user.id}` : `@user`);
 
-      if (Number(user.id) === ADMIN_TELEGRAM_ID) {
+      if (user.id && Number(user.id) === ADMIN_TELEGRAM_ID) {
         document.getElementById('adminNavBtn').style.display = 'flex';
       }
 
-      try {
-        const res = await fetch(`${DB_BASE}/users/${user.id}.json`);
-        const data = await res.json();
-        if (data) {
-          userData = Object.assign({ coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, unlocked: {}, joined_channel: false }, data);
-        } else {
-          userData = { name: user.first_name, username: user.username || "", photo: user.photo_url || "", coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, unlocked: {}, joined_channel: false };
-          await fetch(`${DB_BASE}/users/${user.id}.json`, { method: 'PUT', body: JSON.stringify(userData) });
-        }
-      } catch (e) {}
+      if (user.id) {
+        try {
+          const res = await fetch(`${DB_BASE}/users/${user.id}.json`);
+          const data = await res.json();
+          if (data) {
+            userData = Object.assign({ coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, unlocked: {}, joined_channel: false }, data);
+            if (data.name && (user.first_name === "Member" || user.first_name === "VIP সদস্য")) {
+              user.first_name = data.name;
+              document.getElementById('uName').innerText = data.name;
+              document.getElementById('profName').innerText = data.name;
+            }
+            if (data.username && !user.username) {
+              user.username = data.username;
+              document.getElementById('profTag').innerText = `@${data.username}`;
+            }
+          } else {
+            userData = { name: user.first_name, username: user.username || "", photo: user.photo_url || "", coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, unlocked: {}, joined_channel: false };
+            await fetch(`${DB_BASE}/users/${user.id}.json`, { method: 'PUT', body: JSON.stringify(userData) });
+          }
+        } catch (e) {}
+      }
 
       drawWheel();
       trackVisit();
@@ -882,7 +933,7 @@
       document.getElementById('referCount').innerText = userData.refers || 0;
       document.getElementById('profTotalRef').innerText = userData.refers || 0;
       document.getElementById('profTotalAds').innerText = userData.total_ads_watched || 0;
-      document.getElementById('referLinkText').innerText = `https://t.me/${BOT_USERNAME}?start=ref_${user.id}`;
+      document.getElementById('referLinkText').innerText = `https://t.me/${BOT_USERNAME}?start=ref_${user.id || ''}`;
       
       const rank = getVipRank(coins);
       document.getElementById('uBadge').innerText = rank;
@@ -917,10 +968,18 @@
 
     async function openClaimBot(key) {
       triggerHaptic();
+      const currentRealUser = getTelegramUser();
+
+      // যদি ইউজারের আসল আইডি না পাওয়া যায়, তবে অ্যাডমিন আইডিতে না পাঠিয়ে সরাসরি ইউজারের টেলিগ্রাম বটে ডিপ-লিংক দিয়ে ওপেন করা হবে
+      if (!currentRealUser.id) {
+        const botDeepLink = `https://t.me/${BOT_USERNAME}?start=get_${key}`;
+        if (tg && tg.openTelegramLink) tg.openTelegramLink(botDeepLink);
+        else window.open(botDeepLink, '_blank');
+        return;
+      }
+
       showToast("ইনবক্সে ফাইল পাঠানো হচ্ছে... ⏳", "📥");
 
-      // আসল ইউজারের আইডি দিয়ে কল পাঠানো
-      const currentRealUser = getTelegramUser();
       try {
         const res = await fetch(`${RENDER_BACKEND_URL}/deliver-resource`, {
           method: 'POST',
@@ -928,8 +987,8 @@
           body: JSON.stringify({ 
             user_id: currentRealUser.id, 
             file_key: key,
-            user_name: currentRealUser.first_name || "User",
-            username: currentRealUser.username || ""
+            user_name: currentRealUser.first_name || user.first_name || "User",
+            username: currentRealUser.username || user.username || ""
           })
         });
         const resData = await res.json();
@@ -962,8 +1021,10 @@
       checkDailyStatus();
       fireConfetti();
 
-      await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
-      await fetch(`${DB_BASE}/users/${user.id}/last_checkin.json`, { method: 'PUT', body: JSON.stringify(today) });
+      if (user.id) {
+        await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await fetch(`${DB_BASE}/users/${user.id}/last_checkin.json`, { method: 'PUT', body: JSON.stringify(today) });
+      }
       showToast("দৈনিক বোনাস +৫ কয়েন যোগ হয়েছে!", "🎉");
     }
 
@@ -998,8 +1059,10 @@
         btn.innerText = "আজকের স্পিন শেষ ✓";
         fireConfetti();
 
-        await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
-        await fetch(`${DB_BASE}/users/${user.id}/last_spin.json`, { method: 'PUT', body: JSON.stringify(today) });
+        if (user.id) {
+          await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+          await fetch(`${DB_BASE}/users/${user.id}/last_spin.json`, { method: 'PUT', body: JSON.stringify(today) });
+        }
         showToast(`স্পিন থেকে পেয়েছেন ${selectedReward.text}!`, "🎉");
       }, 3500);
     }
@@ -1070,8 +1133,10 @@
       updateUI();
       fireConfetti();
 
-      await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
-      await fetch(`${DB_BASE}/users/${user.id}/last_scratch.json`, { method: 'PUT', body: JSON.stringify(today) });
+      if (user.id) {
+        await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await fetch(`${DB_BASE}/users/${user.id}/last_scratch.json`, { method: 'PUT', body: JSON.stringify(today) });
+      }
       showToast("স্ক্র্যাচ থেকে পেয়েছেন +৫ কয়েন!", "🎁");
     }
 
@@ -1107,8 +1172,10 @@
           updateUI();
           checkChannelTaskStatus();
           fireConfetti();
-          await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
-          await fetch(`${DB_BASE}/users/${user.id}/joined_channel.json`, { method: 'PUT', body: JSON.stringify(true) });
+          if (user.id) {
+            await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+            await fetch(`${DB_BASE}/users/${user.id}/joined_channel.json`, { method: 'PUT', body: JSON.stringify(true) });
+          }
           showToast("চ্যানেল জয়েন সফল, +১৫ কয়েন যোগ হয়েছে!", "🎉");
         } else {
           btn.disabled = false;
@@ -1296,6 +1363,14 @@
         updateUI();
         fireConfetti();
 
+        // যদি কোনোভাবে ইউজারের আইডি না পাওয়া যায়, তবে অ্যাডমিন আইডিতে না পাঠিয়ে সরাসরি ইউজারের টেলিগ্রাম বটে ডিপ-লিংক দিয়ে ফাইল পাঠিয়ে দেওয়া হবে
+        if (!realClaimUser.id) {
+          const botDeepLink = `https://t.me/${BOT_USERNAME}?start=get_${key}`;
+          if (tg && tg.openTelegramLink) tg.openTelegramLink(botDeepLink);
+          else window.open(botDeepLink, '_blank');
+          return;
+        }
+
         await fetch(`${DB_BASE}/users/${realClaimUser.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
         await fetch(`${DB_BASE}/users/${realClaimUser.id}/unlocked/${key}.json`, { method: 'PUT', body: JSON.stringify(userData.unlocked[key]) });
 
@@ -1306,8 +1381,8 @@
           body: JSON.stringify({ 
             user_id: realClaimUser.id, 
             file_key: key,
-            user_name: realClaimUser.first_name || "User",
-            username: realClaimUser.username || ""
+            user_name: realClaimUser.first_name || user.first_name || "User",
+            username: realClaimUser.username || user.username || ""
           })
         }).then(r => r.json()).then(res => {
           if (res.success) {
@@ -1405,7 +1480,7 @@
     function shareReferralLink() {
       triggerHaptic();
       const currentRealUser = getTelegramUser();
-      const url = `https://t.me/share/url?url=${encodeURIComponent(`https://t.me/${BOT_USERNAME}?start=ref_${currentRealUser.id}`)}&text=${encodeURIComponent(`ফ্রি প্রিমিয়াম PLP ও ফন্ট নিন!`)}`;
+      const url = `https://t.me/share/url?url=${encodeURIComponent(`https://t.me/${BOT_USERNAME}?start=ref_${currentRealUser.id || ''}`)}&text=${encodeURIComponent(`ফ্রি প্রিমিয়াম PLP ও ফন্ট নিন!`)}`;
       if (tg && tg.openTelegramLink) tg.openTelegramLink(url);
       else window.open(url, '_blank');
     }
@@ -1419,4 +1494,4 @@
     initApp();
   </script>
 </body>
-        </html>
+  </html>
