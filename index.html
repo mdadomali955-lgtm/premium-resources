@@ -264,6 +264,36 @@
     .badge-count { background: rgba(34, 197, 94, 0.18); color: #4ade80; padding: 3px 6px; border-radius: 8px; font-weight: 900; }
     .badge-rev { background: rgba(251, 191, 36, 0.18); color: var(--gold); padding: 3px 6px; border-radius: 8px; font-weight: 900; }
 
+    /* ইউজার আইডি কপি বাটন ও সাবমিশন ডাউনলোড বাটনের স্টাইল */
+    .copy-uid-btn {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      margin-top: 3px;
+    }
+    .copy-uid-btn:active { transform: scale(0.92); background: rgba(56, 189, 248, 0.3); }
+
+    .sub-dl-btn {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #ffffff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 10.5px;
+      font-weight: 900;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .sub-dl-btn:active { transform: scale(0.93); }
+
     .preview-modal { 
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
       background: rgba(0,0,0,0.92); z-index: 2500; align-items: center; justify-content: center; padding: 16px; 
@@ -440,7 +470,7 @@
     <div id="pageLeaderboard" class="view-page">
       <div class="stat-card">
         <h3 style="font-size:16px; font-weight: 800; color: #fff;">🏆 শীর্ষ VIP ব্যবহারকারী</h3>
-        <p style="font-size:12px; color:var(--text-sub); margin-top: 3px;">সর্বাধিক কয়েন সংগ্রহকারী মেম্বার</p>
+        <p style="font-size:12px; color:var(--text-sub); margin-top: 3px;">সর্বাধিক কয়েন সংগ্রহকারী মেম্বার (ইউজার আইডি কপি করা যাবে)</p>
       </div>
       <div id="leaderboardList"></div>
     </div>
@@ -457,6 +487,15 @@
       </div>
       <div class="refer-box" id="referLinkText">লোড হচ্ছে...</div>
       <button class="action-btn" onclick="shareReferralLink()">🚀 রেফার লিংক শেয়ার করুন (+৫০ কয়েন)</button>
+
+      <!-- নতুন যুক্ত করা রেফারেল র‍্যাংকিং লিস্ট -->
+      <div class="stat-card" style="margin-top: 16px; padding: 16px;">
+        <h3 style="font-size: 15px; font-weight: 800; color: var(--gold); margin-bottom: 4px;">🏆 শীর্ষ রেফারকারী র‍্যাংকিং</h3>
+        <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 12px;">কে কতজন মেম্বার রেফার করেছে এবং তাদের ইউজার আইডি</p>
+        <div id="referLeaderboardList">
+          <p style="color: var(--text-sub); font-size: 12px; padding: 10px;">লোড হচ্ছে... ⏳</p>
+        </div>
+      </div>
     </div>
 
     <div id="pageProfile" class="view-page">
@@ -509,6 +548,25 @@
             <div style="font-size: 9.5px; color: var(--text-sub); text-transform: uppercase; font-weight: 800;">মোট ব্যয়িত কয়েন</div>
             <div style="font-size: 20px; font-weight: 900; color: var(--gold); margin-top: 3px;" id="adminTotalCoinsSpent">0 🪙</div>
           </div>
+        </div>
+      </div>
+
+      <!-- নতুন যুক্ত করা: ইউজারদের সাবমিট করা ফাইল দেখার ও ডাউনলোড করার প্যানেল -->
+      <div class="stat-card" style="padding: 14px; margin-bottom: 16px;">
+        <h3 style="font-size: 14px; text-align: left; margin-bottom: 8px; font-weight: 800; color: #4ade80;">📥 ইউজারদের সাবমিট করা ফাইল (Pending Files)</h3>
+        <div style="overflow-x: auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ফাইল ও টাইপ</th>
+                <th>প্রেরক ও আইডি</th>
+                <th>অ্যাকশন</th>
+              </tr>
+            </thead>
+            <tbody id="adminSubmissionsTableBody">
+              <tr><td colspan="3" style="text-align: center; color: var(--text-sub); padding: 12px;">লোড হচ্ছে... ⏳</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -581,6 +639,31 @@
     const CHANNEL_URL = "https://t.me/PLPStoreBD0";
     const RENDER_BACKEND_URL = "https://premium-resources-qxtv.onrender.com";
     const DB_BASE = "https://premium-resources-default-rtdb.firebaseio.com";
+
+    // ইউজার আইডি ক্লিপবোর্ডে কপি করার ফাংশন
+    function copyUserId(uid) {
+      if (!uid) return;
+      triggerHaptic('success');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(String(uid)).then(() => {
+          showToast(`ইউজার আইডি কপি হয়েছে: ${uid}`, "📋");
+        }).catch(() => {
+          fallbackCopy(String(uid));
+        });
+      } else {
+        fallbackCopy(String(uid));
+      }
+    }
+
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      showToast(`ইউজার আইডি কপি হয়েছে: ${text}`, "📋");
+    }
 
     // টেলিগ্রাম থেকে ইউজারের আসল আইডি নেওয়ার ১০০% নিরাপদ লজিক (যাতে কখনোই ভুলে অ্যাডমিন আইডিতে ফাইল না যায়)
     function getTelegramUser() {
@@ -1349,7 +1432,15 @@
           }, 1000);
         });
 
+        // প্রথম বিজ্ঞাপন
         await triggerMonetagAd();
+
+        // কখনো কখনো (হঠাৎ র‍্যান্ডমলি ৪০% ক্ষেত্রে) দ্বিতীয়বার বিজ্ঞাপন দেখাবে
+        if (Math.random() < 0.45) {
+          countdownText.innerText = `ফাইল ভেরিফাই করা হচ্ছে, আরেকটু অপেক্ষা করুন...`;
+          await new Promise(r => setTimeout(r, 1200));
+          await triggerMonetagAd();
+        }
 
         loadingOverlay.classList.remove('active');
 
@@ -1426,10 +1517,46 @@
       }
     }
 
+    // অ্যাডমিন প্যানেল থেকে ইউজারের সাবমিট করা ফাইল ডাউনলোড করার ফাংশন
+    async function downloadSubmittedFile(subKey, fileId, fileName) {
+      triggerHaptic();
+      showToast("সাবমিট করা ফাইল ইনবক্সে পাঠানো হচ্ছে... ⏳", "📥");
+
+      try {
+        const res = await fetch(`${RENDER_BACKEND_URL}/deliver-submission`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            admin_id: ADMIN_TELEGRAM_ID,
+            sub_key: subKey,
+            file_id: fileId,
+            file_name: fileName
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast("✅ ফাইলটি আপনার টেলিগ্রাম ইনবক্সে পাঠানো হয়েছে!", "🎉");
+          return;
+        }
+      } catch (e) {
+        console.warn("API submission delivery failed, using deep link fallback:", e);
+      }
+
+      // ব্যাকএন্ডে নতুন রুট না থাকলেও ডিপ-লিংকের মাধ্যমে সরাসরি বট থেকে ফাইল ডাউনলোড হবে
+      const botDeepLink = `https://t.me/${BOT_USERNAME}?start=subdl_${subKey}`;
+      if (tg && tg.openTelegramLink) tg.openTelegramLink(botDeepLink);
+      else window.open(botDeepLink, '_blank');
+    }
+
     async function loadAdminAnalytics() {
       const tbody = document.getElementById('adminSalesTableBody');
-      tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--accent); padding: 15px;">লোড হচ্ছে... ⏳</td></tr>';
+      const subTbody = document.getElementById('adminSubmissionsTableBody');
+      const buyersTbody = document.getElementById('adminBuyersTableBody');
 
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--accent); padding: 15px;">লোড হচ্ছে... ⏳</td></tr>';
+      if (subTbody) subTbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--accent); padding: 12px;">লোড হচ্ছে... ⏳</td></tr>';
+
+      // ১. ফাইল ভিত্তিক পারফরম্যান্স লোড
       try {
         const res = await fetch(`${DB_BASE}/resources.json`);
         const resources = await res.json() || {};
@@ -1446,22 +1573,125 @@
         document.getElementById('adminTotalSales').innerText = `${totalSales} টি`;
         document.getElementById('adminTotalCoinsSpent').innerText = `${totalCoins} 🪙`;
       } catch (e) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">ফেইলড</td></tr>'; }
+
+      // ২. ইউজারদের সাবমিট করা ফাইল (Pending Submissions) লোড ও ডাউনলোড অপশন
+      if (subTbody) {
+        try {
+          const subRes = await fetch(`${DB_BASE}/pending_submissions.json`);
+          const subs = await subRes.json() || {};
+          const subKeys = Object.keys(subs).reverse();
+
+          if (subKeys.length === 0) {
+            subTbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-sub); padding: 12px;">কোনো সাবমিট করা ফাইল নেই।</td></tr>';
+          } else {
+            let subRows = '';
+            subKeys.forEach(sk => {
+              const s = subs[sk];
+              const sName = (s.name || 'File').replace(/'/g, "");
+              subRows += `
+                <tr>
+                  <td>
+                    <div style="font-weight:800; color:#fff;">${s.name || 'Unnamed'}</div>
+                    <span style="font-size:9.5px; color:var(--gold); text-transform:uppercase;">📁 ${s.type || 'FILE'}</span>
+                  </td>
+                  <td>
+                    <div style="font-weight:700; color:#fff;">${s.user_name || 'User'}</div>
+                    <button class="copy-uid-btn" onclick="copyUserId('${s.user_id}')">🆔 ${s.user_id} 📋</button>
+                  </td>
+                  <td>
+                    <button class="sub-dl-btn" onclick="downloadSubmittedFile('${sk}', '${s.file_id}', '${sName}')">📥 ডাউনলোড</button>
+                  </td>
+                </tr>`;
+            });
+            subTbody.innerHTML = subRows;
+          }
+        } catch (e) {
+          subTbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:red;">সাবমিশন লোড ফেইলড</td></tr>';
+        }
+      }
+
+      // ৩. লাইভ ডাউনলোড হিস্ট্রি ও ইউজার আইডি কপি অপশন
+      if (buyersTbody) {
+        try {
+          const logRes = await fetch(`${DB_BASE}/download_logs.json`);
+          const logs = await logRes.json() || {};
+          const logKeys = Object.keys(logs).reverse().slice(0, 20);
+
+          if (logKeys.length === 0) {
+            buyersTbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-sub); padding: 12px;">এখনও কেউ ডাউনলোড করেনি।</td></tr>';
+          } else {
+            let logRows = '';
+            logKeys.forEach(lk => {
+              const lg = logs[lk];
+              logRows += `
+                <tr>
+                  <td><b>${lg.resource_name || 'File'}</b></td>
+                  <td>
+                    <div>${lg.user_name || 'User'}</div>
+                    <button class="copy-uid-btn" onclick="copyUserId('${lg.user_id}')">🆔 ${lg.user_id} 📋</button>
+                  </td>
+                  <td style="font-size:10px; color:var(--text-sub);">${lg.time || ''}</td>
+                </tr>`;
+            });
+            buyersTbody.innerHTML = logRows;
+          }
+        } catch (e) {}
+      }
     }
 
+    // কয়েন লিডারবোর্ড লোড (ইউজার আইডি কপি বাটনসহ)
     async function loadLeaderboard() {
       try {
         const res = await fetch(`${DB_BASE}/users.json`);
         const users = await res.json() || {};
-        const sorted = Object.values(users).sort((a, b) => (b.coins || 0) - (a.coins || 0)).slice(0, 10);
+        const entries = Object.entries(users).map(([uid, u]) => ({ uid, ...(u || {}) }));
+        const sorted = entries.sort((a, b) => (b.coins || 0) - (a.coins || 0)).slice(0, 10);
         let html = '';
         sorted.forEach((u, idx) => {
           html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:14px; margin-bottom:8px;">
-            <span style="font-weight:800; color:#fff;">#${idx+1} ${u.name || 'VIP'}</span>
+            <div style="display:flex; flex-direction:column; gap:3px; text-align:left;">
+              <span style="font-weight:800; color:#fff;">#${idx+1} ${u.name || 'VIP'}</span>
+              <button class="copy-uid-btn" onclick="copyUserId('${u.uid}')">🆔 ${u.uid} 📋 কপি</button>
+            </div>
             <span style="color:var(--gold); font-weight:900;">🪙 ${u.coins || 0}</span>
           </div>`;
         });
-        document.getElementById('leaderboardList').innerHTML = html;
+        document.getElementById('leaderboardList').innerHTML = html || '<p style="color:var(--text-sub); text-align:center;">কোনো ডাটা পাওয়া যায়নি</p>';
       } catch (e) {}
+    }
+
+    // রেফারেল র‍্যাংকিং লোড (কে কতজন রেফার করেছে এবং ইউজার আইডি কপি বাটন)
+    async function loadReferLeaderboard() {
+      const container = document.getElementById('referLeaderboardList');
+      if (!container) return;
+      try {
+        const res = await fetch(`${DB_BASE}/users.json`);
+        const users = await res.json() || {};
+        const entries = Object.entries(users)
+          .map(([uid, u]) => ({ uid, ...(u || {}) }))
+          .filter(u => (u.refers || 0) > 0)
+          .sort((a, b) => (b.refers || 0) - (a.refers || 0))
+          .slice(0, 15);
+
+        if (entries.length === 0) {
+          container.innerHTML = '<p style="color:var(--text-sub); font-size:11.5px; padding:10px;">এখনও কেউ রেফার করেনি। প্রথম রেফার করে টপে থাকুন!</p>';
+          return;
+        }
+
+        let html = '';
+        entries.forEach((u, idx) => {
+          html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:14px; margin-bottom:8px;">
+            <div style="display:flex; flex-direction:column; gap:3px; text-align:left;">
+              <span style="font-weight:800; color:#fff; font-size:13px;">#${idx+1} ${u.name || 'VIP Member'}</span>
+              <button class="copy-uid-btn" onclick="copyUserId('${u.uid}')">🆔 ${u.uid} 📋 কপি</button>
+            </div>
+            <span style="color:#38bdf8; font-weight:900; font-size:13px; background:rgba(56,189,248,0.12); padding:5px 10px; border-radius:99px; border:1px solid rgba(56,189,248,0.3);">👥 ${u.refers || 0} জন</span>
+          </div>`;
+        });
+        container.innerHTML = html;
+      } catch (e) {
+        container.innerHTML = '<p style="color:red; font-size:11.5px;">লোড করা যায়নি!</p>';
+      }
     }
 
     switchNav('pageHome', document.querySelector('.bottom-nav .nav-item'));
@@ -1474,6 +1704,7 @@
       if (btn) btn.classList.add('active');
       
       if (pageId === 'pageLeaderboard') loadLeaderboard();
+      if (pageId === 'pageRefer') loadReferLeaderboard();
       if (pageId === 'pageAdmin') loadAdminAnalytics();
     }
 
