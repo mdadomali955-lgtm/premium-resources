@@ -33,6 +33,48 @@
       --dock-glass: rgba(8, 11, 20, 0.95);
     }
 
+    /* নরমাল / ডে মোড (Light Mode) ভেরিয়েবল */
+    body.light-mode {
+      --bg-base: #f1f5f9;
+      --liquid-glass: rgba(255, 255, 255, 0.92);
+      --liquid-glass-card: #ffffff;
+      --liquid-border-top: rgba(15, 23, 42, 0.15);
+      --liquid-border-bot: rgba(15, 23, 42, 0.08);
+      --liquid-border-side: rgba(15, 23, 42, 0.12);
+      --accent: #0284c7;
+      --gold: #d97706;
+      --text-main: #0f172a;
+      --text-sub: #334155;
+      --text-dim: #64748b;
+      --dock-glass: rgba(255, 255, 255, 0.96);
+    }
+    body.light-mode .top-bar { background: rgba(255, 255, 255, 0.95); }
+    body.light-mode .user-name,
+    body.light-mode .card-title,
+    body.light-mode .notice-card,
+    body.light-mode .search-box,
+    body.light-mode .unlocked-item,
+    body.light-mode .admin-table td,
+    body.light-mode h2, body.light-mode h3, body.light-mode h4 { color: #0f172a !important; }
+    body.light-mode .daily-card { background: linear-gradient(135deg, #e0f2fe, #fef3c7); border-color: rgba(2, 132, 199, 0.25); }
+    body.light-mode .mini-input { background: #f8fafc; color: #0f172a; border-color: rgba(15,23,42,0.2); }
+    body.light-mode .nav-item.active { color: #0284c7; }
+
+    /* অ্যামোলেড আল্ট্রা ডার্ক মোড */
+    body.amoled-mode {
+      --bg-base: #000000;
+      --liquid-glass: rgba(5, 5, 8, 0.95);
+      --liquid-glass-card: rgba(8, 10, 16, 0.98);
+      --dock-glass: #000000;
+    }
+
+    /* লো-এন্ড ফোনের জন্য লাইট পারফরম্যান্স মোড */
+    body.lite-perf-mode * {
+      animation: none !important;
+      transition: none !important;
+      box-shadow: none !important;
+    }
+
     * { 
       box-sizing: border-box; margin: 0; padding: 0; 
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
@@ -49,6 +91,7 @@
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeSpeed;
       overscroll-behavior-y: none;
+      transition: background 0.25s ease, color 0.25s ease;
     }
 
     /* প্রিমিয়াম ইন্ট্রো স্প্ল্যাশ স্ক্রিন স্টাইল (কম দামি ফোনেও মাখনের মতো চলবে) */
@@ -156,24 +199,24 @@
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    .claim-success-modal, .guide-modal {
+    .claim-success-modal, .guide-modal, .settings-modal {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(2, 4, 10, 0.9); z-index: 2000000; align-items: center; justify-content: center; padding: 20px;
     }
-    .claim-success-modal.active, .guide-modal.active { display: flex; }
-    .claim-success-box, .guide-box {
-      background: rgba(18, 24, 42, 0.98); border: 1px solid var(--accent);
-      padding: 28px 22px; border-radius: 24px; text-align: center; max-width: 380px; width: 100%;
-      max-height: 85vh; overflow-y: auto;
+    .claim-success-modal.active, .guide-modal.active, .settings-modal.active { display: flex; }
+    .claim-success-box, .guide-box, .settings-box {
+      background: var(--liquid-glass-card); border: 1px solid var(--accent);
+      padding: 24px 20px; border-radius: 24px; text-align: center; max-width: 390px; width: 100%;
+      max-height: 86vh; overflow-y: auto; color: var(--text-main);
     }
 
     .top-bar { 
       display: flex; justify-content: space-between; align-items: center; 
-      padding: 14px 18px; background: rgba(8, 11, 20, 0.94); 
+      padding: 14px 16px; background: rgba(8, 11, 20, 0.94); 
       border-bottom: 1px solid var(--liquid-border-bot); position: sticky; top: 0; z-index: 100;
       transform: translate3d(0, 0, 0);
     }
-    .user-info { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+    .user-info { display: flex; align-items: center; gap: 10px; cursor: pointer; }
     
     .user-avatar-wrap { 
       width: 44px; height: 44px; border-radius: 50%; overflow: hidden; 
@@ -188,10 +231,38 @@
     .user-name { font-size: 14px; font-weight: 800; color: #ffffff; }
     .user-badge { font-size: 10px; color: var(--gold); font-weight: 800; text-transform: uppercase; }
     
+    .top-right-actions { display: flex; align-items: center; gap: 8px; }
+
     .balance-pill { 
       background: rgba(251, 191, 36, 0.12); border: 1px solid rgba(251, 191, 36, 0.4); 
-      padding: 6px 14px; border-radius: 99px; display: flex; align-items: center; gap: 6px; 
-      font-weight: 900; color: var(--gold); font-size: 14px; cursor: pointer;
+      padding: 6px 12px; border-radius: 99px; display: flex; align-items: center; gap: 5px; 
+      font-weight: 900; color: var(--gold); font-size: 13.5px; cursor: pointer;
+    }
+
+    /* কর্নারে ছোট প্রিমিয়াম সেটিংস আইকন বাটন */
+    .corner-settings-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(56, 189, 248, 0.14); border: 1px solid rgba(56, 189, 248, 0.4);
+      color: var(--accent); font-size: 17px; display: flex; align-items: center;
+      justify-content: center; cursor: pointer; flex-shrink: 0;
+    }
+    .corner-settings-btn:active { transform: scale(0.9) rotate(45deg); }
+
+    .setting-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 14px; background: rgba(255,255,255,0.04);
+      border: 1px solid var(--liquid-border-side); border-radius: 14px;
+      margin-bottom: 10px; text-align: left;
+    }
+    .setting-opt-group { display: flex; gap: 6px; }
+    .setting-chip {
+      padding: 6px 10px; border-radius: 10px; font-size: 11px; font-weight: 800;
+      border: 1px solid var(--liquid-border-side); background: rgba(0,0,0,0.3);
+      color: var(--text-sub); cursor: pointer;
+    }
+    .setting-chip.active {
+      background: linear-gradient(135deg, #38bdf8, #0284c7);
+      color: #020617; border-color: transparent;
     }
 
     .container { padding: 16px; position: relative; z-index: 1; }
@@ -477,6 +548,71 @@
     </div>
   </div>
 
+  <!-- প্রিমিয়াম সেটিংস ও কাস্টমাইজেশন মোডাল (ভাষা, ডার্ক/নরমাল মোড, পারফরম্যান্স, ইত্যাদি) -->
+  <div class="settings-modal" id="settingsModal" onclick="closeSettingsModal()">
+    <div class="settings-box" onclick="event.stopPropagation()">
+      <div style="font-size: 34px; margin-bottom: 4px;">⚙️</div>
+      <h3 style="font-size: 16px; font-weight: 900; color: var(--gold); margin-bottom: 14px;" id="stTitle">অ্যাপ সেটিংস ও কাস্টমাইজেশন</h3>
+
+      <!-- ভাষা সেটিং -->
+      <div class="setting-row">
+        <div>
+          <div style="font-size: 12.5px; font-weight: 800;" id="stLangLbl">🌐 অ্যাপের ভাষা (Language)</div>
+          <div style="font-size: 10px; color: var(--text-dim);">আপনার পছন্দের ভাষা বেছে নিন</div>
+        </div>
+        <div class="setting-opt-group">
+          <button class="setting-chip active" id="langBtnBn" onclick="setAppLanguage('bn')">বাংলা</button>
+          <button class="setting-chip" id="langBtnEn" onclick="setAppLanguage('en')">English</button>
+        </div>
+      </div>
+
+      <!-- থিম মোড সেটিং (ডার্ক / নরমাল / অ্যামোলেড) -->
+      <div class="setting-row">
+        <div>
+          <div style="font-size: 12.5px; font-weight: 800;" id="stThemeLbl">🌗 ডিসপ্লে থিম মোড</div>
+          <div style="font-size: 10px; color: var(--text-dim);">নাইট মোড অথবা নরমাল ডে মোড</div>
+        </div>
+        <div class="setting-opt-group">
+          <button class="setting-chip active" id="themeBtnDark" onclick="setAppTheme('dark')">🌙 নাইট</button>
+          <button class="setting-chip" id="themeBtnLight" onclick="setAppTheme('light')">☀️ নরমাল</button>
+          <button class="setting-chip" id="themeBtnAmoled" onclick="setAppTheme('amoled')">🌌 কালো</button>
+        </div>
+      </div>
+
+      <!-- লো-বাজেট ফোনের জন্য লাইট মোড -->
+      <div class="setting-row">
+        <div>
+          <div style="font-size: 12.5px; font-weight: 800;">⚡ সুপার ফাস্ট লাইট মোড</div>
+          <div style="font-size: 10px; color: var(--text-dim);">দুর্বল ফোনে ল্যাগহীন চালানোর জন্য</div>
+        </div>
+        <div class="setting-opt-group">
+          <button class="setting-chip" id="perfBtnOn" onclick="setLitePerfMode(true)">চালু (On)</button>
+          <button class="setting-chip active" id="perfBtnOff" onclick="setLitePerfMode(false)">বন্ধ (Off)</button>
+        </div>
+      </div>
+
+      <!-- হ্যাপটিক ভাইব্রেশন কন্ট্রোল -->
+      <div class="setting-row">
+        <div>
+          <div style="font-size: 12.5px; font-weight: 800;">📳 বাটন ভাইব্রেশন (Haptic)</div>
+          <div style="font-size: 10px; color: var(--text-dim);">ক্লিক করলে ভাইব্রেশন অনুভূতি</div>
+        </div>
+        <div class="setting-opt-group">
+          <button class="setting-chip active" id="vibBtnOn" onclick="setHapticPref(true)">চালু</button>
+          <button class="setting-chip" id="vibBtnOff" onclick="setHapticPref(false)">বন্ধ</button>
+        </div>
+      </div>
+
+      <!-- ক্যাশ ক্লিয়ার ও ডাটা রিসেট -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;">
+        <button class="daily-btn" onclick="clearAppCache()" style="background: rgba(244, 63, 94, 0.18); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.4); width: 100%;">🗑️ ক্যাশ ক্লিয়ার</button>
+        <button class="daily-btn" onclick="refreshUserDataManual(); closeSettingsModal();" style="background: rgba(34, 197, 94, 0.18); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); width: 100%;">🔄 ডাটা সিঙ্ক</button>
+      </div>
+
+      <button class="action-btn" onclick="closeSettingsModal()" style="margin-top: 14px; padding: 11px;">সম্পন্ন ✓</button>
+    </div>
+  </div>
+
   <div class="guide-modal" id="guideModal" onclick="closeGuideModal()">
     <div class="guide-box" onclick="event.stopPropagation()">
       <div style="font-size: 38px; margin-bottom: 6px;">📖</div>
@@ -484,8 +620,8 @@
       <div style="font-size: 12px; color: var(--text-sub); text-align: left; line-height: 1.6; display: flex; flex-direction: column; gap: 10px;">
         <div style="background:rgba(255,255,255,0.04); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
           <b style="color:#38bdf8;">১. কীভাবে ফ্রি কয়েন আর্ন করবেন?</b><br>
-          • প্রতিদিন <b>ডেইলি চেক-ইন</b> (+৫), <b>লাকি স্পিন</b> (সর্বোচ্চ +১০) ও <b>স্ক্র্যাচ কার্ড</b> (+৫) থেকে কয়েন পাবেন।<br>
-          • <b>টাস্ক</b> মেনু থেকে বিজ্ঞাপন দেখে প্রতিবার +১০ কয়েন এবং চ্যানেলে জয়েন করে +১৫ কয়েন পাবেন।<br>
+          • প্রতিদিন <b>ডেইলি চেক-ইন</b> (+৫), <b>প্রতি ২ ঘণ্টা পর পর লাকি স্পিন</b> ও <b>স্ক্র্যাচ কার্ড</b> (+৫) থেকে কয়েন পাবেন।<br>
+          • <b>টাস্ক</b> মেনু থেকে বিজ্ঞাপন দেখে প্রতিবার <b>+২০ কয়েন</b> এবং চ্যানেলে জয়েন করে +১৫ কয়েন পাবেন।<br>
           • <b>রেফার</b> করে প্রতি বন্ধুর জন্য পাবেন +৫০ কয়েন!
         </div>
         <div style="background:rgba(255,255,255,0.04); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
@@ -498,8 +634,8 @@
           • বটের মূল মেনু থেকে <b>"📤 ফাইল দিয়ে কয়েন আর্ন"</b> বাটনে ক্লিক করে আপনার তৈরি PLP, XML বা Font জমা দিন। অ্যাডমিন অ্যাপ্রুভ করলেই পাবেন বিশাল কয়েন বোনাস!
         </div>
         <div style="background:rgba(255,255,255,0.04); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
-          <b style="color:#c084fc;">৪. প্রোমো কোড রিডিম করার নিয়ম:</b><br>
-          • অফিশিয়াল চ্যানেল থেকে পাওয়া প্রোমো কোড সরাসরি এই অ্যাপের <b>টাস্ক</b> বা <b>প্রোফাইল</b> পেজে বসিয়ে ফ্রি কয়েন নিতে পারবেন!
+          <b style="color:#c084fc;">৪. প্রোমো ও ভিআইপি গিফট কোড রিডিম (শুধুমাত্র মিনি অ্যাপে):</b><br>
+          • চ্যানেলের প্রোমো কোড (প্রথম ৫ জনের জন্য) অথবা অ্যাডমিনের দেওয়া আপনার ব্যক্তিগত স্পেশাল গিফট কোড সরাসরি এই মিনি অ্যাপের <b>টাস্ক</b> বা <b>প্রোফাইল</b> পেজে বসিয়ে রিডিম করতে পারবেন!
         </div>
       </div>
       <button class="action-btn" onclick="closeGuideModal()" style="margin-top: 18px; padding: 10px;">বুঝেছি 👍</button>
@@ -517,7 +653,10 @@
         <span class="user-badge" id="uBadge">⭐ BRONZE VIP</span>
       </div>
     </div>
-    <div class="balance-pill" onclick="refreshUserDataManual()" title="রিফ্রেশ করতে ট্যাপ করুন">🪙 <span id="uCoins">0</span> 🔄</div>
+    <div class="top-right-actions">
+      <div class="balance-pill" onclick="refreshUserDataManual()" title="রিফ্রেশ করতে ট্যাপ করুন">🪙 <span id="uCoins">0</span> 🔄</div>
+      <button class="corner-settings-btn" onclick="openSettingsModal()" title="সেটিংস">⚙️</button>
+    </div>
   </div>
 
   <div class="container">
@@ -527,34 +666,34 @@
       <span id="noticeText">স্বাগতম! নতুন প্রিমিয়াম PLP, XML ও ফন্ট যুক্ত করা হয়েছে।</span>
     </div>
 
-    <button class="guide-btn" onclick="openGuideModal()">
-      <span>💡</span><span>কীভাবে ফাইল ডাউনলোড ও কয়েন আর্ন করবেন? (গাইড)</span>
+    <button class="guide-btn" id="btnMainGuide" onclick="openGuideModal()">
+      <span>💡</span><span id="txtMainGuide">কীভাবে ফাইল ডাউনলোড ও কয়েন আর্ন করবেন? (গাইড)</span>
     </button>
 
     <div class="live-stats-bar">
       <div class="live-stat-item">
         <span class="live-stat-val" id="statVisits">0</span>
-        <span class="live-stat-lbl">👥 মেম্বার</span>
+        <span class="live-stat-lbl" id="lblStatMembers">👥 মেম্বার</span>
       </div>
       <div class="live-stat-item">
         <span class="live-stat-val" id="statAdsWatched">0</span>
-        <span class="live-stat-lbl">📺 ভিউজ</span>
+        <span class="live-stat-lbl" id="lblStatViews">📺 ভিউজ</span>
       </div>
       <div class="live-stat-item">
         <span class="live-stat-val" id="statClaims">0</span>
-        <span class="live-stat-lbl">🎁 ডাউনলোড</span>
+        <span class="live-stat-lbl" id="lblStatDl">🎁 ডাউনলোড</span>
       </div>
       <div class="live-stat-item">
         <span class="live-stat-val" id="statRefers">0</span>
-        <span class="live-stat-lbl">🤝 রেফার</span>
+        <span class="live-stat-lbl" id="lblStatRef">🤝 রেফার</span>
       </div>
     </div>
 
     <div id="pageHome" class="view-page active">
       <div class="daily-card">
         <div>
-          <h4 style="font-size: 13.5px; font-weight: 800; color: #fff;">🎁 দৈনিক ফ্রি রিওয়ার্ড</h4>
-          <p style="font-size: 11.5px; color: var(--text-sub); margin-top: 2px;">প্রতিদিন পান ফ্রিতে +৫ কয়েন</p>
+          <h4 style="font-size: 13.5px; font-weight: 800; color: #fff;" id="txtDailyTitle">🎁 দৈনিক ফ্রি রিওয়ার্ড</h4>
+          <p style="font-size: 11.5px; color: var(--text-sub); margin-top: 2px;" id="txtDailySub">প্রতিদিন পান ফ্রিতে +৫ কয়েন</p>
         </div>
         <button class="daily-btn" id="btnDailyCheck" onclick="claimDailyReward()">ক্লেইম করুন</button>
       </div>
@@ -562,10 +701,10 @@
       <input type="text" class="search-box" id="searchInput" placeholder="🔍 কাঙ্ক্ষিত ফাইল, XML বা ফন্টের নাম লিখুন..." oninput="handleSearch()">
 
       <div class="filter-pills">
-        <button class="filter-pill active" onclick="setSortOrder('new', this)">🆕 নতুন ফাইল</button>
-        <button class="filter-pill" onclick="setSortOrder('popular', this)">🔥 জনপ্রিয় (Top)</button>
-        <button class="filter-pill" onclick="setSortOrder('free', this)">🆓 ফ্রি / কম কয়েন</button>
-        <button class="filter-pill" onclick="setSortOrder('saved', this)">❤️ পছন্দের ফাইল</button>
+        <button class="filter-pill active" id="fltNew" onclick="setSortOrder('new', this)">🆕 নতুন ফাইল</button>
+        <button class="filter-pill" id="fltPop" onclick="setSortOrder('popular', this)">🔥 জনপ্রিয় (Top)</button>
+        <button class="filter-pill" id="fltFree" onclick="setSortOrder('free', this)">🆓 ফ্রি / কম কয়েন</button>
+        <button class="filter-pill" id="fltSaved" onclick="setSortOrder('saved', this)">❤️ পছন্দের ফাইল</button>
       </div>
 
       <div class="tabs">
@@ -589,30 +728,30 @@
         </div>
       </div>
 
-      <!-- অ্যাপের ভেতর থেকেই প্রোমো কোড রিডিম করার কার্ড -->
+      <!-- শুধুমাত্র মিনি অ্যাপে প্রোমো ও পার্সোনাল গিফট কোড রিডিম করার কার্ড -->
       <div class="stat-card" style="text-align: left;">
-        <h3 style="font-size: 14.5px; font-weight: 800; margin-bottom: 6px; color: var(--gold);">🎁 প্রোমো কোড রিডিম করুন</h3>
-        <p style="font-size: 11.5px; color: var(--text-sub); margin-bottom: 10px;">চ্যানেল থেকে পাওয়া সিক্রেট কোড বসিয়ে ফ্রি কয়েন নিন:</p>
+        <h3 style="font-size: 14.5px; font-weight: 800; margin-bottom: 4px; color: var(--gold);">🎁 প্রোমো ও ভিআইপি গিফট কোড রিডিম</h3>
+        <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 10px;">চ্যানেলের প্রোমো কোড (প্রথম ৫ জন) অথবা আপনার ব্যক্তিগত গিফট কোড এখানে রিডিম করুন:</p>
         <div style="display: flex; gap: 8px;">
-          <input type="text" id="promoCodeInput" class="mini-input" placeholder="কোড লিখুন (যেমন: FREE50)" style="margin-bottom: 0; text-transform: uppercase;">
+          <input type="text" id="promoCodeInput" class="mini-input" placeholder="কোড লিখুন (যেমন: VIP50)" style="margin-bottom: 0; text-transform: uppercase;">
           <button class="daily-btn" onclick="redeemPromoInApp('promoCodeInput')" style="white-space: nowrap; padding: 0 18px;">রিডিম ⚡</button>
         </div>
       </div>
 
       <div class="stat-card">
         <span style="font-size:36px;">💎</span>
-        <h2 style="font-size:17px; font-weight: 800; margin: 6px 0; color: #fff;">বিজ্ঞাপন দেখে কয়েন সংগ্রহ</h2>
-        <p style="font-size:12px; color:var(--text-sub);">সম্পূর্ণ বিজ্ঞাপনটি দেখলে ওয়ালেটে ১০টি কয়েন যোগ হবে।</p>
+        <h2 style="font-size:17px; font-weight: 800; margin: 6px 0; color: #fff;" id="txtAdBoxTitle">বিজ্ঞাপন দেখে কয়েন সংগ্রহ</h2>
+        <p style="font-size:12px; color:var(--text-sub);" id="txtAdBoxSub">সম্পূর্ণ বিজ্ঞাপনটি দেখলে ওয়ালেটে ২০টি কয়েন যোগ হবে।</p>
         <div class="stat-number" id="adLimitDisplay">30/30</div>
         <p style="font-size:10.5px; color:var(--text-dim); text-transform: uppercase; font-weight: 800;">আজকের অবশিষ্ট অ্যাড সীমা</p>
         <button class="action-btn" id="btnWatchMonetag" onclick="watchVipAd()" style="margin-top: 12px;">
-          🎬 বিজ্ঞাপন দেখুন (+১০ কয়েন)
+          🎬 বিজ্ঞাপন দেখুন (+২০ কয়েন)
         </button>
       </div>
 
       <div class="stat-card">
-        <h2 style="font-size: 17px; font-weight: 800; color: #fff;">🎡 লাকি হুইল স্পিন</h2>
-        <p style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">চাকা ঘুরিয়ে জিতুন সর্বোচ্চ ১০ কয়েন!</p>
+        <h2 style="font-size: 17px; font-weight: 800; color: #fff;">🎡 লাকি হুইল স্পিন (২ ঘণ্টা পর পর)</h2>
+        <p style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">প্রতি ২ ঘণ্টা পর পর চাকা ঘুরিয়ে জিতুন ফ্রি কয়েন!</p>
         <div class="wheel-container">
           <div class="wheel-arrow"></div>
           <canvas id="wheelCanvas" width="200" height="200"></canvas>
@@ -694,11 +833,12 @@
         </div>
       </div>
 
-      <!-- প্রোফাইল পেজ থেকে সরাসরি প্রোমো কোড রিডিম -->
+      <!-- প্রোফাইল পেজ থেকে সরাসরি প্রোমো বা ব্যক্তিগত গিফট কোড রিডিম -->
       <div class="stat-card" style="text-align: left; padding: 16px;">
-        <h3 style="font-size: 14px; font-weight: 800; margin-bottom: 8px; color: var(--gold);">🎁 গিফট ও প্রোমো কোড বক্স</h3>
+        <h3 style="font-size: 14px; font-weight: 800; margin-bottom: 6px; color: var(--gold);">🎁 গিফট ও প্রোমো কোড বক্স</h3>
+        <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 8px;">শুধুমাত্র এই মিনি অ্যাপ থেকেই প্রোমো বা আপনার ব্যক্তিগত গিফট কোড রিডিম করা যাবে:</p>
         <div style="display: flex; gap: 8px;">
-          <input type="text" id="profPromoInput" class="mini-input" placeholder="প্রোমো কোড লিখুন..." style="margin-bottom: 0; text-transform: uppercase;">
+          <input type="text" id="profPromoInput" class="mini-input" placeholder="গিফট বা প্রোমো কোড..." style="margin-bottom: 0; text-transform: uppercase;">
           <button class="daily-btn" onclick="redeemPromoInApp('profPromoInput')" style="white-space: nowrap; padding: 0 16px;">ক্লেইম 🎁</button>
         </div>
       </div>
@@ -734,20 +874,32 @@
       <div class="stat-card" style="padding: 14px; text-align: left;">
         <h3 style="font-size: 14px; margin-bottom: 10px; font-weight: 800; color: var(--accent);">⚡ কুইক অ্যাডমিন কন্ট্রোল</h3>
         <input type="text" id="admNoticeInput" class="mini-input" placeholder="📢 নতুন নোটিশ টেক্সট লিখুন...">
-        <button class="daily-btn" onclick="adminUpdateNotice()" style="width: 100%; margin-bottom: 12px;">📢 নোটিশ আপডেট করুন</button>
+        <button class="daily-btn" onclick="adminUpdateNotice()" style="width: 100%; margin-bottom: 14px;">📢 নোটিশ আপডেট করুন</button>
 
+        <div style="font-size: 12px; font-weight: 800; color: #4ade80; margin-bottom: 6px;">🪙 সরাসরি ইউজারের ব্যালেন্সে কয়েন যোগ/বাদ:</div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
           <input type="text" id="admTargetUid" class="mini-input" placeholder="👤 ইউজার আইডি">
           <input type="number" id="admCoinAmount" class="mini-input" placeholder="🪙 কয়েন (যেমন: 100)">
         </div>
-        <button class="daily-btn" onclick="adminGiveUserCoins()" style="width: 100%; background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff; margin-bottom: 12px;">🪙 কয়েন যোগ/আপডেট করুন</button>
+        <button class="daily-btn" onclick="adminGiveUserCoins()" style="width: 100%; background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff; margin-bottom: 14px;">🪙 সরাসরি ব্যালেন্সে কয়েন দিন</button>
 
-        <!-- অ্যাপ থেকেই ইনস্ট্যান্ট প্রোমো কোড তৈরির সুবিধা -->
+        <!-- ১. সাধারণ প্রোমো কোড তৈরি (প্রথম ৫ জন রিডিম করতে পারবে) -->
+        <div style="font-size: 12px; font-weight: 800; color: var(--gold); margin-bottom: 6px;">🎁 পাবলিক প্রোমো কোড (প্রথম ৫ জনের লিমিট):</div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-          <input type="text" id="admPromoCodeName" class="mini-input" placeholder="🎁 নতুন প্রোমো কোড" style="text-transform: uppercase;">
+          <input type="text" id="admPromoCodeName" class="mini-input" placeholder="🎁 প্রোমো কোড নাম" style="text-transform: uppercase;">
           <input type="number" id="admPromoCodeCoins" class="mini-input" placeholder="🪙 কয়েন মূল্য">
         </div>
-        <button class="daily-btn" onclick="adminCreatePromoInApp()" style="width: 100%; background: linear-gradient(135deg, #a855f7, #6366f1); color: #fff;">🎁 নতুন প্রোমো কোড তৈরি করুন</button>
+        <button class="daily-btn" onclick="adminCreatePromoInApp()" style="width: 100%; background: linear-gradient(135deg, #a855f7, #6366f1); color: #fff; margin-bottom: 14px;">🎁 ৫ জনের প্রোমো কোড তৈরি করুন</button>
+
+        <!-- ২. নির্দিষ্ট ১ জন ইউজারের জন্য স্পেশাল ব্যক্তিগত গিফট কোড (শুধুমাত্র সেই ইউজারই রিডিম করতে পারবে) -->
+        <div style="font-size: 12px; font-weight: 800; color: #38bdf8; margin-bottom: 6px;">🔒 নির্দিষ্ট ইউজারের জন্য ব্যক্তিগত গিফট কোড সেট করুন:</div>
+        <p style="font-size: 10.5px; color: var(--text-sub); margin-bottom: 8px;">এখানে যে ইউজার আইডি দেবেন, শুধুমাত্র সেই ব্যক্তিই এই গিফট কোড রিডিম করতে পারবে (অন্য কেউ পারবে না):</p>
+        <input type="text" id="admSpecialGiftUid" class="mini-input" placeholder="👤 প্রাপকের টেলিগ্রাম ইউজার আইডি (যেমন: 7481264433)">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <input type="text" id="admSpecialGiftCode" class="mini-input" placeholder="🔑 সিক্রেট গিফট কোড" style="text-transform: uppercase;">
+          <input type="number" id="admSpecialGiftCoins" class="mini-input" placeholder="🪙 গিফট কয়েন সংখ্যা">
+        </div>
+        <button class="daily-btn" onclick="adminCreateUserSpecificGift()" style="width: 100%; background: linear-gradient(135deg, #38bdf8, #0284c7); color: #020617;">🔒 ব্যক্তিগত গিফট কোড সেট করুন</button>
       </div>
 
       <!-- ইউজারদের সাবমিট করা ফাইল দেখার, ডাউনলোড ও এক্সেপ্ট করার স্থায়ী প্যানেল -->
@@ -820,12 +972,12 @@
   </div>
 
   <div class="bottom-nav" id="bottomNavBar">
-    <button class="nav-item active" onclick="switchNav('pageHome', this)"><span class="nav-icon">💎</span><span>রিসোর্স</span></button>
-    <button class="nav-item" onclick="switchNav('pageAds', this)"><span class="nav-icon">📺</span><span>টাস্ক</span></button>
-    <button class="nav-item" onclick="switchNav('pageLeaderboard', this)"><span class="nav-icon">🏆</span><span>র‍্যাংক</span></button>
-    <button class="nav-item" onclick="switchNav('pageRefer', this)"><span class="nav-icon">👥</span><span>রেফার</span></button>
-    <button class="nav-item" onclick="switchNav('pageProfile', this)"><span class="nav-icon">👤</span><span>প্রোফাইল</span></button>
-    <button class="nav-item" id="adminNavBtn" style="display: none;" onclick="switchNav('pageAdmin', this)"><span class="nav-icon">👑</span><span>অ্যাডমিন</span></button>
+    <button class="nav-item active" onclick="switchNav('pageHome', this)"><span class="nav-icon">💎</span><span id="navTxtHome">রিসোর্স</span></button>
+    <button class="nav-item" onclick="switchNav('pageAds', this)"><span class="nav-icon">📺</span><span id="navTxtTask">টাস্ক</span></button>
+    <button class="nav-item" onclick="switchNav('pageLeaderboard', this)"><span class="nav-icon">🏆</span><span id="navTxtRank">র‍্যাংক</span></button>
+    <button class="nav-item" onclick="switchNav('pageRefer', this)"><span class="nav-icon">👥</span><span id="navTxtRef">রেফার</span></button>
+    <button class="nav-item" onclick="switchNav('pageProfile', this)"><span class="nav-icon">👤</span><span id="navTxtProf">প্রোফাইল</span></button>
+    <button class="nav-item" id="adminNavBtn" style="display: none;" onclick="switchNav('pageAdmin', this)"><span class="nav-icon">👑</span><span id="navTxtAdm">অ্যাডমিন</span></button>
   </div>
 
   <script>
@@ -838,6 +990,14 @@
     const CHANNEL_URL = "https://t.me/PLPStoreBD0";
     const RENDER_BACKEND_URL = "https://premium-resources-qxtv.onrender.com";
     const DB_BASE = "https://premium-resources-default-rtdb.firebaseio.com";
+
+    // ইউজার সেটিংস (ভাষা, থিম, লাইট মোড, ভাইব্রেশন) স্টেট
+    let appSettings = {
+      lang: localStorage.getItem('vip_app_lang') || 'bn',
+      theme: localStorage.getItem('vip_app_theme') || 'dark',
+      litePerf: localStorage.getItem('vip_lite_perf') === 'true',
+      haptic: localStorage.getItem('vip_haptic') !== 'false'
+    };
 
     // ইন্ট্রো স্প্ল্যাশ স্ক্রিন কন্ট্রোলার (১ সেকেন্ড বেশি সময় ও মাখনের মতো স্মুথ কাউন্টার)
     (function runIntroSplash() {
@@ -858,12 +1018,103 @@
         if (pct >= 100) clearInterval(pctInterval);
       }, 100);
 
-      // আগের 1350ms থেকে ১ সেকেন্ড বাড়িয়ে 2400ms করা হয়েছে
       setTimeout(() => {
         clearInterval(pctInterval);
         if (splash) splash.classList.add('hide');
       }, 2400);
     })();
+
+    // সেটিংস মোডাল ও ভাষা/থিম কন্ট্রোল ফাংশনসমূহ
+    function openSettingsModal() {
+      triggerHaptic();
+      document.getElementById('settingsModal').classList.add('active');
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('settingsModal').classList.remove('active');
+    }
+
+    function setAppTheme(mode) {
+      triggerHaptic();
+      appSettings.theme = mode;
+      try { localStorage.setItem('vip_app_theme', mode); } catch(e) {}
+      document.body.classList.remove('light-mode', 'amoled-mode');
+      if (mode === 'light') document.body.classList.add('light-mode');
+      else if (mode === 'amoled') document.body.classList.add('amoled-mode');
+
+      document.getElementById('themeBtnDark')?.classList.toggle('active', mode === 'dark');
+      document.getElementById('themeBtnLight')?.classList.toggle('active', mode === 'light');
+      document.getElementById('themeBtnAmoled')?.classList.toggle('active', mode === 'amoled');
+    }
+
+    function setLitePerfMode(enabled) {
+      triggerHaptic();
+      appSettings.litePerf = enabled;
+      try { localStorage.setItem('vip_lite_perf', String(enabled)); } catch(e) {}
+      document.body.classList.toggle('lite-perf-mode', enabled);
+      document.getElementById('perfBtnOn')?.classList.toggle('active', enabled);
+      document.getElementById('perfBtnOff')?.classList.toggle('active', !enabled);
+      showToast(enabled ? "⚡ লাইট মোড চালু হয়েছে (ফাস্ট পারফরম্যান্স)" : "✨ নরমাল অ্যানিমেশন চালু হয়েছে", "⚙️");
+    }
+
+    function setHapticPref(enabled) {
+      appSettings.haptic = enabled;
+      try { localStorage.setItem('vip_haptic', String(enabled)); } catch(e) {}
+      document.getElementById('vibBtnOn')?.classList.toggle('active', enabled);
+      document.getElementById('vibBtnOff')?.classList.toggle('active', !enabled);
+      if (enabled) triggerHaptic('success');
+    }
+
+    function setAppLanguage(lang) {
+      triggerHaptic();
+      appSettings.lang = lang;
+      try { localStorage.setItem('vip_app_lang', lang); } catch(e) {}
+      document.getElementById('langBtnBn')?.classList.toggle('active', lang === 'bn');
+      document.getElementById('langBtnEn')?.classList.toggle('active', lang === 'en');
+
+      const isEn = lang === 'en';
+      document.getElementById('txtMainGuide').innerText = isEn ? "How to Download & Earn Coins? (Guide)" : "কীভাবে ফাইল ডাউনলোড ও কয়েন আর্ন করবেন? (গাইড)";
+      document.getElementById('lblStatMembers').innerText = isEn ? "👥 Members" : "👥 মেম্বার";
+      document.getElementById('lblStatViews').innerText = isEn ? "📺 Views" : "📺 ভিউজ";
+      document.getElementById('lblStatDl').innerText = isEn ? "🎁 Downloads" : "🎁 ডাউনলোড";
+      document.getElementById('lblStatRef').innerText = isEn ? "🤝 Refers" : "🤝 রেফার";
+      document.getElementById('txtDailyTitle').innerText = isEn ? "🎁 Daily Free Reward" : "🎁 দৈনিক ফ্রি রিওয়ার্ড";
+      document.getElementById('txtDailySub').innerText = isEn ? "Get +5 Free Coins Everyday" : "প্রতিদিন পান ফ্রিতে +৫ কয়েন";
+      document.getElementById('searchInput').placeholder = isEn ? "🔍 Search PLP, XML or Fonts..." : "🔍 কাঙ্ক্ষিত ফাইল, XML বা ফন্টের নাম লিখুন...";
+      document.getElementById('fltNew').innerText = isEn ? "🆕 Newest" : "🆕 নতুন ফাইল";
+      document.getElementById('fltPop').innerText = isEn ? "🔥 Popular" : "🔥 জনপ্রিয় (Top)";
+      document.getElementById('fltFree').innerText = isEn ? "🆓 Low Coins" : "🆓 ফ্রি / কম কয়েন";
+      document.getElementById('fltSaved').innerText = isEn ? "❤️ Favorites" : "❤️ পছন্দের ফাইল";
+      document.getElementById('tabBtn-plp').innerText = isEn ? "🎨 PLP Files" : "🎨 PLP ফাইল";
+      document.getElementById('tabBtn-font').innerText = isEn ? "🔤 Fonts" : "🔤 ফন্ট সমূহ";
+      document.getElementById('tabBtn-xml').innerText = isEn ? "⚡ XML Files" : "⚡ XML ফাইল";
+      document.getElementById('txtAdBoxTitle').innerText = isEn ? "Watch Ads & Earn Coins" : "বিজ্ঞাপন দেখে কয়েন সংগ্রহ";
+      document.getElementById('txtAdBoxSub').innerText = isEn ? "Watch full ad to get +20 coins instantly." : "সম্পূর্ণ বিজ্ঞাপনটি দেখলে ওয়ালেটে ২০টি কয়েন যোগ হবে।";
+      document.getElementById('btnWatchMonetag').innerText = isEn ? "🎬 Watch Ad (+20 Coins)" : "🎬 বিজ্ঞাপন দেখুন (+২০ কয়েন)";
+      document.getElementById('navTxtHome').innerText = isEn ? "Resources" : "রিসোর্স";
+      document.getElementById('navTxtTask').innerText = isEn ? "Tasks" : "টাস্ক";
+      document.getElementById('navTxtRank').innerText = isEn ? "Rank" : "র‍্যাংক";
+      document.getElementById('navTxtRef').innerText = isEn ? "Refer" : "রেফার";
+      document.getElementById('navTxtProf').innerText = isEn ? "Profile" : "প্রোফাইল";
+      document.getElementById('navTxtAdm').innerText = isEn ? "Admin" : "অ্যাডমিন";
+      renderResources(document.getElementById('searchInput').value.toLowerCase());
+    }
+
+    function clearAppCache() {
+      triggerHaptic('warning');
+      try {
+        localStorage.removeItem('cached_resources');
+        showToast("ক্যাশ পরিষ্কার হয়েছে! রিফ্রেশ হচ্ছে...", "🗑️");
+        setTimeout(() => { fetchResources(); closeSettingsModal(); }, 600);
+      } catch(e) {}
+    }
+
+    function applySavedSettingsOnLoad() {
+      setAppTheme(appSettings.theme);
+      setLitePerfMode(appSettings.litePerf);
+      setHapticPref(appSettings.haptic);
+      if (appSettings.lang === 'en') setAppLanguage('en');
+    }
 
     // প্রোফাইল পিকচার (Avatar) লোড ও এরর হ্যান্ডলার (যাতে সব ইউজারের প্রোফাইল পিক দেখা যায়)
     function handleAvatarError(imgEl, textElId) {
@@ -1028,7 +1279,7 @@
     }
 
     const user = getTelegramUser();
-    let userData = { coins: 20, refers: 0, daily_ads: {}, last_checkin: "", last_spin: "", last_scratch: "", last_ad_time: 0, joined_channel: false, claimed_count: 0, total_ads_watched: 0, unlocked: {} };
+    let userData = { coins: 20, refers: 0, daily_ads: {}, last_checkin: "", last_spin: "", last_spin_time: 0, last_scratch: "", last_ad_time: 0, joined_channel: false, claimed_count: 0, total_ads_watched: 0, unlocked: {} };
     let allResources = {};
     let currentCategory = 'plp';
     let currentSortOrder = 'new';
@@ -1037,12 +1288,16 @@
     let scratchCardScratched = false;
     let searchTimeout = null;
     let activeNoticeLink = "";
+    let spinCountdownInterval = null;
     let savedFavorites = {};
     try { savedFavorites = JSON.parse(localStorage.getItem('vip_saved_favs') || '{}'); } catch(e) {}
 
     const AD_LIMIT = 30;
-    const AD_REWARD = 10;
+    // অ্যাড দেখে ২০ কয়েন আর্ন করার সিস্টেম
+    const AD_REWARD = 20;
     const AD_COOLDOWN = 60;
+    // প্রতি ২ ঘণ্টা পর পর স্পিন করার সময় (২ ঘণ্টা = ৭২,০০,০০০ মিলিসেকেন্ড)
+    const SPIN_COOLDOWN_MS = 2 * 60 * 60 * 1000;
 
     const spinRewards = [
       { text: "+2 🪙", coins: 2, bg: "#0284c7" },
@@ -1131,30 +1386,46 @@
       }
     }
 
-    // মিনি অ্যাপের ভেতর থেকে সরাসরি প্রোমো কোড রিডিম ফাংশন
+    // মিনি অ্যাপের ভেতর থেকে প্রোমো কোড (প্রথম ৫ জন) এবং নির্দিষ্ট ইউজারের ব্যক্তিগত গিফট কোড রিডিম ফাংশন
     async function redeemPromoInApp(inputId = 'promoCodeInput') {
       triggerHaptic();
       const input = document.getElementById(inputId);
       const code = (input?.value || '').trim().toUpperCase();
       if (!code) {
-        showToast("অনুগ্রহ করে প্রোমো কোড লিখুন!", "⚠️");
+        showToast("অনুগ্রহ করে গিফট বা প্রোমো কোড লিখুন!", "⚠️");
         return;
       }
       if (!user.id) {
-        showToast("বট থেকে অ্যাপটি ওপেন করুন!", "⚠️");
+        showToast("টেলিগ্রাম বট থেকে মিনি অ্যাপটি ওপেন করুন!", "⚠️");
         return;
       }
 
       showToast("কোড যাচাই করা হচ্ছে... ⏳", "🔍");
       const pData = await safeFetch(`${DB_BASE}/promo_codes/${code}.json`);
       if (!pData || !pData.coins) {
-        showToast("ভুল অথবা মেয়াদোত্তীর্ণ প্রোমো কোড!", "❌");
+        showToast("ভুল অথবা মেয়াদোত্তীর্ণ কোড!", "❌");
         return;
+      }
+
+      // ১. যদি এটি নির্দিষ্ট কোনো ইউজারের জন্য ব্যক্তিগত গিফট কোড হয় (target_uid সেট করা থাকে)
+      if (pData.target_uid && String(pData.target_uid).trim() !== "") {
+        if (String(pData.target_uid).trim() !== String(user.id).trim()) {
+          showToast("🔒 দুঃখিত! এই স্পেশাল গিফট কোডটি শুধুমাত্র নির্দিষ্ট ইউজারের জন্য বরাদ্দ, অন্য কেউ রিডিম করতে পারবে না!", "🚫");
+          return;
+        }
       }
 
       const usedBy = pData.used_by || {};
       if (usedBy[String(user.id)]) {
         showToast("আপনি ইতিমধ্যে এই কোডটি ব্যবহার করেছেন!", "⚠️");
+        return;
+      }
+
+      // ২. প্রথম ৫ জনের লিমিট চেক (সাধারণ প্রোমো কোডের জন্য max_uses ডিফল্ট 5)
+      const maxUses = Number(pData.max_uses) || (pData.target_uid ? 1 : 5);
+      const currentUsedCount = Object.keys(usedBy).length;
+      if (currentUsedCount >= maxUses) {
+        showToast(`❌ দুঃখিত! প্রথম ${maxUses} জন ইতিমধ্যে এই কোডটি রিডিম করে ফেলেছেন!`, "⏳");
         return;
       }
 
@@ -1165,7 +1436,12 @@
       updateUI();
       fireConfetti();
       if (input) input.value = '';
-      showToast(`🎉 অভিনন্দন! +${reward} কয়েন যোগ হয়েছে!`, "🎁");
+
+      if (pData.target_uid) {
+        showToast(`🎉 আপনার ব্যক্তিগত ভিআইপি গিফট +${reward} কয়েন যোগ হয়েছে!`, "👑");
+      } else {
+        showToast(`🎉 অভিনন্দন! +${reward} কয়েন যোগ হয়েছে! (${currentUsedCount + 1}/${maxUses})`, "🎁");
+      }
 
       await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
       await safeFetch(`${DB_BASE}/promo_codes/${code}/used_by.json`, { method: 'PUT', body: JSON.stringify(usedBy) });
@@ -1179,6 +1455,7 @@
         if (data) {
           userData = Object.assign(userData, data);
           updateUI();
+          checkSpinStatus();
         }
       }
       await loadGlobalStats();
@@ -1200,6 +1477,7 @@
     }
 
     function fireConfetti() {
+      if (appSettings.litePerf) return;
       const canvas = document.getElementById('confettiCanvas');
       const ctx = canvas.getContext('2d');
       canvas.width = window.innerWidth;
@@ -1208,7 +1486,7 @@
       const pieces = [];
       const colors = ['#fbbf24', '#38bdf8', '#f43f5e', '#10b981', '#c084fc'];
 
-      for (let i = 0; i < 22; i++) {
+      for (let i = 0; i < 20; i++) {
         pieces.push({
           x: canvas.width / 2, y: canvas.height / 2,
           r: Math.random() * 4 + 2,
@@ -1229,13 +1507,14 @@
           ctx.fill();
         });
         frames++;
-        if (frames < 38) requestAnimationFrame(animate);
+        if (frames < 36) requestAnimationFrame(animate);
         else ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
       animate();
     }
 
     function triggerHaptic(type = 'light') {
+      if (!appSettings.haptic) return;
       if (tg && tg.HapticFeedback) {
         if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
         else if (type === 'warning') tg.HapticFeedback.notificationOccurred('warning');
@@ -1324,6 +1603,8 @@
     }
 
     async function initApp() {
+      applySavedSettingsOnLoad();
+
       const realUser = getTelegramUser();
       user.id = realUser.id;
       user.first_name = realUser.first_name;
@@ -1345,7 +1626,7 @@
         try {
           const data = await safeFetch(`${DB_BASE}/users/${user.id}.json`);
           if (data) {
-            userData = Object.assign({ coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, unlocked: {}, joined_channel: false }, data);
+            userData = Object.assign({ coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, last_spin_time: 0, unlocked: {}, joined_channel: false }, data);
             if (data.name && (user.first_name === "Member" || user.first_name === "VIP সদস্য")) {
               user.first_name = data.name;
               document.getElementById('uName').innerText = data.name;
@@ -1360,10 +1641,9 @@
             } else if (user.photo_url && data.photo !== user.photo_url) {
               safeFetch(`${DB_BASE}/users/${user.id}/photo.json`, { method: 'PUT', body: JSON.stringify(user.photo_url) });
             }
-            // ডাটাবেজ থেকে পাওয়া ইউজারনেম বা ছবি দিয়ে পুনরায় প্রোফাইল পিকচার নিশ্চিত করা
             applyUserProfilePicture(user.photo_url || data.photo, user.username || data.username, user.first_name || data.name);
           } else {
-            userData = { name: user.first_name, username: user.username || "", photo: user.photo_url || "", coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, unlocked: {}, joined_channel: false };
+            userData = { name: user.first_name, username: user.username || "", photo: user.photo_url || "", coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, last_spin_time: 0, unlocked: {}, joined_channel: false };
             await safeFetch(`${DB_BASE}/users/${user.id}.json`, { method: 'PUT', body: JSON.stringify(userData) });
           }
         } catch (e) {}
@@ -1406,12 +1686,10 @@
         let totalClaims = Number(stats.total_claims) || 0;
         let totalRefers = Number(stats.total_refers) || 0;
 
-        // প্রতি ভিজিটে মেম্বার/ভিজিট সংখ্যা +১ করে আপডেট
         visits += 1;
         document.getElementById('statVisits').innerText = visits;
         safeFetch(`${DB_BASE}/stats/total_visits.json`, { method: 'PUT', body: JSON.stringify(visits) });
 
-        // ইউজার টেবিল থেকে আসল মোট রেফার এবং মোট অ্যাড ভিউ গণনা করে সিঙ্ক করা
         const usersObj = await safeFetch(`${DB_BASE}/users.json`);
         if (usersObj) {
           let calculatedRefers = 0;
@@ -1555,18 +1833,49 @@
       showToast("দৈনিক বোনাস +৫ কয়েন যোগ হয়েছে!", "🎉");
     }
 
+    // প্রতি ২ ঘণ্টা পর পর স্পিন স্ট্যাটাস ও লাইভ টাইমার চেক করার ফাংশন
     function checkSpinStatus() {
-      if (userData.last_spin === getTodayKey()) {
-        const btn = document.getElementById('btnSpin');
+      const btn = document.getElementById('btnSpin');
+      if (!btn) return;
+      if (spinCountdownInterval) clearInterval(spinCountdownInterval);
+
+      const lastSpinTs = Number(userData.last_spin_time) || 0;
+      const now = Date.now();
+      const diff = now - lastSpinTs;
+
+      if (diff >= SPIN_COOLDOWN_MS) {
+        btn.disabled = false;
+        btn.innerText = appSettings.lang === 'en' ? "🎯 Spin Now" : "🎯 স্পিন করুন";
+      } else {
         btn.disabled = true;
-        btn.innerText = "আজকের স্পিন শেষ ✓";
+        const updateTimerText = () => {
+          const rem = SPIN_COOLDOWN_MS - (Date.now() - lastSpinTs);
+          if (rem <= 0) {
+            clearInterval(spinCountdownInterval);
+            btn.disabled = false;
+            btn.innerText = appSettings.lang === 'en' ? "🎯 Spin Now" : "🎯 স্পিন করুন";
+            return;
+          }
+          const hrs = Math.floor(rem / (1000 * 60 * 60));
+          const mins = Math.floor((rem % (1000 * 60 * 60)) / (1000 * 60));
+          const secs = Math.floor((rem % (1000 * 60)) / 1000);
+          const pad = n => String(n).padStart(2, '0');
+          btn.innerText = `⏳ ${pad(hrs)}:${pad(mins)}:${pad(secs)} পর স্পিন`;
+        };
+        updateTimerText();
+        spinCountdownInterval = setInterval(updateTimerText, 1000);
       }
     }
 
+    // প্রতি ২ ঘণ্টা পর পর স্পিন এবং স্পিন শেষে র‍্যান্ডমলি কখনো অ্যাড দেখাবে আবার কখনো দেখাবে না
     async function playLuckySpin() {
       triggerHaptic();
-      const today = getTodayKey();
-      if (userData.last_spin === today) return;
+      const now = Date.now();
+      const lastSpinTs = Number(userData.last_spin_time) || 0;
+      if (now - lastSpinTs < SPIN_COOLDOWN_MS) {
+        checkSpinStatus();
+        return;
+      }
 
       const btn = document.getElementById('btnSpin');
       btn.disabled = true;
@@ -1579,18 +1888,31 @@
       document.getElementById('wheelCanvas').style.transform = `rotate(${currentWheelRotation}deg)`;
 
       setTimeout(async () => {
+        // স্পিন শেষে কখনো র‍্যান্ডমলি (৫০% ক্ষেত্রে) অ্যাড দেখাবে, আবার কখনো সরাসরি কয়েন দেবে
+        if (Math.random() < 0.5) {
+          showToast("বোনাস ভেরিফিকেশন বিজ্ঞাপন লোড হচ্ছে...", "🎬");
+          await triggerMonetagAd();
+          userData.total_ads_watched = (userData.total_ads_watched || 0) + 1;
+          if (user.id) {
+            safeFetch(`${DB_BASE}/users/${user.id}/total_ads_watched.json`, { method: 'PUT', body: JSON.stringify(userData.total_ads_watched) });
+          }
+        }
+
         triggerHaptic('success');
+        const spinDoneTime = Date.now();
         userData.coins = (userData.coins || 0) + selectedReward.coins;
-        userData.last_spin = today;
+        userData.last_spin_time = spinDoneTime;
+        userData.last_spin = getTodayKey();
         updateUI();
-        btn.innerText = "আজকের স্পিন শেষ ✓";
+        checkSpinStatus();
         fireConfetti();
 
         if (user.id) {
           await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
-          await safeFetch(`${DB_BASE}/users/${user.id}/last_spin.json`, { method: 'PUT', body: JSON.stringify(today) });
+          await safeFetch(`${DB_BASE}/users/${user.id}/last_spin_time.json`, { method: 'PUT', body: JSON.stringify(spinDoneTime) });
+          await safeFetch(`${DB_BASE}/users/${user.id}/last_spin.json`, { method: 'PUT', body: JSON.stringify(userData.last_spin) });
         }
-        showToast(`স্পিন থেকে পেয়েছেন ${selectedReward.text}!`, "🎉");
+        showToast(`স্পিন থেকে পেয়েছেন ${selectedReward.text}! (২ ঘণ্টা পর আবার স্পিন করতে পারবেন)`, "🎉");
       }, 3500);
     }
 
@@ -1778,6 +2100,7 @@
       }
 
       const fragment = document.createDocumentFragment();
+      const dlBtnText = appSettings.lang === 'en' ? "Download ⚡" : "ডাউনলোড করুন ⚡";
 
       keys.forEach(k => {
         const item = allResources[k];
@@ -1829,7 +2152,7 @@
             <div class="card-title">${item.name}</div>
             <div class="card-meta">
               <span class="price-tag">🪙 ${item.coins}</span>
-              <button class="btn-claim" onclick="claimResource('${k}', ${item.coins}, '${safeName}', '${item.type}')">ডাউনলোড করুন ⚡</button>
+              <button class="btn-claim" onclick="claimResource('${k}', ${item.coins}, '${safeName}', '${item.type}')">${dlBtnText}</button>
             </div>
           </div>`;
         fragment.appendChild(card);
@@ -2035,6 +2358,7 @@
       showToast(`✅ ইউজার ${targetUid}-এর বর্তমান কয়েন: ${newCoins}`, "🪙");
     }
 
+    // ১. পাবলিক প্রোমো কোড তৈরি (প্রথম ৫ জনের লিমিটসহ)
     async function adminCreatePromoInApp() {
       const codeName = (document.getElementById('admPromoCodeName').value || '').trim().toUpperCase();
       const codeCoins = parseInt((document.getElementById('admPromoCodeCoins').value || '').trim());
@@ -2044,11 +2368,40 @@
       }
       await safeFetch(`${DB_BASE}/promo_codes/${codeName}.json`, {
         method: 'PUT',
-        body: JSON.stringify({ coins: codeCoins, used_by: {} })
+        body: JSON.stringify({ coins: codeCoins, max_uses: 5, used_by: {} })
       });
       document.getElementById('admPromoCodeName').value = '';
       document.getElementById('admPromoCodeCoins').value = '';
-      showToast(`🎉 প্রোমো কোড তৈরি হয়েছে: ${codeName} (+${codeCoins}🪙)`, "🎁");
+      showToast(`🎉 ৫ জনের প্রোমো কোড তৈরি হয়েছে: ${codeName} (+${codeCoins}🪙)`, "🎁");
+    }
+
+    // ২. নির্দিষ্ট ইউজারের জন্য ব্যক্তিগত গিফট কোড সেট করা (যাতে শুধুমাত্র সেই ব্যক্তিই রিডিম করতে পারে)
+    async function adminCreateUserSpecificGift() {
+      const targetUid = (document.getElementById('admSpecialGiftUid').value || '').trim();
+      const giftCode = (document.getElementById('admSpecialGiftCode').value || '').trim().toUpperCase();
+      const giftCoins = parseInt((document.getElementById('admSpecialGiftCoins').value || '').trim());
+
+      if (!targetUid || !giftCode || isNaN(giftCoins) || giftCoins <= 0) {
+        showToast("প্রাপকের ইউজার আইডি, গিফট কোড ও কয়েন সংখ্যা সঠিকভাবে লিখুন!", "⚠️");
+        return;
+      }
+
+      await safeFetch(`${DB_BASE}/promo_codes/${giftCode}.json`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          coins: giftCoins,
+          target_uid: String(targetUid),
+          max_uses: 1,
+          used_by: {},
+          created_at: new Date().toLocaleString()
+        })
+      });
+
+      document.getElementById('admSpecialGiftUid').value = '';
+      document.getElementById('admSpecialGiftCode').value = '';
+      document.getElementById('admSpecialGiftCoins').value = '';
+      fallbackCopy(giftCode);
+      showToast(`🔒 ইউজার ${targetUid}-এর জন্য গিফট কোড (${giftCode}) সেট ও কপি হয়েছে!`, "👑");
     }
 
     // ইউজারের সাবমিট করা ফাইল এক্সেপ্ট ও কয়েন দেওয়ার পর ফাইলটি স্থায়ীভাবে রেখে দেওয়ার ফাংশন
@@ -2296,4 +2649,4 @@
     initApp();
   </script>
 </body>
-              </html>
+  </html>
