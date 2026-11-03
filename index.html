@@ -42,6 +42,51 @@
     body { 
       background: var(--bg-base); min-height: 100vh; color: var(--text-main); 
       padding-bottom: 115px; overflow-x: hidden; position: relative;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* প্রিমিয়াম ইন্ট্রো স্প্ল্যাশ স্ক্রিন স্টাইল (কম দামি ফোনেও মাখনের মতো চলবে) */
+    #introSplash {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: radial-gradient(circle at 50% 35%, #0f172a 0%, #02040a 75%);
+      z-index: 2147483647; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 16px;
+      transition: opacity 0.45s ease, transform 0.45s ease;
+      will-change: opacity, transform;
+    }
+    #introSplash.hide {
+      opacity: 0; transform: scale(1.04); pointer-events: none;
+    }
+    .splash-logo-ring {
+      width: 92px; height: 92px; border-radius: 28px;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(251, 191, 36, 0.2));
+      border: 2px solid rgba(251, 191, 36, 0.5);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 46px; box-shadow: 0 0 35px rgba(56, 189, 248, 0.35);
+      animation: pulseLogo 1.5s infinite ease-in-out;
+    }
+    @keyframes pulseLogo {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+    .splash-title {
+      font-size: 22px; font-weight: 900; letter-spacing: 0.5px;
+      background: linear-gradient(90deg, #ffffff, #38bdf8, #fbbf24);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      text-align: center;
+    }
+    .splash-sub {
+      font-size: 12px; color: var(--text-sub); font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+    }
+    .splash-bar-wrap {
+      width: 180px; height: 5px; background: rgba(255,255,255,0.08);
+      border-radius: 99px; overflow: hidden; margin-top: 6px;
+    }
+    .splash-bar-fill {
+      width: 0%; height: 100%;
+      background: linear-gradient(90deg, #38bdf8, #fbbf24);
+      border-radius: 99px; transition: width 0.3s ease;
     }
 
     .apple-fluid-canvas {
@@ -65,6 +110,13 @@
       display: flex; align-items: center; gap: 10px; max-width: 90vw; text-align: center; pointer-events: none;
     }
     #toast.show { top: 18px; }
+
+    /* অফলাইন বা দুর্বল নেটওয়ার্ক সিগন্যাল ব্যানার */
+    #netStatusBanner {
+      display: none; background: rgba(244, 63, 94, 0.9); color: #fff;
+      text-align: center; padding: 6px 12px; font-size: 11px; font-weight: 800;
+      position: sticky; top: 0; z-index: 9999;
+    }
 
     .loading-overlay {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -125,7 +177,7 @@
     .notice-card { 
       background: var(--liquid-glass); border: 1px solid var(--liquid-border-side); 
       border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; 
-      margin-bottom: 16px; font-size: 12px; color: #ffffff; font-weight: 600;
+      margin-bottom: 16px; font-size: 12px; color: #ffffff; font-weight: 600; cursor: pointer;
     }
 
     .live-stats-bar { 
@@ -170,10 +222,23 @@
     .search-box { 
       width: 100%; padding: 14px 18px; border-radius: 16px; 
       border: 1px solid var(--liquid-border-side); background: var(--liquid-glass); 
-      color: #ffffff; font-size: 13px; font-weight: 600; margin-bottom: 14px; outline: none; 
+      color: #ffffff; font-size: 13px; font-weight: 600; margin-bottom: 10px; outline: none; 
     }
     .search-box::placeholder { color: var(--text-dim); }
     .search-box:focus { border-color: var(--accent); }
+
+    /* নতুন কুইক সর্ট ফিল্টার বার */
+    .filter-pills {
+      display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 2px;
+    }
+    .filter-pill {
+      padding: 6px 12px; border-radius: 99px; font-size: 11px; font-weight: 800;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-sub); cursor: pointer; white-space: nowrap;
+    }
+    .filter-pill.active {
+      background: rgba(251, 191, 36, 0.18); border-color: var(--gold); color: var(--gold);
+    }
     
     .tabs { display: flex; gap: 8px; margin-bottom: 18px; }
     .tab-btn { 
@@ -294,6 +359,26 @@
     }
     .sub-dl-btn:active { transform: scale(0.93); }
 
+    .sub-accept-btn {
+      background: linear-gradient(135deg, #fbbf24, #d97706);
+      color: #020617;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 900;
+      cursor: pointer;
+      white-space: nowrap;
+      margin-top: 4px;
+    }
+
+    .mini-input {
+      width: 100%; padding: 11px 14px; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.18); background: rgba(0,0,0,0.45);
+      color: #fff; font-size: 12.5px; font-weight: 700; outline: none; margin-bottom: 8px;
+    }
+    .mini-input:focus { border-color: var(--accent); }
+
     .preview-modal { 
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
       background: rgba(0,0,0,0.92); z-index: 2500; align-items: center; justify-content: center; padding: 16px; 
@@ -318,6 +403,18 @@
   </style>
 </head>
 <body>
+
+  <!-- প্রিমিয়াম ইন্ট্রো স্প্ল্যাশ স্ক্রিন -->
+  <div id="introSplash">
+    <div class="splash-logo-ring">💎</div>
+    <div class="splash-title">VIP Premium Resources</div>
+    <div class="splash-sub">PLP • XML • PREMIUM FONTS</div>
+    <div class="splash-bar-wrap">
+      <div class="splash-bar-fill" id="splashBarFill"></div>
+    </div>
+  </div>
+
+  <div id="netStatusBanner">⚠️ ইন্টারনেট সংযোগ দুর্বল! ক্যাশ মেমোরি থেকে চলছে...</div>
 
   <div class="apple-fluid-canvas"></div>
   <canvas id="confettiCanvas"></canvas>
@@ -346,12 +443,27 @@
   <div class="guide-modal" id="guideModal" onclick="closeGuideModal()">
     <div class="guide-box" onclick="event.stopPropagation()">
       <div style="font-size: 38px; margin-bottom: 6px;">📖</div>
-      <h3 style="font-size: 16px; font-weight: 900; color: var(--gold); margin-bottom: 12px;">কিভাবে ফাইল ডাউনলোড করবেন?</h3>
-      <div style="font-size: 12px; color: var(--text-sub); text-align: left; line-height: 1.6; display: flex; flex-direction: column; gap: 8px;">
-        <div><b>১. কয়েন অর্জন করুন:</b> ডেইলি চেক-ইন, স্পিন, স্ক্র্যাচ বা টাস্ক পূরণ করে পর্যাপ্ত কয়েন সংগ্রহ করুন।</div>
-        <div><b>২. ডাউনলোড বাটনে চাপ দিন:</b> পছন্দের ফন্ট, PLP বা XML ফাইলের নিচের **"ডাউনলোড করুন"** বাটনে ক্লিক করুন।</div>
-        <div><b>৩. ৫ সেকেন্ড অপেক্ষা:</b> নিয়ম অনুযায়ী ৫ সেকেন্ডের কাউন্টডাউন শেষ হবে ও বিজ্ঞাপন আসবে।</div>
-        <div><b>৪. অটো ইনবক্স ডেলিভারি:</b> বিজ্ঞাপন শেষ হওয়া মাত্রই ফাইলটি নিজে থেকে আপনার টেলিগ্রাম ইনবক্সে ডেলিভারি হয়ে যাবে! 🚀</div>
+      <h3 style="font-size: 16px; font-weight: 900; color: var(--gold); margin-bottom: 12px;">অ্যাপ ও বট ব্যবহারের সম্পূর্ণ গাইড</h3>
+      <div style="font-size: 12px; color: var(--text-sub); text-align: left; line-height: 1.6; display: flex; flex-direction: column; gap: 10px;">
+        <div style="background:rgba(255,255,255,0.04); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
+          <b style="color:#38bdf8;">১. কীভাবে ফ্রি কয়েন আর্ন করবেন?</b><br>
+          • প্রতিদিন <b>ডেইলি চেক-ইন</b> (+৫), <b>লাকি স্পিন</b> (সর্বোচ্চ +১০) ও <b>স্ক্র্যাচ কার্ড</b> (+৫) থেকে কয়েন পাবেন।<br>
+          • <b>টাস্ক</b> মেনু থেকে বিজ্ঞাপন দেখে প্রতিবার +১০ কয়েন এবং চ্যানেলে জয়েন করে +১৫ কয়েন পাবেন।<br>
+          • <b>রেফার</b> করে প্রতি বন্ধুর জন্য পাবেন +৫০ কয়েন!
+        </div>
+        <div style="background:rgba(255,255,255,0.04); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
+          <b style="color:#fbbf24;">২. কীভাবে ফাইল ডাউনলোড করবেন?</b><br>
+          • পছন্দের PLP, Font বা XML ফাইলের নিচের <b>"ডাউনলোড করুন ⚡"</b> বাটনে চাপ দিন।<br>
+          • ৫ সেকেন্ড অপেক্ষা ও বিজ্ঞাপন শেষ হওয়া মাত্রই ফাইল স্বয়ংক্রিয়ভাবে আপনার <b>টেলিগ্রাম বট ইনবক্সে</b> চলে যাবে!
+        </div>
+        <div style="background:rgba(255,255,255,0.04); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
+          <b style="color:#4ade80;">৩. নিজের ফাইল দিয়ে কীভাবে কয়েন পাবেন?</b><br>
+          • বটের মূল মেনু থেকে <b>"📤 ফাইল দিয়ে কয়েন আর্ন"</b> বাটনে ক্লিক করে আপনার তৈরি PLP, XML বা Font জমা দিন। অ্যাডমিন অ্যাপ্রুভ করলেই পাবেন বিশাল কয়েন বোনাস!
+        </div>
+        <div style="background:rgba(255,255,255,0.04); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
+          <b style="color:#c084fc;">৪. প্রোমো কোড রিডিম করার নিয়ম:</b><br>
+          • অফিশিয়াল চ্যানেল থেকে পাওয়া প্রোমো কোড সরাসরি এই অ্যাপের <b>টাস্ক</b> বা <b>প্রোফাইল</b> পেজে বসিয়ে ফ্রি কয়েন নিতে পারবেন!
+        </div>
       </div>
       <button class="action-btn" onclick="closeGuideModal()" style="margin-top: 18px; padding: 10px;">বুঝেছি 👍</button>
     </div>
@@ -373,13 +485,13 @@
 
   <div class="container">
     
-    <div class="notice-card" id="noticeBox">
+    <div class="notice-card" id="noticeBox" onclick="openNoticeLink()">
       <span>📢</span>
       <span id="noticeText">স্বাগতম! নতুন প্রিমিয়াম PLP, XML ও ফন্ট যুক্ত করা হয়েছে।</span>
     </div>
 
     <button class="guide-btn" onclick="openGuideModal()">
-      <span>💡</span><span>কীভাবে ফাইল ডাউনলোড করবেন? (গাইড দেখুন)</span>
+      <span>💡</span><span>কীভাবে ফাইল ডাউনলোড ও কয়েন আর্ন করবেন? (গাইড)</span>
     </button>
 
     <div class="live-stats-bar">
@@ -412,6 +524,12 @@
 
       <input type="text" class="search-box" id="searchInput" placeholder="🔍 কাঙ্ক্ষিত ফাইল, XML বা ফন্টের নাম লিখুন..." oninput="handleSearch()">
 
+      <div class="filter-pills">
+        <button class="filter-pill active" onclick="setSortOrder('new', this)">🆕 নতুন ফাইল</button>
+        <button class="filter-pill" onclick="setSortOrder('popular', this)">🔥 জনপ্রিয় (Top)</button>
+        <button class="filter-pill" onclick="setSortOrder('free', this)">🆓 ফ্রি / কম কয়েন</button>
+      </div>
+
       <div class="tabs">
         <button class="tab-btn active" id="tabBtn-plp" onclick="switchCategory('plp', this)">🎨 PLP ফাইল</button>
         <button class="tab-btn" id="tabBtn-font" onclick="switchCategory('font', this)">🔤 ফন্ট সমূহ</button>
@@ -430,6 +548,16 @@
             <div style="font-size: 11px; color: var(--gold); margin-top: 2px; font-weight: 700;">পুরস্কার: +১৫ কয়েন</div>
           </div>
           <button class="daily-btn" id="btnJoinChannel" onclick="claimChannelTask()">জয়েন করুন</button>
+        </div>
+      </div>
+
+      <!-- অ্যাপের ভেতর থেকেই প্রোমো কোড রিডিম করার নতুন কার্ড -->
+      <div class="stat-card" style="text-align: left;">
+        <h3 style="font-size: 14.5px; font-weight: 800; margin-bottom: 6px; color: var(--gold);">🎁 প্রোমো কোড রিডিম করুন</h3>
+        <p style="font-size: 11.5px; color: var(--text-sub); margin-bottom: 10px;">চ্যানেল থেকে পাওয়া সিক্রেট কোড বসিয়ে ফ্রি কয়েন নিন:</p>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="promoCodeInput" class="mini-input" placeholder="কোড লিখুন (যেমন: FREE50)" style="margin-bottom: 0; text-transform: uppercase;">
+          <button class="daily-btn" onclick="redeemPromoInApp()" style="white-space: nowrap; padding: 0 18px;">রিডিম ⚡</button>
         </div>
       </div>
 
@@ -486,9 +614,12 @@
         <p style="font-size:10.5px; color:var(--text-dim); text-transform: uppercase; font-weight: 800;">সফল ভেরিফাইড রেফার</p>
       </div>
       <div class="refer-box" id="referLinkText">লোড হচ্ছে...</div>
-      <button class="action-btn" onclick="shareReferralLink()">🚀 রেফার লিংক শেয়ার করুন (+৫০ কয়েন)</button>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <button class="action-btn" onclick="copyReferLink()">📋 লিংক কপি করুন</button>
+        <button class="action-btn" onclick="shareReferralLink()" style="background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff;">🚀 শেয়ার (+৫০)</button>
+      </div>
 
-      <!-- নতুন যুক্ত করা রেফারেল র‍্যাংকিং লিস্ট -->
+      <!-- রেফারেল র‍্যাংকিং লিস্ট -->
       <div class="stat-card" style="margin-top: 16px; padding: 16px;">
         <h3 style="font-size: 15px; font-weight: 800; color: var(--gold); margin-bottom: 4px;">🏆 শীর্ষ রেফারকারী র‍্যাংকিং</h3>
         <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 12px;">কে কতজন মেম্বার রেফার করেছে এবং তাদের ইউজার আইডি</p>
@@ -505,7 +636,8 @@
           <span class="user-avatar-text" id="profAvatarText" style="font-size: 26px;">U</span>
         </div>
         <h2 id="profName" style="font-size:17px; font-weight: 800; color: #fff;">VIP User</h2>
-        <p id="profTag" style="font-size:12px; color:var(--text-sub); margin-bottom:8px;">@user</p>
+        <p id="profTag" style="font-size:12px; color:var(--text-sub); margin-bottom:6px;">@user</p>
+        <button class="copy-uid-btn" onclick="copyUserId(user.id)" style="margin-bottom: 8px;">🆔 আমার আইডি কপি করুন 📋</button><br>
         <span style="background:rgba(251, 191, 36, 0.12); color:var(--gold); padding:5px 14px; border-radius:99px; font-size:10.5px; font-weight:900; border:1px solid rgba(251, 191, 36, 0.3);" id="profRank">BRONZE VIP</span>
         
         <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; border-top:1px solid rgba(255,255,255,0.1); padding-top:14px; margin-top:14px;">
@@ -537,7 +669,7 @@
     <div id="pageAdmin" class="view-page">
       <div class="stat-card">
         <span style="font-size: 32px;">👑</span>
-        <h2 style="font-size: 17px; margin-top: 5px; font-weight: 800; color: var(--gold);">ফাইলের সেলস ও ডাউনলোড রিপোর্ট</h2>
+        <h2 style="font-size: 17px; margin-top: 5px; font-weight: 800; color: var(--gold);">অ্যাডমিন মাস্টার কন্ট্রোল ও রিপোর্ট</h2>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px;">
           <div style="background: rgba(0,0,0,0.4); padding: 12px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.15);">
@@ -551,14 +683,28 @@
         </div>
       </div>
 
-      <!-- নতুন যুক্ত করা: ইউজারদের সাবমিট করা ফাইল দেখার ও ডাউনলোড করার প্যানেল -->
+      <!-- অ্যাডমিন কুইক অ্যাকশন টুলস (সরাসরি অ্যাপ থেকে কন্ট্রোল) -->
+      <div class="stat-card" style="padding: 14px; text-align: left;">
+        <h3 style="font-size: 14px; margin-bottom: 10px; font-weight: 800; color: var(--accent);">⚡ কুইক অ্যাডমিন কন্ট্রোল</h3>
+        <input type="text" id="admNoticeInput" class="mini-input" placeholder="📢 নতুন নোটিশ টেক্সট লিখুন...">
+        <button class="daily-btn" onclick="adminUpdateNotice()" style="width: 100%; margin-bottom: 12px;">📢 নোটিশ আপডেট করুন</button>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <input type="text" id="admTargetUid" class="mini-input" placeholder="👤 ইউজার আইডি">
+          <input type="number" id="admCoinAmount" class="mini-input" placeholder="🪙 কয়েন (যেমন: 100)">
+        </div>
+        <button class="daily-btn" onclick="adminGiveUserCoins()" style="width: 100%; background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff;">🪙 কয়েন যোগ/আপডেট করুন</button>
+      </div>
+
+      <!-- ইউজারদের সাবমিট করা ফাইল দেখার, ডাউনলোড ও এক্সেপ্ট করার স্থায়ী প্যানেল -->
       <div class="stat-card" style="padding: 14px; margin-bottom: 16px;">
-        <h3 style="font-size: 14px; text-align: left; margin-bottom: 8px; font-weight: 800; color: #4ade80;">📥 ইউজারদের সাবমিট করা ফাইল (Pending Files)</h3>
+        <h3 style="font-size: 14px; text-align: left; margin-bottom: 4px; font-weight: 800; color: #4ade80;">📥 ইউজারদের সাবমিট করা ফাইলসমূহ</h3>
+        <p style="font-size: 10.5px; text-align: left; color: var(--text-sub); margin-bottom: 8px;">এক্সেপ্ট করলেও ফাইল এখানে স্থায়ীভাবে সেভ থাকবে ও ডাউনলোড করা যাবে</p>
         <div style="overflow-x: auto;">
           <table class="admin-table">
             <thead>
               <tr>
-                <th>ফাইল ও টাইপ</th>
+                <th>ফাইল ও স্ট্যাটাস</th>
                 <th>প্রেরক ও আইডি</th>
                 <th>অ্যাকশন</th>
               </tr>
@@ -633,12 +779,51 @@
     if (tg) { tg.ready(); tg.expand(); }
 
     const ADMIN_TELEGRAM_ID = 7481264433;
-    // নতুন বটের ইউজারনেম আপডেট করা হয়েছে
     const BOT_USERNAME = "Premiumresoures_bot";
     const SUPPORT_URL = "https://t.me/PLPSTOREAI";
     const CHANNEL_URL = "https://t.me/PLPStoreBD0";
     const RENDER_BACKEND_URL = "https://premium-resources-qxtv.onrender.com";
     const DB_BASE = "https://premium-resources-default-rtdb.firebaseio.com";
+
+    // ইন্ট্রো স্প্ল্যাশ স্ক্রিন কন্ট্রোলার
+    (function runIntroSplash() {
+      const bar = document.getElementById('splashBarFill');
+      const splash = document.getElementById('introSplash');
+      if (bar) setTimeout(() => { bar.style.width = '100%'; }, 80);
+      setTimeout(() => {
+        if (splash) splash.classList.add('hide');
+      }, 1350);
+    })();
+
+    // যেকোনো নেটওয়ার্কে (2G/3G/4G/WiFi) এরর ছাড়া চলার জন্য Safe Fetch Wrapper
+    async function safeFetch(url, options = {}, retries = 2) {
+      for (let i = 0; i <= retries; i++) {
+        try {
+          const controller = new AbortController();
+          const tId = setTimeout(() => controller.abort(), 12000);
+          const response = await fetch(url, { ...options, signal: controller.signal });
+          clearTimeout(tId);
+          document.getElementById('netStatusBanner').style.display = 'none';
+          return await response.json();
+        } catch (err) {
+          if (i === retries) {
+            console.warn("Network slow or offline for:", url);
+            return null;
+          }
+          await new Promise(r => setTimeout(r, 700));
+        }
+      }
+      return null;
+    }
+
+    window.addEventListener('offline', () => {
+      document.getElementById('netStatusBanner').style.display = 'block';
+    });
+    window.addEventListener('online', () => {
+      document.getElementById('netStatusBanner').style.display = 'none';
+      loadGlobalStats();
+      fetchResources();
+    });
 
     // ইউজার আইডি ক্লিপবোর্ডে কপি করার ফাংশন
     function copyUserId(uid) {
@@ -662,19 +847,23 @@
       ta.select();
       try { document.execCommand('copy'); } catch (e) {}
       document.body.removeChild(ta);
-      showToast(`ইউজার আইডি কপি হয়েছে: ${text}`, "📋");
+      showToast(`কপি সম্পন্ন হয়েছে: ${text}`, "📋");
     }
 
-    // টেলিগ্রাম থেকে ইউজারের আসল আইডি নেওয়ার ১০০% নিরাপদ লজিক (যাতে কখনোই ভুলে অ্যাডমিন আইডিতে ফাইল না যায়)
+    function copyReferLink() {
+      triggerHaptic('success');
+      const link = document.getElementById('referLinkText').innerText;
+      fallbackCopy(link);
+    }
+
+    // টেলিগ্রাম থেকে ইউজারের আসল আইডি নেওয়ার ১০০% নিরাপদ লজিক
     function getTelegramUser() {
-      // ১. টেলিগ্রামের সরাসরি initDataUnsafe চেক
       if (tg?.initDataUnsafe?.user?.id) {
         const u = tg.initDataUnsafe.user;
         try { localStorage.setItem('tg_verified_user', JSON.stringify(u)); } catch(e) {}
         return u;
       }
 
-      // ২. টেলিগ্রাম URL Hash (#tgWebAppData) থেকে ইউজার ডেটা ডিকোড করা
       try {
         if (window.location.hash) {
           const hashParams = new URLSearchParams(window.location.hash.substring(1));
@@ -693,7 +882,6 @@
         }
       } catch (e) {}
 
-      // ৩. বটের পাঠানো URL প্যারামিটার (?uid=...) চেক করা
       const urlParams = new URLSearchParams(window.location.search);
       const urlUid = urlParams.get('uid') || urlParams.get('user_id');
       if (urlUid && urlUid !== "None" && urlUid !== "null" && urlUid !== "undefined") {
@@ -702,7 +890,6 @@
         return uObj;
       }
 
-      // ৪. আগে কখনো ঢুকে থাকলে ফোনের লোকাল মেমোরি থেকে তার আসল আইডি নেওয়া
       try {
         const saved = localStorage.getItem('tg_verified_user');
         if (saved) {
@@ -711,7 +898,6 @@
         }
       } catch (e) {}
 
-      // ৫. কোনোভাবেই আইডি না পাওয়া গেলে অ্যাডমিন আইডি (7481264433) না বসিয়ে null রাখা, যাতে ভুলেও আপনার ইনবক্সে ফাইল না যায়
       return { id: null, first_name: "VIP সদস্য", username: "" };
     }
 
@@ -719,10 +905,12 @@
     let userData = { coins: 20, refers: 0, daily_ads: {}, last_checkin: "", last_spin: "", last_scratch: "", last_ad_time: 0, joined_channel: false, claimed_count: 0, total_ads_watched: 0, unlocked: {} };
     let allResources = {};
     let currentCategory = 'plp';
+    let currentSortOrder = 'new';
     let currentWheelRotation = 0;
     let scratchCardReward = 5;
     let scratchCardScratched = false;
     let searchTimeout = null;
+    let activeNoticeLink = "";
 
     const AD_LIMIT = 30;
     const AD_REWARD = 10;
@@ -737,16 +925,37 @@
       { text: "+10 🪙", coins: 10, bg: "#eab308" }
     ];
 
+    // গ্লোবাল ও ইউজারের অ্যাড ভিউ কাউন্টার সাথে সাথে আপডেট করার ফাংশন
+    async function incrementGlobalAndUserAdCount() {
+      try {
+        const adEl = document.getElementById('statAdsWatched');
+        let currentGlobalAds = parseInt(adEl.innerText) || 0;
+        const fetchedAds = await safeFetch(`${DB_BASE}/stats/total_ads.json`);
+        if (typeof fetchedAds === 'number') {
+          currentGlobalAds = fetchedAds;
+        }
+        const updatedGlobalAds = currentGlobalAds + 1;
+        adEl.innerText = updatedGlobalAds;
+        safeFetch(`${DB_BASE}/stats/total_ads.json`, {
+          method: 'PUT',
+          body: JSON.stringify(updatedGlobalAds)
+        });
+      } catch (e) {}
+    }
+
     function triggerMonetagAd() {
       return new Promise((resolve) => {
         if (typeof show_11750504 === 'function') {
           show_11750504().then(() => {
+            incrementGlobalAndUserAdCount();
             resolve(true);
           }).catch((err) => {
             console.warn("Monetag show failed or blocked:", err);
+            incrementGlobalAndUserAdCount();
             resolve(false);
           });
         } else {
+          incrementGlobalAndUserAdCount();
           resolve(false);
         }
       });
@@ -774,10 +983,50 @@
       showToast(`অভিনন্দন! +${AD_REWARD} কয়েন যোগ হয়েছে!`, "🎉");
 
       if (user.id) {
-        await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
-        await fetch(`${DB_BASE}/users/${user.id}/daily_ads/${today}.json`, { method: 'PUT', body: JSON.stringify(userData.daily_ads[today]) });
-        await fetch(`${DB_BASE}/users/${user.id}/total_ads_watched.json`, { method: 'PUT', body: JSON.stringify(userData.total_ads_watched) });
+        await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await safeFetch(`${DB_BASE}/users/${user.id}/daily_ads/${today}.json`, { method: 'PUT', body: JSON.stringify(userData.daily_ads[today]) });
+        await safeFetch(`${DB_BASE}/users/${user.id}/total_ads_watched.json`, { method: 'PUT', body: JSON.stringify(userData.total_ads_watched) });
       }
+    }
+
+    // মিনি অ্যাপের ভেতর থেকে সরাসরি প্রোমো কোড রিডিম ফাংশন
+    async function redeemPromoInApp() {
+      triggerHaptic();
+      const input = document.getElementById('promoCodeInput');
+      const code = (input.value || '').trim().toUpperCase();
+      if (!code) {
+        showToast("অনুগ্রহ করে প্রোমো কোড লিখুন!", "⚠️");
+        return;
+      }
+      if (!user.id) {
+        showToast("বট থেকে অ্যাপটি ওপেন করুন!", "⚠️");
+        return;
+      }
+
+      showToast("কোড যাচাই করা হচ্ছে... ⏳", "🔍");
+      const pData = await safeFetch(`${DB_BASE}/promo_codes/${code}.json`);
+      if (!pData || !pData.coins) {
+        showToast("ভুল অথবা মেয়াদোত্তীর্ণ প্রোমো কোড!", "❌");
+        return;
+      }
+
+      const usedBy = pData.used_by || {};
+      if (usedBy[String(user.id)]) {
+        showToast("আপনি ইতিমধ্যে এই কোডটি ব্যবহার করেছেন!", "⚠️");
+        return;
+      }
+
+      const reward = Number(pData.coins) || 0;
+      userData.coins = (userData.coins || 0) + reward;
+      usedBy[String(user.id)] = true;
+
+      updateUI();
+      fireConfetti();
+      input.value = '';
+      showToast(`🎉 অভিনন্দন! +${reward} কয়েন যোগ হয়েছে!`, "🎁");
+
+      await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+      await safeFetch(`${DB_BASE}/promo_codes/${code}/used_by.json`, { method: 'PUT', body: JSON.stringify(usedBy) });
     }
 
     function openGuideModal() {
@@ -802,7 +1051,7 @@
       const pieces = [];
       const colors = ['#fbbf24', '#38bdf8', '#f43f5e', '#10b981', '#c084fc'];
 
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 25; i++) {
         pieces.push({
           x: canvas.width / 2, y: canvas.height / 2,
           r: Math.random() * 4 + 2,
@@ -816,14 +1065,14 @@
       function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         pieces.forEach(p => {
-          p.x += p.vx; p.y += p.vy; p.vy += 0.2;
+          p.x += p.vx; p.y += p.vy; p.vy += 0.25;
           ctx.beginPath();
           ctx.fillStyle = p.color;
           ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
           ctx.fill();
         });
         frames++;
-        if (frames < 45) requestAnimationFrame(animate);
+        if (frames < 40) requestAnimationFrame(animate);
         else ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
       animate();
@@ -918,7 +1167,6 @@
     }
 
     async function initApp() {
-      // ইউজারের রিয়েল আইডি ডায়নামিক্যালি রিট্রিভ করা
       const realUser = getTelegramUser();
       user.id = realUser.id;
       user.first_name = realUser.first_name;
@@ -948,8 +1196,7 @@
 
       if (user.id) {
         try {
-          const res = await fetch(`${DB_BASE}/users/${user.id}.json`);
-          const data = await res.json();
+          const data = await safeFetch(`${DB_BASE}/users/${user.id}.json`);
           if (data) {
             userData = Object.assign({ coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, unlocked: {}, joined_channel: false }, data);
             if (data.name && (user.first_name === "Member" || user.first_name === "VIP সদস্য")) {
@@ -963,14 +1210,13 @@
             }
           } else {
             userData = { name: user.first_name, username: user.username || "", photo: user.photo_url || "", coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, unlocked: {}, joined_channel: false };
-            await fetch(`${DB_BASE}/users/${user.id}.json`, { method: 'PUT', body: JSON.stringify(userData) });
+            await safeFetch(`${DB_BASE}/users/${user.id}.json`, { method: 'PUT', body: JSON.stringify(userData) });
           }
         } catch (e) {}
       }
 
       drawWheel();
-      trackVisit();
-      loadGlobalStats();
+      await loadGlobalStatsAndTrackVisit();
       loadNotice();
       updateUI();
       checkDailyStatus();
@@ -982,26 +1228,72 @@
 
     async function loadNotice() {
       try {
-        const res = await fetch(`${DB_BASE}/active_ad.json`);
-        const data = await res.json();
-        if (data && data.text) document.getElementById('noticeText').innerText = data.text;
+        const data = await safeFetch(`${DB_BASE}/active_ad.json`);
+        if (data && data.text) {
+          document.getElementById('noticeText').innerText = data.text;
+          activeNoticeLink = data.link || "";
+        }
       } catch(e) {}
     }
 
-    async function trackVisit() {
+    function openNoticeLink() {
+      if (!activeNoticeLink || !activeNoticeLink.startsWith('http')) return;
+      triggerHaptic();
+      if (tg && tg.openLink) tg.openLink(activeNoticeLink);
+      else window.open(activeNoticeLink, '_blank');
+    }
+
+    // ভিজিট, অ্যাড ভিউ, ডাউনলোড এবং মোট রেফার ১০০% নির্ভুলভাবে সিঙ্ক ও আপডেট করার ফাংশন
+    async function loadGlobalStatsAndTrackVisit() {
       try {
-        const sRes = await fetch(`${DB_BASE}/stats/total_visits.json`);
-        let count = (await sRes.json()) || 0;
-        count += 1;
-        fetch(`${DB_BASE}/stats/total_visits.json`, { method: 'PUT', body: JSON.stringify(count) });
-        document.getElementById('statVisits').innerText = count;
+        const stats = (await safeFetch(`${DB_BASE}/stats.json`)) || {};
+        let visits = Number(stats.total_visits) || 0;
+        let totalAds = Number(stats.total_ads) || 0;
+        let totalClaims = Number(stats.total_claims) || 0;
+        let totalRefers = Number(stats.total_refers) || 0;
+
+        // প্রতি ভিজিটে মেম্বার/ভিজিট সংখ্যা +১ করে আপডেট
+        visits += 1;
+        document.getElementById('statVisits').innerText = visits;
+        safeFetch(`${DB_BASE}/stats/total_visits.json`, { method: 'PUT', body: JSON.stringify(visits) });
+
+        // ইউজার টেবিল থেকে আসল মোট রেফার এবং মোট অ্যাড ভিউ গণনা করে সিঙ্ক করা
+        const usersObj = await safeFetch(`${DB_BASE}/users.json`);
+        if (usersObj) {
+          let calculatedRefers = 0;
+          let calculatedUserAds = 0;
+          const userCount = Object.keys(usersObj).length;
+          Object.values(usersObj).forEach(u => {
+            if (u) {
+              calculatedRefers += (Number(u.refers) || 0);
+              calculatedUserAds += (Number(u.total_ads_watched) || 0);
+            }
+          });
+
+          if (calculatedRefers > totalRefers) {
+            totalRefers = calculatedRefers;
+            safeFetch(`${DB_BASE}/stats/total_refers.json`, { method: 'PUT', body: JSON.stringify(totalRefers) });
+          }
+          if (calculatedUserAds > totalAds) {
+            totalAds = calculatedUserAds;
+            safeFetch(`${DB_BASE}/stats/total_ads.json`, { method: 'PUT', body: JSON.stringify(totalAds) });
+          }
+          if (userCount > visits) {
+            visits = userCount;
+            document.getElementById('statVisits').innerText = visits;
+            safeFetch(`${DB_BASE}/stats/total_visits.json`, { method: 'PUT', body: JSON.stringify(visits) });
+          }
+        }
+
+        document.getElementById('statAdsWatched').innerText = totalAds;
+        document.getElementById('statClaims').innerText = totalClaims;
+        document.getElementById('statRefers').innerText = totalRefers;
       } catch(e) {}
     }
 
     async function loadGlobalStats() {
       try {
-        const res = await fetch(`${DB_BASE}/stats.json`);
-        const stats = (await res.json()) || {};
+        const stats = (await safeFetch(`${DB_BASE}/stats.json`)) || {};
         if (stats.total_visits) document.getElementById('statVisits').innerText = stats.total_visits;
         document.getElementById('statAdsWatched').innerText = stats.total_ads || 0;
         document.getElementById('statClaims').innerText = stats.total_claims || 0;
@@ -1053,7 +1345,6 @@
       triggerHaptic();
       const currentRealUser = getTelegramUser();
 
-      // যদি ইউজারের আসল আইডি না পাওয়া যায়, তবে অ্যাডমিন আইডিতে না পাঠিয়ে সরাসরি ইউজারের টেলিগ্রাম বটে ডিপ-লিংক দিয়ে ওপেন করা হবে
       if (!currentRealUser.id) {
         const botDeepLink = `https://t.me/${BOT_USERNAME}?start=get_${key}`;
         if (tg && tg.openTelegramLink) tg.openTelegramLink(botDeepLink);
@@ -1064,7 +1355,7 @@
       showToast("ইনবক্সে ফাইল পাঠানো হচ্ছে... ⏳", "📥");
 
       try {
-        const res = await fetch(`${RENDER_BACKEND_URL}/deliver-resource`, {
+        const resData = await safeFetch(`${RENDER_BACKEND_URL}/deliver-resource`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
@@ -1074,9 +1365,8 @@
             username: currentRealUser.username || user.username || ""
           })
         });
-        const resData = await res.json();
         
-        if (resData.success) {
+        if (resData && resData.success) {
           showToast("🎉 আপনার ইনবক্সে ফাইল চলে গেছে!", "✅");
           return;
         }
@@ -1105,8 +1395,8 @@
       fireConfetti();
 
       if (user.id) {
-        await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
-        await fetch(`${DB_BASE}/users/${user.id}/last_checkin.json`, { method: 'PUT', body: JSON.stringify(today) });
+        await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await safeFetch(`${DB_BASE}/users/${user.id}/last_checkin.json`, { method: 'PUT', body: JSON.stringify(today) });
       }
       showToast("দৈনিক বোনাস +৫ কয়েন যোগ হয়েছে!", "🎉");
     }
@@ -1143,8 +1433,8 @@
         fireConfetti();
 
         if (user.id) {
-          await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
-          await fetch(`${DB_BASE}/users/${user.id}/last_spin.json`, { method: 'PUT', body: JSON.stringify(today) });
+          await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+          await safeFetch(`${DB_BASE}/users/${user.id}/last_spin.json`, { method: 'PUT', body: JSON.stringify(today) });
         }
         showToast(`স্পিন থেকে পেয়েছেন ${selectedReward.text}!`, "🎉");
       }, 3500);
@@ -1217,8 +1507,8 @@
       fireConfetti();
 
       if (user.id) {
-        await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
-        await fetch(`${DB_BASE}/users/${user.id}/last_scratch.json`, { method: 'PUT', body: JSON.stringify(today) });
+        await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await safeFetch(`${DB_BASE}/users/${user.id}/last_scratch.json`, { method: 'PUT', body: JSON.stringify(today) });
       }
       showToast("স্ক্র্যাচ থেকে পেয়েছেন +৫ কয়েন!", "🎁");
     }
@@ -1247,17 +1537,16 @@
       btn.disabled = true;
 
       try {
-        const res = await fetch(`${RENDER_BACKEND_URL}/verify-channel/${user.id}`);
-        const data = await res.json();
-        if (data.joined === true) {
+        const data = await safeFetch(`${RENDER_BACKEND_URL}/verify-channel/${user.id}`);
+        if (data && data.joined === true) {
           userData.joined_channel = true;
           userData.coins = (userData.coins || 0) + 15;
           updateUI();
           checkChannelTaskStatus();
           fireConfetti();
           if (user.id) {
-            await fetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
-            await fetch(`${DB_BASE}/users/${user.id}/joined_channel.json`, { method: 'PUT', body: JSON.stringify(true) });
+            await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+            await safeFetch(`${DB_BASE}/users/${user.id}/joined_channel.json`, { method: 'PUT', body: JSON.stringify(true) });
           }
           showToast("চ্যানেল জয়েন সফল, +১৫ কয়েন যোগ হয়েছে!", "🎉");
         } else {
@@ -1274,10 +1563,26 @@
 
     async function fetchResources() {
       try {
-        const res = await fetch(`${DB_BASE}/resources.json`);
-        allResources = await res.json() || {};
+        const data = await safeFetch(`${DB_BASE}/resources.json`);
+        if (data) {
+          allResources = data;
+          try { localStorage.setItem('cached_resources', JSON.stringify(data)); } catch(e) {}
+        } else {
+          const cached = localStorage.getItem('cached_resources');
+          if (cached) allResources = JSON.parse(cached);
+        }
         renderResources();
-      } catch (e) { document.getElementById('loading').innerText = "লোড করা যায়নি!"; }
+      } catch (e) {
+        document.getElementById('loading').innerText = "লোড করা যায়নি!";
+      }
+    }
+
+    function setSortOrder(order, el) {
+      triggerHaptic();
+      currentSortOrder = order;
+      document.querySelectorAll('.filter-pills .filter-pill').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      renderResources(document.getElementById('searchInput').value.toLowerCase());
     }
 
     function switchCategory(cat, el) {
@@ -1285,14 +1590,14 @@
       currentCategory = cat;
       document.querySelectorAll('.tabs .tab-btn').forEach(b => b.classList.remove('active'));
       el.classList.add('active');
-      renderResources();
+      renderResources(document.getElementById('searchInput').value.toLowerCase());
     }
 
     function handleSearch() {
       clearTimeout(searchTimeout);
       searchTimeout = setTimeout(() => {
         renderResources(document.getElementById('searchInput').value.toLowerCase());
-      }, 250);
+      }, 220);
     }
 
     function renderResources(searchFilter = '') {
@@ -1300,14 +1605,23 @@
       document.getElementById('loading').style.display = 'none';
       container.innerHTML = '';
       
-      let keys = Object.keys(allResources).filter(k => allResources[k].type === currentCategory);
-      if (searchFilter) keys = keys.filter(k => allResources[k].name.toLowerCase().includes(searchFilter));
-      keys.reverse();
+      let keys = Object.keys(allResources).filter(k => allResources[k] && allResources[k].type === currentCategory);
+      if (searchFilter) keys = keys.filter(k => (allResources[k].name || '').toLowerCase().includes(searchFilter));
+
+      if (currentSortOrder === 'new') {
+        keys.reverse();
+      } else if (currentSortOrder === 'popular') {
+        keys.sort((a, b) => (allResources[b].total_claims || 0) - (allResources[a].total_claims || 0));
+      } else if (currentSortOrder === 'free') {
+        keys.sort((a, b) => (allResources[a].coins || 0) - (allResources[b].coins || 0));
+      }
 
       if (keys.length === 0) {
         container.innerHTML = '<p style="grid-column: span 2; text-align: center; color: var(--text-sub); padding: 30px 0;">কোনো রিসোর্স পাওয়া যায়নি</p>';
         return;
       }
+
+      const fragment = document.createDocumentFragment();
 
       keys.forEach(k => {
         const item = allResources[k];
@@ -1316,6 +1630,7 @@
         const isVideo = isVideoUrl(mediaSource) || (isXml && item.video);
         const card = document.createElement('div');
         card.className = isXml ? 'card xml-fullwidth-card' : 'card';
+        const safeName = (item.name || 'Resource').replace(/'/g, "\\'");
         
         let mediaHtml = '';
         if (isVideo) {
@@ -1327,7 +1642,7 @@
               <div class="card-thumb-wrap" onclick="openMediaPreview('${mediaSource}', true)">
                 <span class="type-pill">${item.type?.toUpperCase()}</span>
                 <span class="download-count-pill" id="claim-count-${k}">📥 ${item.total_claims || 0}</span>
-                <img src="${thumbUrl}" alt="thumb" loading="lazy" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/300x180';">
+                <img src="${thumbUrl}" alt="thumb" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/300x180';">
                 <div class="video-play-indicator">▶</div>
               </div>`;
           } else {
@@ -1344,7 +1659,7 @@
             <div class="card-thumb-wrap" onclick="openMediaPreview('${item.image}', false)">
               <span class="type-pill">${item.type?.toUpperCase()}</span>
               <span class="download-count-pill" id="claim-count-${k}">📥 ${item.total_claims || 0}</span>
-              <img src="${item.image || 'https://via.placeholder.com/150'}" alt="thumb" loading="lazy" onerror="this.src='https://via.placeholder.com/150';">
+              <img src="${item.image || 'https://via.placeholder.com/150'}" alt="thumb" loading="lazy" decoding="async" onerror="this.src='https://via.placeholder.com/150';">
             </div>`;
         }
 
@@ -1354,11 +1669,13 @@
             <div class="card-title">${item.name}</div>
             <div class="card-meta">
               <span class="price-tag">🪙 ${item.coins}</span>
-              <button class="btn-claim" onclick="claimResource('${k}', ${item.coins}, '${item.name}', '${item.type}')">ডাউনলোড করুন ⚡</button>
+              <button class="btn-claim" onclick="claimResource('${k}', ${item.coins}, '${safeName}', '${item.type}')">ডাউনলোড করুন ⚡</button>
             </div>
           </div>`;
-        container.appendChild(card);
+        fragment.appendChild(card);
       });
+
+      container.appendChild(fragment);
     }
 
     function openMediaPreview(src, isVideo = false) {
@@ -1434,17 +1751,18 @@
 
         // প্রথম বিজ্ঞাপন
         await triggerMonetagAd();
+        userData.total_ads_watched = (userData.total_ads_watched || 0) + 1;
 
         // কখনো কখনো (হঠাৎ র‍্যান্ডমলি ৪০% ক্ষেত্রে) দ্বিতীয়বার বিজ্ঞাপন দেখাবে
         if (Math.random() < 0.45) {
           countdownText.innerText = `ফাইল ভেরিফাই করা হচ্ছে, আরেকটু অপেক্ষা করুন...`;
           await new Promise(r => setTimeout(r, 1200));
           await triggerMonetagAd();
+          userData.total_ads_watched = (userData.total_ads_watched || 0) + 1;
         }
 
         loadingOverlay.classList.remove('active');
 
-        // আসল ইউজারের আইডি থেকে ডেটা কাটা এবং ডেলিভারি নিশ্চিত করা
         const realClaimUser = getTelegramUser();
 
         userData.coins -= cost;
@@ -1454,7 +1772,6 @@
         updateUI();
         fireConfetti();
 
-        // যদি কোনোভাবে ইউজারের আইডি না পাওয়া যায়, তবে অ্যাডমিন আইডিতে না পাঠিয়ে সরাসরি ইউজারের টেলিগ্রাম বটে ডিপ-লিংক দিয়ে ফাইল পাঠিয়ে দেওয়া হবে
         if (!realClaimUser.id) {
           const botDeepLink = `https://t.me/${BOT_USERNAME}?start=get_${key}`;
           if (tg && tg.openTelegramLink) tg.openTelegramLink(botDeepLink);
@@ -1462,11 +1779,11 @@
           return;
         }
 
-        await fetch(`${DB_BASE}/users/${realClaimUser.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
-        await fetch(`${DB_BASE}/users/${realClaimUser.id}/unlocked/${key}.json`, { method: 'PUT', body: JSON.stringify(userData.unlocked[key]) });
+        await safeFetch(`${DB_BASE}/users/${realClaimUser.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await safeFetch(`${DB_BASE}/users/${realClaimUser.id}/total_ads_watched.json`, { method: 'PUT', body: JSON.stringify(userData.total_ads_watched) });
+        await safeFetch(`${DB_BASE}/users/${realClaimUser.id}/unlocked/${key}.json`, { method: 'PUT', body: JSON.stringify(userData.unlocked[key]) });
 
-        // ডাউনলোডকারী রিয়েল ইউজারের নির্দিষ্ট আইডি এবং নাম ব্যাকএন্ডে পাঠানো
-        fetch(`${RENDER_BACKEND_URL}/deliver-resource`, {
+        safeFetch(`${RENDER_BACKEND_URL}/deliver-resource`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
@@ -1475,8 +1792,8 @@
             user_name: realClaimUser.first_name || user.first_name || "User",
             username: realClaimUser.username || user.username || ""
           })
-        }).then(r => r.json()).then(res => {
-          if (res.success) {
+        }).then(res => {
+          if (res && res.success) {
             showToast("🎉 ফাইলটি সরাসরি ইনবক্সে পৌঁছে গেছে!", "📥");
 
             if (allResources[key]) {
@@ -1491,11 +1808,11 @@
                 setTimeout(() => { pillEl.style.transform = 'scale(1)'; }, 400);
               }
 
-              fetch(`${DB_BASE}/resources/${key}/total_claims.json`, {
+              safeFetch(`${DB_BASE}/resources/${key}/total_claims.json`, {
                 method: 'PUT',
                 body: JSON.stringify(allResources[key].total_claims)
               });
-              fetch(`${DB_BASE}/resources/${key}/total_revenue.json`, {
+              safeFetch(`${DB_BASE}/resources/${key}/total_revenue.json`, {
                 method: 'PUT',
                 body: JSON.stringify(allResources[key].total_revenue)
               });
@@ -1505,7 +1822,7 @@
             if (globalClaimsEl) {
               const currentTotal = parseInt(globalClaimsEl.innerText) || 0;
               globalClaimsEl.innerText = currentTotal + 1;
-              fetch(`${DB_BASE}/stats/total_claims.json`, {
+              safeFetch(`${DB_BASE}/stats/total_claims.json`, {
                 method: 'PUT',
                 body: JSON.stringify(currentTotal + 1)
               });
@@ -1517,13 +1834,88 @@
       }
     }
 
+    // অ্যাডমিন কুইক কন্ট্রোল ফাংশনসমূহ
+    async function adminUpdateNotice() {
+      const txt = document.getElementById('admNoticeInput').value.trim();
+      if (!txt) {
+        showToast("নোটিশ টেক্সট লিখুন!", "⚠️");
+        return;
+      }
+      await safeFetch(`${DB_BASE}/active_ad.json`, {
+        method: 'PUT',
+        body: JSON.stringify({ text: txt, link: activeNoticeLink || CHANNEL_URL })
+      });
+      document.getElementById('noticeText').innerText = txt;
+      document.getElementById('admNoticeInput').value = '';
+      showToast("✅ নোটিশ সফলভাবে আপডেট হয়েছে!", "📢");
+    }
+
+    async function adminGiveUserCoins() {
+      const targetUid = document.getElementById('admTargetUid').value.trim();
+      const amount = parseInt(document.getElementById('admCoinAmount').value.trim());
+      if (!targetUid || isNaN(amount)) {
+        showToast("সঠিক ইউজার আইডি ও কয়েন সংখ্যা দিন!", "⚠️");
+        return;
+      }
+      const uData = await safeFetch(`${DB_BASE}/users/${targetUid}.json`);
+      if (!uData) {
+        showToast("এই ইউজার আইডি ডাটাবেজে পাওয়া যায়নি!", "❌");
+        return;
+      }
+      const newCoins = Math.max(0, (Number(uData.coins) || 0) + amount);
+      await safeFetch(`${DB_BASE}/users/${targetUid}/coins.json`, {
+        method: 'PUT',
+        body: JSON.stringify(newCoins)
+      });
+      if (String(targetUid) === String(user.id)) {
+        userData.coins = newCoins;
+        updateUI();
+      }
+      document.getElementById('admCoinAmount').value = '';
+      showToast(`✅ ইউজার ${targetUid}-এর বর্তমান কয়েন: ${newCoins}`, "🪙");
+    }
+
+    // ইউজারের সাবমিট করা ফাইল এক্সেপ্ট ও কয়েন দেওয়ার পর ফাইলটি স্থায়ীভাবে রেখে দেওয়ার ফাংশন
+    async function acceptSubmittedFileInApp(subKey, targetUid, fileName) {
+      triggerHaptic();
+      const rewardStr = prompt(`"${fileName}" ফাইলের জন্য ইউজারকে (${targetUid}) কত কয়েন পুরস্কার দিতে চান?`, "50");
+      if (rewardStr === null) return;
+      const rewardCoins = parseInt(rewardStr.trim());
+      if (isNaN(rewardCoins) || rewardCoins < 0) {
+        showToast("সঠিক কয়েন সংখ্যা দিন!", "⚠️");
+        return;
+      }
+
+      showToast("কয়েন পাঠানো হচ্ছে ও ফাইল সেভ রাখা হচ্ছে... ⏳", "🪙");
+      const uData = (await safeFetch(`${DB_BASE}/users/${targetUid}.json`)) || {};
+      const updatedCoins = (Number(uData.coins) || 0) + rewardCoins;
+
+      await safeFetch(`${DB_BASE}/users/${targetUid}/coins.json`, {
+        method: 'PUT',
+        body: JSON.stringify(updatedCoins)
+      });
+
+      // ফাইল ডিলিট না করে স্ট্যাটাস 'accepted' হিসেবে স্থায়ীভাবে রেখে দেওয়া
+      await safeFetch(`${DB_BASE}/pending_submissions/${subKey}.json`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          status: 'accepted',
+          rewarded_coins: rewardCoins,
+          accepted_at: new Date().toLocaleString()
+        })
+      });
+
+      showToast(`🎉 এক্সেপ্ট সম্পন্ন! +${rewardCoins} কয়েন দেওয়া হয়েছে এবং ফাইল স্থায়ীভাবে সংরক্ষিত আছে।`, "✅");
+      loadAdminAnalytics();
+    }
+
     // অ্যাডমিন প্যানেল থেকে ইউজারের সাবমিট করা ফাইল ডাউনলোড করার ফাংশন
     async function downloadSubmittedFile(subKey, fileId, fileName) {
       triggerHaptic();
       showToast("সাবমিট করা ফাইল ইনবক্সে পাঠানো হচ্ছে... ⏳", "📥");
 
       try {
-        const res = await fetch(`${RENDER_BACKEND_URL}/deliver-submission`, {
+        const data = await safeFetch(`${RENDER_BACKEND_URL}/deliver-submission`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -1533,8 +1925,7 @@
             file_name: fileName
           })
         });
-        const data = await res.json();
-        if (data.success) {
+        if (data && data.success) {
           showToast("✅ ফাইলটি আপনার টেলিগ্রাম ইনবক্সে পাঠানো হয়েছে!", "🎉");
           return;
         }
@@ -1542,7 +1933,6 @@
         console.warn("API submission delivery failed, using deep link fallback:", e);
       }
 
-      // ব্যাকএন্ডে নতুন রুট না থাকলেও ডিপ-লিংকের মাধ্যমে সরাসরি বট থেকে ফাইল ডাউনলোড হবে
       const botDeepLink = `https://t.me/${BOT_USERNAME}?start=subdl_${subKey}`;
       if (tg && tg.openTelegramLink) tg.openTelegramLink(botDeepLink);
       else window.open(botDeepLink, '_blank');
@@ -1558,12 +1948,12 @@
 
       // ১. ফাইল ভিত্তিক পারফরম্যান্স লোড
       try {
-        const res = await fetch(`${DB_BASE}/resources.json`);
-        const resources = await res.json() || {};
+        const resources = (await safeFetch(`${DB_BASE}/resources.json`)) || {};
         let totalSales = 0, totalCoins = 0, rows = '';
 
         Object.keys(resources).forEach(k => {
           const it = resources[k];
+          if (!it) return;
           const claims = it.total_claims || 0;
           const revenue = it.total_revenue || 0;
           totalSales += claims; totalCoins += revenue;
@@ -1574,11 +1964,10 @@
         document.getElementById('adminTotalCoinsSpent').innerText = `${totalCoins} 🪙`;
       } catch (e) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">ফেইলড</td></tr>'; }
 
-      // ২. ইউজারদের সাবমিট করা ফাইল (Pending Submissions) লোড ও ডাউনলোড অপশন
+      // ২. ইউজারদের সাবমিট করা ফাইল (এক্সেপ্ট করলেও স্থায়ীভাবে থাকবে)
       if (subTbody) {
         try {
-          const subRes = await fetch(`${DB_BASE}/pending_submissions.json`);
-          const subs = await subRes.json() || {};
+          const subs = (await safeFetch(`${DB_BASE}/pending_submissions.json`)) || {};
           const subKeys = Object.keys(subs).reverse();
 
           if (subKeys.length === 0) {
@@ -1587,19 +1976,27 @@
             let subRows = '';
             subKeys.forEach(sk => {
               const s = subs[sk];
+              if (!s) return;
               const sName = (s.name || 'File').replace(/'/g, "");
+              const isAccepted = s.status === 'accepted';
+              const statusBadge = isAccepted
+                ? `<span class="badge-count" style="font-size:9px; display:inline-block; margin-top:3px;">✅ গৃহীত (+${s.rewarded_coins || 0}🪙)</span>`
+                : `<span class="badge-rev" style="font-size:9px; display:inline-block; margin-top:3px;">⏳ পেন্ডিং</span>`;
+
               subRows += `
                 <tr>
                   <td>
                     <div style="font-weight:800; color:#fff;">${s.name || 'Unnamed'}</div>
-                    <span style="font-size:9.5px; color:var(--gold); text-transform:uppercase;">📁 ${s.type || 'FILE'}</span>
+                    <span style="font-size:9.5px; color:var(--gold); text-transform:uppercase;">📁 ${s.type || 'FILE'}</span><br>
+                    ${statusBadge}
                   </td>
                   <td>
                     <div style="font-weight:700; color:#fff;">${s.user_name || 'User'}</div>
                     <button class="copy-uid-btn" onclick="copyUserId('${s.user_id}')">🆔 ${s.user_id} 📋</button>
                   </td>
                   <td>
-                    <button class="sub-dl-btn" onclick="downloadSubmittedFile('${sk}', '${s.file_id}', '${sName}')">📥 ডাউনলোড</button>
+                    <button class="sub-dl-btn" onclick="downloadSubmittedFile('${sk}', '${s.file_id}', '${sName}')">📥 ডাউনলোড</button><br>
+                    ${!isAccepted ? `<button class="sub-accept-btn" onclick="acceptSubmittedFileInApp('${sk}', '${s.user_id}', '${sName}')">✅ এক্সেপ্ট</button>` : ''}
                   </td>
                 </tr>`;
             });
@@ -1613,8 +2010,7 @@
       // ৩. লাইভ ডাউনলোড হিস্ট্রি ও ইউজার আইডি কপি অপশন
       if (buyersTbody) {
         try {
-          const logRes = await fetch(`${DB_BASE}/download_logs.json`);
-          const logs = await logRes.json() || {};
+          const logs = (await safeFetch(`${DB_BASE}/download_logs.json`)) || {};
           const logKeys = Object.keys(logs).reverse().slice(0, 20);
 
           if (logKeys.length === 0) {
@@ -1623,6 +2019,7 @@
             let logRows = '';
             logKeys.forEach(lk => {
               const lg = logs[lk];
+              if (!lg) return;
               logRows += `
                 <tr>
                   <td><b>${lg.resource_name || 'File'}</b></td>
@@ -1642,10 +2039,9 @@
     // কয়েন লিডারবোর্ড লোড (ইউজার আইডি কপি বাটনসহ)
     async function loadLeaderboard() {
       try {
-        const res = await fetch(`${DB_BASE}/users.json`);
-        const users = await res.json() || {};
+        const users = (await safeFetch(`${DB_BASE}/users.json`)) || {};
         const entries = Object.entries(users).map(([uid, u]) => ({ uid, ...(u || {}) }));
-        const sorted = entries.sort((a, b) => (b.coins || 0) - (a.coins || 0)).slice(0, 10);
+        const sorted = entries.sort((a, b) => (b.coins || 0) - (a.coins || 0)).slice(0, 15);
         let html = '';
         sorted.forEach((u, idx) => {
           html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:14px; margin-bottom:8px;">
@@ -1665,13 +2061,12 @@
       const container = document.getElementById('referLeaderboardList');
       if (!container) return;
       try {
-        const res = await fetch(`${DB_BASE}/users.json`);
-        const users = await res.json() || {};
+        const users = (await safeFetch(`${DB_BASE}/users.json`)) || {};
         const entries = Object.entries(users)
           .map(([uid, u]) => ({ uid, ...(u || {}) }))
           .filter(u => (u.refers || 0) > 0)
           .sort((a, b) => (b.refers || 0) - (a.refers || 0))
-          .slice(0, 15);
+          .slice(0, 20);
 
         if (entries.length === 0) {
           container.innerHTML = '<p style="color:var(--text-sub); font-size:11.5px; padding:10px;">এখনও কেউ রেফার করেনি। প্রথম রেফার করে টপে থাকুন!</p>';
@@ -1725,4 +2120,4 @@
     initApp();
   </script>
 </body>
-  </html>
+          </html>
