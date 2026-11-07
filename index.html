@@ -33,6 +33,18 @@
       --dock-glass: rgba(8, 11, 20, 0.95);
     }
 
+    /* কাস্টম কালার অ্যাকসেন্ট থিমসমূহ */
+    body.accent-purple { --accent: #c084fc; --accent-glow: rgba(192, 132, 252, 0.4); }
+    body.accent-emerald { --accent: #34d399; --accent-glow: rgba(52, 211, 153, 0.4); }
+    body.accent-crimson { --accent: #fb7185; --accent-glow: rgba(251, 113, 133, 0.4); }
+
+    /* বড় ফন্ট মোড */
+    body.large-font-mode { zoom: 1.06; }
+
+    /* ১ কলাম বড় কার্ড গ্রিড মোড */
+    body.single-col-grid #resourceGrid { grid-template-columns: 1fr !important; }
+    body.single-col-grid #resourceGrid .card-thumb-wrap { height: 185px; }
+
     /* নরমাল / ডে মোড (Light Mode) ভেরিয়েবল */
     body.light-mode {
       --bg-base: #f1f5f9;
@@ -212,22 +224,44 @@
 
     .top-bar { 
       display: flex; justify-content: space-between; align-items: center; 
-      padding: 14px 16px; background: rgba(8, 11, 20, 0.94); 
+      padding: 12px 16px; background: rgba(8, 11, 20, 0.94); 
       border-bottom: 1px solid var(--liquid-border-bot); position: sticky; top: 0; z-index: 100;
       transform: translate3d(0, 0, 0);
     }
-    .user-info { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .user-info { display: flex; align-items: center; gap: 10px; }
     
+    /* প্রোফাইল পিকচার এবং তার ঠিক নিচে ছোট সেটিংস বাটন কলাম */
+    .avatar-settings-col {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+    }
     .user-avatar-wrap { 
-      width: 44px; height: 44px; border-radius: 50%; overflow: hidden; 
+      width: 42px; height: 42px; border-radius: 50%; overflow: hidden; 
       border: 1.5px solid rgba(56, 189, 248, 0.5); background: linear-gradient(135deg, #a855f7, #38bdf8); 
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-      position: relative; box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+      position: relative; box-shadow: 0 0 12px rgba(56, 189, 248, 0.25); cursor: pointer;
     }
     .user-avatar-wrap img { width: 100%; height: 100%; object-fit: cover; display: none; }
     .user-avatar-text { font-size: 16px; font-weight: 900; color: #fff; }
 
-    .user-meta { display: flex; flex-direction: column; }
+    /* প্রোফাইল পিকচারের ঠিক নিচে ছোট সেটিংস বাটন */
+    .under-avatar-settings-btn {
+      background: rgba(56, 189, 248, 0.16);
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      color: var(--accent);
+      font-size: 8.5px;
+      font-weight: 900;
+      padding: 2px 6px;
+      border-radius: 99px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      white-space: nowrap;
+      line-height: 1.1;
+    }
+    .under-avatar-settings-btn:active { transform: scale(0.92); }
+
+    .user-meta { display: flex; flex-direction: column; cursor: pointer; }
     .user-name { font-size: 14px; font-weight: 800; color: #ffffff; }
     .user-badge { font-size: 10px; color: var(--gold); font-weight: 800; text-transform: uppercase; }
     
@@ -241,28 +275,72 @@
 
     /* কর্নারে ছোট প্রিমিয়াম সেটিংস আইকন বাটন */
     .corner-settings-btn {
-      width: 36px; height: 36px; border-radius: 50%;
+      width: 34px; height: 34px; border-radius: 50%;
       background: rgba(56, 189, 248, 0.14); border: 1px solid rgba(56, 189, 248, 0.4);
-      color: var(--accent); font-size: 17px; display: flex; align-items: center;
+      color: var(--accent); font-size: 16px; display: flex; align-items: center;
       justify-content: center; cursor: pointer; flex-shrink: 0;
     }
     .corner-settings-btn:active { transform: scale(0.9) rotate(45deg); }
 
     .setting-row {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 12px 14px; background: rgba(255,255,255,0.04);
+      padding: 11px 12px; background: rgba(255,255,255,0.04);
       border: 1px solid var(--liquid-border-side); border-radius: 14px;
-      margin-bottom: 10px; text-align: left;
+      margin-bottom: 8px; text-align: left; gap: 8px;
     }
-    .setting-opt-group { display: flex; gap: 6px; }
+    .setting-opt-group { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
     .setting-chip {
-      padding: 6px 10px; border-radius: 10px; font-size: 11px; font-weight: 800;
+      padding: 5px 9px; border-radius: 9px; font-size: 10.5px; font-weight: 800;
       border: 1px solid var(--liquid-border-side); background: rgba(0,0,0,0.3);
       color: var(--text-sub); cursor: pointer;
     }
     .setting-chip.active {
-      background: linear-gradient(135deg, #38bdf8, #0284c7);
+      background: linear-gradient(135deg, var(--accent), #0284c7);
       color: #020617; border-color: transparent;
+    }
+
+    /* লাইভ উইনার অ্যাক্টিভিটি টিকার */
+    .live-ticker-wrap {
+      background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 12px; padding: 7px 12px; margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 800;
+      color: var(--accent); overflow: hidden; white-space: nowrap;
+    }
+    .ticker-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: #22c55e;
+      box-shadow: 0 0 8px #22c55e; flex-shrink: 0;
+    }
+
+    /* ফ্ল্যাশ ডিল / হ্যাপি আওয়ার ব্যানার */
+    .flash-deal-bar {
+      background: linear-gradient(90deg, rgba(244, 63, 94, 0.2), rgba(251, 191, 36, 0.2));
+      border: 1px solid rgba(251, 191, 36, 0.45); border-radius: 16px;
+      padding: 10px 14px; margin-bottom: 14px; display: flex;
+      justify-content: space-between; align-items: center; font-size: 11.5px; font-weight: 800;
+    }
+
+    /* ৭ দিনের স্ট্রিক বার */
+    .streak-days-grid {
+      display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px;
+    }
+    .streak-day-box {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 6px 2px; text-align: center; font-size: 9.5px; font-weight: 800;
+    }
+    .streak-day-box.active {
+      background: rgba(251, 191, 36, 0.2); border-color: var(--gold); color: var(--gold);
+    }
+
+    /* ইন-অ্যাপ লাইভ ফন্ট টেস্টার বক্স */
+    .font-tester-bar {
+      display: none; background: var(--liquid-glass); border: 1px solid var(--accent);
+      border-radius: 16px; padding: 12px; margin-bottom: 14px;
+    }
+    .font-tester-bar.show { display: block; }
+    .font-preview-output {
+      margin-top: 8px; padding: 10px; border-radius: 10px;
+      background: rgba(0,0,0,0.4); font-size: 18px; font-weight: 800;
+      color: var(--gold); text-align: center; min-height: 42px;
     }
 
     .container { padding: 16px; position: relative; z-index: 1; }
@@ -270,22 +348,25 @@
     .notice-card { 
       background: var(--liquid-glass); border: 1px solid var(--liquid-border-side); 
       border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; 
-      margin-bottom: 16px; font-size: 12px; color: #ffffff; font-weight: 600; cursor: pointer;
+      margin-bottom: 12px; font-size: 12px; color: #ffffff; font-weight: 600; cursor: pointer;
     }
 
     .live-stats-bar { 
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; 
       background: var(--liquid-glass); border: 1px solid var(--liquid-border-side); 
-      border-radius: 20px; padding: 14px 6px; margin-bottom: 18px; text-align: center; 
+      border-radius: 20px; padding: 14px 6px; margin-bottom: 16px; text-align: center; 
     }
     .live-stat-item { display: flex; flex-direction: column; gap: 3px; }
-    .live-stat-val { font-size: 15px; font-weight: 900; color: #38bdf8; }
+    .live-stat-val { font-size: 15px; font-weight: 900; color: var(--accent); }
     .live-stat-lbl { font-size: 9px; color: var(--text-sub); font-weight: 800; text-transform: uppercase; }
 
     .daily-card { 
       background: linear-gradient(135deg, rgba(25, 33, 56, 0.85), rgba(15, 23, 42, 0.9)); 
       border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 20px; 
-      padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; 
+      padding: 16px 18px; margin-bottom: 14px; 
+    }
+    .daily-card-top {
+      display: flex; align-items: center; justify-content: space-between;
     }
     .daily-btn { 
       background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #020617; border: none; 
@@ -303,7 +384,7 @@
       border-radius: 16px;
       font-weight: 800;
       font-size: 13px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -335,13 +416,14 @@
       background: rgba(251, 191, 36, 0.18); border-color: var(--gold); color: var(--gold);
     }
     
-    .tabs { display: flex; gap: 8px; margin-bottom: 18px; }
+    .tabs { display: flex; gap: 6px; margin-bottom: 16px; overflow-x: auto; scrollbar-width: none; }
+    .tabs::-webkit-scrollbar { display: none; }
     .tab-btn { 
-      flex: 1; padding: 11px 6px; border: 1px solid var(--liquid-border-side);
+      flex: 1; padding: 11px 8px; border: 1px solid var(--liquid-border-side);
       border-radius: 14px; background: var(--liquid-glass); color: var(--text-sub); 
-      font-weight: 800; font-size: 11.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;
+      font-weight: 800; font-size: 11.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap;
     }
-    .tab-btn.active { background: rgba(56, 189, 248, 0.2); color: #ffffff; border-color: #38bdf8; }
+    .tab-btn.active { background: rgba(56, 189, 248, 0.2); color: #ffffff; border-color: var(--accent); }
 
     .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
     
@@ -350,7 +432,7 @@
       background: var(--liquid-glass-card); border-radius: 20px; overflow: hidden; 
       display: flex; flex-direction: column; border: 1px solid var(--liquid-border-side);
       position: relative; contain: layout style paint;
-      content-visibility: auto; contain-intrinsic-size: 220px;
+      content-visibility: auto; contain-intrinsic-size: 230px;
       transform: translate3d(0, 0, 0);
     }
     .card:active { transform: scale(0.98); }
@@ -390,13 +472,21 @@
     }
     .fav-heart-btn:active { transform: scale(1.2); }
 
-    .card-body { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; gap: 10px; }
+    .report-broken-btn {
+      position: absolute; bottom: 8px; left: 8px; padding: 3px 7px;
+      border-radius: 99px; background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(244, 63, 94, 0.35); color: #fda4af;
+      font-size: 9px; font-weight: 800; cursor: pointer; z-index: 3;
+    }
+
+    .card-body { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; gap: 8px; }
     .card-title { font-size: 13px; font-weight: 800; line-height: 1.35; color: #ffffff; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .card-meta { display: flex; align-items: center; justify-content: space-between; }
-    .price-tag { font-size: 13.5px; color: var(--gold); font-weight: 900; }
+    .card-rating-row { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: var(--gold); font-weight: 800; }
+    .card-meta { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+    .price-tag { font-size: 13.5px; color: var(--gold); font-weight: 900; white-space: nowrap; }
     .btn-claim { 
-      background: linear-gradient(135deg, #38bdf8, #0284c7); color: #030712; border: none; 
-      padding: 10px 16px; border-radius: 12px; font-size: 12px; font-weight: 900; cursor: pointer; width: 100%; text-align: center;
+      background: linear-gradient(135deg, var(--accent), #0284c7); color: #030712; border: none; 
+      padding: 10px 14px; border-radius: 12px; font-size: 12px; font-weight: 900; cursor: pointer; width: 100%; text-align: center;
     }
     .btn-claim:active { transform: scale(0.95); }
 
@@ -419,7 +509,7 @@
     .refer-box { background: rgba(0, 0, 0, 0.5); border: 1px dashed rgba(56, 189, 248, 0.5); padding: 12px; border-radius: 14px; font-size: 12px; font-weight: 700; word-break: break-all; margin: 12px 0; color: #38bdf8; }
     
     .action-btn { 
-      width: 100%; background: linear-gradient(135deg, #38bdf8, #0284c7); 
+      width: 100%; background: linear-gradient(135deg, var(--accent), #0284c7); 
       color: #030712; padding: 14px; font-size: 14px; font-weight: 900; border: none; border-radius: 16px; cursor: pointer; text-align: center;
     }
     .action-btn:active { transform: scale(0.97); }
@@ -485,6 +575,16 @@
     }
     .mini-input:focus { border-color: var(--accent); }
 
+    .color-swatch-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px;
+    }
+    .color-swatch-item {
+      height: 44px; border-radius: 12px; display: flex; align-items: flex-end;
+      justify-content: center; padding-bottom: 4px; font-size: 9px; font-weight: 900;
+      color: #fff; cursor: pointer; border: 1px solid rgba(255,255,255,0.2);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+    }
+
     .preview-modal { 
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
       background: rgba(0,0,0,0.92); z-index: 2500; align-items: center; justify-content: center; padding: 16px; 
@@ -511,7 +611,7 @@
 </head>
 <body>
 
-  <!-- প্রিমিয়াম ইন্ট্রো স্প্ল্যাশ স্ক্রিন (+১ সেকেন্ড বেশি সময় ও স্মুথ লোডিং কাউন্টারসহ) -->
+  <!-- প্রিমিয়াম ইন্ট্রো স্প্ল্যাশ স্ক্রিন (কোনো বিরক্তিকর টোস্ট নোটিফিকেশন ছাড়াই স্মুথলি ওপেন হবে) -->
   <div id="introSplash">
     <div class="splash-logo-ring">💎</div>
     <div class="splash-title">VIP Premium Resources</div>
@@ -548,68 +648,106 @@
     </div>
   </div>
 
-  <!-- প্রিমিয়াম সেটিংস ও কাস্টমাইজেশন মোডাল (ভাষা, ডার্ক/নরমাল মোড, পারফরম্যান্স, ইত্যাদি) -->
+  <!-- সুপার অ্যাডভান্সড সেটিংস ও কাস্টমাইজেশন মোডাল -->
   <div class="settings-modal" id="settingsModal" onclick="closeSettingsModal()">
     <div class="settings-box" onclick="event.stopPropagation()">
-      <div style="font-size: 34px; margin-bottom: 4px;">⚙️</div>
-      <h3 style="font-size: 16px; font-weight: 900; color: var(--gold); margin-bottom: 14px;" id="stTitle">অ্যাপ সেটিংস ও কাস্টমাইজেশন</h3>
+      <div style="font-size: 32px; margin-bottom: 4px;">⚙️</div>
+      <h3 style="font-size: 16px; font-weight: 900; color: var(--gold); margin-bottom: 12px;" id="stTitle">প্রিমিয়াম সেটিংস ও কাস্টমাইজেশন</h3>
 
-      <!-- ভাষা সেটিং -->
+      <!-- ১. ভাষা সেটিং -->
       <div class="setting-row">
         <div>
-          <div style="font-size: 12.5px; font-weight: 800;" id="stLangLbl">🌐 অ্যাপের ভাষা (Language)</div>
-          <div style="font-size: 10px; color: var(--text-dim);">আপনার পছন্দের ভাষা বেছে নিন</div>
+          <div style="font-size: 12px; font-weight: 800;" id="stLangLbl">🌐 অ্যাপের ভাষা (Language)</div>
+          <div style="font-size: 9.5px; color: var(--text-dim);">বাংলা অথবা English বেছে নিন</div>
         </div>
         <div class="setting-opt-group">
-          <button class="setting-chip active" id="langBtnBn" onclick="setAppLanguage('bn')">বাংলা</button>
-          <button class="setting-chip" id="langBtnEn" onclick="setAppLanguage('en')">English</button>
+          <button class="setting-chip active" id="langBtnBn" onclick="setAppLanguage('bn', true)">বাংলা</button>
+          <button class="setting-chip" id="langBtnEn" onclick="setAppLanguage('en', true)">English</button>
         </div>
       </div>
 
-      <!-- থিম মোড সেটিং (ডার্ক / নরমাল / অ্যামোলেড) -->
+      <!-- ২. থিম মোড সেটিং (ডার্ক / নরমাল / অ্যামোলেড) -->
       <div class="setting-row">
         <div>
-          <div style="font-size: 12.5px; font-weight: 800;" id="stThemeLbl">🌗 ডিসপ্লে থিম মোড</div>
-          <div style="font-size: 10px; color: var(--text-dim);">নাইট মোড অথবা নরমাল ডে মোড</div>
+          <div style="font-size: 12px; font-weight: 800;" id="stThemeLbl">🌗 ডিসপ্লে থিম মোড</div>
+          <div style="font-size: 9.5px; color: var(--text-dim);">নাইট মোড বা নরমাল ডে মোড</div>
         </div>
         <div class="setting-opt-group">
-          <button class="setting-chip active" id="themeBtnDark" onclick="setAppTheme('dark')">🌙 নাইট</button>
-          <button class="setting-chip" id="themeBtnLight" onclick="setAppTheme('light')">☀️ নরমাল</button>
-          <button class="setting-chip" id="themeBtnAmoled" onclick="setAppTheme('amoled')">🌌 কালো</button>
+          <button class="setting-chip active" id="themeBtnDark" onclick="setAppTheme('dark', true)">🌙 নাইট</button>
+          <button class="setting-chip" id="themeBtnLight" onclick="setAppTheme('light', true)">☀️ নরমাল</button>
+          <button class="setting-chip" id="themeBtnAmoled" onclick="setAppTheme('amoled', true)">🌌 কালো</button>
         </div>
       </div>
 
-      <!-- লো-বাজেট ফোনের জন্য লাইট মোড -->
+      <!-- ৩. অ্যাপ কালার অ্যাকসেন্ট সেটিং -->
       <div class="setting-row">
         <div>
-          <div style="font-size: 12.5px; font-weight: 800;">⚡ সুপার ফাস্ট লাইট মোড</div>
-          <div style="font-size: 10px; color: var(--text-dim);">দুর্বল ফোনে ল্যাগহীন চালানোর জন্য</div>
+          <div style="font-size: 12px; font-weight: 800;">🎨 প্রিমিয়াম কালার থিম</div>
+          <div style="font-size: 9.5px; color: var(--text-dim);">আপনার পছন্দের রঙের স্টাইল</div>
         </div>
         <div class="setting-opt-group">
-          <button class="setting-chip" id="perfBtnOn" onclick="setLitePerfMode(true)">চালু (On)</button>
-          <button class="setting-chip active" id="perfBtnOff" onclick="setLitePerfMode(false)">বন্ধ (Off)</button>
+          <button class="setting-chip active" id="accBtnBlue" onclick="setAccentColor('blue', true)">💙 নীল</button>
+          <button class="setting-chip" id="accBtnPurple" onclick="setAccentColor('purple', true)">💜 বেগুনি</button>
+          <button class="setting-chip" id="accBtnEmerald" onclick="setAccentColor('emerald', true)">💚 সবুজ</button>
+          <button class="setting-chip" id="accBtnCrimson" onclick="setAccentColor('crimson', true)">❤️ লাল</button>
         </div>
       </div>
 
-      <!-- হ্যাপটিক ভাইব্রেশন কন্ট্রোল -->
+      <!-- ৪. কার্ড গ্রিড লেআউট স্টাইল -->
       <div class="setting-row">
         <div>
-          <div style="font-size: 12.5px; font-weight: 800;">📳 বাটন ভাইব্রেশন (Haptic)</div>
-          <div style="font-size: 10px; color: var(--text-dim);">ক্লিক করলে ভাইব্রেশন অনুভূতি</div>
+          <div style="font-size: 12px; font-weight: 800;">📐 কার্ড ভিউ লেআউট</div>
+          <div style="font-size: 9.5px; color: var(--text-dim);">পাশাপাশি ২ কলাম নাকি ১ কলাম</div>
         </div>
         <div class="setting-opt-group">
-          <button class="setting-chip active" id="vibBtnOn" onclick="setHapticPref(true)">চালু</button>
-          <button class="setting-chip" id="vibBtnOff" onclick="setHapticPref(false)">বন্ধ</button>
+          <button class="setting-chip active" id="gridBtn2" onclick="setGridLayout('2col', true)">২ কলাম</button>
+          <button class="setting-chip" id="gridBtn1" onclick="setGridLayout('1col', true)">১ কলাম (বড়)</button>
+        </div>
+      </div>
+
+      <!-- ৫. লেখার আকার (Font Size) -->
+      <div class="setting-row">
+        <div>
+          <div style="font-size: 12px; font-weight: 800;">🔤 লেখার সাইজ (Text Size)</div>
+          <div style="font-size: 9.5px; color: var(--text-dim);">পড়ার সুবিধার জন্য ছোট বা বড়</div>
+        </div>
+        <div class="setting-opt-group">
+          <button class="setting-chip active" id="fontBtnNorm" onclick="setFontSizeMode('normal', true)">স্বাভাবিক</button>
+          <button class="setting-chip" id="fontBtnLarge" onclick="setFontSizeMode('large', true)">বড় (Large)</button>
+        </div>
+      </div>
+
+      <!-- ৬. লো-বাজেট ফোনের জন্য লাইট মোড -->
+      <div class="setting-row">
+        <div>
+          <div style="font-size: 12px; font-weight: 800;">⚡ সুপার ফাস্ট লাইট মোড</div>
+          <div style="font-size: 9.5px; color: var(--text-dim);">দুর্বল ফোনে মাখনের মতো চলবে</div>
+        </div>
+        <div class="setting-opt-group">
+          <button class="setting-chip" id="perfBtnOn" onclick="setLitePerfMode(true, true)">চালু (On)</button>
+          <button class="setting-chip active" id="perfBtnOff" onclick="setLitePerfMode(false, true)">বন্ধ (Off)</button>
+        </div>
+      </div>
+
+      <!-- ৭. হ্যাপটিক ভাইব্রেশন ও সাউন্ড কন্ট্রোল -->
+      <div class="setting-row">
+        <div>
+          <div style="font-size: 12px; font-weight: 800;">📳 বাটন ভাইব্রেশন ও সাউন্ড</div>
+          <div style="font-size: 9.5px; color: var(--text-dim);">ট্যাপ করার অনুভূতি নিয়ন্ত্রণ</div>
+        </div>
+        <div class="setting-opt-group">
+          <button class="setting-chip active" id="vibBtnOn" onclick="setHapticPref(true, true)">চালু</button>
+          <button class="setting-chip" id="vibBtnOff" onclick="setHapticPref(false, true)">বন্ধ</button>
         </div>
       </div>
 
       <!-- ক্যাশ ক্লিয়ার ও ডাটা রিসেট -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;">
         <button class="daily-btn" onclick="clearAppCache()" style="background: rgba(244, 63, 94, 0.18); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.4); width: 100%;">🗑️ ক্যাশ ক্লিয়ার</button>
         <button class="daily-btn" onclick="refreshUserDataManual(); closeSettingsModal();" style="background: rgba(34, 197, 94, 0.18); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); width: 100%;">🔄 ডাটা সিঙ্ক</button>
       </div>
 
-      <button class="action-btn" onclick="closeSettingsModal()" style="margin-top: 14px; padding: 11px;">সম্পন্ন ✓</button>
+      <button class="action-btn" onclick="closeSettingsModal()" style="margin-top: 12px; padding: 11px;">সম্পন্ন ✓</button>
     </div>
   </div>
 
@@ -620,18 +758,19 @@
       <div style="font-size: 12px; color: var(--text-sub); text-align: left; line-height: 1.6; display: flex; flex-direction: column; gap: 10px;">
         <div style="background:rgba(255,255,255,0.04); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
           <b style="color:#38bdf8;">১. কীভাবে ফ্রি কয়েন আর্ন করবেন?</b><br>
-          • প্রতিদিন <b>ডেইলি চেক-ইন</b> (+৫), <b>প্রতি ২ ঘণ্টা পর পর লাকি স্পিন</b> ও <b>স্ক্র্যাচ কার্ড</b> (+৫) থেকে কয়েন পাবেন।<br>
+          • প্রতিদিন <b>৭-দিনের স্ট্রিক চেক-ইন</b>, <b>প্রতি ২ ঘণ্টা পর পর লাকি স্পিন</b>, <b>ডেইলি কুইজ</b> ও <b>স্ক্র্যাচ কার্ড</b> থেকে কয়েন পাবেন।<br>
           • <b>টাস্ক</b> মেনু থেকে বিজ্ঞাপন দেখে প্রতিবার <b>+২০ কয়েন</b> এবং চ্যানেলে জয়েন করে +১৫ কয়েন পাবেন।<br>
-          • <b>রেফার</b> করে প্রতি বন্ধুর জন্য পাবেন +৫০ কয়েন!
+          • <b>রেফার</b> করে প্রতি বন্ধুর জন্য পাবেন +৫০ কয়েন এবং মাইলস্টোন বোনাস!
         </div>
         <div style="background:rgba(255,255,255,0.04); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
           <b style="color:#fbbf24;">২. কীভাবে ফাইল ডাউনলোড করবেন?</b><br>
           • পছন্দের PLP, Font বা XML ফাইলের নিচের <b>"ডাউনলোড করুন ⚡"</b> বাটনে চাপ দিন।<br>
-          • ৫ সেকেন্ড অপেক্ষা ও বিজ্ঞাপন শেষ হওয়া মাত্রই ফাইল স্বয়ংক্রিয়ভাবে আপনার <b>টেলিগ্রাম বট ইনবক্সে</b> চলে যাবে!
+          • ৫ সেকেন্ড অপেক্ষা ও বিজ্ঞাপন শেষ হওয়া মাত্রই ফাইল স্বয়ংক্রিয়ভাবে আপনার <b>টেলিগ্রাম বট ইনবক্সে</b> চলে যাবে! (DIAMOND VIP মেম্বাররা পেইড ফাইলে ২০% ডিসকাউন্ট পাবেন!)
         </div>
         <div style="background:rgba(255,255,255,0.04); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
-          <b style="color:#4ade80;">৩. নিজের ফাইল দিয়ে কীভাবে কয়েন পাবেন?</b><br>
-          • বটের মূল মেনু থেকে <b>"📤 ফাইল দিয়ে কয়েন আর্ন"</b> বাটনে ক্লিক করে আপনার তৈরি PLP, XML বা Font জমা দিন। অ্যাডমিন অ্যাপ্রুভ করলেই পাবেন বিশাল কয়েন বোনাস!
+          <b style="color:#4ade80;">৩. কয়েন ব্যাংক, ট্রান্সফার ও ডিজাইনার টুলকিট:</b><br>
+          • প্রোফাইল পেজ থেকে অন্য বন্ধুকে কয়েন ট্রান্সফার করতে পারবেন অথবা <b>কয়েন ব্যাংকে</b> কয়েন জমা রেখে +২০% বোনাস নিতে পারবেন।<br>
+          • হোমপেজের <b>🎨 টুলস ও AI</b> ট্যাব থেকে রেডিমেড কালার কোড, প্রম্পট ও ক্যাপশন কপি করতে পারবেন।
         </div>
         <div style="background:rgba(255,255,255,0.04); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
           <b style="color:#c084fc;">৪. প্রোমো ও ভিআইপি গিফট কোড রিডিম (শুধুমাত্র মিনি অ্যাপে):</b><br>
@@ -642,25 +781,34 @@
     </div>
   </div>
 
+  <!-- টপ বার: প্রোফাইল পিকচারের ঠিক নিচে ছোট আকারে সেটিংস বাটন দেওয়া হয়েছে -->
   <div class="top-bar">
-    <div class="user-info" onclick="switchNav('pageProfile', document.querySelectorAll('.bottom-nav .nav-item')[4])">
-      <div class="user-avatar-wrap">
-        <img id="uAvatarImg" src="" alt="avatar" onerror="handleAvatarError(this, 'uAvatarText')">
-        <span class="user-avatar-text" id="uAvatarText">U</span>
+    <div class="user-info">
+      <div class="avatar-settings-col">
+        <div class="user-avatar-wrap" onclick="switchNav('pageProfile', document.querySelectorAll('.bottom-nav .nav-item')[4])">
+          <img id="uAvatarImg" src="" alt="avatar" onerror="handleAvatarError(this, 'uAvatarText')">
+          <span class="user-avatar-text" id="uAvatarText">U</span>
+        </div>
+        <button class="under-avatar-settings-btn" onclick="openSettingsModal()" id="btnUnderAvatarSet">⚙️ সেটিংস</button>
       </div>
-      <div class="user-meta">
+      <div class="user-meta" onclick="switchNav('pageProfile', document.querySelectorAll('.bottom-nav .nav-item')[4])">
         <span class="user-name" id="uName">VIP সদস্য</span>
         <span class="user-badge" id="uBadge">⭐ BRONZE VIP</span>
       </div>
     </div>
     <div class="top-right-actions">
       <div class="balance-pill" onclick="refreshUserDataManual()" title="রিফ্রেশ করতে ট্যাপ করুন">🪙 <span id="uCoins">0</span> 🔄</div>
-      <button class="corner-settings-btn" onclick="openSettingsModal()" title="সেটিংস">⚙️</button>
     </div>
   </div>
 
   <div class="container">
     
+    <!-- লাইভ উইনার ও অ্যাক্টিভিটি টিকার বার -->
+    <div class="live-ticker-wrap">
+      <span class="ticker-dot"></span>
+      <span id="liveActivityTickerText">🔥 স্বাগতম! প্রিমিয়াম PLP, XML ও ফন্ট ডাউনলোড চলছে...</span>
+    </div>
+
     <div class="notice-card" id="noticeBox" onclick="openNoticeLink()">
       <span>📢</span>
       <span id="noticeText">স্বাগতম! নতুন প্রিমিয়াম PLP, XML ও ফন্ট যুক্ত করা হয়েছে।</span>
@@ -690,12 +838,30 @@
     </div>
 
     <div id="pageHome" class="view-page active">
+      <!-- ৭ দিনের স্ট্রিক বোনাস সহ ডেইলি কার্ড -->
       <div class="daily-card">
-        <div>
-          <h4 style="font-size: 13.5px; font-weight: 800; color: #fff;" id="txtDailyTitle">🎁 দৈনিক ফ্রি রিওয়ার্ড</h4>
-          <p style="font-size: 11.5px; color: var(--text-sub); margin-top: 2px;" id="txtDailySub">প্রতিদিন পান ফ্রিতে +৫ কয়েন</p>
+        <div class="daily-card-top">
+          <div>
+            <h4 style="font-size: 13.5px; font-weight: 800; color: #fff;" id="txtDailyTitle">🎁 দৈনিক ফ্রি রিওয়ার্ড ও ৭-দিনের স্ট্রিক</h4>
+            <p style="font-size: 11.5px; color: var(--text-sub); margin-top: 2px;" id="txtDailySub">টানা ৭ দিন ক্লেইম করলে ৭ম দিনে +৫০ বোনাস!</p>
+          </div>
+          <button class="daily-btn" id="btnDailyCheck" onclick="claimDailyReward()">ক্লেইম করুন</button>
         </div>
-        <button class="daily-btn" id="btnDailyCheck" onclick="claimDailyReward()">ক্লেইম করুন</button>
+        <div class="streak-days-grid" id="streakGridContainer">
+          <div class="streak-day-box active">১ম<br>+5🪙</div>
+          <div class="streak-day-box">২য়<br>+8🪙</div>
+          <div class="streak-day-box">৩য়<br>+10🪙</div>
+          <div class="streak-day-box">৪র্থ<br>+12🪙</div>
+          <div class="streak-day-box">৫ম<br>+15🪙</div>
+          <div class="streak-day-box">৬ষ্ঠ<br>+20🪙</div>
+          <div class="streak-day-box">৭ম<br>🎁50</div>
+        </div>
+      </div>
+
+      <!-- ফ্ল্যাশ ডিল / ভিআইপি ডিসকাউন্ট ইনফো বার -->
+      <div class="flash-deal-bar">
+        <span>⚡ <b>VIP অফার:</b> DIAMOND VIP মেম্বারদের জন্য সব ফাইলে <b>২০% ছাড়!</b></span>
+        <span style="color: var(--gold);" id="flashDealTimerTxt">🔥 LIVE</span>
       </div>
 
       <input type="text" class="search-box" id="searchInput" placeholder="🔍 কাঙ্ক্ষিত ফাইল, XML বা ফন্টের নাম লিখুন..." oninput="handleSearch()">
@@ -705,18 +871,65 @@
         <button class="filter-pill" id="fltPop" onclick="setSortOrder('popular', this)">🔥 জনপ্রিয় (Top)</button>
         <button class="filter-pill" id="fltFree" onclick="setSortOrder('free', this)">🆓 ফ্রি / কম কয়েন</button>
         <button class="filter-pill" id="fltSaved" onclick="setSortOrder('saved', this)">❤️ পছন্দের ফাইল</button>
+        <button class="filter-pill" onclick="openFileRequestPrompt()">📝 ফাইল রিকোয়েস্ট</button>
       </div>
 
       <div class="tabs">
         <button class="tab-btn active" id="tabBtn-plp" onclick="switchCategory('plp', this)">🎨 PLP ফাইল</button>
         <button class="tab-btn" id="tabBtn-font" onclick="switchCategory('font', this)">🔤 ফন্ট সমূহ</button>
         <button class="tab-btn" id="tabBtn-xml" onclick="switchCategory('xml', this)">⚡ XML ফাইল</button>
+        <button class="tab-btn" id="tabBtn-tools" onclick="switchCategory('tools', this)">🛠️ টুলস ও AI</button>
       </div>
+
+      <!-- ইন-অ্যাপ লাইভ ফন্ট টেস্টার বক্স (ফন্ট ক্যাটাগরিতে গেলে দেখাবে) -->
+      <div class="font-tester-bar" id="liveFontTesterBox">
+        <div style="font-size: 11.5px; font-weight: 800; color: var(--accent); margin-bottom: 6px;">✍️ লাইভ ফন্ট স্টাইল টেস্টার (যেকোনো বাংলা বা ইংরেজি নাম লিখে দেখুন):</div>
+        <input type="text" class="mini-input" id="fontTestInput" placeholder="এখানে আপনার নাম বা টেক্সট লিখুন..." oninput="updateLiveFontPreview(this.value)" style="margin-bottom: 0;">
+        <div class="font-preview-output" id="fontPreviewOutput">সোনার বাংলা — VIP Font Preview</div>
+      </div>
+
+      <!-- ডিজাইনার টুলকিট ও এআই প্রম্পট স্টোর (টুলস ট্যাবে ক্লিক করলে দেখাবে) -->
+      <div id="designerToolsSection" style="display: none;">
+        <div class="stat-card" style="text-align: left; padding: 16px;">
+          <h3 style="font-size: 14.5px; font-weight: 800; color: var(--gold); margin-bottom: 6px;">🤖 ট্রেন্ডিং 3D ও ইসলামিক AI প্রম্পট লাইব্রেরি</h3>
+          <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 10px;">এক ক্লিকে প্রম্পট কপি করে Bing বা Midjourney-তে ব্যবহার করুন:</p>
+          <div class="task-item" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+            <div style="font-size: 11.5px; color: #fff;"><b>১. 3D Islamic Calligraphy Name Art:</b><br><span style="color:var(--text-sub); font-size:10.5px;">"3D golden luxury Arabic & Bengali calligraphy name 'Adom Ali' on dark royal mosque background, glowing lights, 8k cinematic"</span></div>
+            <button class="daily-btn" onclick="fallbackCopy('3D golden luxury Arabic and Bengali calligraphy name Adom Ali on dark royal mosque background, glowing lights, 8k cinematic')" style="padding: 6px 12px; font-size: 11px;">📋 প্রম্পট কপি করুন</button>
+          </div>
+          <div class="task-item" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+            <div style="font-size: 11.5px; color: #fff;"><b>২. মাহফিল ও পোস্টার ব্যাকগ্রাউন্ড AI Prompt:</b><br><span style="color:var(--text-sub); font-size:10.5px;">"Luxury Islamic flyer background, dark emerald blue and gold mandala arch, glowing lanterns, empty center for text, 8k"</span></div>
+            <button class="daily-btn" onclick="fallbackCopy('Luxury Islamic flyer background, dark emerald blue and gold mandala arch, glowing lanterns, empty center for text, 8k')" style="padding: 6px 12px; font-size: 11px;">📋 প্রম্পট কপি করুন</button>
+          </div>
+        </div>
+
+        <div class="stat-card" style="text-align: left; padding: 16px;">
+          <h3 style="font-size: 14.5px; font-weight: 800; color: var(--accent); margin-bottom: 6px;">🎨 প্রিমিয়াম কালার প্যালেট (1-Click HEX Copy)</h3>
+          <p style="font-size: 11px; color: var(--text-sub);">পিক্সেলল্যাবে ব্যবহারের জন্য কালার কোডের ওপর ট্যাপ করে কপি করুন:</p>
+          <div class="color-swatch-grid">
+            <div class="color-swatch-item" style="background: #fbbf24;" onclick="fallbackCopy('#FBBF24')">#FBBF24</div>
+            <div class="color-swatch-item" style="background: #38bdf8;" onclick="fallbackCopy('#38BDF8')">#38BDF8</div>
+            <div class="color-swatch-item" style="background: #10b981;" onclick="fallbackCopy('#10B981')">#10B981</div>
+            <div class="color-swatch-item" style="background: #f43f5e;" onclick="fallbackCopy('#F43F5E')">#F43F5E</div>
+            <div class="color-swatch-item" style="background: #8b5cf6;" onclick="fallbackCopy('#8B5CF6')">#8B5CF6</div>
+            <div class="color-swatch-item" style="background: #0f172a;" onclick="fallbackCopy('#0F172A')">#0F172A</div>
+            <div class="color-swatch-item" style="background: #d97706;" onclick="fallbackCopy('#D97706')">#D97706</div>
+            <div class="color-swatch-item" style="background: #ec4899;" onclick="fallbackCopy('#EC4899')">#EC4899</div>
+          </div>
+        </div>
+
+        <div class="stat-card" style="text-align: left; padding: 16px;">
+          <h3 style="font-size: 14.5px; font-weight: 800; color: #4ade80; margin-bottom: 6px;">✨ স্টাইলিশ টেক্সট ও ক্যাপশন জেনারেটর</h3>
+          <input type="text" id="fancyTextInput" class="mini-input" placeholder="ইংরেজি নাম লিখুন (যেমন: Adom Ali)..." oninput="generateFancyText(this.value)">
+          <div id="fancyTextOutputList" style="display: flex; flex-direction: column; gap: 6px; font-size: 12px;"></div>
+        </div>
+      </div>
+
       <div id="loading" style="text-align:center; padding:30px; color:#fff; font-weight: 700;">লোড হচ্ছে... ⏳</div>
       <div class="grid" id="resourceGrid"></div>
-    </div>
+  </div>
 
-    <div id="pageAds" class="view-page">
+<div id="pageAds" class="view-page">
       <div class="stat-card" style="text-align: left;">
         <h3 style="font-size: 14.5px; font-weight: 800; margin-bottom: 8px; color: #fff;">🚀 স্পেশাল চ্যানেল টাস্ক</h3>
         <div class="task-item">
@@ -747,6 +960,26 @@
         <button class="action-btn" id="btnWatchMonetag" onclick="watchVipAd()" style="margin-top: 12px;">
           🎬 বিজ্ঞাপন দেখুন (+২০ কয়েন)
         </button>
+      </div>
+
+      <!-- মিস্ট্রি গিফট বক্স (Mystery Box) -->
+      <div class="stat-card">
+        <span style="font-size: 38px;">📦</span>
+        <h2 style="font-size: 17px; font-weight: 800; color: var(--gold); margin: 4px 0;">মিস্ট্রি সারপ্রাইজ বক্স</h2>
+        <p style="font-size: 11.5px; color: var(--text-sub); margin-bottom: 12px;">বক্সটি আনলক করলে পেতে পারেন <b>৫ থেকে ৫০ কয়েন</b> পর্যন্ত সারপ্রাইজ বোনাস!</p>
+        <button class="action-btn" id="btnMysteryBox" onclick="openMysteryGiftBox()" style="background: linear-gradient(135deg, #a855f7, #6366f1); color: #fff;">🔓 মিস্ট্রি বক্স খুলুন (বিজ্ঞাপন দেখুন)</button>
+      </div>
+
+      <!-- ডেইলি ডিজাইন ও ফুটবল কুইজ (+১৫ কয়েন) -->
+      <div class="stat-card" style="text-align: left;">
+        <h3 style="font-size: 15px; font-weight: 800; color: var(--accent); margin-bottom: 4px;">🧠 ডেইলি কুইজ চ্যালেঞ্জ (+১৫ কয়েন)</h3>
+        <p style="font-size: 12px; color: #fff; font-weight: 700; margin-bottom: 10px;" id="dailyQuizQuestion">প্রশ্ন: PixelLab প্রজেক্ট ফাইলের এক্সটেনশন কোনটি?</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;" id="dailyQuizOptions">
+          <button class="setting-chip" onclick="answerDailyQuiz(0, this)" style="padding: 10px;">.psd ফাইল</button>
+          <button class="setting-chip" onclick="answerDailyQuiz(1, this)" style="padding: 10px;">.plp ফাইল</button>
+          <button class="setting-chip" onclick="answerDailyQuiz(2, this)" style="padding: 10px;">.xml ফাইল</button>
+          <button class="setting-chip" onclick="answerDailyQuiz(3, this)" style="padding: 10px;">.ttf ফাইল</button>
+        </div>
       </div>
 
       <div class="stat-card">
@@ -796,6 +1029,23 @@
         <button class="action-btn" onclick="shareReferralLink()" style="background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff;">🚀 শেয়ার (+৫০)</button>
       </div>
 
+      <!-- রেফারেল মাইলস্টোন বোনাস কার্ড -->
+      <div class="stat-card" style="margin-top: 16px; padding: 16px; text-align: left;">
+        <h3 style="font-size: 14.5px; font-weight: 800; color: #4ade80; margin-bottom: 8px;">🎯 রেফারেল মাইলস্টোন বোনাস</h3>
+        <div class="task-item">
+          <div><b style="font-size:12px; color:#fff;">৫টি রেফার পূর্ণ করুন</b><br><span style="font-size:10.5px; color:var(--gold);">এক্সট্রা বোনাস: +১০০ কয়েন</span></div>
+          <button class="daily-btn" onclick="claimReferMilestone(5, 100)" style="padding: 7px 12px; font-size: 11px;">ক্লেইম</button>
+        </div>
+        <div class="task-item">
+          <div><b style="font-size:12px; color:#fff;">১০টি রেফার পূর্ণ করুন</b><br><span style="font-size:10.5px; color:var(--gold);">এক্সট্রা বোনাস: +২৫০ কয়েন</span></div>
+          <button class="daily-btn" onclick="claimReferMilestone(10, 250)" style="padding: 7px 12px; font-size: 11px;">ক্লেইম</button>
+        </div>
+        <div class="task-item" style="margin-bottom: 0;">
+          <div><b style="font-size:12px; color:#fff;">২৫টি রেফার পূর্ণ করুন</b><br><span style="font-size:10.5px; color:var(--gold);">এক্সট্রা বোনাস: +৭০০ কয়েন</span></div>
+          <button class="daily-btn" onclick="claimReferMilestone(25, 700)" style="padding: 7px 12px; font-size: 11px;">ক্লেইম</button>
+        </div>
+      </div>
+
       <!-- রেফারেল র‍্যাংকিং লিস্ট -->
       <div class="stat-card" style="margin-top: 16px; padding: 16px;">
         <h3 style="font-size: 15px; font-weight: 800; color: var(--gold); margin-bottom: 4px;">🏆 শীর্ষ রেফারকারী র‍্যাংকিং</h3>
@@ -808,9 +1058,13 @@
 
     <div id="pageProfile" class="view-page">
       <div class="stat-card">
-        <div class="user-avatar-wrap" style="width: 76px; height: 76px; margin: 0 auto 10px auto; border-width: 2px;">
-          <img id="profAvatarImg" src="" alt="avatar" onerror="handleAvatarError(this, 'profAvatarText')">
-          <span class="user-avatar-text" id="profAvatarText" style="font-size: 28px;">U</span>
+        <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:8px;">
+          <div class="user-avatar-wrap" style="width: 76px; height: 76px; margin: 0 auto 6px auto; border-width: 2px;">
+            <img id="profAvatarImg" src="" alt="avatar" onerror="handleAvatarError(this, 'profAvatarText')">
+            <span class="user-avatar-text" id="profAvatarText" style="font-size: 28px;">U</span>
+          </div>
+          <!-- প্রোফাইল পেজেও প্রোফাইল পিকের ঠিক নিচে ছোট সেটিংস বাটন -->
+          <button class="under-avatar-settings-btn" onclick="openSettingsModal()" style="font-size: 10px; padding: 4px 10px;">⚙️ অ্যাপ সেটিংস ও থিম</button>
         </div>
         <h2 id="profName" style="font-size:17px; font-weight: 800; color: #fff;">VIP User</h2>
         <p id="profTag" style="font-size:12px; color:var(--text-sub); margin-bottom:6px;">@user</p>
@@ -840,6 +1094,30 @@
         <div style="display: flex; gap: 8px;">
           <input type="text" id="profPromoInput" class="mini-input" placeholder="গিফট বা প্রোমো কোড..." style="margin-bottom: 0; text-transform: uppercase;">
           <button class="daily-btn" onclick="redeemPromoInApp('profPromoInput')" style="white-space: nowrap; padding: 0 16px;">ক্লেইম 🎁</button>
+        </div>
+      </div>
+
+      <!-- ইউজার টু ইউজার কয়েন ট্রান্সফার সিস্টেম -->
+      <div class="stat-card" style="text-align: left; padding: 16px;">
+        <h3 style="font-size: 14px; font-weight: 800; margin-bottom: 6px; color: var(--accent);">💸 বন্ধুকে কয়েন ট্রান্সফার করুন</h3>
+        <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 8px;">অন্য মেম্বারের টেলিগ্রাম ইউজার আইডিতে আপনার কয়েন পাঠান:</p>
+        <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 8px;">
+          <input type="text" id="p2pTargetUid" class="mini-input" placeholder="প্রাপকের User ID">
+          <input type="number" id="p2pCoinAmount" class="mini-input" placeholder="কয়েন সংখ্যা">
+        </div>
+        <button class="daily-btn" onclick="transferCoinsToFriend()" style="width: 100%; background: linear-gradient(135deg, #38bdf8, #0284c7); color: #020617;">💸 কয়েন পাঠান</button>
+      </div>
+
+      <!-- ভিআইপি কয়েন ব্যাংক (Staking Vault) -->
+      <div class="stat-card" style="text-align: left; padding: 16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <h3 style="font-size: 14px; font-weight: 800; color: #4ade80;">🏦 ভিআইপি কয়েন ব্যাংক (+২০% লাভ)</h3>
+          <span class="badge-count" id="bankBalanceBadge">জমা: 0 🪙</span>
+        </div>
+        <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 10px;">কয়েন ব্যাংকে জমা রাখলে ৩ দিন পর +২০% বোনাসসহ উত্তোলন করতে পারবেন!</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <button class="daily-btn" onclick="depositToCoinBank()" style="background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4);">➕ ৫০ কয়েন জমা দিন</button>
+          <button class="daily-btn" onclick="withdrawFromCoinBank()">💰 ব্যাংক থেকে তুলুন</button>
         </div>
       </div>
 
@@ -891,7 +1169,7 @@
         </div>
         <button class="daily-btn" onclick="adminCreatePromoInApp()" style="width: 100%; background: linear-gradient(135deg, #a855f7, #6366f1); color: #fff; margin-bottom: 14px;">🎁 ৫ জনের প্রোমো কোড তৈরি করুন</button>
 
-        <!-- ২. নির্দিষ্ট ১ জন ইউজারের জন্য স্পেশাল ব্যক্তিগত গিফট কোড (শুধুমাত্র সেই ইউজারই রিডিম করতে পারবে) -->
+        <!-- ২. নির্দিষ্ট ১ জন ইউজারের জন্য স্পেশাল ব্যক্তিগত গিফট কোড -->
         <div style="font-size: 12px; font-weight: 800; color: #38bdf8; margin-bottom: 6px;">🔒 নির্দিষ্ট ইউজারের জন্য ব্যক্তিগত গিফট কোড সেট করুন:</div>
         <p style="font-size: 10.5px; color: var(--text-sub); margin-bottom: 8px;">এখানে যে ইউজার আইডি দেবেন, শুধুমাত্র সেই ব্যক্তিই এই গিফট কোড রিডিম করতে পারবে (অন্য কেউ পারবে না):</p>
         <input type="text" id="admSpecialGiftUid" class="mini-input" placeholder="👤 প্রাপকের টেলিগ্রাম ইউজার আইডি (যেমন: 7481264433)">
@@ -900,6 +1178,12 @@
           <input type="number" id="admSpecialGiftCoins" class="mini-input" placeholder="🪙 গিফট কয়েন সংখ্যা">
         </div>
         <button class="daily-btn" onclick="adminCreateUserSpecificGift()" style="width: 100%; background: linear-gradient(135deg, #38bdf8, #0284c7); color: #020617;">🔒 ব্যক্তিগত গিফট কোড সেট করুন</button>
+      </div>
+
+      <!-- ইউজারদের ফাইল রিকোয়েস্ট ও রিপোর্ট দেখার প্যানেল -->
+      <div class="stat-card" style="padding: 14px; margin-bottom: 16px;">
+        <h3 style="font-size: 14px; text-align: left; margin-bottom: 6px; font-weight: 800; color: #c084fc;">📝 ইউজারদের ফাইল রিকোয়েস্ট ও রিপোর্ট</h3>
+        <div id="adminFileRequestsContainer" style="font-size: 11.5px; text-align: left; color: var(--text-sub);">লোড হচ্ছে... ⏳</div>
       </div>
 
       <!-- ইউজারদের সাবমিট করা ফাইল দেখার, ডাউনলোড ও এক্সেপ্ট করার স্থায়ী প্যানেল -->
@@ -991,13 +1275,19 @@
     const RENDER_BACKEND_URL = "https://premium-resources-qxtv.onrender.com";
     const DB_BASE = "https://premium-resources-default-rtdb.firebaseio.com";
 
-    // ইউজার সেটিংস (ভাষা, থিম, লাইট মোড, ভাইব্রেশন) স্টেট
+    // ইউজার সেটিংস (ভাষা, থিম, কালার অ্যাকসেন্ট, গ্রিড, ফন্ট সাইজ, লাইট মোড, ভাইব্রেশন) স্টেট
     let appSettings = {
       lang: localStorage.getItem('vip_app_lang') || 'bn',
       theme: localStorage.getItem('vip_app_theme') || 'dark',
+      accent: localStorage.getItem('vip_app_accent') || 'blue',
+      grid: localStorage.getItem('vip_app_grid') || '2col',
+      fontSize: localStorage.getItem('vip_app_fontsize') || 'normal',
       litePerf: localStorage.getItem('vip_lite_perf') === 'true',
       haptic: localStorage.getItem('vip_haptic') !== 'false'
     };
+
+    // অ্যাপ ওপেন হওয়ার আগে কোনো টোস্ট নোটিফিকেশন না দেখানোর লক
+    let isSplashFinished = false;
 
     // ইন্ট্রো স্প্ল্যাশ স্ক্রিন কন্ট্রোলার (১ সেকেন্ড বেশি সময় ও মাখনের মতো স্মুথ কাউন্টার)
     (function runIntroSplash() {
@@ -1021,10 +1311,11 @@
       setTimeout(() => {
         clearInterval(pctInterval);
         if (splash) splash.classList.add('hide');
+        isSplashFinished = true;
       }, 2400);
     })();
 
-    // সেটিংস মোডাল ও ভাষা/থিম কন্ট্রোল ফাংশনসমূহ
+    // সেটিংস মোডাল ও কাস্টমাইজেশন ফাংশনসমূহ (silent=false মানে শুধু ইউজার বাটনে চাপলেই টোস্ট দেখাবে, অ্যাপ লোডের সময় দেখাবে না)
     function openSettingsModal() {
       triggerHaptic();
       document.getElementById('settingsModal').classList.add('active');
@@ -1034,8 +1325,8 @@
       document.getElementById('settingsModal').classList.remove('active');
     }
 
-    function setAppTheme(mode) {
-      triggerHaptic();
+    function setAppTheme(mode, notifyUser = false) {
+      if (notifyUser) triggerHaptic();
       appSettings.theme = mode;
       try { localStorage.setItem('vip_app_theme', mode); } catch(e) {}
       document.body.classList.remove('light-mode', 'amoled-mode');
@@ -1045,41 +1336,79 @@
       document.getElementById('themeBtnDark')?.classList.toggle('active', mode === 'dark');
       document.getElementById('themeBtnLight')?.classList.toggle('active', mode === 'light');
       document.getElementById('themeBtnAmoled')?.classList.toggle('active', mode === 'amoled');
+      if (notifyUser) showToast("থিম সফলভাবে পরিবর্তন হয়েছে!", "🌗");
     }
 
-    function setLitePerfMode(enabled) {
-      triggerHaptic();
+    function setAccentColor(color, notifyUser = false) {
+      if (notifyUser) triggerHaptic();
+      appSettings.accent = color;
+      try { localStorage.setItem('vip_app_accent', color); } catch(e) {}
+      document.body.classList.remove('accent-purple', 'accent-emerald', 'accent-crimson');
+      if (color !== 'blue') document.body.classList.add(`accent-${color}`);
+
+      document.getElementById('accBtnBlue')?.classList.toggle('active', color === 'blue');
+      document.getElementById('accBtnPurple')?.classList.toggle('active', color === 'purple');
+      document.getElementById('accBtnEmerald')?.classList.toggle('active', color === 'emerald');
+      document.getElementById('accBtnCrimson')?.classList.toggle('active', color === 'crimson');
+      if (notifyUser) showToast("কালার থিম সেট করা হয়েছে!", "🎨");
+    }
+
+    function setGridLayout(layout, notifyUser = false) {
+      if (notifyUser) triggerHaptic();
+      appSettings.grid = layout;
+      try { localStorage.setItem('vip_app_grid', layout); } catch(e) {}
+      document.body.classList.toggle('single-col-grid', layout === '1col');
+      document.getElementById('gridBtn2')?.classList.toggle('active', layout === '2col');
+      document.getElementById('gridBtn1')?.classList.toggle('active', layout === '1col');
+      if (notifyUser) showToast("কার্ড ভিউ পরিবর্তন হয়েছে!", "📐");
+    }
+
+    function setFontSizeMode(mode, notifyUser = false) {
+      if (notifyUser) triggerHaptic();
+      appSettings.fontSize = mode;
+      try { localStorage.setItem('vip_app_fontsize', mode); } catch(e) {}
+      document.body.classList.toggle('large-font-mode', mode === 'large');
+      document.getElementById('fontBtnNorm')?.classList.toggle('active', mode === 'normal');
+      document.getElementById('fontBtnLarge')?.classList.toggle('active', mode === 'large');
+    }
+
+    function setLitePerfMode(enabled, notifyUser = false) {
+      if (notifyUser) triggerHaptic();
       appSettings.litePerf = enabled;
       try { localStorage.setItem('vip_lite_perf', String(enabled)); } catch(e) {}
       document.body.classList.toggle('lite-perf-mode', enabled);
       document.getElementById('perfBtnOn')?.classList.toggle('active', enabled);
       document.getElementById('perfBtnOff')?.classList.toggle('active', !enabled);
-      showToast(enabled ? "⚡ লাইট মোড চালু হয়েছে (ফাস্ট পারফরম্যান্স)" : "✨ নরমাল অ্যানিমেশন চালু হয়েছে", "⚙️");
+      if (notifyUser) {
+        showToast(enabled ? "⚡ লাইট মোড চালু হয়েছে (ফাস্ট পারফরম্যান্স)" : "✨ নরমাল অ্যানিমেশন চালু হয়েছে", "⚙️");
+      }
     }
 
-    function setHapticPref(enabled) {
+    function setHapticPref(enabled, notifyUser = false) {
       appSettings.haptic = enabled;
       try { localStorage.setItem('vip_haptic', String(enabled)); } catch(e) {}
       document.getElementById('vibBtnOn')?.classList.toggle('active', enabled);
       document.getElementById('vibBtnOff')?.classList.toggle('active', !enabled);
-      if (enabled) triggerHaptic('success');
+      if (enabled && notifyUser) triggerHaptic('success');
     }
 
-    function setAppLanguage(lang) {
-      triggerHaptic();
+    function setAppLanguage(lang, notifyUser = false) {
+      if (notifyUser) triggerHaptic();
       appSettings.lang = lang;
       try { localStorage.setItem('vip_app_lang', lang); } catch(e) {}
       document.getElementById('langBtnBn')?.classList.toggle('active', lang === 'bn');
       document.getElementById('langBtnEn')?.classList.toggle('active', lang === 'en');
 
       const isEn = lang === 'en';
+      const setBtn = document.getElementById('btnUnderAvatarSet');
+      if (setBtn) setBtn.innerText = isEn ? "⚙️ Settings" : "⚙️ সেটিংস";
       document.getElementById('txtMainGuide').innerText = isEn ? "How to Download & Earn Coins? (Guide)" : "কীভাবে ফাইল ডাউনলোড ও কয়েন আর্ন করবেন? (গাইড)";
       document.getElementById('lblStatMembers').innerText = isEn ? "👥 Members" : "👥 মেম্বার";
       document.getElementById('lblStatViews').innerText = isEn ? "📺 Views" : "📺 ভিউজ";
       document.getElementById('lblStatDl').innerText = isEn ? "🎁 Downloads" : "🎁 ডাউনলোড";
       document.getElementById('lblStatRef').innerText = isEn ? "🤝 Refers" : "🤝 রেফার";
-      document.getElementById('txtDailyTitle').innerText = isEn ? "🎁 Daily Free Reward" : "🎁 দৈনিক ফ্রি রিওয়ার্ড";
-      document.getElementById('txtDailySub').innerText = isEn ? "Get +5 Free Coins Everyday" : "প্রতিদিন পান ফ্রিতে +৫ কয়েন";
+      document.getElementById('txtDailyTitle').innerText = isEn ? "🎁 Daily Reward & 7-Day Streak" : "🎁 দৈনিক ফ্রি রিওয়ার্ড ও ৭-দিনের স্ট্রিক";
+      document.getElementById('txtDailySub').innerText = isEn ? "Claim 7 days in a row for +50 Bonus!" : "টানা ৭ দিন ক্লেইম করলে ৭ম দিনে +৫০ বোনাস!";
       document.getElementById('searchInput').placeholder = isEn ? "🔍 Search PLP, XML or Fonts..." : "🔍 কাঙ্ক্ষিত ফাইল, XML বা ফন্টের নাম লিখুন...";
       document.getElementById('fltNew').innerText = isEn ? "🆕 Newest" : "🆕 নতুন ফাইল";
       document.getElementById('fltPop').innerText = isEn ? "🔥 Popular" : "🔥 জনপ্রিয় (Top)";
@@ -1088,6 +1417,7 @@
       document.getElementById('tabBtn-plp').innerText = isEn ? "🎨 PLP Files" : "🎨 PLP ফাইল";
       document.getElementById('tabBtn-font').innerText = isEn ? "🔤 Fonts" : "🔤 ফন্ট সমূহ";
       document.getElementById('tabBtn-xml').innerText = isEn ? "⚡ XML Files" : "⚡ XML ফাইল";
+      document.getElementById('tabBtn-tools').innerText = isEn ? "🛠️ Tools & AI" : "🛠️ টুলস ও AI";
       document.getElementById('txtAdBoxTitle').innerText = isEn ? "Watch Ads & Earn Coins" : "বিজ্ঞাপন দেখে কয়েন সংগ্রহ";
       document.getElementById('txtAdBoxSub').innerText = isEn ? "Watch full ad to get +20 coins instantly." : "সম্পূর্ণ বিজ্ঞাপনটি দেখলে ওয়ালেটে ২০টি কয়েন যোগ হবে।";
       document.getElementById('btnWatchMonetag').innerText = isEn ? "🎬 Watch Ad (+20 Coins)" : "🎬 বিজ্ঞাপন দেখুন (+২০ কয়েন)";
@@ -1109,14 +1439,57 @@
       } catch(e) {}
     }
 
+    // অ্যাপ লোডের সময় নীরবে সেটিংস অ্যাপ্লাই করা (যাতে স্প্ল্যাশ স্ক্রিনের আগে কোনো নোটিফিকেশন না আসে)
     function applySavedSettingsOnLoad() {
-      setAppTheme(appSettings.theme);
-      setLitePerfMode(appSettings.litePerf);
-      setHapticPref(appSettings.haptic);
-      if (appSettings.lang === 'en') setAppLanguage('en');
+      setAppTheme(appSettings.theme, false);
+      setAccentColor(appSettings.accent, false);
+      setGridLayout(appSettings.grid, false);
+      setFontSizeMode(appSettings.fontSize, false);
+      setLitePerfMode(appSettings.litePerf, false);
+      setHapticPref(appSettings.haptic, false);
+      if (appSettings.lang === 'en') setAppLanguage('en', false);
     }
 
-    // প্রোফাইল পিকচার (Avatar) লোড ও এরর হ্যান্ডলার (যাতে সব ইউজারের প্রোফাইল পিক দেখা যায়)
+    // লাইভ অ্যাক্টিভিটি টিকার অ্যানিমেশন
+    function startLiveActivityTicker() {
+      const msgs = [
+        "🔥 নতুন প্রিমিয়াম PLP ও বাংলা স্টাইলিশ ফন্ট যুক্ত হয়েছে!",
+        "💎 DIAMOND VIP মেম্বাররা সব পেইড ফাইলে পাচ্ছেন ২০% ডিসকাউন্ট!",
+        "🎡 প্রতি ২ ঘণ্টা পর পর ফ্রি লাকি হুইল স্পিন করে কয়েন জিতুন!",
+        "🏦 কয়েন ব্যাংকে কয়েন জমা রাখলেই পাচ্ছেন +২০% অতিরিক্ত বোনাস!",
+        "🤝 প্রতি সফল রেফারে পাবেন নিশ্চিত +৫০ কয়েন ও মাইলস্টোন রিওয়ার্ড!"
+      ];
+      let idx = 0;
+      setInterval(() => {
+        idx = (idx + 1) % msgs.length;
+        const el = document.getElementById('liveActivityTickerText');
+        if (el) el.innerText = msgs[idx];
+      }, 4500);
+    }
+
+    function updateLiveFontPreview(val) {
+      const out = document.getElementById('fontPreviewOutput');
+      if (out) out.innerText = val.trim() ? val : "সোনার বাংলা — VIP Font Preview";
+    }
+
+    function generateFancyText(val) {
+      const box = document.getElementById('fancyTextOutputList');
+      if (!box) return;
+      const t = (val || 'VIP Designer').trim();
+      const styles = [
+        `👑 ꧁༺ ${t} ༻꧂ 👑`,
+        `✨ 『 ${t.toUpperCase()} 』 ✨`,
+        `💎 ━╬٨ـﮩﮩ❤ ${t} ❤ﮩﮩـ٨╬━ 💎`,
+        `🔥 ★彡[ ${t} ]彡★ 🔥`
+      ];
+      box.innerHTML = styles.map(s => `
+        <div class="unlocked-item" onclick="fallbackCopy('${s.replace(/'/g, "")}')" style="cursor:pointer;">
+          <span>${s}</span><span style="color:var(--accent); font-size:10.5px;">📋 কপি</span>
+        </div>
+      `).join('');
+    }
+
+    // প্রোফাইল পিকচার (Avatar) লোড ও এরর হ্যান্ডলার
     function handleAvatarError(imgEl, textElId) {
       imgEl.style.display = 'none';
       const txtEl = document.getElementById(textElId);
@@ -1193,7 +1566,6 @@
       fetchResources();
     });
 
-    // ইউজার আইডি ক্লিপবোর্ডে কপি করার ফাংশন
     function copyUserId(uid) {
       if (!uid) return;
       triggerHaptic('success');
@@ -1279,7 +1651,7 @@
     }
 
     const user = getTelegramUser();
-    let userData = { coins: 20, refers: 0, daily_ads: {}, last_checkin: "", last_spin: "", last_spin_time: 0, last_scratch: "", last_ad_time: 0, joined_channel: false, claimed_count: 0, total_ads_watched: 0, unlocked: {} };
+    let userData = { coins: 20, refers: 0, daily_ads: {}, last_checkin: "", streak_days: 1, last_spin: "", last_spin_time: 0, last_scratch: "", last_quiz: "", last_mystery: 0, bank_coins: 0, bank_time: 0, milestones_claimed: {}, last_ad_time: 0, joined_channel: false, claimed_count: 0, total_ads_watched: 0, unlocked: {} };
     let allResources = {};
     let currentCategory = 'plp';
     let currentSortOrder = 'new';
@@ -1293,10 +1665,8 @@
     try { savedFavorites = JSON.parse(localStorage.getItem('vip_saved_favs') || '{}'); } catch(e) {}
 
     const AD_LIMIT = 30;
-    // অ্যাড দেখে ২০ কয়েন আর্ন করার সিস্টেম
     const AD_REWARD = 20;
     const AD_COOLDOWN = 60;
-    // প্রতি ২ ঘণ্টা পর পর স্পিন করার সময় (২ ঘণ্টা = ৭২,০০,০০০ মিলিসেকেন্ড)
     const SPIN_COOLDOWN_MS = 2 * 60 * 60 * 1000;
 
     const spinRewards = [
@@ -1322,7 +1692,181 @@
       renderResources(document.getElementById('searchInput').value.toLowerCase());
     }
 
-    // গ্লোবাল ও ইউজারের অ্যাড ভিউ কাউন্টার সাথে সাথে আপডেট করার ফাংশন
+    // কাস্টম ফাইল রিকোয়েস্ট ও ব্রোকেন ফাইল রিপোর্ট ফাংশন
+    async function openFileRequestPrompt() {
+      triggerHaptic();
+      const reqText = prompt("📝 আপনার কোন ধরনের PLP, ফন্ট বা XML ফাইল প্রয়োজন তা বিস্তারিত লিখুন:");
+      if (!reqText || !reqText.trim()) return;
+      await safeFetch(`${DB_BASE}/file_requests.json`, {
+        method: 'POST',
+        body: JSON.stringify({
+          user_id: user.id || 'Guest',
+          user_name: user.first_name || 'User',
+          request: reqText.trim(),
+          type: 'Request',
+          time: new Date().toLocaleString()
+        })
+      });
+      showToast("✅ আপনার ফাইল রিকোয়েস্ট অ্যাডমিনের কাছে পাঠানো হয়েছে!", "📝");
+    }
+
+    async function reportBrokenResource(key, name, ev) {
+      if (ev) ev.stopPropagation();
+      triggerHaptic('warning');
+      if (!confirm(`আপনি কি "${name}" ফাইলটির সমস্যা নিয়ে অ্যাডমিনকে রিপোর্ট করতে চান?`)) return;
+      await safeFetch(`${DB_BASE}/file_requests.json`, {
+        method: 'POST',
+        body: JSON.stringify({
+          user_id: user.id || 'Guest',
+          user_name: user.first_name || 'User',
+          request: `⚠️ ফাইল সমস্যা রিপোর্ট: ${name} (${key})`,
+          type: 'Report',
+          time: new Date().toLocaleString()
+        })
+      });
+      showToast("⚠️ রিপোর্ট পাঠানো হয়েছে! অ্যাডমিন দ্রুত চেক করবেন।", "✅");
+    }
+
+    // মিস্ট্রি গিফট বক্স, ডেইলি কুইজ, রেফারেল মাইলস্টোন, কয়েন ব্যাংক ও কয়েন ট্রান্সফার ফাংশনসমূহ
+    async function openMysteryGiftBox() {
+      triggerHaptic();
+      const now = Date.now();
+      if (now - (Number(userData.last_mystery) || 0) < 3600000) {
+        showToast("⏳ প্রতি ১ ঘণ্টা পর পর মিস্ট্রি বক্স খুলতে পারবেন!", "📦");
+        return;
+      }
+      showToast("মিস্ট্রি বক্স আনলক হচ্ছে...", "📦");
+      await triggerMonetagAd();
+      const prizePool = [5, 8, 10, 12, 15, 20, 25, 50];
+      const won = prizePool[Math.floor(Math.random() * prizePool.length)];
+      userData.coins = (userData.coins || 0) + won;
+      userData.last_mystery = now;
+      userData.total_ads_watched = (userData.total_ads_watched || 0) + 1;
+      updateUI();
+      fireConfetti();
+      showToast(`🎁 সারপ্রাইজ! মিস্ট্রি বক্স থেকে পেয়েছেন +${won} কয়েন!`, "🎉");
+      if (user.id) {
+        await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await safeFetch(`${DB_BASE}/users/${user.id}/last_mystery.json`, { method: 'PUT', body: JSON.stringify(now) });
+      }
+    }
+
+    async function answerDailyQuiz(ansIdx, btnEl) {
+      triggerHaptic();
+      const today = getTodayKey();
+      if (userData.last_quiz === today) {
+        showToast("আজকের কুইজ ইতিমধ্যে সম্পন্ন করেছেন!", "✅");
+        return;
+      }
+      if (ansIdx !== 1) {
+        showToast("❌ ভুল উত্তর! আবার চেষ্টা করুন।", "⚠️");
+        return;
+      }
+      btnEl.classList.add('active');
+      await triggerMonetagAd();
+      userData.coins = (userData.coins || 0) + 15;
+      userData.last_quiz = today;
+      updateUI();
+      fireConfetti();
+      showToast("🧠 সঠিক উত্তর! +১৫ কয়েন যোগ হয়েছে!", "🎉");
+      if (user.id) {
+        await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await safeFetch(`${DB_BASE}/users/${user.id}/last_quiz.json`, { method: 'PUT', body: JSON.stringify(today) });
+      }
+    }
+
+    async function claimReferMilestone(targetCount, bonusCoins) {
+      triggerHaptic();
+      const myRefs = Number(userData.refers) || 0;
+      if (myRefs < targetCount) {
+        showToast(`আরও ${targetCount - myRefs} জনকে রেফার করলে এই বোনাস পাবেন!`, "👥");
+        return;
+      }
+      const claimedMap = userData.milestones_claimed || {};
+      if (claimedMap[`ref_${targetCount}`]) {
+        showToast("আপনি ইতিমধ্যে এই মাইলস্টোন বোনাস নিয়েছেন!", "✅");
+        return;
+      }
+      claimedMap[`ref_${targetCount}`] = true;
+      userData.milestones_claimed = claimedMap;
+      userData.coins = (userData.coins || 0) + bonusCoins;
+      updateUI();
+      fireConfetti();
+      showToast(`🎉 অভিনন্দন! মাইলস্টোন বোনাস +${bonusCoins} কয়েন যোগ হয়েছে!`, "🏆");
+      if (user.id) {
+        await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await safeFetch(`${DB_BASE}/users/${user.id}/milestones_claimed.json`, { method: 'PUT', body: JSON.stringify(claimedMap) });
+      }
+    }
+
+    async function transferCoinsToFriend() {
+      triggerHaptic();
+      const targetId = (document.getElementById('p2pTargetUid').value || '').trim();
+      const amount = parseInt((document.getElementById('p2pCoinAmount').value || '').trim());
+      if (!targetId || isNaN(amount) || amount < 10) {
+        showToast("সর্বনিম্ন ১০ কয়েন এবং সঠিক ইউজার আইডি দিন!", "⚠️");
+        return;
+      }
+      if (String(targetId) === String(user.id)) {
+        showToast("নিজের আইডিতে ট্রান্সফার করা যাবে না!", "⚠️");
+        return;
+      }
+      if ((userData.coins || 0) < amount) {
+        showToast("আপনার ওয়ালেটে পর্যাপ্ত কয়েন নেই!", "❌");
+        return;
+      }
+      const receiverData = await safeFetch(`${DB_BASE}/users/${targetId}.json`);
+      if (!receiverData) {
+        showToast("প্রাপকের ইউজার আইডি ডাটাবেজে পাওয়া যায়নি!", "❌");
+        return;
+      }
+      userData.coins -= amount;
+      const receiverNewCoins = (Number(receiverData.coins) || 0) + amount;
+      updateUI();
+      document.getElementById('p2pCoinAmount').value = '';
+      await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+      await safeFetch(`${DB_BASE}/users/${targetId}/coins.json`, { method: 'PUT', body: JSON.stringify(receiverNewCoins) });
+      showToast(`✅ সফলভাবে ${targetId} আইডিতে ${amount} কয়েন পাঠানো হয়েছে!`, "💸");
+    }
+
+    async function depositToCoinBank() {
+      triggerHaptic();
+      if ((userData.coins || 0) < 50) {
+        showToast("ব্যাংকে জমা রাখার জন্য কমপক্ষে ৫০ কয়েন প্রয়োজন!", "🏦");
+        return;
+      }
+      userData.coins -= 50;
+      userData.bank_coins = (Number(userData.bank_coins) || 0) + 50;
+      userData.bank_time = Date.now();
+      updateUI();
+      if (user.id) {
+        await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await safeFetch(`${DB_BASE}/users/${user.id}/bank_coins.json`, { method: 'PUT', body: JSON.stringify(userData.bank_coins) });
+        await safeFetch(`${DB_BASE}/users/${user.id}/bank_time.json`, { method: 'PUT', body: JSON.stringify(userData.bank_time) });
+      }
+      showToast("🏦 ৫০ কয়েন ব্যাংকে জমা হয়েছে!", "✅");
+    }
+
+    async function withdrawFromCoinBank() {
+      triggerHaptic();
+      const banked = Number(userData.bank_coins) || 0;
+      if (banked <= 0) {
+        showToast("আপনার ব্যাংকে কোনো জমাকৃত কয়েন নেই!", "⚠️");
+        return;
+      }
+      const elapsedDays = (Date.now() - (Number(userData.bank_time) || 0)) / (1000 * 60 * 60 * 24);
+      const payout = elapsedDays >= 3 ? Math.round(banked * 1.2) : banked;
+      userData.coins = (userData.coins || 0) + payout;
+      userData.bank_coins = 0;
+      updateUI();
+      fireConfetti();
+      if (user.id) {
+        await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await safeFetch(`${DB_BASE}/users/${user.id}/bank_coins.json`, { method: 'PUT', body: JSON.stringify(0) });
+      }
+      showToast(`💰 ব্যাংক থেকে +${payout} কয়েন ওয়ালেটে যোগ হয়েছে!`, "🎉");
+    }
+
     async function incrementGlobalAndUserAdCount() {
       try {
         const adEl = document.getElementById('statAdsWatched');
@@ -1386,7 +1930,6 @@
       }
     }
 
-    // মিনি অ্যাপের ভেতর থেকে প্রোমো কোড (প্রথম ৫ জন) এবং নির্দিষ্ট ইউজারের ব্যক্তিগত গিফট কোড রিডিম ফাংশন
     async function redeemPromoInApp(inputId = 'promoCodeInput') {
       triggerHaptic();
       const input = document.getElementById(inputId);
@@ -1407,7 +1950,6 @@
         return;
       }
 
-      // ১. যদি এটি নির্দিষ্ট কোনো ইউজারের জন্য ব্যক্তিগত গিফট কোড হয় (target_uid সেট করা থাকে)
       if (pData.target_uid && String(pData.target_uid).trim() !== "") {
         if (String(pData.target_uid).trim() !== String(user.id).trim()) {
           showToast("🔒 দুঃখিত! এই স্পেশাল গিফট কোডটি শুধুমাত্র নির্দিষ্ট ইউজারের জন্য বরাদ্দ, অন্য কেউ রিডিম করতে পারবে না!", "🚫");
@@ -1421,7 +1963,6 @@
         return;
       }
 
-      // ২. প্রথম ৫ জনের লিমিট চেক (সাধারণ প্রোমো কোডের জন্য max_uses ডিফল্ট 5)
       const maxUses = Number(pData.max_uses) || (pData.target_uid ? 1 : 5);
       const currentUsedCount = Object.keys(usedBy).length;
       if (currentUsedCount >= maxUses) {
@@ -1524,6 +2065,8 @@
 
     let toastTimeout = null;
     function showToast(msg, icon = '💎') {
+      // ইন্ট্রো স্প্ল্যাশ চলাকালীন কোনো নোটিফিকেশন দেখাবে না
+      if (!isSplashFinished) return;
       const toast = document.getElementById('toast');
       document.getElementById('toastMsg').innerText = msg;
       document.getElementById('toastIcon').innerText = icon;
@@ -1604,6 +2147,8 @@
 
     async function initApp() {
       applySavedSettingsOnLoad();
+      startLiveActivityTicker();
+      generateFancyText("Adom Ali");
 
       const realUser = getTelegramUser();
       user.id = realUser.id;
@@ -1611,7 +2156,6 @@
       user.username = realUser.username;
       user.photo_url = realUser.photo_url;
 
-      // প্রাথমিক প্রোফাইল পিকচার সেটআপ
       applyUserProfilePicture(user.photo_url, user.username, user.first_name);
 
       document.getElementById('uName').innerText = user.first_name || "VIP User";
@@ -1626,7 +2170,7 @@
         try {
           const data = await safeFetch(`${DB_BASE}/users/${user.id}.json`);
           if (data) {
-            userData = Object.assign({ coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, last_spin_time: 0, unlocked: {}, joined_channel: false }, data);
+            userData = Object.assign({ coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, last_spin_time: 0, streak_days: 1, bank_coins: 0, unlocked: {}, joined_channel: false }, data);
             if (data.name && (user.first_name === "Member" || user.first_name === "VIP সদস্য")) {
               user.first_name = data.name;
               document.getElementById('uName').innerText = data.name;
@@ -1643,7 +2187,7 @@
             }
             applyUserProfilePicture(user.photo_url || data.photo, user.username || data.username, user.first_name || data.name);
           } else {
-            userData = { name: user.first_name, username: user.username || "", photo: user.photo_url || "", coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, last_spin_time: 0, unlocked: {}, joined_channel: false };
+            userData = { name: user.first_name, username: user.username || "", photo: user.photo_url || "", coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, last_spin_time: 0, streak_days: 1, bank_coins: 0, unlocked: {}, joined_channel: false };
             await safeFetch(`${DB_BASE}/users/${user.id}.json`, { method: 'PUT', body: JSON.stringify(userData) });
           }
         } catch (e) {}
@@ -1677,7 +2221,6 @@
       else window.open(activeNoticeLink, '_blank');
     }
 
-    // ভিজিট, অ্যাড ভিউ, ডাউনলোড এবং মোট রেফার ১০০% নির্ভুলভাবে সিঙ্ক ও আপডেট করার ফাংশন
     async function loadGlobalStatsAndTrackVisit() {
       try {
         const stats = (await safeFetch(`${DB_BASE}/stats.json`)) || {};
@@ -1742,6 +2285,13 @@
       document.getElementById('profTotalAds').innerText = userData.total_ads_watched || 0;
       document.getElementById('referLinkText').innerText = `https://t.me/${BOT_USERNAME}?start=ref_${user.id || ''}`;
       
+      const bankBadge = document.getElementById('bankBalanceBadge');
+      if (bankBadge) bankBadge.innerText = `জমা: ${userData.bank_coins || 0} 🪙`;
+
+      const streakBoxes = document.querySelectorAll('#streakGridContainer .streak-day-box');
+      const curStreak = Math.min(7, Math.max(1, Number(userData.streak_days) || 1));
+      streakBoxes.forEach((b, i) => b.classList.toggle('active', i < curStreak));
+
       const rank = getVipRank(coins);
       document.getElementById('uBadge').innerText = rank;
       document.getElementById('profRank').innerText = rank;
@@ -1820,8 +2370,14 @@
       const today = getTodayKey();
       if (userData.last_checkin === today) return;
 
-      userData.coins = (userData.coins || 0) + 5;
+      const streakRewards = [5, 8, 10, 12, 15, 20, 50];
+      let sDay = (Number(userData.streak_days) || 0) + 1;
+      if (sDay > 7) sDay = 1;
+      const bonus = streakRewards[sDay - 1] || 5;
+
+      userData.coins = (userData.coins || 0) + bonus;
       userData.last_checkin = today;
+      userData.streak_days = sDay;
       updateUI();
       checkDailyStatus();
       fireConfetti();
@@ -1829,11 +2385,11 @@
       if (user.id) {
         await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
         await safeFetch(`${DB_BASE}/users/${user.id}/last_checkin.json`, { method: 'PUT', body: JSON.stringify(today) });
+        await safeFetch(`${DB_BASE}/users/${user.id}/streak_days.json`, { method: 'PUT', body: JSON.stringify(sDay) });
       }
-      showToast("দৈনিক বোনাস +৫ কয়েন যোগ হয়েছে!", "🎉");
+      showToast(`দৈনিক স্ট্রিক বোনাস +${bonus} কয়েন যোগ হয়েছে!`, "🎉");
     }
 
-    // প্রতি ২ ঘণ্টা পর পর স্পিন স্ট্যাটাস ও লাইভ টাইমার চেক করার ফাংশন
     function checkSpinStatus() {
       const btn = document.getElementById('btnSpin');
       if (!btn) return;
@@ -1867,7 +2423,6 @@
       }
     }
 
-    // প্রতি ২ ঘণ্টা পর পর স্পিন এবং স্পিন শেষে র‍্যান্ডমলি কখনো অ্যাড দেখাবে আবার কখনো দেখাবে না
     async function playLuckySpin() {
       triggerHaptic();
       const now = Date.now();
@@ -1888,7 +2443,6 @@
       document.getElementById('wheelCanvas').style.transform = `rotate(${currentWheelRotation}deg)`;
 
       setTimeout(async () => {
-        // স্পিন শেষে কখনো র‍্যান্ডমলি (৫০% ক্ষেত্রে) অ্যাড দেখাবে, আবার কখনো সরাসরি কয়েন দেবে
         if (Math.random() < 0.5) {
           showToast("বোনাস ভেরিফিকেশন বিজ্ঞাপন লোড হচ্ছে...", "🎬");
           await triggerMonetagAd();
@@ -2066,6 +2620,21 @@
       currentCategory = cat;
       document.querySelectorAll('.tabs .tab-btn').forEach(b => b.classList.remove('active'));
       el.classList.add('active');
+
+      const fontTester = document.getElementById('liveFontTesterBox');
+      const toolsSec = document.getElementById('designerToolsSection');
+      const resGrid = document.getElementById('resourceGrid');
+
+      if (fontTester) fontTester.classList.toggle('show', cat === 'font');
+      if (cat === 'tools') {
+        if (toolsSec) toolsSec.style.display = 'block';
+        if (resGrid) resGrid.style.display = 'none';
+        return;
+      } else {
+        if (toolsSec) toolsSec.style.display = 'none';
+        if (resGrid) resGrid.style.display = 'grid';
+      }
+
       renderResources(document.getElementById('searchInput').value.toLowerCase());
     }
 
@@ -2101,6 +2670,7 @@
 
       const fragment = document.createDocumentFragment();
       const dlBtnText = appSettings.lang === 'en' ? "Download ⚡" : "ডাউনলোড করুন ⚡";
+      const isDiamondVip = (userData.coins || 0) >= 200;
 
       keys.forEach(k => {
         const item = allResources[k];
@@ -2111,6 +2681,8 @@
         card.className = isXml ? 'card xml-fullwidth-card' : 'card';
         const safeName = (item.name || 'Resource').replace(/'/g, "\\'");
         const heartIcon = savedFavorites[k] ? '❤️' : '🤍';
+        const origCoins = Number(item.coins) || 0;
+        const effectiveCoins = (isDiamondVip && origCoins > 0) ? Math.max(1, Math.floor(origCoins * 0.8)) : origCoins;
         
         let mediaHtml = '';
         if (isVideo) {
@@ -2122,6 +2694,7 @@
               <div class="card-thumb-wrap" onclick="openMediaPreview('${mediaSource}', true)">
                 <span class="type-pill">${item.type?.toUpperCase()}</span>
                 <span class="download-count-pill" id="claim-count-${k}">📥 ${item.total_claims || 0}</span>
+                <span class="report-broken-btn" onclick="reportBrokenResource('${k}', '${safeName}', event)">⚠️</span>
                 <span class="fav-heart-btn" onclick="toggleFavoriteResource('${k}', event)">${heartIcon}</span>
                 <img src="${thumbUrl}" alt="thumb" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/300x180';">
                 <div class="video-play-indicator">▶</div>
@@ -2131,6 +2704,7 @@
               <div class="card-thumb-wrap" onclick="openMediaPreview('${mediaSource}', true)">
                 <span class="type-pill">${item.type?.toUpperCase()}</span>
                 <span class="download-count-pill" id="claim-count-${k}">📥 ${item.total_claims || 0}</span>
+                <span class="report-broken-btn" onclick="reportBrokenResource('${k}', '${safeName}', event)">⚠️</span>
                 <span class="fav-heart-btn" onclick="toggleFavoriteResource('${k}', event)">${heartIcon}</span>
                 <video src="${mediaSource}#t=4" muted preload="metadata" playsinline style="width:100%; height:100%; object-fit:cover; display:block; background:#000;"></video>
                 <div class="video-play-indicator">▶</div>
@@ -2141,6 +2715,7 @@
             <div class="card-thumb-wrap" onclick="openMediaPreview('${item.image}', false)">
               <span class="type-pill">${item.type?.toUpperCase()}</span>
               <span class="download-count-pill" id="claim-count-${k}">📥 ${item.total_claims || 0}</span>
+              <span class="report-broken-btn" onclick="reportBrokenResource('${k}', '${safeName}', event)">⚠️</span>
               <span class="fav-heart-btn" onclick="toggleFavoriteResource('${k}', event)">${heartIcon}</span>
               <img src="${item.image || 'https://via.placeholder.com/150'}" alt="thumb" loading="lazy" decoding="async" onerror="this.src='https://via.placeholder.com/150';">
             </div>`;
@@ -2150,9 +2725,13 @@
           ${mediaHtml}
           <div class="card-body">
             <div class="card-title">${item.name}</div>
+            <div class="card-rating-row">
+              <span>⭐⭐⭐⭐⭐ (4.9)</span>
+              ${isDiamondVip && origCoins > 0 ? `<span style="color:#4ade80;">VIP -20%</span>` : ''}
+            </div>
             <div class="card-meta">
-              <span class="price-tag">🪙 ${item.coins}</span>
-              <button class="btn-claim" onclick="claimResource('${k}', ${item.coins}, '${safeName}', '${item.type}')">${dlBtnText}</button>
+              <span class="price-tag">🪙 ${effectiveCoins}</span>
+              <button class="btn-claim" onclick="claimResource('${k}', ${effectiveCoins}, '${safeName}', '${item.type}')">${dlBtnText}</button>
             </div>
           </div>`;
         fragment.appendChild(card);
@@ -2232,11 +2811,9 @@
           }, 1000);
         });
 
-        // প্রথম বিজ্ঞাপন
         await triggerMonetagAd();
         userData.total_ads_watched = (userData.total_ads_watched || 0) + 1;
 
-        // কখনো কখনো (হঠাৎ র‍্যান্ডমলি ৪০% ক্ষেত্রে) দ্বিতীয়বার বিজ্ঞাপন দেখাবে
         if (Math.random() < 0.45) {
           countdownText.innerText = `ফাইল ভেরিফাই করা হচ্ছে, আরেকটু অপেক্ষা করুন...`;
           await new Promise(r => setTimeout(r, 1200));
@@ -2317,7 +2894,6 @@
       }
     }
 
-    // অ্যাডমিন কুইক কন্ট্রোল ফাংশনসমূহ
     async function adminUpdateNotice() {
       const txt = document.getElementById('admNoticeInput').value.trim();
       if (!txt) {
@@ -2358,7 +2934,6 @@
       showToast(`✅ ইউজার ${targetUid}-এর বর্তমান কয়েন: ${newCoins}`, "🪙");
     }
 
-    // ১. পাবলিক প্রোমো কোড তৈরি (প্রথম ৫ জনের লিমিটসহ)
     async function adminCreatePromoInApp() {
       const codeName = (document.getElementById('admPromoCodeName').value || '').trim().toUpperCase();
       const codeCoins = parseInt((document.getElementById('admPromoCodeCoins').value || '').trim());
@@ -2375,7 +2950,6 @@
       showToast(`🎉 ৫ জনের প্রোমো কোড তৈরি হয়েছে: ${codeName} (+${codeCoins}🪙)`, "🎁");
     }
 
-    // ২. নির্দিষ্ট ইউজারের জন্য ব্যক্তিগত গিফট কোড সেট করা (যাতে শুধুমাত্র সেই ব্যক্তিই রিডিম করতে পারে)
     async function adminCreateUserSpecificGift() {
       const targetUid = (document.getElementById('admSpecialGiftUid').value || '').trim();
       const giftCode = (document.getElementById('admSpecialGiftCode').value || '').trim().toUpperCase();
@@ -2397,6 +2971,12 @@
         })
       });
 
+      safeFetch(`${RENDER_BACKEND_URL}/notify-gift-code`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ target_uid: targetUid, gift_code: giftCode, coins: giftCoins })
+      });
+
       document.getElementById('admSpecialGiftUid').value = '';
       document.getElementById('admSpecialGiftCode').value = '';
       document.getElementById('admSpecialGiftCoins').value = '';
@@ -2404,7 +2984,6 @@
       showToast(`🔒 ইউজার ${targetUid}-এর জন্য গিফট কোড (${giftCode}) সেট ও কপি হয়েছে!`, "👑");
     }
 
-    // ইউজারের সাবমিট করা ফাইল এক্সেপ্ট ও কয়েন দেওয়ার পর ফাইলটি স্থায়ীভাবে রেখে দেওয়ার ফাংশন
     async function acceptSubmittedFileInApp(subKey, targetUid, fileName) {
       triggerHaptic();
       const rewardStr = prompt(`"${fileName}" ফাইলের জন্য ইউজারকে (${targetUid}) কত কয়েন পুরস্কার দিতে চান?`, "50");
@@ -2424,7 +3003,6 @@
         body: JSON.stringify(updatedCoins)
       });
 
-      // ফাইল ডিলিট না করে স্ট্যাটাস 'accepted' হিসেবে স্থায়ীভাবে রেখে দেওয়া
       await safeFetch(`${DB_BASE}/pending_submissions/${subKey}.json`, {
         method: 'PATCH',
         body: JSON.stringify({
@@ -2438,7 +3016,6 @@
       loadAdminAnalytics();
     }
 
-    // অ্যাডমিন প্যানেল থেকে ইউজারের সাবমিট করা ফাইল ডাউনলোড করার ফাংশন
     async function downloadSubmittedFile(subKey, fileId, fileName) {
       triggerHaptic();
       showToast("সাবমিট করা ফাইল ইনবক্সে পাঠানো হচ্ছে... ⏳", "📥");
@@ -2471,11 +3048,11 @@
       const tbody = document.getElementById('adminSalesTableBody');
       const subTbody = document.getElementById('adminSubmissionsTableBody');
       const buyersTbody = document.getElementById('adminBuyersTableBody');
+      const reqContainer = document.getElementById('adminFileRequestsContainer');
 
       tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--accent); padding: 15px;">লোড হচ্ছে... ⏳</td></tr>';
       if (subTbody) subTbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--accent); padding: 12px;">লোড হচ্ছে... ⏳</td></tr>';
 
-      // ১. ফাইল ভিত্তিক পারফরম্যান্স লোড
       try {
         const resources = (await safeFetch(`${DB_BASE}/resources.json`)) || {};
         let totalSales = 0, totalCoins = 0, rows = '';
@@ -2493,7 +3070,24 @@
         document.getElementById('adminTotalCoinsSpent').innerText = `${totalCoins} 🪙`;
       } catch (e) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">ফেইলড</td></tr>'; }
 
-      // ২. ইউজারদের সাবমিট করা ফাইল (এক্সেপ্ট করলেও স্থায়ীভাবে থাকবে)
+      if (reqContainer) {
+        try {
+          const reqs = (await safeFetch(`${DB_BASE}/file_requests.json`)) || {};
+          const rKeys = Object.keys(reqs).reverse().slice(0, 10);
+          if (rKeys.length === 0) {
+            reqContainer.innerHTML = 'কোনো নতুন ফাইল রিকোয়েস্ট বা রিপোর্ট নেই।';
+          } else {
+            reqContainer.innerHTML = rKeys.map(rk => {
+              const r = reqs[rk];
+              return `<div class="unlocked-item" style="margin-bottom:6px;">
+                <div><b>${r.request}</b><br><span style="font-size:10px; color:var(--text-dim);">প্রেরক: ${r.user_name} (${r.user_id})</span></div>
+                <button class="copy-uid-btn" onclick="copyUserId('${r.user_id}')">📋 ID</button>
+              </div>`;
+            }).join('');
+          }
+        } catch(e) {}
+      }
+
       if (subTbody) {
         try {
           const subs = (await safeFetch(`${DB_BASE}/pending_submissions.json`)) || {};
@@ -2536,7 +3130,6 @@
         }
       }
 
-      // ৩. লাইভ ডাউনলোড হিস্ট্রি ও ইউজার আইডি কপি অপশন
       if (buyersTbody) {
         try {
           const logs = (await safeFetch(`${DB_BASE}/download_logs.json`)) || {};
@@ -2565,7 +3158,6 @@
       }
     }
 
-    // কয়েন লিডারবোর্ড লোড (ইউজার আইডি কপি বাটনসহ)
     async function loadLeaderboard() {
       try {
         const users = (await safeFetch(`${DB_BASE}/users.json`)) || {};
@@ -2585,7 +3177,6 @@
       } catch (e) {}
     }
 
-    // রেফারেল র‍্যাংকিং লোড (কে কতজন রেফার করেছে এবং ইউজার আইডি কপি বাটন)
     async function loadReferLeaderboard() {
       const container = document.getElementById('referLeaderboardList');
       if (!container) return;
@@ -2649,4 +3240,4 @@
     initApp();
   </script>
 </body>
-  </html>
+        </html>    
