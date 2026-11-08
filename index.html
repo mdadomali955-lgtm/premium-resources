@@ -4983,44 +4983,55 @@
       else window.open(SUPPORT_URL, '_blank');
     }
 
-    initApp();
-  function openSupport() {
-      triggerHaptic();
-      if (tg && tg.openTelegramLink) tg.openTelegramLink(SUPPORT_URL);
-      else window.open(SUPPORT_URL, '_blank');
-    }
+    // ─── রিয়েল-টাইম ডাটাবেজ বেজড লাইভ অ্যাক্টিভিটি টিকার ইঞ্জিন ───
+    async function startRealtimeDatabaseTicker() {
+      const tickerEl = document.getElementById('liveTickerScrollText');
+      if (!tickerEl) return;
 
-
-    // ─── রিয়েল-টাইম লাইভ অ্যাক্টিভিটি নোটিফিকেশন টিকার ইঞ্জিন ───
-    function startLiveAppTicker() {
-      const names = ["রহিম আহমেদ", "করিম উদ্দিন", "সাব্বির হোসেন", "ফাহিম ইসলাম", "তানভীর রহমান", "ইমরান খান", "সোহাগ মিয়া", "নাজমুল হক", "আরিফ হোসেন", "শাকিল আহমেদ", "মোরশেদ আলম", "রাকিবুল হাসান"];
-      const actions = [
-        "বিজ্ঞাপন দেখে ২০ কয়েন আর্ন করেছেন! 📺",
-        "লাকি স্পিন করে ১০ কয়েন জিতেছেন! 🎡",
-        "একটি প্রিমিয়াম PLP ফাইল ডাউনলোড করেছেন! 📥",
-        "ডেইলি স্ট্রিক ক্লেইম করেছেন! 🎁",
-        "চ্যানেলে জয়েন করে ১৫ কয়েন বোনাস পেয়েছেন! 📢",
-        "মিস্ট্রি বক্স খুলে ৩০ কয়েন সারপ্রাইজ জিতেছেন! 📦"
+      const fallbackMessages = [
+        "🔥 সার্ভার আপডেট: নতুন প্রিমিয়াম PLP ও ফন্ট যুক্ত করা হয়েছে!",
+        "💎 DIAMOND VIP মেম্বাররা সব পেইড ফাইলে ২০% ছাড় পাচ্ছেন!",
+        "🎡 প্রতি ২ ঘণ্টা পর পর ফ্রি লাকি হুইল স্পিন করে কয়েন জিতুন!"
       ];
 
-      setInterval(() => {
-        const randomName = names[Math.floor(Math.random() * names.length)];
-        const randomAction = actions[Math.floor(Math.random() * actions.length)];
-        const tickerEl = document.getElementById('liveTickerScrollText');
-        if (tickerEl) {
+      let logIndex = 0;
+
+      setInterval(async () => {
+        try {
+          const logs = await safeFetch(`${DB_BASE}/download_logs.json`);
+          if (logs) {
+            const logKeys = Object.keys(logs);
+            if (logKeys.length > 0) {
+              const latestLog = logs[logKeys[logKeys.length - 1]];
+              if (latestLog && latestLog.user_name && latestLog.resource_name) {
+                tickerEl.style.opacity = '0';
+                setTimeout(() => {
+                  tickerEl.innerText = `🔥 ${latestLog.user_name} এইমাত্র "${latestLog.resource_name}" ফাইলটি ডাউনলোড করেছেন! 📥`;
+                  tickerEl.style.opacity = '1';
+                  tickerEl.style.transition = 'opacity 0.4s ease';
+                }, 300);
+                return;
+              }
+            }
+          }
+
           tickerEl.style.opacity = '0';
           setTimeout(() => {
-            tickerEl.innerText = `🔥 ${randomName} এইমাত্র ${randomAction}`;
+            tickerEl.innerText = fallbackMessages[logIndex % fallbackMessages.length];
             tickerEl.style.opacity = '1';
             tickerEl.style.transition = 'opacity 0.4s ease';
+            logIndex++;
           }, 300);
+
+        } catch (e) {
+          console.warn("Ticker fetch err:", e);
         }
-      }, 4000);
+      }, 5000);
     }
 
-    // অ্যাপ চালুর সাথে সাথেই এটি রান হবে
+    // অ্যাপ চালুর সাথে সাথেই অ্যাপ ইনিশিয়ালাইজ ও রিয়েল-টাইম টিকার রান হবে
     initApp();
-    startLiveAppTicker();
+    startRealtimeDatabaseTicker();
   </script>
 </body>
 </html>
