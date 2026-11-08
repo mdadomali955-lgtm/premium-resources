@@ -12,13 +12,16 @@
   <!-- Monetag SDK -->
   <script src="//libtl.com/sdk.js" data-zone="11750504" data-sdk="show_11750504"></script>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<style>
-  /* টপ-বার ও নিচের কনটেইনারের মাঝের গ্যাপ ফিক্স করার জন্য */
-  .top-bar {
-    margin-bottom: 14px !important;
-  }
+
+  <style>
+  /* ওপরের মার্জিন স্বাভাবিক বা কমানোর জন্য */
   .container {
-    margin-top: 10px !important;
+    margin-top: 0px !important;
+  }
+  
+  /* নিচের 'VIP অফার' সেকশনের উপরে ফাঁকা জায়গা বা মার্জিন বাড়ানোর জন্য */
+  .vip-offer, .vip-banner { /* আপনার ক্লাসের নাম অনুযায়ী এটি বসাবেন */
+    margin-top: 14px !important;
   }
 
     :root {
