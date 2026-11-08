@@ -1720,7 +1720,6 @@
   </div>
     
     <div class="container">
-<div class="container">
     
     <!-- লাইভ উইনার ও অ্যাক্টিভিটি টিকার বার -->
     <div id="liveActivityTickerBar" style="background: linear-gradient(90deg, rgba(56,189,248,0.12), rgba(251,191,36,0.12)); border: 1px solid rgba(56,189,248,0.3); border-radius: 12px; padding: 8px 12px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 800; color: #38bdf8; overflow: hidden; white-space: nowrap;">
@@ -1728,18 +1727,18 @@
       <span id="liveTickerScrollText" style="overflow: hidden; text-overflow: ellipsis;">🔥 মোশাররফ ভাই এইমাত্র বিজ্ঞাপন দেখে ২০ কয়েন আর্ন করেছেন!</span>
     </div>
 
+    <!-- নোটিশ কার্ড -->
     <div class="notice-card" id="noticeBox" onclick="openNoticeLink()">
       <span>📢</span>
       <span id="noticeText">স্বাগতম! নতুন প্রিমিয়াম PLP, XML ও ফন্ট যুক্ত করা হয়েছে।</span>
     </div>
 
-    <button class="guide-btn" id="btnMainGuide" onclick="openGuideModal()">
-      <span>💡</span><span id="txtMainGuide">কীভাবে ফাইল ডাউনলোড ও কয়েন আর্ন করবেন? (গাইড)</span>
-    </button>
+    <!-- গাইড বাটন (মাত্র ১ বার থাকবে) -->
     <button class="guide-btn" id="btnMainGuide" onclick="openGuideModal()">
       <span>💡</span><span id="txtMainGuide">কীভাবে ফাইল ডাউনলোড ও কয়েন আর্ন করবেন? (গাইড)</span>
     </button>
 
+    <!-- ৪টি আইটেমসহ লাইভ স্ট্যাটস বার -->
     <div class="live-stats-bar">
       <div class="live-stat-item">
         <span class="live-stat-val" id="statVisits">0</span>
@@ -1749,6 +1748,15 @@
         <span class="live-stat-val" id="statAdsWatched">0</span>
         <span class="live-stat-lbl" id="lblStatViews">📺 ভিউজ</span>
       </div>
+      <div class="live-stat-item">
+        <span class="live-stat-val" id="statClaims">0</span>
+        <span class="live-stat-lbl" id="lblStatDl">🎁 ডাউনলোড</span>
+      </div>
+      <div class="live-stat-item">
+        <span class="live-stat-val" id="statRefers">0</span>
+        <span class="live-stat-lbl" id="lblStatRef">🤝 রেফার</span>
+      </div>
+    </div>
       <div class="live-stat-item">
         <span class="live-stat-val" id="statClaims">0</span>
         <span class="live-stat-lbl" id="lblStatDl">🎁 ডাউনলোড</span>
