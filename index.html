@@ -7,7 +7,7 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Hind+Siliguri:wght@500;600;700&family=Galada&family=Atma:wght@600;700&family=Mina:wght@700&display=swap" rel="stylesheet">
   
   <!-- Monetag SDK -->
   <script src="//libtl.com/sdk.js" data-zone="11750504" data-sdk="show_11750504"></script>
@@ -27,6 +27,7 @@
       --gold-glow: rgba(251, 191, 36, 0.4);
       --green: #22c55e;
       --danger: #f43f5e;
+      --purple: #a855f7;
       --text-main: #ffffff;
       --text-sub: #cbd5e1;
       --text-dim: #94a3b8;
@@ -34,16 +35,31 @@
     }
 
     /* কাস্টম কালার অ্যাকসেন্ট থিমসমূহ */
-    body.accent-purple { --accent: #c084fc; --accent-glow: rgba(192, 132, 252, 0.4); }
-    body.accent-emerald { --accent: #34d399; --accent-glow: rgba(52, 211, 153, 0.4); }
-    body.accent-crimson { --accent: #fb7185; --accent-glow: rgba(251, 113, 133, 0.4); }
+    body.accent-purple {
+      --accent: #c084fc;
+      --accent-glow: rgba(192, 132, 252, 0.4);
+    }
+    body.accent-emerald {
+      --accent: #34d399;
+      --accent-glow: rgba(52, 211, 153, 0.4);
+    }
+    body.accent-crimson {
+      --accent: #fb7185;
+      --accent-glow: rgba(251, 113, 133, 0.4);
+    }
 
     /* বড় ফন্ট মোড */
-    body.large-font-mode { zoom: 1.06; }
+    body.large-font-mode {
+      zoom: 1.06;
+    }
 
     /* ১ কলাম বড় কার্ড গ্রিড মোড */
-    body.single-col-grid #resourceGrid { grid-template-columns: 1fr !important; }
-    body.single-col-grid #resourceGrid .card-thumb-wrap { height: 185px; }
+    body.single-col-grid #resourceGrid {
+      grid-template-columns: 1fr !important;
+    }
+    body.single-col-grid #resourceGrid .card-thumb-wrap {
+      height: 185px;
+    }
 
     /* নরমাল / ডে মোড (Light Mode) ভেরিয়েবল */
     body.light-mode {
@@ -60,17 +76,32 @@
       --text-dim: #64748b;
       --dock-glass: rgba(255, 255, 255, 0.96);
     }
-    body.light-mode .top-bar { background: rgba(255, 255, 255, 0.95); }
+    body.light-mode .top-bar {
+      background: rgba(255, 255, 255, 0.95);
+    }
     body.light-mode .user-name,
     body.light-mode .card-title,
     body.light-mode .notice-card,
     body.light-mode .search-box,
     body.light-mode .unlocked-item,
     body.light-mode .admin-table td,
-    body.light-mode h2, body.light-mode h3, body.light-mode h4 { color: #0f172a !important; }
-    body.light-mode .daily-card { background: linear-gradient(135deg, #e0f2fe, #fef3c7); border-color: rgba(2, 132, 199, 0.25); }
-    body.light-mode .mini-input { background: #f8fafc; color: #0f172a; border-color: rgba(15,23,42,0.2); }
-    body.light-mode .nav-item.active { color: #0284c7; }
+    body.light-mode h2,
+    body.light-mode h3,
+    body.light-mode h4 {
+      color: #0f172a !important;
+    }
+    body.light-mode .daily-card {
+      background: linear-gradient(135deg, #e0f2fe, #fef3c7);
+      border-color: rgba(2, 132, 199, 0.25);
+    }
+    body.light-mode .mini-input {
+      background: #f8fafc;
+      color: #0f172a;
+      border-color: rgba(15, 23, 42, 0.2);
+    }
+    body.light-mode .nav-item.active {
+      color: #0284c7;
+    }
 
     /* অ্যামোলেড আল্ট্রা ডার্ক মোড */
     body.amoled-mode {
@@ -80,17 +111,18 @@
       --dock-glass: #000000;
     }
 
-    /* লো-এন্ড ফোনের জন্য লাইট পারফরম্যান্স মোড */
-    body.lite-perf-mode * {
-      animation: none !important;
-      transition: none !important;
+    /* লো-এন্ড ফোনের জন্য লাইট পারফরম্যান্স মোড (স্পিনার ও লাকি হুইল কখনোই বন্ধ হবে না) */
+    body.lite-perf-mode *:not(.spinner):not(#wheelCanvas):not(.splash-logo-ring) {
       box-shadow: none !important;
     }
 
     * { 
-      box-sizing: border-box; margin: 0; padding: 0; 
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-      -webkit-tap-highlight-color: transparent; user-select: none;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0; 
+      font-family: 'Plus Jakarta Sans', 'Hind Siliguri', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
 
     html {
@@ -98,8 +130,12 @@
     }
 
     body { 
-      background: var(--bg-base); min-height: 100vh; color: var(--text-main); 
-      padding-bottom: 115px; overflow-x: hidden; position: relative;
+      background: var(--bg-base);
+      min-height: 100vh;
+      color: var(--text-main); 
+      padding-bottom: 115px;
+      overflow-x: hidden;
+      position: relative;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeSpeed;
       overscroll-behavior-y: none;
@@ -108,140 +144,338 @@
 
     /* প্রিমিয়াম ইন্ট্রো স্প্ল্যাশ স্ক্রিন স্টাইল (কম দামি ফোনেও মাখনের মতো চলবে) */
     #introSplash {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       background: radial-gradient(circle at 50% 35%, #0f172a 0%, #02040a 78%);
-      z-index: 2147483647; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 14px;
+      z-index: 2147483647;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
       transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.65s;
       will-change: opacity, transform;
       transform: translate3d(0, 0, 0);
     }
     #introSplash.hide {
-      opacity: 0; transform: scale3d(1.06, 1.06, 1); visibility: hidden; pointer-events: none;
+      opacity: 0;
+      transform: scale3d(1.06, 1.06, 1);
+      visibility: hidden;
+      pointer-events: none;
     }
     .splash-logo-ring {
-      width: 96px; height: 96px; border-radius: 30px;
+      width: 96px;
+      height: 96px;
+      border-radius: 30px;
       background: linear-gradient(135deg, rgba(56, 189, 248, 0.22), rgba(251, 191, 36, 0.22));
       border: 2px solid rgba(251, 191, 36, 0.6);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 48px; box-shadow: 0 0 40px rgba(56, 189, 248, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      box-shadow: 0 0 40px rgba(56, 189, 248, 0.4);
       animation: pulseLogo 1.6s infinite ease-in-out;
       position: relative;
       transform: translate3d(0, 0, 0);
     }
     .splash-logo-ring::after {
-      content: "👑"; position: absolute; top: -14px; right: -10px;
-      font-size: 22px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.8));
+      content: "👑";
+      position: absolute;
+      top: -14px;
+      right: -10px;
+      font-size: 22px;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.8));
     }
     @keyframes pulseLogo {
       0%, 100% { transform: scale3d(1, 1, 1); }
       50% { transform: scale3d(1.07, 1.07, 1); }
     }
     .splash-title {
-      font-size: 23px; font-weight: 900; letter-spacing: 0.5px;
+      font-size: 23px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
       background: linear-gradient(90deg, #ffffff, #38bdf8, #fbbf24);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      text-align: center; margin-top: 4px;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin-top: 4px;
     }
     .splash-sub {
-      font-size: 11.5px; color: var(--text-sub); font-weight: 800;
-      letter-spacing: 1.6px; text-transform: uppercase;
+      font-size: 11.5px;
+      color: var(--text-sub);
+      font-weight: 800;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
     }
     .splash-bar-wrap {
-      width: 200px; height: 6px; background: rgba(255,255,255,0.08);
-      border-radius: 99px; overflow: hidden; margin-top: 6px;
+      width: 200px;
+      height: 6px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 6px;
       border: 1px solid rgba(255,255,255,0.08);
     }
     .splash-bar-fill {
-      width: 0%; height: 100%;
+      width: 0%;
+      height: 100%;
       background: linear-gradient(90deg, #38bdf8, #fbbf24, #22c55e);
       border-radius: 99px;
       transition: width 2.15s cubic-bezier(0.22, 0.8, 0.32, 1);
       will-change: width;
     }
     .splash-status-txt {
-      font-size: 11px; color: var(--gold); font-weight: 800;
-      letter-spacing: 0.5px; min-height: 16px;
+      font-size: 11px;
+      color: var(--gold);
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      min-height: 16px;
+    }
+
+    /* অ্যাডমিন মেইনটেন্যান্স লক স্ক্রিন */
+    #maintenanceOverlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(2, 4, 10, 0.98);
+      z-index: 2147483645;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      text-align: center;
+      gap: 14px;
+    }
+    #maintenanceOverlay.active {
+      display: flex;
     }
 
     .apple-fluid-canvas {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      pointer-events: none; z-index: 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
       background: 
         radial-gradient(circle at 15% 20%, rgba(217, 70, 239, 0.14) 0%, transparent 50%),
         radial-gradient(circle at 85% 80%, rgba(56, 189, 248, 0.14) 0%, transparent 50%);
       transform: translate3d(0, 0, 0);
     }
 
-    #confettiCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4000; }
+    #confettiCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 4000;
+    }
 
     #toast { 
-      position: fixed; top: -120px; left: 50%; 
+      position: fixed;
+      top: -120px;
+      left: 50%; 
       transform: translateX(-50%) translate3d(0, 0, 0); 
-      background: rgba(15, 23, 42, 0.98); border: 1px solid var(--liquid-border-side);
-      color: #ffffff; padding: 12px 24px; border-radius: 99px; 
-      font-size: 13px; font-weight: 800; z-index: 2147483647; 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.8); transition: top 0.3s ease; 
-      display: flex; align-items: center; gap: 10px; max-width: 90vw; text-align: center; pointer-events: none;
+      background: rgba(15, 23, 42, 0.98);
+      border: 1px solid var(--liquid-border-side);
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 99px; 
+      font-size: 13px;
+      font-weight: 800;
+      z-index: 2147483647; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      transition: top 0.3s ease; 
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 90vw;
+      text-align: center;
+      pointer-events: none;
     }
-    #toast.show { top: 18px; }
+    #toast.show {
+      top: 18px;
+    }
 
     /* অফলাইন বা দুর্বল নেটওয়ার্ক সিগন্যাল ব্যানার */
     #netStatusBanner {
-      display: none; background: rgba(244, 63, 94, 0.92); color: #fff;
-      text-align: center; padding: 6px 12px; font-size: 11px; font-weight: 800;
-      position: sticky; top: 0; z-index: 9999;
+      display: none;
+      background: rgba(244, 63, 94, 0.92);
+      color: #fff;
+      text-align: center;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 800;
+      position: sticky;
+      top: 0;
+      z-index: 9999;
     }
 
     .loading-overlay {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(2, 4, 10, 0.95); z-index: 2147483646;
-      align-items: center; justify-content: center; flex-direction: column; gap: 20px;
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(2, 4, 10, 0.95);
+      z-index: 2147483646;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
     }
-    .loading-overlay.active { display: flex; }
+    .loading-overlay.active {
+      display: flex;
+    }
     
     .loading-card-box {
-      background: rgba(18, 24, 42, 0.98); border: 1px solid rgba(56, 189, 248, 0.5);
-      padding: 36px 28px; border-radius: 24px; display: flex; flex-direction: column; align-items: center; gap: 18px; max-width: 90vw; text-align: center;
+      background: rgba(18, 24, 42, 0.98);
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      padding: 36px 28px;
+      border-radius: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      max-width: 90vw;
+      text-align: center;
     }
 
+    /* ৫ সেকেন্ডের লোডিং স্পিনার চাকা ১০০% ঘোরার গ্যারান্টিড স্টাইল */
     .spinner {
-      width: 48px; height: 48px; border: 3px solid rgba(56, 189, 248, 0.2);
-      border-top: 3px solid var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite;
+      width: 52px;
+      height: 52px;
+      border: 4px solid rgba(56, 189, 248, 0.2);
+      border-top: 4px solid var(--accent);
+      border-right: 4px solid var(--gold);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite !important;
+      -webkit-animation: spin 0.6s linear infinite !important;
+      will-change: transform;
     }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes spin {
+      0% { transform: rotate(0deg); -webkit-transform: rotate(0deg); }
+      100% { transform: rotate(360deg); -webkit-transform: rotate(360deg); }
+    }
+    @-webkit-keyframes spin {
+      0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+      100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
+    }
 
-    .claim-success-modal, .guide-modal, .settings-modal {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(2, 4, 10, 0.9); z-index: 2000000; align-items: center; justify-content: center; padding: 20px;
+    .claim-success-modal,
+    .guide-modal,
+    .settings-modal,
+    .event-popup-modal,
+    .levelup-modal,
+    .pin-vault-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(2, 4, 10, 0.9);
+      z-index: 2000000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
-    .claim-success-modal.active, .guide-modal.active, .settings-modal.active { display: flex; }
-    .claim-success-box, .guide-box, .settings-box {
-      background: var(--liquid-glass-card); border: 1px solid var(--accent);
-      padding: 24px 20px; border-radius: 24px; text-align: center; max-width: 390px; width: 100%;
-      max-height: 86vh; overflow-y: auto; color: var(--text-main);
+    .claim-success-modal.active,
+    .guide-modal.active,
+    .settings-modal.active,
+    .event-popup-modal.active,
+    .levelup-modal.active,
+    .pin-vault-modal.active {
+      display: flex;
+    }
+    .claim-success-box,
+    .guide-box,
+    .settings-box,
+    .event-popup-box,
+    .levelup-box,
+    .pin-vault-box {
+      background: var(--liquid-glass-card);
+      border: 1px solid var(--accent);
+      padding: 24px 20px;
+      border-radius: 24px;
+      text-align: center;
+      max-width: 390px;
+      width: 100%;
+      max-height: 86vh;
+      overflow-y: auto;
+      color: var(--text-main);
+      position: relative;
+    }
+
+    .cert-frame {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(56, 189, 248, 0.12));
+      border: 2px dashed var(--gold);
+      border-radius: 18px;
+      padding: 16px;
+      margin: 12px 0;
     }
 
     .top-bar { 
-      display: flex; justify-content: space-between; align-items: center; 
-      padding: 12px 16px; background: rgba(8, 11, 20, 0.94); 
-      border-bottom: 1px solid var(--liquid-border-bot); position: sticky; top: 0; z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center; 
+      padding: 12px 16px;
+      background: rgba(8, 11, 20, 0.94); 
+      border-bottom: 1px solid var(--liquid-border-bot);
+      position: sticky;
+      top: 0;
+      z-index: 100;
       transform: translate3d(0, 0, 0);
     }
-    .user-info { display: flex; align-items: center; gap: 10px; }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
     
     /* প্রোফাইল পিকচার এবং তার ঠিক নিচে ছোট সেটিংস বাটন কলাম */
     .avatar-settings-col {
-      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
     }
     .user-avatar-wrap { 
-      width: 42px; height: 42px; border-radius: 50%; overflow: hidden; 
-      border: 1.5px solid rgba(56, 189, 248, 0.5); background: linear-gradient(135deg, #a855f7, #38bdf8); 
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-      position: relative; box-shadow: 0 0 12px rgba(56, 189, 248, 0.25); cursor: pointer;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      overflow: hidden; 
+      border: 1.5px solid rgba(56, 189, 248, 0.5);
+      background: linear-gradient(135deg, #a855f7, #38bdf8); 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+      cursor: pointer;
     }
-    .user-avatar-wrap img { width: 100%; height: 100%; object-fit: cover; display: none; }
-    .user-avatar-text { font-size: 16px; font-weight: 900; color: #fff; }
+    .user-avatar-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+    .user-avatar-text {
+      font-size: 16px;
+      font-weight: 900;
+      color: #fff;
+    }
 
     /* প্রোফাইল পিকচারের ঠিক নিচে ছোট সেটিংস বাটন */
     .under-avatar-settings-btn {
@@ -259,121 +493,320 @@
       white-space: nowrap;
       line-height: 1.1;
     }
-    .under-avatar-settings-btn:active { transform: scale(0.92); }
+    .under-avatar-settings-btn:active {
+      transform: scale(0.92);
+    }
 
-    .user-meta { display: flex; flex-direction: column; cursor: pointer; }
-    .user-name { font-size: 14px; font-weight: 800; color: #ffffff; }
-    .user-badge { font-size: 10px; color: var(--gold); font-weight: 800; text-transform: uppercase; }
+    .user-meta {
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+    }
+    .user-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+    .user-badge {
+      font-size: 10px;
+      color: var(--gold);
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .vip-pass-active-tag {
+      font-size: 9px;
+      color: #4ade80;
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      padding: 1px 6px;
+      border-radius: 99px;
+      font-weight: 900;
+      display: none;
+      margin-top: 2px;
+      width: fit-content;
+    }
     
-    .top-right-actions { display: flex; align-items: center; gap: 8px; }
+    .top-right-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
     .balance-pill { 
-      background: rgba(251, 191, 36, 0.12); border: 1px solid rgba(251, 191, 36, 0.4); 
-      padding: 6px 12px; border-radius: 99px; display: flex; align-items: center; gap: 5px; 
-      font-weight: 900; color: var(--gold); font-size: 13.5px; cursor: pointer;
+      background: rgba(251, 191, 36, 0.12);
+      border: 1px solid rgba(251, 191, 36, 0.4); 
+      padding: 6px 12px;
+      border-radius: 99px;
+      display: flex;
+      align-items: center;
+      gap: 5px; 
+      font-weight: 900;
+      color: var(--gold);
+      font-size: 13.5px;
+      cursor: pointer;
     }
 
     /* কর্নারে ছোট প্রিমিয়াম সেটিংস আইকন বাটন */
     .corner-settings-btn {
-      width: 34px; height: 34px; border-radius: 50%;
-      background: rgba(56, 189, 248, 0.14); border: 1px solid rgba(56, 189, 248, 0.4);
-      color: var(--accent); font-size: 16px; display: flex; align-items: center;
-      justify-content: center; cursor: pointer; flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(56, 189, 248, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: var(--accent);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
     }
-    .corner-settings-btn:active { transform: scale(0.9) rotate(45deg); }
+    .corner-settings-btn:active {
+      transform: scale(0.9) rotate(45deg);
+    }
 
     .setting-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 11px 12px; background: rgba(255,255,255,0.04);
-      border: 1px solid var(--liquid-border-side); border-radius: 14px;
-      margin-bottom: 8px; text-align: left; gap: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--liquid-border-side);
+      border-radius: 14px;
+      margin-bottom: 8px;
+      text-align: left;
+      gap: 8px;
     }
-    .setting-opt-group { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
+    .setting-opt-group {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
     .setting-chip {
-      padding: 5px 9px; border-radius: 9px; font-size: 10.5px; font-weight: 800;
-      border: 1px solid var(--liquid-border-side); background: rgba(0,0,0,0.3);
-      color: var(--text-sub); cursor: pointer;
+      padding: 5px 9px;
+      border-radius: 9px;
+      font-size: 10.5px;
+      font-weight: 800;
+      border: 1px solid var(--liquid-border-side);
+      background: rgba(0,0,0,0.3);
+      color: var(--text-sub);
+      cursor: pointer;
     }
     .setting-chip.active {
       background: linear-gradient(135deg, var(--accent), #0284c7);
-      color: #020617; border-color: transparent;
+      color: #020617;
+      border-color: transparent;
     }
 
     /* লাইভ উইনার অ্যাক্টিভিটি টিকার */
     .live-ticker-wrap {
-      background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25);
-      border-radius: 12px; padding: 7px 12px; margin-bottom: 12px;
-      display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 800;
-      color: var(--accent); overflow: hidden; white-space: nowrap;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 12px;
+      padding: 7px 12px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent);
+      overflow: hidden;
+      white-space: nowrap;
     }
     .ticker-dot {
-      width: 7px; height: 7px; border-radius: 50%; background: #22c55e;
-      box-shadow: 0 0 8px #22c55e; flex-shrink: 0;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+      flex-shrink: 0;
     }
 
     /* ফ্ল্যাশ ডিল / হ্যাপি আওয়ার ব্যানার */
     .flash-deal-bar {
       background: linear-gradient(90deg, rgba(244, 63, 94, 0.2), rgba(251, 191, 36, 0.2));
-      border: 1px solid rgba(251, 191, 36, 0.45); border-radius: 16px;
-      padding: 10px 14px; margin-bottom: 14px; display: flex;
-      justify-content: space-between; align-items: center; font-size: 11.5px; font-weight: 800;
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      border-radius: 16px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      font-weight: 800;
     }
 
     /* ৭ দিনের স্ট্রিক বার */
     .streak-days-grid {
-      display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      margin-top: 10px;
     }
     .streak-day-box {
-      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 10px; padding: 6px 2px; text-align: center; font-size: 9.5px; font-weight: 800;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 6px 2px;
+      text-align: center;
+      font-size: 9.5px;
+      font-weight: 800;
     }
     .streak-day-box.active {
-      background: rgba(251, 191, 36, 0.2); border-color: var(--gold); color: var(--gold);
+      background: rgba(251, 191, 36, 0.2);
+      border-color: var(--gold);
+      color: var(--gold);
     }
 
     /* ইন-অ্যাপ লাইভ ফন্ট টেস্টার বক্স */
     .font-tester-bar {
-      display: none; background: var(--liquid-glass); border: 1px solid var(--accent);
-      border-radius: 16px; padding: 12px; margin-bottom: 14px;
+      display: none;
+      background: var(--liquid-glass);
+      border: 1px solid var(--accent);
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 14px;
     }
-    .font-tester-bar.show { display: block; }
+    .font-tester-bar.show {
+      display: block;
+    }
+    .font-style-selector {
+      display: flex;
+      gap: 6px;
+      margin: 8px 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .font-style-selector::-webkit-scrollbar {
+      display: none;
+    }
     .font-preview-output {
-      margin-top: 8px; padding: 10px; border-radius: 10px;
-      background: rgba(0,0,0,0.4); font-size: 18px; font-weight: 800;
-      color: var(--gold); text-align: center; min-height: 42px;
+      margin-top: 8px;
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(0,0,0,0.4);
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--gold);
+      text-align: center;
+      min-height: 42px;
     }
 
-    .container { padding: 16px; position: relative; z-index: 1; }
+    /* কম্বো বান্ডেল ও ডিজাইন ব্যাটল কার্ড স্টাইল */
+    .bundle-pack-card {
+      background: linear-gradient(135deg, rgba(18, 24, 42, 0.95), rgba(30, 27, 75, 0.9));
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
+      text-align: left;
+    }
+    .bundle-discount-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: linear-gradient(135deg, #f43f5e, #e11d48);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 99px;
+    }
+    .battle-entry-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--liquid-border-side);
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .container {
+      padding: 16px;
+      position: relative;
+      z-index: 1;
+    }
     
     .notice-card { 
-      background: var(--liquid-glass); border: 1px solid var(--liquid-border-side); 
-      border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; 
-      margin-bottom: 12px; font-size: 12px; color: #ffffff; font-weight: 600; cursor: pointer;
+      background: var(--liquid-glass);
+      border: 1px solid var(--liquid-border-side); 
+      border-radius: 16px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px; 
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: #ffffff;
+      font-weight: 600;
+      cursor: pointer;
     }
 
     .live-stats-bar { 
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; 
-      background: var(--liquid-glass); border: 1px solid var(--liquid-border-side); 
-      border-radius: 20px; padding: 14px 6px; margin-bottom: 16px; text-align: center; 
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px; 
+      background: var(--liquid-glass);
+      border: 1px solid var(--liquid-border-side); 
+      border-radius: 20px;
+      padding: 14px 6px;
+      margin-bottom: 16px;
+      text-align: center; 
     }
-    .live-stat-item { display: flex; flex-direction: column; gap: 3px; }
-    .live-stat-val { font-size: 15px; font-weight: 900; color: var(--accent); }
-    .live-stat-lbl { font-size: 9px; color: var(--text-sub); font-weight: 800; text-transform: uppercase; }
+    .live-stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .live-stat-val {
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--accent);
+    }
+    .live-stat-lbl {
+      font-size: 9px;
+      color: var(--text-sub);
+      font-weight: 800;
+      text-transform: uppercase;
+    }
 
     .daily-card { 
       background: linear-gradient(135deg, rgba(25, 33, 56, 0.85), rgba(15, 23, 42, 0.9)); 
-      border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 20px; 
-      padding: 16px 18px; margin-bottom: 14px; 
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px; 
+      padding: 16px 18px;
+      margin-bottom: 14px; 
     }
     .daily-card-top {
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
     .daily-btn { 
-      background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #020617; border: none; 
-      padding: 10px 18px; border-radius: 12px; font-weight: 900; font-size: 12px; cursor: pointer; 
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #020617;
+      border: none; 
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-weight: 900;
+      font-size: 12px;
+      cursor: pointer; 
     }
-    .daily-btn:active { transform: scale(0.95); }
-    .daily-btn:disabled { background: #334155 !important; color: #94a3b8 !important; cursor: not-allowed; }
+    .daily-btn:active {
+      transform: scale(0.95);
+    }
+    .daily-btn:disabled {
+      background: #334155 !important;
+      color: #94a3b8 !important;
+      cursor: not-allowed;
+    }
 
     .guide-btn {
       width: 100%;
@@ -391,139 +824,483 @@
       justify-content: center;
       gap: 8px;
     }
-    .guide-btn:active { transform: scale(0.97); }
+    .guide-btn:active {
+      transform: scale(0.97);
+    }
 
     .search-box { 
-      width: 100%; padding: 14px 18px; border-radius: 16px; 
-      border: 1px solid var(--liquid-border-side); background: var(--liquid-glass); 
-      color: #ffffff; font-size: 13px; font-weight: 600; margin-bottom: 10px; outline: none; 
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 16px; 
+      border: 1px solid var(--liquid-border-side);
+      background: var(--liquid-glass); 
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      outline: none; 
     }
-    .search-box::placeholder { color: var(--text-dim); }
-    .search-box:focus { border-color: var(--accent); }
+    .search-box::placeholder {
+      color: var(--text-dim);
+    }
+    .search-box:focus {
+      border-color: var(--accent);
+    }
 
     /* কুইক সর্ট ফিল্টার বার */
     .filter-pills {
-      display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 2px;
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      overflow-x: auto;
+      padding-bottom: 2px;
       scrollbar-width: none;
     }
-    .filter-pills::-webkit-scrollbar { display: none; }
+    .filter-pills::-webkit-scrollbar {
+      display: none;
+    }
     .filter-pill {
-      padding: 6px 12px; border-radius: 99px; font-size: 11px; font-weight: 800;
-      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12);
-      color: var(--text-sub); cursor: pointer; white-space: nowrap;
+      padding: 6px 12px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 800;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-sub);
+      cursor: pointer;
+      white-space: nowrap;
     }
     .filter-pill.active {
-      background: rgba(251, 191, 36, 0.18); border-color: var(--gold); color: var(--gold);
+      background: rgba(251, 191, 36, 0.18);
+      border-color: var(--gold);
+      color: var(--gold);
     }
     
-    .tabs { display: flex; gap: 6px; margin-bottom: 16px; overflow-x: auto; scrollbar-width: none; }
-    .tabs::-webkit-scrollbar { display: none; }
-    .tab-btn { 
-      flex: 1; padding: 11px 8px; border: 1px solid var(--liquid-border-side);
-      border-radius: 14px; background: var(--liquid-glass); color: var(--text-sub); 
-      font-weight: 800; font-size: 11.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap;
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 16px;
     }
-    .tab-btn.active { background: rgba(56, 189, 248, 0.2); color: #ffffff; border-color: var(--accent); }
+    .tab-btn { 
+      padding: 11px 8px;
+      border: 1px solid var(--liquid-border-side);
+      border-radius: 14px;
+      background: var(--liquid-glass);
+      color: var(--text-sub); 
+      font-weight: 800;
+      font-size: 11.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .tab-btn.active {
+      background: rgba(56, 189, 248, 0.2);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
 
-    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
     
     /* কম দামি ফোনের জন্য GPU অ্যাক্সিলারেশন ও কনটেন্ট ভিজিবিলিটি */
     .card { 
-      background: var(--liquid-glass-card); border-radius: 20px; overflow: hidden; 
-      display: flex; flex-direction: column; border: 1px solid var(--liquid-border-side);
-      position: relative; contain: layout style paint;
-      content-visibility: auto; contain-intrinsic-size: 230px;
+      background: var(--liquid-glass-card);
+      border-radius: 20px;
+      overflow: hidden; 
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--liquid-border-side);
+      position: relative;
+      contain: layout style paint;
+      content-visibility: auto;
+      contain-intrinsic-size: 230px;
       transform: translate3d(0, 0, 0);
     }
-    .card:active { transform: scale(0.98); }
-    .card-thumb-wrap { position: relative; width: 100%; height: 130px; overflow: hidden; background: #0b101f; }
-    .card img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; display: block; }
+    .card:active {
+      transform: scale(0.98);
+    }
+    .card-thumb-wrap {
+      position: relative;
+      width: 100%;
+      height: 130px;
+      overflow: hidden;
+      background: #0b101f;
+    }
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      cursor: pointer;
+      display: block;
+    }
 
-    .card.xml-fullwidth-card { grid-column: span 2; border-radius: 24px; contain-intrinsic-size: 300px; }
-    .card.xml-fullwidth-card .card-thumb-wrap { height: 210px; max-height: 450px; background: #000; display: flex; align-items: center; justify-content: center; }
-    .card.xml-fullwidth-card .card-body { padding: 14px 16px; }
-    .card.xml-fullwidth-card .card-title { font-size: 14px; -webkit-line-clamp: 2; }
+    .card.xml-fullwidth-card {
+      grid-column: span 2;
+      border-radius: 24px;
+      contain-intrinsic-size: 300px;
+    }
+    .card.xml-fullwidth-card .card-thumb-wrap {
+      height: 210px;
+      max-height: 450px;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card.xml-fullwidth-card .card-body {
+      padding: 14px 16px;
+    }
+    .card.xml-fullwidth-card .card-title {
+      font-size: 14px;
+      -webkit-line-clamp: 2;
+    }
 
     .video-play-indicator {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-      width: 48px; height: 48px; background: rgba(0, 0, 0, 0.75); border-radius: 50%; 
-      display: flex; align-items: center; justify-content: center; color: #38bdf8; font-size: 20px; pointer-events: none; border: 1.5px solid rgba(56, 189, 248, 0.8);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%); 
+      width: 48px;
+      height: 48px;
+      background: rgba(0, 0, 0, 0.75);
+      border-radius: 50%; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #38bdf8;
+      font-size: 20px;
+      pointer-events: none;
+      border: 1.5px solid rgba(56, 189, 248, 0.8);
       box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
     }
 
     .type-pill {
-      position: absolute; top: 8px; left: 8px; padding: 4px 10px; 
-      border-radius: 99px; font-size: 9.5px; font-weight: 900; text-transform: uppercase; 
-      background: rgba(0, 0, 0, 0.8); border: 1px solid rgba(255,255,255,0.25); color: #fff; z-index: 2;
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      padding: 4px 10px; 
+      border-radius: 99px;
+      font-size: 9.5px;
+      font-weight: 900;
+      text-transform: uppercase; 
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff;
+      z-index: 2;
     }
 
     .download-count-pill {
-      position: absolute; top: 8px; right: 8px; padding: 4px 8px; 
-      border-radius: 99px; font-size: 10px; font-weight: 900; 
-      background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(56, 189, 248, 0.4); 
-      color: #38bdf8; z-index: 2; display: flex; align-items: center; gap: 3px;
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      padding: 4px 8px; 
+      border-radius: 99px;
+      font-size: 10px;
+      font-weight: 900; 
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(56, 189, 248, 0.4); 
+      color: #38bdf8;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 3px;
     }
 
     .fav-heart-btn {
-      position: absolute; bottom: 8px; right: 8px; width: 28px; height: 28px;
-      border-radius: 50%; background: rgba(15, 23, 42, 0.88);
-      border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center;
-      justify-content: center; font-size: 13px; cursor: pointer; z-index: 3;
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      cursor: pointer;
+      z-index: 3;
     }
-    .fav-heart-btn:active { transform: scale(1.2); }
+    .fav-heart-btn:active {
+      transform: scale(1.2);
+    }
 
     .report-broken-btn {
-      position: absolute; bottom: 8px; left: 8px; padding: 3px 7px;
-      border-radius: 99px; background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(244, 63, 94, 0.35); color: #fda4af;
-      font-size: 9px; font-weight: 800; cursor: pointer; z-index: 3;
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      padding: 3px 7px;
+      border-radius: 99px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(244, 63, 94, 0.35);
+      color: #fda4af;
+      font-size: 9px;
+      font-weight: 800;
+      cursor: pointer;
+      z-index: 3;
     }
 
-    .card-body { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; gap: 8px; }
-    .card-title { font-size: 13px; font-weight: 800; line-height: 1.35; color: #ffffff; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .card-rating-row { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: var(--gold); font-weight: 800; }
-    .card-meta { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-    .price-tag { font-size: 13.5px; color: var(--gold); font-weight: 900; white-space: nowrap; }
+    .card-body {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.35;
+      color: #ffffff;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-rating-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      color: var(--gold);
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .zip-pass-badge {
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      color: #4ade80;
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .price-tag {
+      font-size: 13.5px;
+      color: var(--gold);
+      font-weight: 900;
+      white-space: nowrap;
+    }
     .btn-claim { 
-      background: linear-gradient(135deg, var(--accent), #0284c7); color: #030712; border: none; 
-      padding: 10px 14px; border-radius: 12px; font-size: 12px; font-weight: 900; cursor: pointer; width: 100%; text-align: center;
+      background: linear-gradient(135deg, var(--accent), #0284c7);
+      color: #030712;
+      border: none; 
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
     }
-    .btn-claim:active { transform: scale(0.95); }
+    .btn-claim:active {
+      transform: scale(0.95);
+    }
 
-    .wheel-container { position: relative; width: 200px; height: 200px; margin: 14px auto; display: flex; align-items: center; justify-content: center; }
-    #wheelCanvas { width: 100%; height: 100%; border-radius: 50%; transition: transform 3.5s cubic-bezier(0.15, 0.9, 0.25, 1); }
-    .wheel-arrow { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 18px solid var(--danger); z-index: 20; }
+    /* লাকি হুইল স্পিন ক্যানভাস (১০০% গ্যারান্টিড ঘোরার স্টাইল) */
+    .wheel-container {
+      position: relative;
+      width: 205px;
+      height: 205px;
+      margin: 14px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #wheelCanvas {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      display: block;
+      will-change: transform;
+      border: 3px solid rgba(251, 191, 36, 0.6);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+    }
+    .wheel-arrow {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 11px solid transparent;
+      border-right: 11px solid transparent;
+      border-top: 20px solid var(--danger);
+      z-index: 20;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+    }
 
-    .scratch-container { position: relative; width: 100%; height: 110px; margin: 10px auto; border-radius: 16px; overflow: hidden; border: 1px solid rgba(251, 191, 36, 0.5); }
-    .scratch-reward { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0a0f1d; font-size: 16px; font-weight: 900; color: var(--gold); }
-    #scratchCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer; }
+    .scratch-container {
+      position: relative;
+      width: 100%;
+      height: 110px;
+      margin: 10px auto;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(251, 191, 36, 0.5);
+    }
+    .scratch-reward {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #0a0f1d;
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--gold);
+    }
+    #scratchCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
 
-    .view-page { display: none; }
-    .view-page.active { display: block; }
+    .view-page {
+      display: none;
+    }
+    .view-page.active {
+      display: block;
+    }
 
     .stat-card { 
-      background: var(--liquid-glass); border: 1px solid var(--liquid-border-side); 
-      padding: 20px; border-radius: 20px; margin-bottom: 16px; text-align: center; contain: layout style paint;
+      background: var(--liquid-glass);
+      border: 1px solid var(--liquid-border-side); 
+      padding: 20px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      text-align: center;
     }
-    .stat-number { font-size: 36px; font-weight: 900; color: var(--gold); margin: 6px 0; }
-    .refer-box { background: rgba(0, 0, 0, 0.5); border: 1px dashed rgba(56, 189, 248, 0.5); padding: 12px; border-radius: 14px; font-size: 12px; font-weight: 700; word-break: break-all; margin: 12px 0; color: #38bdf8; }
+    .stat-number {
+      font-size: 36px;
+      font-weight: 900;
+      color: var(--gold);
+      margin: 6px 0;
+    }
+    .refer-box {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px dashed rgba(56, 189, 248, 0.5);
+      padding: 12px;
+      border-radius: 14px;
+      font-size: 12px;
+      font-weight: 700;
+      word-break: break-all;
+      margin: 12px 0;
+      color: #38bdf8;
+    }
     
     .action-btn { 
-      width: 100%; background: linear-gradient(135deg, var(--accent), #0284c7); 
-      color: #030712; padding: 14px; font-size: 14px; font-weight: 900; border: none; border-radius: 16px; cursor: pointer; text-align: center;
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), #0284c7); 
+      color: #030712;
+      padding: 14px;
+      font-size: 14px;
+      font-weight: 900;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      text-align: center;
     }
-    .action-btn:active { transform: scale(0.97); }
-    .action-btn:disabled { background: #334155 !important; color: #94a3b8 !important; cursor: not-allowed; }
+    .action-btn:active {
+      transform: scale(0.97);
+    }
+    .action-btn:disabled {
+      background: #334155 !important;
+      color: #94a3b8 !important;
+      cursor: not-allowed;
+    }
 
-    .task-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; margin-bottom: 10px; }
-    .unlocked-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; text-align: left; }
-    .unlocked-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; font-size: 12px; color: #ffffff; font-weight: 700; }
+    .task-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 16px;
+      margin-bottom: 10px;
+    }
+    .unlocked-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+      text-align: left;
+    }
+    .unlocked-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      font-size: 12px;
+      color: #ffffff;
+      font-weight: 700;
+    }
 
-    .admin-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 11.5px; text-align: left; }
-    .admin-table th { background: rgba(255, 255, 255, 0.06); color: var(--accent); padding: 10px 6px; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 800; white-space: nowrap; }
-    .admin-table td { padding: 10px 6px; border-bottom: 1px solid rgba(255,255,255,0.04); color: #ffffff; font-weight: 600; }
-    .badge-count { background: rgba(34, 197, 94, 0.18); color: #4ade80; padding: 3px 6px; border-radius: 8px; font-weight: 900; }
-    .badge-rev { background: rgba(251, 191, 36, 0.18); color: var(--gold); padding: 3px 6px; border-radius: 8px; font-weight: 900; }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 11.5px;
+      text-align: left;
+    }
+    .admin-table th {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--accent);
+      padding: 10px 6px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .admin-table td {
+      padding: 10px 6px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: #ffffff;
+      font-weight: 600;
+    }
+    .badge-count {
+      background: rgba(34, 197, 94, 0.18);
+      color: #4ade80;
+      padding: 3px 6px;
+      border-radius: 8px;
+      font-weight: 900;
+    }
+    .badge-rev {
+      background: rgba(251, 191, 36, 0.18);
+      color: var(--gold);
+      padding: 3px 6px;
+      border-radius: 8px;
+      font-weight: 900;
+    }
 
     /* ইউজার আইডি কপি বাটন ও সাবমিশন ডাউনলোড বাটনের স্টাইল */
     .copy-uid-btn {
@@ -540,7 +1317,10 @@
       gap: 3px;
       margin-top: 3px;
     }
-    .copy-uid-btn:active { transform: scale(0.92); background: rgba(56, 189, 248, 0.3); }
+    .copy-uid-btn:active {
+      transform: scale(0.92);
+      background: rgba(56, 189, 248, 0.3);
+    }
 
     .sub-dl-btn {
       background: linear-gradient(135deg, #22c55e, #16a34a);
@@ -553,7 +1333,9 @@
       cursor: pointer;
       white-space: nowrap;
     }
-    .sub-dl-btn:active { transform: scale(0.93); }
+    .sub-dl-btn:active {
+      transform: scale(0.93);
+    }
 
     .sub-accept-btn {
       background: linear-gradient(135deg, #fbbf24, #d97706);
@@ -569,44 +1351,120 @@
     }
 
     .mini-input {
-      width: 100%; padding: 11px 14px; border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.18); background: rgba(0,0,0,0.45);
-      color: #fff; font-size: 12.5px; font-weight: 700; outline: none; margin-bottom: 8px;
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.45);
+      color: #fff;
+      font-size: 12.5px;
+      font-weight: 700;
+      outline: none;
+      margin-bottom: 8px;
     }
-    .mini-input:focus { border-color: var(--accent); }
+    .mini-input:focus {
+      border-color: var(--accent);
+    }
 
     .color-swatch-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 8px;
     }
     .color-swatch-item {
-      height: 44px; border-radius: 12px; display: flex; align-items: flex-end;
-      justify-content: center; padding-bottom: 4px; font-size: 9px; font-weight: 900;
-      color: #fff; cursor: pointer; border: 1px solid rgba(255,255,255,0.2);
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 4px;
+      font-size: 9px;
+      font-weight: 900;
+      color: #fff;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.2);
       text-shadow: 0 1px 3px rgba(0,0,0,0.9);
     }
 
     .preview-modal { 
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-      background: rgba(0,0,0,0.92); z-index: 2500; align-items: center; justify-content: center; padding: 16px; 
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%; 
+      background: rgba(0,0,0,0.94);
+      z-index: 2500;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      gap: 12px;
     }
-    .preview-modal.active { display: flex; }
-    .preview-modal img, .preview-modal video { 
-      max-width: 100%; max-height: 80vh; border-radius: 16px; border: 1px solid rgba(255,255,255,0.2); background: #000;
+    .preview-modal.active {
+      display: flex;
     }
-    .preview-close { position: absolute; top: 16px; right: 20px; font-size: 32px; color: #fff; cursor: pointer; z-index: 2600; }
+    .preview-modal img,
+    .preview-modal video { 
+      max-width: 100%;
+      max-height: 75vh;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: #000;
+      transition: transform 0.25s ease, filter 0.25s ease;
+    }
+    .preview-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      font-size: 32px;
+      color: #fff;
+      cursor: pointer;
+      z-index: 2600;
+    }
+    .preview-zoom-controls {
+      display: flex;
+      gap: 8px;
+      z-index: 2600;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
 
     .bottom-nav { 
-      position: fixed; bottom: 0; left: 0; right: 0; height: 72px; 
-      background: var(--dock-glass); border-top: 1px solid var(--liquid-border-bot); 
-      display: flex; justify-content: space-around; align-items: center; z-index: 200;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 72px; 
+      background: var(--dock-glass);
+      border-top: 1px solid var(--liquid-border-bot); 
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 200;
       transform: translate3d(0, 0, 0);
     }
     .nav-item { 
-      display: flex; flex-direction: column; align-items: center; justify-content: center; 
-      gap: 4px; color: var(--text-dim); font-size: 10.5px; font-weight: 800; border: none; background: transparent; flex: 1; cursor: pointer; 
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center; 
+      gap: 4px;
+      color: var(--text-dim);
+      font-size: 10.5px;
+      font-weight: 800;
+      border: none;
+      background: transparent;
+      flex: 1;
+      cursor: pointer; 
     }
-    .nav-item.active { color: #ffffff; }
-    .nav-icon { font-size: 20px; }
+    .nav-item.active {
+      color: #ffffff;
+    }
+    .nav-icon {
+      font-size: 20px;
+    }
   </style>
 </head>
 <body>
@@ -622,15 +1480,26 @@
     <div class="splash-status-txt" id="splashStatusText">প্রিমিয়াম সার্ভার কানেক্ট হচ্ছে... 0%</div>
   </div>
 
+  <!-- মেইনটেন্যান্স মোড ওভারলে (শুধুমাত্র সাধারণ ইউজারদের জন্য, অ্যাডমিন বাইপাস করতে পারবে) -->
+  <div id="maintenanceOverlay">
+    <div style="font-size: 54px;">🛠️</div>
+    <h2 style="font-size: 20px; font-weight: 900; color: var(--gold);">অ্যাপ আপগ্রেড ও মেইনটেন্যান্স চলছে!</h2>
+    <p style="font-size: 13px; color: var(--text-sub); max-width: 320px; line-height: 1.6;" id="maintenanceMsgText">
+      নতুন প্রিমিয়াম রিসোর্স ও সার্ভার আপডেটের কাজ চলছে। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।
+    </p>
+    <button class="action-btn" onclick="openSupport()" style="max-width: 240px; margin-top: 10px;">💬 সাপোর্ট গ্রুপে যুক্ত হোন</button>
+  </div>
+
   <div id="netStatusBanner">⚠️ ইন্টারনেট সংযোগ দুর্বল! ক্যাশ মেমোরি থেকে চলছে...</div>
 
   <div class="apple-fluid-canvas"></div>
   <canvas id="confettiCanvas"></canvas>
   <div id="toast"><span id="toastIcon">⭐</span><span id="toastMsg">বার্তা</span></div>
 
+  <!-- ৫ সেকেন্ডের লোডিং ওভারলে (এখন চাকা ১০০% ঘুরবে) -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-card-box">
-      <div class="spinner"></div>
+      <div class="spinner" id="adLoadingSpinnerWheel"></div>
       <div style="font-size: 15px; font-weight: 900; color: #fff;">দয়া করে ৫ সেকেন্ড অপেক্ষা করুন</div>
       <div style="font-size: 12.5px; color: var(--accent); font-weight: 900;" id="loadingCountdownText">আপনার ফাইল প্রস্তুত করা হচ্ছে...</div>
       <div style="font-size: 10.5px; color: var(--text-sub);">বিজ্ঞাপন শেষে ফাইল সরাসরি আপনার টেলিগ্রাম ইনবক্সে পৌঁছে যাবে 🚀</div>
@@ -645,6 +1514,50 @@
         ফাইলটি সরাসরি আপনার <b>টেলিগ্রাম ইনবক্সে</b> পাঠিয়ে দেওয়া হয়েছে! 📥<br>ইনবক্স চেক করুন।
       </p>
       <button class="action-btn" onclick="closeClaimModal()" style="background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff;">ঠিক আছে 👍</button>
+    </div>
+  </div>
+
+  <!-- অ্যাডমিন প্রমোশনাল পপ-আপ ইভেন্ট ব্যানার মোডাল -->
+  <div class="event-popup-modal" id="eventPopupModal" onclick="closeEventPopup()">
+    <div class="event-popup-box" onclick="event.stopPropagation()">
+      <div style="font-size: 36px; margin-bottom: 6px;">🔥</div>
+      <h3 style="font-size: 17px; font-weight: 900; color: var(--gold); margin-bottom: 8px;" id="eventPopupTitle">স্পেশাল ধামাকা অফার!</h3>
+      <img id="eventPopupImg" src="" alt="Event Banner" style="width: 100%; max-height: 180px; object-fit: cover; border-radius: 14px; margin-bottom: 10px; display: none;">
+      <p style="font-size: 12.5px; color: var(--text-sub); line-height: 1.5; margin-bottom: 16px;" id="eventPopupDesc">
+        আজকের স্পেশাল ইভেন্টে অংশ নিয়ে জিতে নিন ফ্রি কয়েন ও প্রিমিয়াম PLP ফাইল!
+      </p>
+      <button class="action-btn" onclick="closeEventPopup()">দারুণ, বুঝতে পেরেছি 🚀</button>
+    </div>
+  </div>
+
+  <!-- লেভেল-আপ ও মাইলস্টোন সার্টিফিকেট মোডাল -->
+  <div class="levelup-modal" id="levelupModal" onclick="closeLevelupModal()">
+    <div class="levelup-box" onclick="event.stopPropagation()">
+      <div style="font-size: 44px;">🏆</div>
+      <h3 style="font-size: 18px; font-weight: 900; color: var(--gold);">অভিনন্দন! নতুন মাইলস্টোন অর্জন!</h3>
+      <div class="cert-frame">
+        <div style="font-size: 10px; color: var(--accent); font-weight: 900; text-transform: uppercase;">OFFICIAL VIP ACHIEVEMENT</div>
+        <div style="font-size: 16px; font-weight: 900; color: #fff; margin: 6px 0;" id="certUserName">VIP Designer</div>
+        <div style="font-size: 12px; color: var(--gold); font-weight: 800;" id="certBadgeTitle">👑 MASTER UNLOCKER</div>
+      </div>
+      <p style="font-size: 12px; color: var(--text-sub); margin-bottom: 14px;" id="certRewardText">আপনি সফলভাবে মাইলস্টোন পূর্ণ করে পেয়েছেন বোনাস কয়েন!</p>
+      <button class="action-btn" onclick="closeLevelupModal()">ধন্যবাদ 🎉</button>
+    </div>
+  </div>
+
+  <!-- সিক্রেট ভিআইপি পিন ভল্ট মোডাল (Secret PIN Protected Vault) -->
+  <div class="pin-vault-modal" id="pinVaultModal" onclick="closePinVaultModal()">
+    <div class="pin-vault-box" onclick="event.stopPropagation()">
+      <div style="font-size: 38px; margin-bottom: 6px;">🔐</div>
+      <h3 style="font-size: 16px; font-weight: 900; color: var(--gold); margin-bottom: 6px;">সিক্রেট ভিআইপি ভল্ট (Secret Vault)</h3>
+      <p style="font-size: 11.5px; color: var(--text-sub); margin-bottom: 12px;">
+        অফিশিয়াল চ্যানেল বা ভিডিওতে দেওয়া ৪-ডিজিটের গোপন পিন (PIN) বসিয়ে স্পেশাল ভিআইপি বোনাস বা ফাইল আনলক করুন:
+      </p>
+      <input type="password" id="secretVaultPinInput" class="mini-input" placeholder="•••• (৪ ডিজিটের পিন দিন)" maxlength="8" style="text-align: center; font-size: 18px; letter-spacing: 6px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+        <button class="daily-btn" onclick="closePinVaultModal()" style="background: rgba(255,255,255,0.1); color: #fff;">বাতিল</button>
+        <button class="daily-btn" onclick="verifySecretVaultPin()">আনলক করুন 🔓</button>
+      </div>
     </div>
   </div>
 
@@ -751,6 +1664,7 @@
     </div>
   </div>
 
+  <!-- এম্বেডেড ভিডিও টিউটোরিয়াল প্লেয়ারসহ সম্পূর্ণ গাইড মোডাল -->
   <div class="guide-modal" id="guideModal" onclick="closeGuideModal()">
     <div class="guide-box" onclick="event.stopPropagation()">
       <div style="font-size: 38px; margin-bottom: 6px;">📖</div>
@@ -770,7 +1684,8 @@
         <div style="background:rgba(255,255,255,0.04); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
           <b style="color:#4ade80;">৩. কয়েন ব্যাংক, ট্রান্সফার ও ডিজাইনার টুলকিট:</b><br>
           • প্রোফাইল পেজ থেকে অন্য বন্ধুকে কয়েন ট্রান্সফার করতে পারবেন অথবা <b>কয়েন ব্যাংকে</b> কয়েন জমা রেখে +২০% বোনাস নিতে পারবেন।<br>
-          • হোমপেজের <b>🎨 টুলস ও AI</b> ট্যাব থেকে রেডিমেড কালার কোড, প্রম্পট ও ক্যাপশন কপি করতে পারবেন।
+          • হোমপেজের <b>🎨 টুলস ও AI</b> ট্যাব থেকে রেডিমেড কালার কোড, প্রম্পট, ইউনিকোড-বিজয় কনভার্টার ও ক্যাপশন কপি করতে পারবেন।<br>
+          <button class="daily-btn" onclick="closeGuideModal(); openMediaPreview('https://www.youtube.com/shorts/1X3jihLvjY0', true);" style="margin-top:6px; width:100%; padding:8px;">▶️ পিক্সেলল্যাব ও XML ভিডিও টিউটোরিয়াল দেখুন</button>
         </div>
         <div style="background:rgba(255,255,255,0.04); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
           <b style="color:#c084fc;">৪. প্রোমো ও ভিআইপি গিফট কোড রিডিম (শুধুমাত্র মিনি অ্যাপে):</b><br>
@@ -781,7 +1696,7 @@
     </div>
   </div>
 
-  <!-- টপ বার: প্রোফাইল পিকচারের ঠিক নিচে ছোট আকারে সেটিংস বাটন দেওয়া হয়েছে -->
+  <!-- টপ বার: প্রোফাইল পিকচারের ঠিক নিচে ছোট আকারে সেটিংস বাটন এবং ডান কোণায়ও সেটিংস আইকন -->
   <div class="top-bar">
     <div class="user-info">
       <div class="avatar-settings-col">
@@ -794,10 +1709,13 @@
       <div class="user-meta" onclick="switchNav('pageProfile', document.querySelectorAll('.bottom-nav .nav-item')[4])">
         <span class="user-name" id="uName">VIP সদস্য</span>
         <span class="user-badge" id="uBadge">⭐ BRONZE VIP</span>
+        <span class="vip-pass-active-tag" id="topVipPassTag">👑 ROYAL PASS ACTIVE</span>
       </div>
     </div>
     <div class="top-right-actions">
+      <button class="under-avatar-settings-btn" onclick="openPinVaultModal()" style="padding: 6px 8px; font-size: 10.5px; border-color: rgba(251,191,36,0.5); color: var(--gold);">🔐 ভল্ট</button>
       <div class="balance-pill" onclick="refreshUserDataManual()" title="রিফ্রেশ করতে ট্যাপ করুন">🪙 <span id="uCoins">0</span> 🔄</div>
+      <button class="corner-settings-btn" onclick="openSettingsModal()" title="সেটিংস">⚙️</button>
     </div>
   </div>
 
@@ -861,7 +1779,7 @@
       <!-- ফ্ল্যাশ ডিল / ভিআইপি ডিসকাউন্ট ইনফো বার -->
       <div class="flash-deal-bar">
         <span>⚡ <b>VIP অফার:</b> DIAMOND VIP মেম্বারদের জন্য সব ফাইলে <b>২০% ছাড়!</b></span>
-        <span style="color: var(--gold);" id="flashDealTimerTxt">🔥 LIVE</span>
+        <span style="color: var(--gold); font-family: monospace; font-size: 12px;" id="flashDealTimerTxt">🔥 LIVE</span>
       </div>
 
       <input type="text" class="search-box" id="searchInput" placeholder="🔍 কাঙ্ক্ষিত ফাইল, XML বা ফন্টের নাম লিখুন..." oninput="handleSearch()">
@@ -878,18 +1796,101 @@
         <button class="tab-btn active" id="tabBtn-plp" onclick="switchCategory('plp', this)">🎨 PLP ফাইল</button>
         <button class="tab-btn" id="tabBtn-font" onclick="switchCategory('font', this)">🔤 ফন্ট সমূহ</button>
         <button class="tab-btn" id="tabBtn-xml" onclick="switchCategory('xml', this)">⚡ XML ফাইল</button>
+        <button class="tab-btn" id="tabBtn-bundle" onclick="switchCategory('bundle', this)">📦 বান্ডেল প্যাক</button>
+        <button class="tab-btn" id="tabBtn-battle" onclick="switchCategory('battle', this)">⚔️ ব্যাটল</button>
         <button class="tab-btn" id="tabBtn-tools" onclick="switchCategory('tools', this)">🛠️ টুলস ও AI</button>
       </div>
 
       <!-- ইন-অ্যাপ লাইভ ফন্ট টেস্টার বক্স (ফন্ট ক্যাটাগরিতে গেলে দেখাবে) -->
       <div class="font-tester-bar" id="liveFontTesterBox">
         <div style="font-size: 11.5px; font-weight: 800; color: var(--accent); margin-bottom: 6px;">✍️ লাইভ ফন্ট স্টাইল টেস্টার (যেকোনো বাংলা বা ইংরেজি নাম লিখে দেখুন):</div>
-        <input type="text" class="mini-input" id="fontTestInput" placeholder="এখানে আপনার নাম বা টেক্সট লিখুন..." oninput="updateLiveFontPreview(this.value)" style="margin-bottom: 0;">
+        <input type="text" class="mini-input" id="fontTestInput" placeholder="এখানে আপনার নাম বা টেক্সট লিখুন..." oninput="updateLiveFontPreview(this.value)" style="margin-bottom: 4px;">
+        <div class="font-style-selector">
+          <button class="setting-chip active" onclick="changeTesterFontFamily('Hind Siliguri', this)">হিন্দ শিলিগুড়ি</button>
+          <button class="setting-chip" onclick="changeTesterFontFamily('Galada', this)">গলাদা ক্যালিগ্রাফি</button>
+          <button class="setting-chip" onclick="changeTesterFontFamily('Atma', this)">আত্মা স্টাইলিশ</button>
+          <button class="setting-chip" onclick="changeTesterFontFamily('Mina', this)">মিনা বোল্ড</button>
+        </div>
         <div class="font-preview-output" id="fontPreviewOutput">সোনার বাংলা — VIP Font Preview</div>
+      </div>
+
+      <!-- কম্বো প্যাক বা বান্ডেল অফার সেকশন (Real Multi-File Bundle Pack) -->
+      <div id="comboBundleSection" style="display: none;">
+        <div class="bundle-pack-card">
+          <span class="bundle-discount-badge">🔥 ৩০% সাশ্রয়</span>
+          <h3 style="font-size: 15px; font-weight: 900; color: var(--gold); margin-bottom: 4px;">📦 প্রিমিয়াম বাংলা ক্যালিগ্রাফি ও টাইপোগ্রাফি ফন্ট কম্বো প্যাক</h3>
+          <p style="font-size: 11.5px; color: var(--text-sub); margin-bottom: 10px;">এক ক্লিকে একসাথে ৩টি সেরা প্রিমিয়াম বাংলা ফন্ট আপনার টেলিগ্রাম ইনবক্সে ডেলিভারি নিন!</p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <span style="text-decoration: line-through; color: var(--text-dim); font-size: 11px;">🪙 ১০০ কয়েন</span>
+              <div style="font-size: 16px; font-weight: 900; color: #4ade80;">🪙 ৭০ কয়েন</div>
+            </div>
+            <button class="daily-btn" onclick="claimComboBundle('font', 3, 70, 'প্রিমিয়াম বাংলা ফন্ট কম্বো বান্ডেল')">বান্ডেল আনলক করুন ⚡</button>
+          </div>
+        </div>
+
+        <div class="bundle-pack-card">
+          <span class="bundle-discount-badge">🔥 ৩৫% সাশ্রয়</span>
+          <h3 style="font-size: 15px; font-weight: 900; color: var(--accent); margin-bottom: 4px;">🎨 ভিআইপি মাহফিল ও ইসলামিক পোস্টার PLP মেগা প্যাক</h3>
+          <p style="font-size: 11.5px; color: var(--text-sub); margin-bottom: 10px;">সম্পূর্ণ এডিটেবল লেয়ারসহ সেরা ৩টি হাই-কোয়ালিটি PLP প্রজেক্ট ফাইল একসাথে ইনবক্সে নিন!</p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <span style="text-decoration: line-through; color: var(--text-dim); font-size: 11px;">🪙 ১৩০ কয়েন</span>
+              <div style="font-size: 16px; font-weight: 900; color: #4ade80;">🪙 ৮৫ কয়েন</div>
+            </div>
+            <button class="daily-btn" onclick="claimComboBundle('plp', 3, 85, 'ভিআইপি ইসলামিক PLP মেগা বান্ডেল')">বান্ডেল আনলক করুন ⚡</button>
+          </div>
+        </div>
+
+        <div class="bundle-pack-card">
+          <span class="bundle-discount-badge">🔥 ৪০% সাশ্রয়</span>
+          <h3 style="font-size: 15px; font-weight: 900; color: #c084fc; margin-bottom: 4px;">⚡ ভাইরাল Alight Motion XML কালার গ্রেডিং ও টেক্সট ইফেক্ট প্যাক</h3>
+          <p style="font-size: 11.5px; color: var(--text-sub); margin-bottom: 10px;">টিকটক ও রিলস ভিডিও এডিটিংয়ের জন্য সেরা ৩টি 4K HDR CC এবং গ্লো টেক্সট XML প্রিসেট একসাথে!</p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <span style="text-decoration: line-through; color: var(--text-dim); font-size: 11px;">🪙 ১২০ কয়েন</span>
+              <div style="font-size: 16px; font-weight: 900; color: #4ade80;">🪙 ৭৫ কয়েন</div>
+            </div>
+            <button class="daily-btn" onclick="claimComboBundle('xml', 3, 75, 'ভাইরাল XML মেগা বান্ডেল')">বান্ডেল আনলক করুন ⚡</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- সাপ্তাহিক ডিজাইন ব্যাটল ও ছবিসহ ভোটিং কন্টেস্ট -->
+      <div id="designBattleSection" style="display: none;">
+        <div class="stat-card" style="text-align: left; padding: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <h3 style="font-size: 15px; font-weight: 900; color: var(--gold);">⚔️ সাপ্তাহিক ডিজাইন ব্যাটল ও ভোটিং</h3>
+            <span class="badge-rev">🏆 পুরস্কার: ২০০ 🪙</span>
+          </div>
+          <p style="font-size: 11.5px; color: var(--text-sub); margin-bottom: 12px;">
+            সেরা ডিজাইনে ভোট দিন অথবা আপনার নিজের তৈরি ডিজাইনের নাম ও ছবির লিংক জমা দিয়ে প্রতিযোগিতায় অংশ নিন! সবচেয়ে বেশি ভোট পাওয়া ডিজাইনার পাবেন <b>"🏆 Designer of the Week"</b> ব্যাজ ও ২০০ কয়েন!
+          </p>
+          <input type="text" id="battleDesignTitleInput" class="mini-input" placeholder="📌 আপনার ডিজাইনের নাম বা বিবরণ লিখুন...">
+          <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+            <input type="text" id="battleDesignImageInput" class="mini-input" placeholder="🖼️ ডিজাইনের ছবির লিংক (ঐচ্ছিক https://...)" style="margin-bottom: 0;">
+            <button class="daily-btn" onclick="submitDesignBattleEntry()" style="white-space: nowrap;">➕ অংশ নিন</button>
+          </div>
+          <div id="designBattleListContainer">
+            <p style="color: var(--text-sub); font-size: 12px; text-align: center;">লোড হচ্ছে... ⏳</p>
+          </div>
+        </div>
       </div>
 
       <!-- ডিজাইনার টুলকিট ও এআই প্রম্পট স্টোর (টুলস ট্যাবে ক্লিক করলে দেখাবে) -->
       <div id="designerToolsSection" style="display: none;">
+        <!-- যুক্তবর্ণ ও কার-রিঅর্ডারিং সহ আসল বাংলা ইউনিকোড টু বিজয় (ANSI) ফন্ট কনভার্টার -->
+        <div class="stat-card" style="text-align: left; padding: 16px;">
+          <h3 style="font-size: 14.5px; font-weight: 800; color: #38bdf8; margin-bottom: 6px;">🔤 বাংলা ইউনিকোড ⇄ বিজয় (ANSI) ফন্ট কনভার্টার</h3>
+          <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 8px;">পিক্সেলল্যাবে স্টাইলিশ বাংলা ANSI ফন্ট ব্যবহারের জন্য যেকোনো যুক্তবর্ণসহ বাংলা বাক্য কনভার্ট ও কপি করুন:</p>
+          <textarea id="banglaUniInput" class="mini-input" rows="2" placeholder="এখানে বাংলা ইউনিকোড টেক্সট লিখুন (যেমন: আমার সোনার বাংলা, আমি তোমায় ভালোবাসি)..."></textarea>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+            <button class="daily-btn" onclick="convertUnicodeToBijoy()">🔄 বিজয় কোডে রূপান্তর</button>
+            <button class="daily-btn" onclick="copyConvertedBijoyText()" style="background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4);">📋 কোড কপি করুন</button>
+          </div>
+          <input type="text" id="banglaBijoyOutput" class="mini-input" placeholder="কনভার্ট হওয়া বিজয় ফন্ট কোড এখানে দেখাবে..." readonly style="margin-bottom: 0;">
+        </div>
+
         <div class="stat-card" style="text-align: left; padding: 16px;">
           <h3 style="font-size: 14.5px; font-weight: 800; color: var(--gold); margin-bottom: 6px;">🤖 ট্রেন্ডিং 3D ও ইসলামিক AI প্রম্পট লাইব্রেরি</h3>
           <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 10px;">এক ক্লিকে প্রম্পট কপি করে Bing বা Midjourney-তে ব্যবহার করুন:</p>
@@ -929,7 +1930,7 @@
       <div class="grid" id="resourceGrid"></div>
   </div>
 
-<div id="pageAds" class="view-page">
+    <div id="pageAds" class="view-page">
       <div class="stat-card" style="text-align: left;">
         <h3 style="font-size: 14.5px; font-weight: 800; margin-bottom: 8px; color: #fff;">🚀 স্পেশাল চ্যানেল টাস্ক</h3>
         <div class="task-item">
@@ -972,7 +1973,10 @@
 
       <!-- ডেইলি ডিজাইন ও ফুটবল কুইজ (+১৫ কয়েন) -->
       <div class="stat-card" style="text-align: left;">
-        <h3 style="font-size: 15px; font-weight: 800; color: var(--accent); margin-bottom: 4px;">🧠 ডেইলি কুইজ চ্যালেঞ্জ (+১৫ কয়েন)</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <h3 style="font-size: 15px; font-weight: 800; color: var(--accent);">🧠 ডেইলি কুইজ চ্যালেঞ্জ (+১৫ কয়েন)</h3>
+          <button class="copy-uid-btn" onclick="loadNextQuizQuestion()">🔄 প্রশ্ন বদলান</button>
+        </div>
         <p style="font-size: 12px; color: #fff; font-weight: 700; margin-bottom: 10px;" id="dailyQuizQuestion">প্রশ্ন: PixelLab প্রজেক্ট ফাইলের এক্সটেনশন কোনটি?</p>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;" id="dailyQuizOptions">
           <button class="setting-chip" onclick="answerDailyQuiz(0, this)" style="padding: 10px;">.psd ফাইল</button>
@@ -982,6 +1986,19 @@
         </div>
       </div>
 
+      <!-- সাপ্তাহিক কয়েন লটারি ও ফায়ারবেজ জ্যাকপট পুল -->
+      <div class="stat-card">
+        <span style="font-size: 34px;">🎟️</span>
+        <h2 style="font-size: 16.5px; font-weight: 800; color: #4ade80; margin: 4px 0;">সাপ্তাহিক জ্যাকপট লটারি পুল</h2>
+        <p style="font-size: 11.5px; color: var(--text-sub); margin-bottom: 8px;">মাত্র ১০ কয়েন দিয়ে টিকিট কিনুন! প্রতিটি টিকিট জ্যাকপট পুলে যুক্ত হবে এবং সাথে সাথে লাকি ড্র হবে!</p>
+        <div style="display:flex; justify-content:space-around; font-size:11px; font-weight:800; margin-bottom:10px;">
+          <span style="color:var(--gold);" id="jackpotPoolTotalTxt">🏆 বর্তমান জ্যাকপট পুল: 500 🪙</span>
+          <span style="color:var(--accent);" id="myLotteryTicketsTxt">🎟️ আমার টিকিট: 0 টি</span>
+        </div>
+        <button class="action-btn" onclick="buyWeeklyLotteryTicket()" style="background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff;">🎟️ টিকিট কিনুন ও ড্র দেখুন (১০ কয়েন)</button>
+      </div>
+
+      <!-- লাকি হুইল স্পিন (এখন চাকা ১০০% ঘুরবে!) -->
       <div class="stat-card">
         <h2 style="font-size: 17px; font-weight: 800; color: #fff;">🎡 লাকি হুইল স্পিন (২ ঘণ্টা পর পর)</h2>
         <p style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">প্রতি ২ ঘণ্টা পর পর চাকা ঘুরিয়ে জিতুন ফ্রি কয়েন!</p>
@@ -1087,6 +2104,18 @@
         </div>
       </div>
 
+      <!-- ৭ দিনের রয়েল ভিআইপি পাস (7-Day Royal VIP Pass) -->
+      <div class="stat-card" style="text-align: left; padding: 16px; border-color: rgba(251, 191, 36, 0.5);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <h3 style="font-size: 14.5px; font-weight: 900; color: var(--gold);">👑 ৭-দিনের Royal VIP Pass</h3>
+          <span class="badge-rev" id="vipPassStatusBadge">নিষ্ক্রিয়</span>
+        </div>
+        <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 10px;">
+          এই পাস চালু থাকলে ৭ দিন পর্যন্ত সব প্রিমিয়াম ফাইলে পাবেন <b>৩০% কয়েন ডিসকাউন্ট</b> এবং ফাইল ডাউনলোডের সময় <b>কোনো বিজ্ঞাপন বা কাউন্টডাউন ছাড়াই</b> ইনস্ট্যান্ট ইনবক্স ডেলিভারি!
+        </p>
+        <button class="daily-btn" id="btnBuyVipPass" onclick="activateRoyalVipPass()" style="width: 100%;">👑 ৭ দিনের ভিআইপি পাস নিন (২৫০ কয়েন)</button>
+      </div>
+
       <!-- প্রোফাইল পেজ থেকে সরাসরি প্রোমো বা ব্যক্তিগত গিফট কোড রিডিম -->
       <div class="stat-card" style="text-align: left; padding: 16px;">
         <h3 style="font-size: 14px; font-weight: 800; margin-bottom: 6px; color: var(--gold);">🎁 গিফট ও প্রোমো কোড বক্স</h3>
@@ -1177,7 +2206,28 @@
           <input type="text" id="admSpecialGiftCode" class="mini-input" placeholder="🔑 সিক্রেট গিফট কোড" style="text-transform: uppercase;">
           <input type="number" id="admSpecialGiftCoins" class="mini-input" placeholder="🪙 গিফট কয়েন সংখ্যা">
         </div>
-        <button class="daily-btn" onclick="adminCreateUserSpecificGift()" style="width: 100%; background: linear-gradient(135deg, #38bdf8, #0284c7); color: #020617;">🔒 ব্যক্তিগত গিফট কোড সেট করুন</button>
+        <button class="daily-btn" onclick="adminCreateUserSpecificGift()" style="width: 100%; background: linear-gradient(135deg, #38bdf8, #0284c7); color: #020617; margin-bottom: 14px;">🔒 ব্যক্তিগত গিফট কোড সেট করুন</button>
+
+        <!-- ৩. সিক্রেট ভিআইপি ভল্ট পিন জেনারেটর -->
+        <div style="font-size: 12px; font-weight: 800; color: #c084fc; margin-bottom: 6px;">🔐 সিক্রেট ভিআইপি ভল্ট পিন তৈরি করুন:</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <input type="text" id="admVaultPinInput" class="mini-input" placeholder="🔐 গোপন পিন (যেমন: 7788)">
+          <input type="number" id="admVaultCoinsInput" class="mini-input" placeholder="🪙 বোনাস কয়েন">
+        </div>
+        <button class="daily-btn" onclick="adminCreateVaultPin()" style="width: 100%; background: linear-gradient(135deg, #c084fc, #9333ea); color: #fff; margin-bottom: 14px;">🔐 ভল্ট পিন সেট করুন</button>
+
+        <!-- ৪. প্রমোশনাল পপ-আপ ব্যানার (ছবি ও টেক্সট) ও মেইনটেন্যান্স সুইচ -->
+        <div style="font-size: 12px; font-weight: 800; color: #f43f5e; margin-bottom: 6px;">🛠️ মেইনটেন্যান্স মোড ও ইভেন্ট পপ-আপ (ছবিসহ) কন্ট্রোল:</div>
+        <input type="text" id="admPopupEventText" class="mini-input" placeholder="🔥 পপ-আপ ইভেন্টের মেসেজ লিখুন...">
+        <input type="text" id="admPopupEventImg" class="mini-input" placeholder="🖼️ পপ-আপ ব্যানার ছবির লিংক (ঐচ্ছিক https://...)">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+          <button class="daily-btn" onclick="adminSetEventPopup(true)">🔥 পপ-আপ চালু করুন</button>
+          <button class="daily-btn" onclick="adminSetEventPopup(false)" style="background: #334155; color: #fff;">❌ পপ-আপ বন্ধ</button>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <button class="daily-btn" onclick="adminToggleMaintenance(true)" style="background: rgba(244,63,94,0.25); color: #fda4af; border: 1px solid #f43f5e;">🔒 মেইনটেন্যান্স অন</button>
+          <button class="daily-btn" onclick="adminToggleMaintenance(false)" style="background: rgba(34,197,94,0.25); color: #4ade80; border: 1px solid #22c55e;">🔓 মেইনটেন্যান্স অফ</button>
+        </div>
       </div>
 
       <!-- ইউজারদের ফাইল রিকোয়েস্ট ও রিপোর্ট দেখার প্যানেল -->
@@ -1246,13 +2296,20 @@
 
   </div>
 
+  <!-- জুম ও বিফোর/আফটার ইফেক্ট কম্পেয়ারসহ মিডিয়া প্রিভিউ মোডাল -->
   <div class="preview-modal" id="mediaModal" onclick="closeMediaPreview()">
     <span class="preview-close">&times;</span>
-    <img id="modalImg" src="" alt="preview" style="display: none;">
+    <img id="modalImg" src="" alt="preview" style="display: none;" onclick="event.stopPropagation()">
     <div id="youtubeEmbedWrapper" style="display: none; width: 100%; max-width: 320px; aspect-ratio: 9/16; border-radius: 12px; overflow: hidden; background: #000; position: relative;" onclick="event.stopPropagation()">
       <iframe id="modalYoutubeIframe" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"></iframe>
     </div>
-    <video id="modalVideo" src="" controls playsinline style="display: none;"></video>
+    <video id="modalVideo" src="" controls playsinline style="display: none;" onclick="event.stopPropagation()"></video>
+    <div class="preview-zoom-controls" onclick="event.stopPropagation()">
+      <button class="setting-chip" onclick="zoomPreviewMedia(1)">🔍 1x</button>
+      <button class="setting-chip" onclick="zoomPreviewMedia(1.5)">🔍 1.5x</button>
+      <button class="setting-chip" onclick="zoomPreviewMedia(2)">🔍 2x HD</button>
+      <button class="setting-chip" onclick="toggleBeforeAfterFilter()">✨ Before / After ইফেক্ট</button>
+    </div>
   </div>
 
   <div class="bottom-nav" id="bottomNavBar">
@@ -1288,6 +2345,72 @@
 
     // অ্যাপ ওপেন হওয়ার আগে কোনো টোস্ট নোটিফিকেশন না দেখানোর লক
     let isSplashFinished = false;
+
+    // ওয়েব অডিও সাউন্ড ইফেক্ট ইঞ্জিন (কোনো এক্সটার্নাল ফাইল ছাড়াই ক্লিক, স্পিন ও জয়ের সাউন্ড বাজাবে)
+    let audioCtx = null;
+    function playUiSound(type = 'tap') {
+      if (!appSettings.haptic) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+
+        if (type === 'tick') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(620, now);
+          gain.gain.setValueAtTime(0.04, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
+          osc.start(now);
+          osc.stop(now + 0.035);
+        } else if (type === 'win') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.09);
+          osc.frequency.setValueAtTime(783.99, now + 0.18);
+          gain.gain.setValueAtTime(0.07, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(440, now);
+          gain.gain.setValueAtTime(0.025, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+          osc.start(now);
+          osc.stop(now + 0.03);
+        }
+      } catch (e) {}
+    }
+
+    // ৫ সেকেন্ডের লোডিং চাকা (Spinner) ১০০% ঘোরার গ্যারান্টিড জাভাস্ক্রিপ্ট ফলব্যাক ইঞ্জিন
+    let jsSpinnerInterval = null;
+    let jsSpinnerDeg = 0;
+    function startLoadingSpinnerWheel() {
+      const overlay = document.getElementById('loadingOverlay');
+      const wheelEl = document.getElementById('adLoadingSpinnerWheel');
+      if (overlay) overlay.classList.add('active');
+      if (jsSpinnerInterval) clearInterval(jsSpinnerInterval);
+      jsSpinnerInterval = setInterval(() => {
+        jsSpinnerDeg = (jsSpinnerDeg + 18) % 360;
+        if (wheelEl) {
+          wheelEl.style.transform = `rotate(${jsSpinnerDeg}deg)`;
+          wheelEl.style.webkitTransform = `rotate(${jsSpinnerDeg}deg)`;
+        }
+      }, 30);
+    }
+
+    function stopLoadingSpinnerWheel() {
+      const overlay = document.getElementById('loadingOverlay');
+      if (overlay) overlay.classList.remove('active');
+      if (jsSpinnerInterval) {
+        clearInterval(jsSpinnerInterval);
+        jsSpinnerInterval = null;
+      }
+    }
 
     // ইন্ট্রো স্প্ল্যাশ স্ক্রিন কন্ট্রোলার (১ সেকেন্ড বেশি সময় ও মাখনের মতো স্মুথ কাউন্টার)
     (function runIntroSplash() {
@@ -1370,6 +2493,7 @@
       document.body.classList.toggle('large-font-mode', mode === 'large');
       document.getElementById('fontBtnNorm')?.classList.toggle('active', mode === 'normal');
       document.getElementById('fontBtnLarge')?.classList.toggle('active', mode === 'large');
+      if (notifyUser) showToast("লেখার আকার পরিবর্তন হয়েছে!", "🔤");
     }
 
     function setLitePerfMode(enabled, notifyUser = false) {
@@ -1417,6 +2541,8 @@
       document.getElementById('tabBtn-plp').innerText = isEn ? "🎨 PLP Files" : "🎨 PLP ফাইল";
       document.getElementById('tabBtn-font').innerText = isEn ? "🔤 Fonts" : "🔤 ফন্ট সমূহ";
       document.getElementById('tabBtn-xml').innerText = isEn ? "⚡ XML Files" : "⚡ XML ফাইল";
+      document.getElementById('tabBtn-bundle').innerText = isEn ? "📦 Bundles" : "📦 বান্ডেল প্যাক";
+      document.getElementById('tabBtn-battle').innerText = isEn ? "⚔️ Battle" : "⚔️ ব্যাটল";
       document.getElementById('tabBtn-tools').innerText = isEn ? "🛠️ Tools & AI" : "🛠️ টুলস ও AI";
       document.getElementById('txtAdBoxTitle').innerText = isEn ? "Watch Ads & Earn Coins" : "বিজ্ঞাপন দেখে কয়েন সংগ্রহ";
       document.getElementById('txtAdBoxSub').innerText = isEn ? "Watch full ad to get +20 coins instantly." : "সম্পূর্ণ বিজ্ঞাপনটি দেখলে ওয়ালেটে ২০টি কয়েন যোগ হবে।";
@@ -1428,6 +2554,7 @@
       document.getElementById('navTxtProf').innerText = isEn ? "Profile" : "প্রোফাইল";
       document.getElementById('navTxtAdm').innerText = isEn ? "Admin" : "অ্যাডমিন";
       renderResources(document.getElementById('searchInput').value.toLowerCase());
+      if (notifyUser) showToast(isEn ? "Language switched to English!" : "ভাষা বাংলা সেট করা হয়েছে!", "🌐");
     }
 
     function clearAppCache() {
@@ -1450,7 +2577,7 @@
       if (appSettings.lang === 'en') setAppLanguage('en', false);
     }
 
-    // লাইভ অ্যাক্টিভিটি টিকার অ্যানিমেশন
+    // লাইভ অ্যাক্টিভিটি টিকার অ্যানিমেশন ও ফ্ল্যাশ ডিল টাইমার
     function startLiveActivityTicker() {
       const msgs = [
         "🔥 নতুন প্রিমিয়াম PLP ও বাংলা স্টাইলিশ ফন্ট যুক্ত হয়েছে!",
@@ -1465,11 +2592,78 @@
         const el = document.getElementById('liveActivityTickerText');
         if (el) el.innerText = msgs[idx];
       }, 4500);
+
+      setInterval(() => {
+        const now = new Date();
+        const remSec = 7200 - ((now.getMinutes() * 60 + now.getSeconds()) % 7200);
+        const h = String(Math.floor(remSec / 3600)).padStart(2, '0');
+        const m = String(Math.floor((remSec % 3600) / 60)).padStart(2, '0');
+        const s = String(remSec % 60).padStart(2, '0');
+        const timerEl = document.getElementById('flashDealTimerTxt');
+        if (timerEl) timerEl.innerText = `⏳ ${h}:${m}:${s}`;
+      }, 1000);
     }
 
     function updateLiveFontPreview(val) {
       const out = document.getElementById('fontPreviewOutput');
       if (out) out.innerText = val.trim() ? val : "সোনার বাংলা — VIP Font Preview";
+    }
+
+    function changeTesterFontFamily(fontName, btnEl) {
+      triggerHaptic();
+      const out = document.getElementById('fontPreviewOutput');
+      if (out) out.style.fontFamily = `'${fontName}', sans-serif`;
+      document.querySelectorAll('.font-style-selector .setting-chip').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+    }
+
+    // যুক্তবর্ণ এবং কার-রিঅর্ডারিং (ি, ে, ৈ) সহ পূর্ণাঙ্গ ইউনিকোড-টু-বিজয় (ANSI) কনভার্টার ইঞ্জিন
+    function convertUnicodeToBijoy() {
+      triggerHaptic();
+      let str = (document.getElementById('banglaUniInput')?.value || '').trim();
+      if (!str) {
+        showToast("প্রথমে বাংলা ইউনিকোড টেক্সট লিখুন!", "⚠️");
+        return;
+      }
+
+      str = str.replace(/ো/g, 'ো').replace(/ৌ/g, 'ৌ');
+      str = str.replace(/([ক-হড়-য়](?:্[ক-হড়-য়])*)([িেৈ])/g, '$2$1');
+
+      const conjMap = {
+        'ক্ষ': 'ÿ', 'জ্ঞ': 'Á', 'ঞ্চ': 'Â', 'ঞ্জ': 'Ä', 'ন্ড': 'Û', 'ন্ত': 'šÍ', 'ন্ত্র': 'š¿', 'ন্দ': '›`',
+        'ন্ধ': 'Ü', 'ম্প': '¤ú', 'ম্ভ': '¤¢', 'ম্ম': '¤§', 'ল্ল': 'jø', 'ষ্ট': 'ó', 'ষ্ঠ': 'ô', 'স্ত': '¯Í',
+        'স্থ': '¯’', 'ক্ত': '³', 'ক্র': 'µ', 'ত্ত': 'Ë', 'ত্র': 'Î', 'দ্ধ': '×', 'দ্ব': 'Ø', 'দ্ম': 'Ù',
+        'ধ্র': 'aª', 'প্র': 'cª', 'ভ্র': 'fª', 'শ্র': 'kª', 'হ্র': 'nª', '্র': 'ª', '্য': '¨', 'র্': '©'
+      };
+      Object.keys(conjMap).sort((a, b) => b.length - a.length).forEach(k => {
+        str = str.split(k).join(conjMap[k]);
+      });
+
+      const charMap = {
+        'অ': 'A', 'আ': 'Av', 'ই': 'B', 'ঈ': 'C', 'উ': 'D', 'ঊ': 'E', 'ঋ': 'F', 'এ': 'G', 'ঐ': 'H', 'ও': 'I', 'ঔ': 'J',
+        'ক': 'K', 'খ': 'L', 'গ': 'M', 'ঘ': 'N', 'ঙ': 'O', 'চ': 'P', 'ছ': 'Q', 'জ': 'R', 'ঝ': 'S', 'ঞ': 'T',
+        'ট': 'U', 'ঠ': 'V', 'ড': 'W', 'ঢ': 'X', 'ণ': 'Y', 'ত': 'Z', 'থ': '_', 'দ': '`', 'ধ': 'a', 'ন': 'b',
+        'প': 'c', 'ফ': 'd', 'ব': 'e', 'ভ': 'f', 'ম': 'g', 'য': 'h', 'র': 'i', 'ল': 'j', 'শ': 'k', 'ষ': 'l',
+        'স': 'm', 'হ': 'n', 'ড়': 'o', 'ঢ়': 'p', 'য়': 'q', 'ৎ': 'r', 'ং': 's', 'ঃ': 't', 'ঁ': 'u',
+        'া': 'v', 'ি': 'w', 'ী': 'x', 'ু': 'y', 'ূ': '~', 'ৃ': '…', 'ে': '‡', 'ৈ': '‰', 'ৗ': 'Š', '্': '&', '।': '|'
+      };
+      let result = '';
+      for (let ch of str) {
+        result += (charMap[ch] !== undefined) ? charMap[ch] : ch;
+      }
+
+      const outEl = document.getElementById('banglaBijoyOutput');
+      if (outEl) outEl.value = result;
+      showToast("বিজয় (ANSI) কোডে রূপান্তর সম্পন্ন!", "🔤");
+    }
+
+    function copyConvertedBijoyText() {
+      const val = document.getElementById('banglaBijoyOutput')?.value || '';
+      if (!val) {
+        showToast("আগে টেক্সট রূপান্তর করুন!", "⚠️");
+        return;
+      }
+      fallbackCopy(val);
     }
 
     function generateFancyText(val) {
@@ -1488,7 +2682,6 @@
         </div>
       `).join('');
     }
-
     // প্রোফাইল পিকচার (Avatar) লোড ও এরর হ্যান্ডলার
     function handleAvatarError(imgEl, textElId) {
       imgEl.style.display = 'none';
@@ -1651,18 +2844,43 @@
     }
 
     const user = getTelegramUser();
-    let userData = { coins: 20, refers: 0, daily_ads: {}, last_checkin: "", streak_days: 1, last_spin: "", last_spin_time: 0, last_scratch: "", last_quiz: "", last_mystery: 0, bank_coins: 0, bank_time: 0, milestones_claimed: {}, last_ad_time: 0, joined_channel: false, claimed_count: 0, total_ads_watched: 0, unlocked: {} };
+    let userData = {
+      coins: 20,
+      refers: 0,
+      daily_ads: {},
+      last_checkin: "",
+      last_checkin_ts: 0,
+      streak_days: 1,
+      last_spin: "",
+      last_spin_time: 0,
+      last_scratch: "",
+      last_quiz: "",
+      last_mystery: 0,
+      bank_coins: 0,
+      bank_time: 0,
+      vip_pass_until: 0,
+      lottery_tickets: 0,
+      milestones_claimed: {},
+      last_ad_time: 0,
+      joined_channel: false,
+      claimed_count: 0,
+      total_ads_watched: 0,
+      unlocked: {}
+    };
     let allResources = {};
     let currentCategory = 'plp';
     let currentSortOrder = 'new';
     let currentWheelRotation = 0;
+    let isWheelSpinningNow = false;
     let scratchCardReward = 5;
     let scratchCardScratched = false;
     let searchTimeout = null;
     let activeNoticeLink = "";
     let spinCountdownInterval = null;
     let savedFavorites = {};
+    let userRatings = {};
     try { savedFavorites = JSON.parse(localStorage.getItem('vip_saved_favs') || '{}'); } catch(e) {}
+    try { userRatings = JSON.parse(localStorage.getItem('vip_user_ratings') || '{}'); } catch(e) {}
 
     const AD_LIMIT = 30;
     const AD_REWARD = 20;
@@ -1678,6 +2896,305 @@
       { text: "+10 🪙", coins: 10, bg: "#eab308" }
     ];
 
+    const dailyQuizBank = [
+      { q: "PixelLab প্রজেক্ট ফাইলের এক্সটেনশন কোনটি?", opts: [".psd ফাইল", ".plp ফাইল", ".xml ফাইল", ".ttf ফাইল"], ans: 1 },
+      { q: "Alight Motion ভিডিও প্রিসেট ফাইলের ফরম্যাট কোনটি?", opts: [".mp4 ফাইল", ".plp ফাইল", ".xml ফাইল", ".zip ফাইল"], ans: 2 },
+      { q: "বাংলা ইউনিকোড ফন্টের সবচেয়ে জনপ্রিয় ওয়েবসাইট কোনটি?", opts: ["Lipighor", "Canva", "InShot", "CapCut"], ans: 0 },
+      { q: "২০০২ ফিফা বিশ্বকাপে কোন দেশ চ্যাম্পিয়ন হয়েছিল?", opts: ["জার্মানি", "ব্রাজিল", "আর্জেন্টিনা", "ফ্রান্স"], ans: 1 },
+      { q: "ফুটবল ইতিহাসে সর্বোচ্চ অফিশিয়াল গোলের মালিক কে?", opts: ["লিওনেল মেসি", "ক্রিস্টিয়ানো রোনালদো", "নেইমার", "পেলে"], ans: 1 },
+      { q: "মোবাইলে ভেক্টর ও টাইপোগ্রাফি ডিজাইনের সেরা অ্যাপ কোনটি?", opts: ["Infinite Design", "MX Player", "VLC", "Telegram"], ans: 0 },
+      { q: "বাংলা ও স্টাইলিশ ফন্ট ফাইলের সাধারণ এক্সটেনশন কোনটি?", opts: [".ttf / .otf", ".mp3 / .wav", ".jpg / .png", ".exe"], ans: 0 },
+      { q: "পিক্সেলল্যাবে ব্যাকগ্রাউন্ড নিখুঁতভাবে ট্রান্সপারেন্ট সেভ করতে কোন ফরম্যাট লাগে?", opts: ["JPG", "PNG (Ultra)", "GIF", "PDF"], ans: 1 }
+    ];
+    let currentQuizIndex = 0;
+
+    function loadNextQuizQuestion() {
+      currentQuizIndex = Math.floor(Math.random() * dailyQuizBank.length);
+      const item = dailyQuizBank[currentQuizIndex];
+      const qEl = document.getElementById('dailyQuizQuestion');
+      const optBox = document.getElementById('dailyQuizOptions');
+      if (qEl) qEl.innerText = `প্রশ্ন: ${item.q}`;
+      if (optBox) {
+        optBox.innerHTML = item.opts.map((op, idx) => `
+          <button class="setting-chip" onclick="answerDailyQuiz(${idx}, this)" style="padding: 10px;">${op}</button>
+        `).join('');
+      }
+    }
+
+    function openPinVaultModal() {
+      triggerHaptic();
+      document.getElementById('pinVaultModal').classList.add('active');
+    }
+
+    function closePinVaultModal() {
+      document.getElementById('pinVaultModal').classList.remove('active');
+    }
+
+    async function verifySecretVaultPin() {
+      triggerHaptic();
+      const pin = (document.getElementById('secretVaultPinInput')?.value || '').trim();
+      if (!pin) {
+        showToast("৪-ডিজিটের পিন লিখুন!", "⚠️");
+        return;
+      }
+      const vaultData = await safeFetch(`${DB_BASE}/secret_vault/${pin}.json`);
+      if (vaultData && vaultData.coins) {
+        const usedMap = vaultData.used_by || {};
+        if (user.id && usedMap[String(user.id)]) {
+          showToast("আপনি ইতিমধ্যে এই ভল্ট পিন ব্যবহার করেছেন!", "⚠️");
+          return;
+        }
+        const bonus = Number(vaultData.coins) || 30;
+        userData.coins = (userData.coins || 0) + bonus;
+        if (user.id) {
+          usedMap[String(user.id)] = true;
+          await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+          await safeFetch(`${DB_BASE}/secret_vault/${pin}/used_by.json`, { method: 'PUT', body: JSON.stringify(usedMap) });
+        }
+        updateUI();
+        fireConfetti();
+        playUiSound('win');
+        closePinVaultModal();
+        showToast(`🔓 সিক্রেট ভল্ট আনলক সফল! +${bonus} কয়েন পেয়েছেন!`, "🎉");
+      } else if (pin === "2026") {
+        if (localStorage.getItem('vault_2026_claimed')) {
+          showToast("আপনি ইতিমধ্যে এই পিন বোনাস নিয়েছেন!", "⚠️");
+          return;
+        }
+        localStorage.setItem('vault_2026_claimed', 'true');
+        userData.coins = (userData.coins || 0) + 25;
+        if (user.id) await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        updateUI();
+        fireConfetti();
+        playUiSound('win');
+        closePinVaultModal();
+        showToast("🔓 সিক্রেট ভল্ট আনলক সফল! +২৫ কয়েন বোনাস পেয়েছেন!", "🎉");
+      } else {
+        showToast("❌ ভুল পিন! চ্যানেলের পোস্ট থেকে সঠিক পিন সংগ্রহ করুন।", "🔒");
+      }
+    }
+
+    function closeEventPopup() {
+      document.getElementById('eventPopupModal').classList.remove('active');
+    }
+
+    function closeLevelupModal() {
+      document.getElementById('levelupModal').classList.remove('active');
+    }
+
+    function showAchievementModal(badgeTitle, rewardMsg) {
+      document.getElementById('certUserName').innerText = user.first_name || "VIP Member";
+      document.getElementById('certBadgeTitle').innerText = badgeTitle;
+      document.getElementById('certRewardText').innerText = rewardMsg;
+      document.getElementById('levelupModal').classList.add('active');
+      playUiSound('win');
+      fireConfetti();
+    }
+
+    function isVipPassActive() {
+      return (Number(userData.vip_pass_until) || 0) > Date.now();
+    }
+
+    async function activateRoyalVipPass() {
+      triggerHaptic();
+      if (isVipPassActive()) {
+        showToast("আপনার ৭-দিনের Royal VIP Pass ইতিমধ্যে চালু আছে!", "👑");
+        return;
+      }
+      const passCost = 250;
+      if ((userData.coins || 0) < passCost) {
+        showToast(`Royal VIP Pass নিতে ${passCost} কয়েন প্রয়োজন!`, "⚠️");
+        return;
+      }
+      if (!confirm("আপনি কি ২৫০ কয়েন দিয়ে ৭-দিনের জন্য Royal VIP Pass (৩০% ছাড় ও অ্যাড-ফ্রি ফাইল ডাউনলোড) চালু করতে চান?")) return;
+
+      userData.coins -= passCost;
+      userData.vip_pass_until = Date.now() + (7 * 24 * 60 * 60 * 1000);
+      updateUI();
+      renderResources(document.getElementById('searchInput').value.toLowerCase());
+      if (user.id) {
+        await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await safeFetch(`${DB_BASE}/users/${user.id}/vip_pass_until.json`, { method: 'PUT', body: JSON.stringify(userData.vip_pass_until) });
+      }
+      showAchievementModal("👑 ROYAL VIP PASS HOLDER", "আপনার ৭-দিনের অ্যাড-ফ্রি ও ৩০% ডিসকাউন্ট ভিআইপি পাস সফলভাবে চালু হয়েছে!");
+    }
+
+    async function buyWeeklyLotteryTicket() {
+      triggerHaptic();
+      const ticketCost = 10;
+      if ((userData.coins || 0) < ticketCost) {
+        showToast("টিকিট কিনতে কমপক্ষে ১০ কয়েন প্রয়োজন!", "🎟️");
+        return;
+      }
+      userData.coins -= ticketCost;
+      userData.lottery_tickets = (Number(userData.lottery_tickets) || 0) + 1;
+      updateUI();
+
+      let curPool = Number(await safeFetch(`${DB_BASE}/stats/jackpot_pool.json`)) || 500;
+      curPool += 5;
+      const poolEl = document.getElementById('jackpotPoolTotalTxt');
+      if (poolEl) poolEl.innerText = `🏆 বর্তমান জ্যাকপট পুল: ${curPool} 🪙`;
+
+      const roll = Math.random();
+      let winAmount = 0;
+      if (roll < 0.04) { winAmount = curPool; curPool = 500; }
+      else if (roll < 0.25) winAmount = 25;
+      else if (roll < 0.55) winAmount = 12;
+
+      safeFetch(`${DB_BASE}/stats/jackpot_pool.json`, { method: 'PUT', body: JSON.stringify(curPool) });
+
+      if (winAmount > 0) {
+        userData.coins += winAmount;
+        updateUI();
+        playUiSound('win');
+        fireConfetti();
+        showToast(`🎉 জ্যাকপট লাকি ড্র! আপনি টিকিট কিনে জিতেছেন +${winAmount} কয়েন!`, "🎟️");
+      } else {
+        showToast("🎟️ টিকিট জ্যাকপট পুলে যুক্ত হয়েছে! আবার চেষ্টা করুন!", "✨");
+      }
+
+      if (user.id) {
+        await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await safeFetch(`${DB_BASE}/users/${user.id}/lottery_tickets.json`, { method: 'PUT', body: JSON.stringify(userData.lottery_tickets) });
+      }
+    }
+
+    async function claimComboBundle(catType, countLimit, cost, bundleTitle) {
+      triggerHaptic();
+      if ((userData.coins || 0) < cost) {
+        showToast(`এই বান্ডেল প্যাকটি আনলক করতে ${cost} কয়েন প্রয়োজন!`, "⚠️");
+        return;
+      }
+      const catKeys = Object.keys(allResources).filter(k => allResources[k] && allResources[k].type === catType);
+      if (catKeys.length === 0) {
+        showToast("এই ক্যাটাগরিতে বর্তমানে কোনো ফাইল নেই!", "❌");
+        return;
+      }
+      if (!confirm(`আপনি কি ${cost} কয়েন দিয়ে "${bundleTitle}" প্যাকের সব ফাইল একসাথে টেলিগ্রাম ইনবক্সে নিতে চান?`)) return;
+
+      startLoadingSpinnerWheel();
+      const countdownText = document.getElementById('loadingCountdownText');
+      let prepTime = 5;
+      countdownText.innerText = `বান্ডেল প্রস্তুত হচ্ছে (${prepTime}s)...`;
+      await new Promise(resolve => {
+        const t = setInterval(() => {
+          prepTime--;
+          if (prepTime > 0) countdownText.innerText = `বান্ডেল প্রস্তুত হচ্ছে (${prepTime}s)...`;
+          else { clearInterval(t); resolve(); }
+        }, 1000);
+      });
+
+      await triggerMonetagAd();
+      stopLoadingSpinnerWheel();
+
+      const selectedKeys = catKeys.slice(-countLimit);
+      userData.coins -= cost;
+      if (!userData.unlocked) userData.unlocked = {};
+
+      const realClaimUser = getTelegramUser();
+      for (const fk of selectedKeys) {
+        userData.unlocked[fk] = { name: allResources[fk].name, type: catType, time: Date.now() };
+        if (realClaimUser.id) {
+          safeFetch(`${RENDER_BACKEND_URL}/deliver-resource`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user_id: realClaimUser.id,
+              file_key: fk,
+              user_name: realClaimUser.first_name || "User",
+              username: realClaimUser.username || ""
+            })
+          });
+        }
+      }
+
+      updateUI();
+      playUiSound('win');
+      fireConfetti();
+      if (realClaimUser.id) {
+        await safeFetch(`${DB_BASE}/users/${realClaimUser.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await safeFetch(`${DB_BASE}/users/${realClaimUser.id}/unlocked.json`, { method: 'PUT', body: JSON.stringify(userData.unlocked) });
+      }
+      document.getElementById('claimSuccessModal').classList.add('active');
+    }
+
+    async function loadDesignBattleEntries() {
+      const box = document.getElementById('designBattleListContainer');
+      if (!box) return;
+      try {
+        const entries = (await safeFetch(`${DB_BASE}/design_battle.json`)) || {};
+        const keys = Object.keys(entries);
+        if (keys.length === 0) {
+          box.innerHTML = '<p style="color:var(--text-sub); font-size:11.5px; text-align:center;">এখনও কোনো ডিজাইন জমা পড়েনি। প্রথম অংশ নিন!</p>';
+          return;
+        }
+        keys.sort((a, b) => (entries[b]?.votes || 0) - (entries[a]?.votes || 0));
+        box.innerHTML = keys.slice(0, 15).map((k, idx) => {
+          const item = entries[k];
+          const imgHtml = (item.image && String(item.image).startsWith('http'))
+            ? `<img src="${item.image}" alt="design" onclick="openMediaPreview('${item.image}', false)" style="width:46px; height:46px; border-radius:10px; object-fit:cover; cursor:pointer; border:1px solid var(--accent); flex-shrink:0;">`
+            : `<div style="width:46px; height:46px; border-radius:10px; background:rgba(56,189,248,0.15); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0;">🎨</div>`;
+          return `
+            <div class="battle-entry-card">
+              <div style="display:flex; align-items:center; gap:10px;">
+                ${imgHtml}
+                <div>
+                  <div style="font-size:12.5px; font-weight:800; color:#fff;">#${idx+1} ${item.title || 'Design'}</div>
+                  <div style="font-size:10.5px; color:var(--accent);">👤 ${item.user_name || 'Member'}</div>
+                </div>
+              </div>
+              <button class="daily-btn" onclick="voteDesignBattleEntry('${k}')" style="padding:7px 12px; font-size:11px; white-space:nowrap;">❤️ ${item.votes || 0} ভোট</button>
+            </div>
+          `;
+        }).join('');
+      } catch(e) {}
+    }
+
+    async function submitDesignBattleEntry() {
+      triggerHaptic();
+      const inp = document.getElementById('battleDesignTitleInput');
+      const imgInp = document.getElementById('battleDesignImageInput');
+      const title = (inp?.value || '').trim();
+      const imgUrl = (imgInp?.value || '').trim();
+      if (!title) {
+        showToast("আপনার ডিজাইনের নাম লিখুন!", "⚠️");
+        return;
+      }
+      await safeFetch(`${DB_BASE}/design_battle.json`, {
+        method: 'POST',
+        body: JSON.stringify({
+          title: title,
+          image: imgUrl,
+          user_id: user.id || 'Guest',
+          user_name: user.first_name || 'VIP Designer',
+          votes: 1,
+          time: Date.now()
+        })
+      });
+      if (inp) inp.value = '';
+      if (imgInp) imgInp.value = '';
+      showToast("⚔️ আপনার ডিজাইন ব্যাটলে যুক্ত হয়েছে!", "🎉");
+      loadDesignBattleEntries();
+    }
+
+    async function voteDesignBattleEntry(entryKey) {
+      triggerHaptic('success');
+      const votedKey = `voted_battle_${entryKey}`;
+      if (localStorage.getItem(votedKey)) {
+        showToast("আপনি ইতিমধ্যে এই ডিজাইনে ভোট দিয়েছেন!", "❤️");
+        return;
+      }
+      localStorage.setItem(votedKey, 'true');
+      const cur = await safeFetch(`${DB_BASE}/design_battle/${entryKey}/votes.json`);
+      const nextVotes = (Number(cur) || 0) + 1;
+      await safeFetch(`${DB_BASE}/design_battle/${entryKey}/votes.json`, {
+        method: 'PUT',
+        body: JSON.stringify(nextVotes)
+      });
+      showToast("❤️ আপনার ভোট সফলভাবে যুক্ত হয়েছে!", "✅");
+      loadDesignBattleEntries();
+    }
+
     function toggleFavoriteResource(key, ev) {
       if (ev) ev.stopPropagation();
       triggerHaptic();
@@ -1689,6 +3206,20 @@
         showToast("পছন্দের তালিকায় যুক্ত হয়েছে!", "❤️");
       }
       try { localStorage.setItem('vip_saved_favs', JSON.stringify(savedFavorites)); } catch(e) {}
+      renderResources(document.getElementById('searchInput').value.toLowerCase());
+    }
+
+    async function rateResourceItem(key, ev) {
+      if (ev) ev.stopPropagation();
+      triggerHaptic('success');
+      userRatings[key] = 5;
+      try { localStorage.setItem('vip_user_ratings', JSON.stringify(userRatings)); } catch(e) {}
+      if (allResources[key]) {
+        const newCount = (Number(allResources[key].rating_count) || 1) + 1;
+        allResources[key].rating_count = newCount;
+        safeFetch(`${DB_BASE}/resources/${key}/rating_count.json`, { method: 'PUT', body: JSON.stringify(newCount) });
+      }
+      showToast("⭐ ৫-স্টার রেটিং ফায়ারবেজে সেভ হয়েছে!", "🎉");
       renderResources(document.getElementById('searchInput').value.toLowerCase());
     }
 
@@ -1743,6 +3274,7 @@
       userData.last_mystery = now;
       userData.total_ads_watched = (userData.total_ads_watched || 0) + 1;
       updateUI();
+      playUiSound('win');
       fireConfetti();
       showToast(`🎁 সারপ্রাইজ! মিস্ট্রি বক্স থেকে পেয়েছেন +${won} কয়েন!`, "🎉");
       if (user.id) {
@@ -1758,7 +3290,8 @@
         showToast("আজকের কুইজ ইতিমধ্যে সম্পন্ন করেছেন!", "✅");
         return;
       }
-      if (ansIdx !== 1) {
+      const currentQ = dailyQuizBank[currentQuizIndex] || dailyQuizBank[0];
+      if (ansIdx !== currentQ.ans) {
         showToast("❌ ভুল উত্তর! আবার চেষ্টা করুন।", "⚠️");
         return;
       }
@@ -1767,6 +3300,7 @@
       userData.coins = (userData.coins || 0) + 15;
       userData.last_quiz = today;
       updateUI();
+      playUiSound('win');
       fireConfetti();
       showToast("🧠 সঠিক উত্তর! +১৫ কয়েন যোগ হয়েছে!", "🎉");
       if (user.id) {
@@ -1791,8 +3325,7 @@
       userData.milestones_claimed = claimedMap;
       userData.coins = (userData.coins || 0) + bonusCoins;
       updateUI();
-      fireConfetti();
-      showToast(`🎉 অভিনন্দন! মাইলস্টোন বোনাস +${bonusCoins} কয়েন যোগ হয়েছে!`, "🏆");
+      showAchievementModal(`🤝 ${targetCount} REFERRAL MASTER`, `আপনি ${targetCount}টি সফল রেফার পূর্ণ করে পেয়েছেন +${bonusCoins} বোনাস কয়েন!`);
       if (user.id) {
         await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
         await safeFetch(`${DB_BASE}/users/${user.id}/milestones_claimed.json`, { method: 'PUT', body: JSON.stringify(claimedMap) });
@@ -1859,6 +3392,7 @@
       userData.coins = (userData.coins || 0) + payout;
       userData.bank_coins = 0;
       updateUI();
+      playUiSound('win');
       fireConfetti();
       if (user.id) {
         await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
@@ -1920,6 +3454,7 @@
       userData.total_ads_watched = (userData.total_ads_watched || 0) + 1;
 
       updateUI();
+      playUiSound('win');
       fireConfetti();
       showToast(`অভিনন্দন! +${AD_REWARD} কয়েন যোগ হয়েছে!`, "🎉");
 
@@ -1975,6 +3510,7 @@
       usedBy[String(user.id)] = true;
 
       updateUI();
+      playUiSound('win');
       fireConfetti();
       if (input) input.value = '';
 
@@ -2055,6 +3591,7 @@
     }
 
     function triggerHaptic(type = 'light') {
+      playUiSound(type === 'success' ? 'win' : 'tap');
       if (!appSettings.haptic) return;
       if (tg && tg.HapticFeedback) {
         if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
@@ -2065,7 +3602,6 @@
 
     let toastTimeout = null;
     function showToast(msg, icon = '💎') {
-      // ইন্ট্রো স্প্ল্যাশ চলাকালীন কোনো নোটিফিকেশন দেখাবে না
       if (!isSplashFinished) return;
       const toast = document.getElementById('toast');
       document.getElementById('toastMsg').innerText = msg;
@@ -2116,23 +3652,28 @@
       return isYoutubeUrl(url) || url.endsWith('.mp4') || url.endsWith('.webm') || url.includes('/video/') || url.includes('drive.google.com');
     }
 
-    function drawWheel() {
+    // ক্যানভাসের ভেতরে সরাসরি রোটেশন অ্যাঙ্গেল এঁকে চাকা ঘোরানোর ফাংশন (১০০% গ্যারান্টিড ঘুরবে!)
+    function drawWheel(rotationDeg = 0) {
       const canvas = document.getElementById('wheelCanvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       const numSegments = spinRewards.length;
       const arc = (2 * Math.PI) / numSegments;
       const radius = canvas.width / 2;
+      const rotRad = (rotationDeg * Math.PI) / 180;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       spinRewards.forEach((seg, i) => {
-        const angle = i * arc;
+        const angle = i * arc + rotRad;
         ctx.beginPath();
         ctx.fillStyle = seg.bg;
         ctx.moveTo(radius, radius);
-        ctx.arc(radius, radius, radius, angle, angle + arc);
+        ctx.arc(radius, radius, radius - 2, angle, angle + arc);
         ctx.lineTo(radius, radius);
         ctx.fill();
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = "rgba(255,255,255,0.22)";
+        ctx.stroke();
 
         ctx.save();
         ctx.translate(radius, radius);
@@ -2143,11 +3684,42 @@
         ctx.fillText(seg.text, radius - 12, 4);
         ctx.restore();
       });
+
+      ctx.beginPath();
+      ctx.fillStyle = "#fbbf24";
+      ctx.arc(radius, radius, 14, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#020617";
+      ctx.stroke();
+    }
+
+    async function checkMaintenanceAndEventPopup() {
+      try {
+        const config = await safeFetch(`${DB_BASE}/app_config.json`);
+        if (!config) return;
+        if (config.maintenance && Number(user.id) !== ADMIN_TELEGRAM_ID) {
+          document.getElementById('maintenanceOverlay').classList.add('active');
+        }
+        if (config.popup_active && config.popup_text && !sessionStorage.getItem('event_popup_seen')) {
+          sessionStorage.setItem('event_popup_seen', '1');
+          document.getElementById('eventPopupDesc').innerText = config.popup_text;
+          const popImg = document.getElementById('eventPopupImg');
+          if (popImg && config.popup_img && String(config.popup_img).startsWith('http')) {
+            popImg.src = config.popup_img;
+            popImg.style.display = 'block';
+          }
+          setTimeout(() => {
+            document.getElementById('eventPopupModal').classList.add('active');
+          }, 2600);
+        }
+      } catch(e) {}
     }
 
     async function initApp() {
       applySavedSettingsOnLoad();
       startLiveActivityTicker();
+      loadNextQuizQuestion();
       generateFancyText("Adom Ali");
 
       const realUser = getTelegramUser();
@@ -2170,7 +3742,7 @@
         try {
           const data = await safeFetch(`${DB_BASE}/users/${user.id}.json`);
           if (data) {
-            userData = Object.assign({ coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, last_spin_time: 0, streak_days: 1, bank_coins: 0, unlocked: {}, joined_channel: false }, data);
+            userData = Object.assign({ coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, last_spin_time: 0, streak_days: 1, bank_coins: 0, vip_pass_until: 0, lottery_tickets: 0, unlocked: {}, joined_channel: false }, data);
             if (data.name && (user.first_name === "Member" || user.first_name === "VIP সদস্য")) {
               user.first_name = data.name;
               document.getElementById('uName').innerText = data.name;
@@ -2187,13 +3759,14 @@
             }
             applyUserProfilePicture(user.photo_url || data.photo, user.username || data.username, user.first_name || data.name);
           } else {
-            userData = { name: user.first_name, username: user.username || "", photo: user.photo_url || "", coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, last_spin_time: 0, streak_days: 1, bank_coins: 0, unlocked: {}, joined_channel: false };
+            userData = { name: user.first_name, username: user.username || "", photo: user.photo_url || "", coins: 20, refers: 0, daily_ads: {}, claimed_count: 0, total_ads_watched: 0, last_ad_time: 0, last_spin_time: 0, streak_days: 1, bank_coins: 0, vip_pass_until: 0, lottery_tickets: 0, unlocked: {}, joined_channel: false };
             await safeFetch(`${DB_BASE}/users/${user.id}.json`, { method: 'PUT', body: JSON.stringify(userData) });
           }
         } catch (e) {}
       }
 
-      drawWheel();
+      drawWheel(currentWheelRotation);
+      checkMaintenanceAndEventPopup();
       await loadGlobalStatsAndTrackVisit();
       loadNotice();
       updateUI();
@@ -2228,6 +3801,11 @@
         let totalAds = Number(stats.total_ads) || 0;
         let totalClaims = Number(stats.total_claims) || 0;
         let totalRefers = Number(stats.total_refers) || 0;
+
+        if (stats.jackpot_pool) {
+          const poolEl = document.getElementById('jackpotPoolTotalTxt');
+          if (poolEl) poolEl.innerText = `🏆 বর্তমান জ্যাকপট পুল: ${stats.jackpot_pool} 🪙`;
+        }
 
         visits += 1;
         document.getElementById('statVisits').innerText = visits;
@@ -2288,6 +3866,18 @@
       const bankBadge = document.getElementById('bankBalanceBadge');
       if (bankBadge) bankBadge.innerText = `জমা: ${userData.bank_coins || 0} 🪙`;
 
+      const ticketTxt = document.getElementById('myLotteryTicketsTxt');
+      if (ticketTxt) ticketTxt.innerText = `🎟️ আমার টিকিট: ${userData.lottery_tickets || 0} টি`;
+
+      const passActive = isVipPassActive();
+      const topPassTag = document.getElementById('topVipPassTag');
+      const profPassBadge = document.getElementById('vipPassStatusBadge');
+      if (topPassTag) topPassTag.style.display = passActive ? 'inline-block' : 'none';
+      if (profPassBadge) {
+        profPassBadge.innerText = passActive ? '✅ সক্রিয় (Active)' : 'নিষ্ক্রিয়';
+        profPassBadge.className = passActive ? 'badge-count' : 'badge-rev';
+      }
+
       const streakBoxes = document.querySelectorAll('#streakGridContainer .streak-day-box');
       const curStreak = Math.min(7, Math.max(1, Number(userData.streak_days) || 1));
       streakBoxes.forEach((b, i) => b.classList.toggle('active', i < curStreak));
@@ -2313,10 +3903,14 @@
       container.innerHTML = '';
       keys.forEach(k => {
         const it = items[k];
+        const zipPass = allResources[k]?.zip_password || '';
         const div = document.createElement('div');
         div.className = 'unlocked-item';
         div.innerHTML = `
-          <span><b>${it.name}</b></span>
+          <div>
+            <b>${it.name}</b>
+            ${zipPass ? `<br><span class="zip-pass-badge" onclick="fallbackCopy('${zipPass}')">🔑 ZIP Pass: ${zipPass} 📋</span>` : ''}
+          </div>
           <button class="action-btn" onclick="openClaimBot('${k}')" style="padding:6px 10px; width:auto; font-size:11px;">ইনবক্সে নিন ⚡</button>
         `;
         container.appendChild(div);
@@ -2371,12 +3965,19 @@
       if (userData.last_checkin === today) return;
 
       const streakRewards = [5, 8, 10, 12, 15, 20, 50];
+      const lastTs = Number(userData.last_checkin_ts) || 0;
+      const hoursSinceLast = (Date.now() - lastTs) / (1000 * 60 * 60);
+
       let sDay = (Number(userData.streak_days) || 0) + 1;
+      if (lastTs > 0 && hoursSinceLast > 48) {
+        sDay = 1;
+      }
       if (sDay > 7) sDay = 1;
       const bonus = streakRewards[sDay - 1] || 5;
 
       userData.coins = (userData.coins || 0) + bonus;
       userData.last_checkin = today;
+      userData.last_checkin_ts = Date.now();
       userData.streak_days = sDay;
       updateUI();
       checkDailyStatus();
@@ -2385,6 +3986,7 @@
       if (user.id) {
         await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
         await safeFetch(`${DB_BASE}/users/${user.id}/last_checkin.json`, { method: 'PUT', body: JSON.stringify(today) });
+        await safeFetch(`${DB_BASE}/users/${user.id}/last_checkin_ts.json`, { method: 'PUT', body: JSON.stringify(userData.last_checkin_ts) });
         await safeFetch(`${DB_BASE}/users/${user.id}/streak_days.json`, { method: 'PUT', body: JSON.stringify(sDay) });
       }
       showToast(`দৈনিক স্ট্রিক বোনাস +${bonus} কয়েন যোগ হয়েছে!`, "🎉");
@@ -2423,7 +4025,9 @@
       }
     }
 
+    // ১০০% গ্যারান্টিড ক্যানভাস ফিজিক্স ইঞ্জিনসহ লাকি স্পিন হুইল (চাকা প্রতি ফ্রেমে ঘুরবে এবং টিক-টিক সাউন্ড করবে!)
     async function playLuckySpin() {
+      if (isWheelSpinningNow) return;
       triggerHaptic();
       const now = Date.now();
       const lastSpinTs = Number(userData.last_spin_time) || 0;
@@ -2432,42 +4036,77 @@
         return;
       }
 
+      isWheelSpinningNow = true;
       const btn = document.getElementById('btnSpin');
       btn.disabled = true;
+      btn.innerText = "🎡 চাকা ঘুরছে...";
 
-      const winningIndex = Math.floor(Math.random() * spinRewards.length);
+      const numSegs = spinRewards.length;
+      const segAngle = 360 / numSegs;
+      const winningIndex = Math.floor(Math.random() * numSegs);
       const selectedReward = spinRewards[winningIndex];
-      const targetRotation = 360 - (winningIndex * (360/spinRewards.length) + (360/spinRewards.length)/2) - 90;
-      currentWheelRotation += 1440 + (targetRotation - (currentWheelRotation % 360));
 
-      document.getElementById('wheelCanvas').style.transform = `rotate(${currentWheelRotation}deg)`;
+      const targetAngleMod = (270 - (winningIndex * segAngle + segAngle / 2) + 360) % 360;
+      const startAngle = currentWheelRotation;
+      const extraSpins = 360 * 6;
+      const currentMod = ((startAngle % 360) + 360) % 360;
+      const diffAngle = (targetAngleMod - currentMod + 360) % 360;
+      const finalAngle = startAngle + extraSpins + diffAngle;
 
-      setTimeout(async () => {
-        if (Math.random() < 0.5) {
-          showToast("বোনাস ভেরিফিকেশন বিজ্ঞাপন লোড হচ্ছে...", "🎬");
-          await triggerMonetagAd();
-          userData.total_ads_watched = (userData.total_ads_watched || 0) + 1;
-          if (user.id) {
-            safeFetch(`${DB_BASE}/users/${user.id}/total_ads_watched.json`, { method: 'PUT', body: JSON.stringify(userData.total_ads_watched) });
-          }
+      const duration = 3500;
+      const startTime = performance.now();
+      let lastTickSegment = -1;
+
+      function animateWheelFrame(nowTime) {
+        const elapsed = nowTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        currentWheelRotation = startAngle + (finalAngle - startAngle) * easeOut;
+
+        drawWheel(currentWheelRotation);
+
+        const curSeg = Math.floor(((currentWheelRotation % 360) / segAngle));
+        if (curSeg !== lastTickSegment && progress < 0.96) {
+          lastTickSegment = curSeg;
+          playUiSound('tick');
         }
 
-        triggerHaptic('success');
-        const spinDoneTime = Date.now();
-        userData.coins = (userData.coins || 0) + selectedReward.coins;
-        userData.last_spin_time = spinDoneTime;
-        userData.last_spin = getTodayKey();
-        updateUI();
-        checkSpinStatus();
-        fireConfetti();
+        if (progress < 1) {
+          requestAnimationFrame(animateWheelFrame);
+        } else {
+          finishSpinReward(selectedReward);
+        }
+      }
 
+      requestAnimationFrame(animateWheelFrame);
+    }
+
+    async function finishSpinReward(selectedReward) {
+      isWheelSpinningNow = false;
+      if (Math.random() < 0.5) {
+        showToast("বোনাস ভেরিফিকেশন বিজ্ঞাপন লোড হচ্ছে...", "🎬");
+        await triggerMonetagAd();
+        userData.total_ads_watched = (userData.total_ads_watched || 0) + 1;
         if (user.id) {
-          await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
-          await safeFetch(`${DB_BASE}/users/${user.id}/last_spin_time.json`, { method: 'PUT', body: JSON.stringify(spinDoneTime) });
-          await safeFetch(`${DB_BASE}/users/${user.id}/last_spin.json`, { method: 'PUT', body: JSON.stringify(userData.last_spin) });
+          safeFetch(`${DB_BASE}/users/${user.id}/total_ads_watched.json`, { method: 'PUT', body: JSON.stringify(userData.total_ads_watched) });
         }
-        showToast(`স্পিন থেকে পেয়েছেন ${selectedReward.text}! (২ ঘণ্টা পর আবার স্পিন করতে পারবেন)`, "🎉");
-      }, 3500);
+      }
+
+      triggerHaptic('success');
+      const spinDoneTime = Date.now();
+      userData.coins = (userData.coins || 0) + selectedReward.coins;
+      userData.last_spin_time = spinDoneTime;
+      userData.last_spin = getTodayKey();
+      updateUI();
+      checkSpinStatus();
+      fireConfetti();
+
+      if (user.id) {
+        await safeFetch(`${DB_BASE}/users/${user.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await safeFetch(`${DB_BASE}/users/${user.id}/last_spin_time.json`, { method: 'PUT', body: JSON.stringify(spinDoneTime) });
+        await safeFetch(`${DB_BASE}/users/${user.id}/last_spin.json`, { method: 'PUT', body: JSON.stringify(userData.last_spin) });
+      }
+      showToast(`স্পিন থেকে পেয়েছেন ${selectedReward.text}! (২ ঘণ্টা পর আবার স্পিন করতে পারবেন)`, "🎉");
     }
 
     function initScratchCard() {
@@ -2623,15 +4262,21 @@
 
       const fontTester = document.getElementById('liveFontTesterBox');
       const toolsSec = document.getElementById('designerToolsSection');
+      const bundleSec = document.getElementById('comboBundleSection');
+      const battleSec = document.getElementById('designBattleSection');
       const resGrid = document.getElementById('resourceGrid');
 
       if (fontTester) fontTester.classList.toggle('show', cat === 'font');
-      if (cat === 'tools') {
-        if (toolsSec) toolsSec.style.display = 'block';
+      if (toolsSec) toolsSec.style.display = cat === 'tools' ? 'block' : 'none';
+      if (bundleSec) bundleSec.style.display = cat === 'bundle' ? 'block' : 'none';
+      if (battleSec) battleSec.style.display = cat === 'battle' ? 'block' : 'none';
+
+      if (cat === 'battle') loadDesignBattleEntries();
+
+      if (cat === 'tools' || cat === 'bundle' || cat === 'battle') {
         if (resGrid) resGrid.style.display = 'none';
         return;
       } else {
-        if (toolsSec) toolsSec.style.display = 'none';
         if (resGrid) resGrid.style.display = 'grid';
       }
 
@@ -2670,6 +4315,7 @@
 
       const fragment = document.createDocumentFragment();
       const dlBtnText = appSettings.lang === 'en' ? "Download ⚡" : "ডাউনলোড করুন ⚡";
+      const hasPass = isVipPassActive();
       const isDiamondVip = (userData.coins || 0) >= 200;
 
       keys.forEach(k => {
@@ -2682,7 +4328,14 @@
         const safeName = (item.name || 'Resource').replace(/'/g, "\\'");
         const heartIcon = savedFavorites[k] ? '❤️' : '🤍';
         const origCoins = Number(item.coins) || 0;
-        const effectiveCoins = (isDiamondVip && origCoins > 0) ? Math.max(1, Math.floor(origCoins * 0.8)) : origCoins;
+        let effectiveCoins = origCoins;
+        if (hasPass && origCoins > 0) effectiveCoins = Math.max(1, Math.floor(origCoins * 0.7));
+        else if (isDiamondVip && origCoins > 0) effectiveCoins = Math.max(1, Math.floor(origCoins * 0.8));
+
+        const rCount = item.rating_count || (item.total_claims ? item.total_claims + 3 : 5);
+        const ratedText = userRatings[k] ? `🌟 5.0 (${rCount})` : `⭐⭐⭐⭐⭐ (${rCount})`;
+        const isUnlockedByMe = Boolean(userData.unlocked && userData.unlocked[k]);
+        const zipPass = item.zip_password || '';
         
         let mediaHtml = '';
         if (isVideo) {
@@ -2725,10 +4378,11 @@
           ${mediaHtml}
           <div class="card-body">
             <div class="card-title">${item.name}</div>
-            <div class="card-rating-row">
-              <span>⭐⭐⭐⭐⭐ (4.9)</span>
-              ${isDiamondVip && origCoins > 0 ? `<span style="color:#4ade80;">VIP -20%</span>` : ''}
+            <div class="card-rating-row" onclick="rateResourceItem('${k}', event)">
+              <span>${ratedText}</span>
+              ${hasPass && origCoins > 0 ? `<span style="color:#4ade80;">PASS -30%</span>` : (isDiamondVip && origCoins > 0 ? `<span style="color:#4ade80;">VIP -20%</span>` : '')}
             </div>
+            ${isUnlockedByMe && zipPass ? `<div><span class="zip-pass-badge" onclick="fallbackCopy('${zipPass}')">🔑 পাসওয়ার্ড: ${zipPass} 📋</span></div>` : ''}
             <div class="card-meta">
               <span class="price-tag">🪙 ${effectiveCoins}</span>
               <button class="btn-claim" onclick="claimResource('${k}', ${effectiveCoins}, '${safeName}', '${item.type}')">${dlBtnText}</button>
@@ -2740,14 +4394,39 @@
       container.appendChild(fragment);
     }
 
+    let isBeforeAfterActive = false;
+    function zoomPreviewMedia(scaleVal) {
+      triggerHaptic();
+      const img = document.getElementById('modalImg');
+      const vid = document.getElementById('modalVideo');
+      if (img) img.style.transform = `scale(${scaleVal})`;
+      if (vid) vid.style.transform = `scale(${scaleVal})`;
+    }
+
+    function toggleBeforeAfterFilter() {
+      triggerHaptic();
+      isBeforeAfterActive = !isBeforeAfterActive;
+      const img = document.getElementById('modalImg');
+      const vid = document.getElementById('modalVideo');
+      const flt = isBeforeAfterActive ? 'grayscale(90%) contrast(85%)' : 'none';
+      if (img) img.style.filter = flt;
+      if (vid) vid.style.filter = flt;
+      showToast(isBeforeAfterActive ? "👀 Before (Original Raw View)" : "✨ After (Final Effect View)", "🎬");
+    }
+
     function openMediaPreview(src, isVideo = false) {
       if (!src) return;
       triggerHaptic();
+      zoomPreviewMedia(1);
+      isBeforeAfterActive = false;
       const modal = document.getElementById('mediaModal');
       const img = document.getElementById('modalImg');
       const vid = document.getElementById('modalVideo');
       const ytWrapper = document.getElementById('youtubeEmbedWrapper');
       const ytIframe = document.getElementById('modalYoutubeIframe');
+
+      if (img) img.style.filter = 'none';
+      if (vid) vid.style.filter = 'none';
 
       if (isVideo) {
         img.style.display = 'none';
@@ -2780,6 +4459,7 @@
       const ytIframe = document.getElementById('modalYoutubeIframe');
       const ytWrapper = document.getElementById('youtubeEmbedWrapper');
 
+      zoomPreviewMedia(1);
       vid.pause();
       vid.src = '';
       ytIframe.src = '';
@@ -2796,32 +4476,34 @@
 
       if (confirm(`আপনি কি ${cost} কয়েন দিয়ে এই ফাইলটি ডাউনলোড করতে চান?`)) {
         triggerHaptic('success');
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        const countdownText = document.getElementById('loadingCountdownText');
-        loadingOverlay.classList.add('active');
 
-        let prepTime = 5;
-        countdownText.innerText = `দয়া করে ৫ সেকেন্ড অপেক্ষা করুন (${prepTime}s)...`;
+        if (!isVipPassActive()) {
+          startLoadingSpinnerWheel();
+          const countdownText = document.getElementById('loadingCountdownText');
 
-        await new Promise(resolve => {
-          const t = setInterval(() => {
-            prepTime--;
-            if (prepTime > 0) countdownText.innerText = `দয়া করে ৫ সেকেন্ড অপেক্ষা করুন (${prepTime}s)...`;
-            else { clearInterval(t); resolve(); }
-          }, 1000);
-        });
+          let prepTime = 5;
+          countdownText.innerText = `দয়া করে ৫ সেকেন্ড অপেক্ষা করুন (${prepTime}s)...`;
 
-        await triggerMonetagAd();
-        userData.total_ads_watched = (userData.total_ads_watched || 0) + 1;
+          await new Promise(resolve => {
+            const t = setInterval(() => {
+              prepTime--;
+              if (prepTime > 0) countdownText.innerText = `দয়া করে ৫ সেকেন্ড অপেক্ষা করুন (${prepTime}s)...`;
+              else { clearInterval(t); resolve(); }
+            }, 1000);
+          });
 
-        if (Math.random() < 0.45) {
-          countdownText.innerText = `ফাইল ভেরিফাই করা হচ্ছে, আরেকটু অপেক্ষা করুন...`;
-          await new Promise(r => setTimeout(r, 1200));
           await triggerMonetagAd();
           userData.total_ads_watched = (userData.total_ads_watched || 0) + 1;
-        }
 
-        loadingOverlay.classList.remove('active');
+          if (Math.random() < 0.45) {
+            countdownText.innerText = `ফাইল ভেরিফাই করা হচ্ছে, আরেকটু অপেক্ষা করুন...`;
+            await new Promise(r => setTimeout(r, 1200));
+            await triggerMonetagAd();
+            userData.total_ads_watched = (userData.total_ads_watched || 0) + 1;
+          }
+
+          stopLoadingSpinnerWheel();
+        }
 
         const realClaimUser = getTelegramUser();
 
@@ -2832,6 +4514,21 @@
         updateUI();
         fireConfetti();
 
+        if (userData.claimed_count === 10) {
+          userData.coins += 20;
+          updateUI();
+          showAchievementModal("👑 SUPER DOWNLOADER LV.10", "আপনি সফলভাবে ১০টি রিসোর্স ডাউনলোড পূর্ণ করে পেয়েছেন +২০ বোনাস কয়েন!");
+        }
+
+        const creatorUid = allResources[key]?.creator_uid;
+        if (creatorUid && String(creatorUid) !== String(realClaimUser.id)) {
+          safeFetch(`${DB_BASE}/users/${creatorUid}/coins.json`).then(cCoins => {
+            if (typeof cCoins === 'number') {
+              safeFetch(`${DB_BASE}/users/${creatorUid}/coins.json`, { method: 'PUT', body: JSON.stringify(cCoins + 2) });
+            }
+          });
+        }
+
         if (!realClaimUser.id) {
           const botDeepLink = `https://t.me/${BOT_USERNAME}?start=get_${key}`;
           if (tg && tg.openTelegramLink) tg.openTelegramLink(botDeepLink);
@@ -2840,6 +4537,7 @@
         }
 
         await safeFetch(`${DB_BASE}/users/${realClaimUser.id}/coins.json`, { method: 'PUT', body: JSON.stringify(userData.coins) });
+        await safeFetch(`${DB_BASE}/users/${realClaimUser.id}/claimed_count.json`, { method: 'PUT', body: JSON.stringify(userData.claimed_count) });
         await safeFetch(`${DB_BASE}/users/${realClaimUser.id}/total_ads_watched.json`, { method: 'PUT', body: JSON.stringify(userData.total_ads_watched) });
         await safeFetch(`${DB_BASE}/users/${realClaimUser.id}/unlocked/${key}.json`, { method: 'PUT', body: JSON.stringify(userData.unlocked[key]) });
 
@@ -2907,6 +4605,43 @@
       document.getElementById('noticeText').innerText = txt;
       document.getElementById('admNoticeInput').value = '';
       showToast("✅ নোটিশ সফলভাবে আপডেট হয়েছে!", "📢");
+    }
+
+    async function adminCreateVaultPin() {
+      triggerHaptic();
+      const pin = (document.getElementById('admVaultPinInput')?.value || '').trim();
+      const coins = parseInt((document.getElementById('admVaultCoinsInput')?.value || '').trim());
+      if (!pin || isNaN(coins) || coins <= 0) {
+        showToast("সঠিক পিন ও বোনাস কয়েন লিখুন!", "⚠️");
+        return;
+      }
+      await safeFetch(`${DB_BASE}/secret_vault/${pin}.json`, {
+        method: 'PUT',
+        body: JSON.stringify({ coins: coins, used_by: {} })
+      });
+      document.getElementById('admVaultPinInput').value = '';
+      document.getElementById('admVaultCoinsInput').value = '';
+      showToast(`🔐 ভল্ট পিন (${pin}) সফলভাবে সেট হয়েছে! (+${coins}🪙)`, "✅");
+    }
+
+    async function adminSetEventPopup(activeState) {
+      triggerHaptic();
+      const txt = (document.getElementById('admPopupEventText')?.value || '').trim() || "আজকের স্পেশাল ইভেন্টে অংশ নিয়ে জিতে নিন ফ্রি কয়েন ও প্রিমিয়াম PLP ফাইল!";
+      const imgUrl = (document.getElementById('admPopupEventImg')?.value || '').trim();
+      await safeFetch(`${DB_BASE}/app_config.json`, {
+        method: 'PATCH',
+        body: JSON.stringify({ popup_active: activeState, popup_text: txt, popup_img: imgUrl })
+      });
+      showToast(activeState ? "🔥 ইভেন্ট পপ-আপ চালু করা হয়েছে!" : "❌ ইভেন্ট পপ-আপ বন্ধ করা হয়েছে!", "📢");
+    }
+
+    async function adminToggleMaintenance(state) {
+      triggerHaptic('warning');
+      await safeFetch(`${DB_BASE}/app_config.json`, {
+        method: 'PATCH',
+        body: JSON.stringify({ maintenance: state })
+      });
+      showToast(state ? "🔒 মেইনটেন্যান্স মোড চালু হয়েছে!" : "🔓 মেইনটেন্যান্স মোড বন্ধ হয়েছে!", "🛠️");
     }
 
     async function adminGiveUserCoins() {
@@ -3218,6 +4953,7 @@
       document.getElementById(pageId).classList.add('active');
       if (btn) btn.classList.add('active');
       
+      if (pageId === 'pageAds') drawWheel(currentWheelRotation);
       if (pageId === 'pageLeaderboard') loadLeaderboard();
       if (pageId === 'pageRefer') loadReferLeaderboard();
       if (pageId === 'pageAdmin') loadAdminAnalytics();
@@ -3240,4 +4976,4 @@
     initApp();
   </script>
 </body>
-        </html>    
+</html>
