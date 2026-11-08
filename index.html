@@ -1466,8 +1466,8 @@
       font-size: 20px;
     }
   </style>
-</head>
-<body>
+  </head>
+  <body>
 
   <!-- প্রিমিয়াম ইন্ট্রো স্প্ল্যাশ স্ক্রিন (কোনো বিরক্তিকর টোস্ট নোটিফিকেশন ছাড়াই স্মুথলি ওপেন হবে) -->
   <div id="introSplash">
@@ -1721,6 +1721,18 @@
 
   <div class="container">
     
+    <div class="container">
+    
+    <!-- লাইভ উইনার ও অ্যাক্টিভিটি টিকার বার -->
+    <div id="liveActivityTickerBar" style="background: linear-gradient(90deg, rgba(56,189,248,0.12), rgba(251,191,36,0.12)); border: 1px solid rgba(56,189,248,0.3); border-radius: 12px; padding: 8px 12px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 800; color: #38bdf8; overflow: hidden; white-space: nowrap;">
+      <span style="width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 10px #22c55e; flex-shrink: 0;"></span>
+      <span id="liveTickerScrollText" style="overflow: hidden; text-overflow: ellipsis;">🔥 মোশাররফ ভাই এইমাত্র বিজ্ঞাপন দেখে ২০ কয়েন আর্ন করেছেন!</span>
+    </div>
+
+    <div class="notice-card" id="noticeBox" onclick="openNoticeLink()">
+      <span>📢</span>
+      <span id="noticeText">স্বাগতম! নতুন প্রিমিয়াম PLP, XML ও ফন্ট যুক্ত করা হয়েছে।</span>
+    </div>
     <!-- লাইভ উইনার ও অ্যাক্টিভিটি টিকার বার -->
     <div class="live-ticker-wrap">
       <span class="ticker-dot"></span>
@@ -1930,7 +1942,7 @@
       <div class="grid" id="resourceGrid"></div>
   </div>
 
-    <div id="pageAds" class="view-page">
+      <div id="pageAds" class="view-page">
       <div class="stat-card" style="text-align: left;">
         <h3 style="font-size: 14.5px; font-weight: 800; margin-bottom: 8px; color: #fff;">🚀 স্পেশাল চ্যানেল টাস্ক</h3>
         <div class="task-item">
@@ -4974,6 +4986,43 @@
     }
 
     initApp();
+  function openSupport() {
+      triggerHaptic();
+      if (tg && tg.openTelegramLink) tg.openTelegramLink(SUPPORT_URL);
+      else window.open(SUPPORT_URL, '_blank');
+    }
+
+    initApp();
+
+    // ─── রিয়েল-টাইম লাইভ অ্যাক্টিভিটি নোটিফিকেশন টিকার ইঞ্জিন ───
+    function startLiveAppTicker() {
+      const names = ["রহিম আহমেদ", "করিম উদ্দিন", "সাব্বির হোসেন", "ফাহিম ইসলাম", "তানভীর রহমান", "ইমরান খান", "সোহাগ মিয়া", "নাজমুল হক", "আরিফ হোসেন", "শাকিল আহমেদ", "মোরশেদ আলম", "রাকিবুল হাসান"];
+      const actions = [
+        "বিজ্ঞাপন দেখে ২০ কয়েন আর্ন করেছেন! 📺",
+        "লাকি স্পিন করে ১০ কয়েন জিতেছেন! 🎡",
+        "একটি প্রিমিয়াম PLP ফাইল ডাউনলোড করেছেন! 📥",
+        "ডেইলি স্ট্রিক ক্লেইম করেছেন! 🎁",
+        "চ্যানেলে জয়েন করে ১৫ কয়েন বোনাস পেয়েছেন! 📢",
+        "মিস্ট্রি বক্স খুলে ৩০ কয়েন সারপ্রাইজ জিতেছেন! 📦"
+      ];
+
+      setInterval(() => {
+        const randomName = names[Math.floor(Math.random() * names.length)];
+        const randomAction = actions[Math.floor(Math.random() * actions.length)];
+        const tickerEl = document.getElementById('liveTickerScrollText');
+        if (tickerEl) {
+          tickerEl.style.opacity = '0';
+          setTimeout(() => {
+            tickerEl.innerText = `🔥 ${randomName} এইমাত্র ${randomAction}`;
+            tickerEl.style.opacity = '1';
+            tickerEl.style.transition = 'opacity 0.4s ease';
+          }, 300);
+        }
+      }, 4000);
+    }
+
+    // অ্যাপ চালুর সাথে সাথেই এটি রান হবে
+    startLiveAppTicker();
   </script>
 </body>
 </html>
