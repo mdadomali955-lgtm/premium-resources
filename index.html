@@ -10,19 +10,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Hind+Siliguri:wght@500;600;700&family=Galada&family=Atma:wght@600;700&family=Mina:wght@700&display=swap" rel="stylesheet">
   
   <!-- Monetag SDK -->
-  <script src="//libtl.com/sdk.js" data-zone="11750504" data-sdk="show_11750504"></script>
+  <script src="https://libtl.com/sdk.js" data-zone="11750504" data-sdk="show_11750504"></script>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
-  /* ওপরের মার্জিন স্বাভাবিক বা কমানোর জন্য */
-  .container {
-    margin-top: 0px !important;
-  }
-  
-  /* নিচের 'VIP অফার' সেকশনের উপরে ফাঁকা জায়গা বা মার্জিন বাড়ানোর জন্য */
-  .vip-offer, .vip-banner { /* আপনার ক্লাসের নাম অনুযায়ী এটি বসাবেন */
-    margin-top: 14px !important;
-  }
+    /* ওপরের মার্জিন ও সব কার্ডের গ্যাপ একদম সমান ও নিখুঁত করার স্টাইল */
+    .container {
+      margin-top: 0px !important;
+      padding: 12px 16px 16px 16px;
+      position: relative;
+      z-index: 1;
+    }
 
     :root {
       --bg-base: #02040a;
@@ -152,30 +150,34 @@
       transition: background 0.25s ease, color 0.25s ease;
     }
 
-    /* প্রিমিয়াম ইন্ট্রো স্প্ল্যাশ স্ক্রিন স্টাইল (কম দামি ফোনেও মাখনের মতো চলবে) */
-    #introSplash {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: radial-gradient(circle at 50% 35%, #0f172a 0%, #02040a 78%);
-      z-index: 2147483647;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.65s;
-      will-change: opacity, transform;
-      transform: translate3d(0, 0, 0);
-    }
-    #introSplash.hide {
-      opacity: 0;
-      transform: scale3d(1.06, 1.06, 1);
-      visibility: hidden;
-      pointer-events: none;
-    }
+    // ইন্ট্রো স্প্ল্যাশ স্ক্রিন কন্ট্রোলার (ফিক্সড ও গ্যারান্টিড স্মুথ ভার্সন)
+    (function runIntroSplash() {
+      const bar = document.getElementById('splashBarFill');
+      const splash = document.getElementById('introSplash');
+      const statusTxt = document.getElementById('splashStatusText');
+      if (bar) setTimeout(() => { bar.style.width = '100%'; }, 60);
+
+      let pct = 0;
+      const pctInterval = setInterval(() => {
+        pct += 20;
+        if (pct > 100) pct = 100;
+        if (statusTxt) {
+          if (pct < 50) statusTxt.innerText = `প্রিমিয়াম সার্ভার কানেক্ট হচ্ছে... ${pct}%`;
+          else statusTxt.innerText = `রিসোর্স ও প্রোফাইল লোড হচ্ছে... ${pct}%`;
+        }
+        if (pct >= 100) clearInterval(pctInterval);
+      }, 300);
+
+      // সার্ভারের রেসপন্স যাই হোক না কেন, নির্দিষ্ট সময়ে স্প্ল্যাশ স্ক্রিন সরে গিয়ে অ্যাপ ওপেন হবে
+      setTimeout(() => {
+        clearInterval(pctInterval);
+        if (splash) {
+          splash.classList.add('hide');
+          setTimeout(() => splash.style.display = 'none', 600);
+        }
+        isSplashFinished = true;
+      }, 2500);
+    })();
     .splash-logo-ring {
       width: 96px;
       height: 96px;
@@ -611,36 +613,38 @@
 
     /* লাইভ উইনার অ্যাক্টিভিটি টিকার */
     .live-ticker-wrap {
-      background: rgba(56, 189, 248, 0.08);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      border-radius: 12px;
-      padding: 7px 12px;
+      background: linear-gradient(90deg, rgba(56, 189, 248, 0.12), rgba(251, 191, 36, 0.12));
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 14px;
+      padding: 9px 12px;
+      margin-top: 4px;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 11px;
+      font-size: 11.5px;
       font-weight: 800;
       color: var(--accent);
       overflow: hidden;
       white-space: nowrap;
     }
     .ticker-dot {
-      width: 7px;
-      height: 7px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: #22c55e;
-      box-shadow: 0 0 8px #22c55e;
+      box-shadow: 0 0 10px #22c55e;
       flex-shrink: 0;
     }
 
-    /* ফ্ল্যাশ ডিল / হ্যাপি আওয়ার ব্যানার */
+    /* ফ্ল্যাশ ডিল / হ্যাপি আওয়ার ব্যানার (মার্জিন নিখুঁত করা হয়েছে) */
     .flash-deal-bar {
       background: linear-gradient(90deg, rgba(244, 63, 94, 0.2), rgba(251, 191, 36, 0.2));
       border: 1px solid rgba(251, 191, 36, 0.45);
       border-radius: 16px;
-      padding: 10px 14px;
-      margin-bottom: 14px;
+      padding: 12px 14px;
+      margin-top: 0px;
+      margin-bottom: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -648,18 +652,18 @@
       font-weight: 800;
     }
 
-    /* ৭ দিনের স্ট্রিক বার */
+    /* ৭ দিনের স্ট্রিক বার (ডেইলি কার্ডের ভেতরে নিখুঁতভাবে থাকবে) */
     .streak-days-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 5px;
-      margin-top: 10px;
+      gap: 6px;
+      margin-top: 12px;
     }
     .streak-day-box {
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 10px;
-      padding: 6px 2px;
+      padding: 7px 2px;
       text-align: center;
       font-size: 9.5px;
       font-weight: 800;
@@ -737,12 +741,6 @@
       justify-content: space-between;
       gap: 10px;
     }
-
-    .container {
-      padding: 16px;
-      position: relative;
-      z-index: 1;
-    }
     
     .notice-card { 
       background: var(--liquid-glass);
@@ -767,7 +765,7 @@
       border: 1px solid var(--liquid-border-side); 
       border-radius: 20px;
       padding: 14px 6px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       text-align: center; 
     }
     .live-stat-item {
@@ -791,13 +789,15 @@
       background: linear-gradient(135deg, rgba(25, 33, 56, 0.85), rgba(15, 23, 42, 0.9)); 
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 20px; 
-      padding: 16px 18px;
-      margin-bottom: 14px; 
+      padding: 15px 16px;
+      margin-top: 0px;
+      margin-bottom: 12px; 
     }
     .daily-card-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 10px;
     }
     .daily-btn { 
       background: linear-gradient(135deg, #fbbf24, #f59e0b);
@@ -807,7 +807,8 @@
       border-radius: 12px;
       font-weight: 900;
       font-size: 12px;
-      cursor: pointer; 
+      cursor: pointer;
+      white-space: nowrap;
     }
     .daily-btn:active {
       transform: scale(0.95);
@@ -827,7 +828,7 @@
       border-radius: 16px;
       font-weight: 800;
       font-size: 13px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -847,7 +848,7 @@
       color: #ffffff;
       font-size: 13px;
       font-weight: 600;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       outline: none; 
     }
     .search-box::placeholder {
@@ -890,7 +891,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 6px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
     .tab-btn { 
       padding: 11px 8px;
@@ -1476,8 +1477,8 @@
       font-size: 20px;
     }
   </style>
-  </head>
-  <body>
+</head>
+<body>
 
   <!-- প্রিমিয়াম ইন্ট্রো স্প্ল্যাশ স্ক্রিন (কোনো বিরক্তিকর টোস্ট নোটিফিকেশন ছাড়াই স্মুথলি ওপেন হবে) -->
   <div id="introSplash">
@@ -1729,12 +1730,13 @@
     </div>
   </div>
 
-    <div class="container" style="padding-top: 6px;">
+  <!-- মূল কন্টেইনার (সবগুলো পেজ এখন সঠিকভাবে এর ভেতরে থাকবে) -->
+  <div class="container">
     
-    <!-- লাইভ উইনার ও অ্যাক্টিভিটি টিকার বার (ওপরে পারফেক্ট গ্যাপ বা লেভেল ঠিক করা হয়েছে) -->
-    <div id="liveActivityTickerBar" style="background: linear-gradient(90deg, rgba(56,189,248,0.12), rgba(251,191,36,0.12)); border: 1px solid rgba(56,189,248,0.3); border-radius: 12px; padding: 8px 12px; margin-top: 14px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 800; color: #38bdf8; overflow: hidden; white-space: nowrap;">
-      <span style="width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 10px #22c55e; flex-shrink: 0;"></span>
-      <span id="liveTickerScrollText" style="overflow: hidden; text-overflow: ellipsis;">🔥 মোশাররফ ভাই এইমাত্র বিজ্ঞাপন দেখে ২০ কয়েন আর্ন করেছেন!</span>
+    <!-- লাইভ উইনার ও অ্যাক্টিভিটি টিকার বার (সব ডাউনলোড ও কয়েন আর্নিং পর্যায়ক্রমে দেখাবে) -->
+    <div id="liveActivityTickerBar" class="live-ticker-wrap">
+      <span class="ticker-dot"></span>
+      <span id="liveTickerScrollText" style="overflow: hidden; text-overflow: ellipsis; transition: opacity 0.35s ease;">🔥 স্বাগতম! লাইভ অ্যাক্টিভিটি ও ডাউনলোড আপডেট লোড হচ্ছে...</span>
     </div>
 
     <!-- নোটিশ কার্ড -->
@@ -1767,10 +1769,10 @@
         <span class="live-stat-lbl" id="lblStatRef">🤝 রেফার</span>
       </div>
     </div>
-    </div>
 
+    <!-- হোমপেজ শুরু -->
     <div id="pageHome" class="view-page active">
-      <!-- ৭ দিনের স্ট্রিক বোনাস সহ ডেইলি কার্ড -->
+      <!-- ৭ দিনের স্ট্রিক বোনাস সহ ডেইলি কার্ড (এখন স্ট্রিক বক্সগুলো কার্ডের ভেতরে নিখুঁত মার্জিনে থাকবে) -->
       <div class="daily-card">
         <div class="daily-card-top">
           <div>
@@ -1779,8 +1781,6 @@
           </div>
           <button class="daily-btn" id="btnDailyCheck" onclick="claimDailyReward()">ক্লেইম করুন</button>
         </div>
-        
-      </div>
         <div class="streak-days-grid" id="streakGridContainer">
           <div class="streak-day-box active">১ম<br>+5🪙</div>
           <div class="streak-day-box">২য়<br>+8🪙</div>
@@ -1838,7 +1838,6 @@
           <p style="font-size: 11.5px; color: var(--text-sub); margin-bottom: 10px;">এক ক্লিকে একসাথে ৩টি সেরা প্রিমিয়াম বাংলা ফন্ট আপনার টেলিগ্রাম ইনবক্সে ডেলিভারি নিন!</p>
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <div>
-              
               <span style="text-decoration: line-through; color: var(--text-dim); font-size: 11px;">🪙 ১০০ কয়েন</span>
               <div style="font-size: 16px; font-weight: 900; color: #4ade80;">🪙 ৭০ কয়েন</div>
             </div>
@@ -1945,9 +1944,10 @@
 
       <div id="loading" style="text-align:center; padding:30px; color:#fff; font-weight: 700;">লোড হচ্ছে... ⏳</div>
       <div class="grid" id="resourceGrid"></div>
-  </div>
+    </div>
 
-      <div id="pageAds" class="view-page">
+    <!-- টাস্ক ও আর্নিং পেজ -->
+    <div id="pageAds" class="view-page">
       <div class="stat-card" style="text-align: left;">
         <h3 style="font-size: 14.5px; font-weight: 800; margin-bottom: 8px; color: #fff;">🚀 স্পেশাল চ্যানেল টাস্ক</h3>
         <div class="task-item">
@@ -2039,6 +2039,7 @@
       </div>
     </div>
 
+    <!-- লিডারবোর্ড পেজ -->
     <div id="pageLeaderboard" class="view-page">
       <div class="stat-card">
         <h3 style="font-size:16px; font-weight: 800; color: #fff;">🏆 শীর্ষ VIP ব্যবহারকারী</h3>
@@ -2047,6 +2048,7 @@
       <div id="leaderboardList"></div>
     </div>
 
+    <!-- রেফার পেজ -->
     <div id="pageRefer" class="view-page">
       <div class="stat-card">
         <span style="font-size:32px;">🤝</span>
@@ -2090,6 +2092,7 @@
       </div>
     </div>
 
+    <!-- প্রোফাইল পেজ -->
     <div id="pageProfile" class="view-page">
       <div class="stat-card">
         <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:8px;">
@@ -2177,6 +2180,7 @@
       <button class="action-btn" style="background:rgba(255,255,255,0.06); color:#38bdf8; border:1px solid rgba(255,255,255,0.2);" onclick="openSupport()">💬 হেল্পলাইন ও সাপোর্ট গ্রুপ</button>
     </div>
 
+    <!-- অ্যাডমিন পেজ -->
     <div id="pageAdmin" class="view-page">
       <div class="stat-card">
         <span style="font-size: 32px;">👑</span>
@@ -2311,7 +2315,7 @@
       </div>
     </div>
 
-  </div>
+  </div> <!-- মূল .container এখানে সঠিকভাবে শেষ হয়েছে -->
 
   <!-- জুম ও বিফোর/আফটার ইফেক্ট কম্পেয়ারসহ মিডিয়া প্রিভিউ মোডাল -->
   <div class="preview-modal" id="mediaModal" onclick="closeMediaPreview()">
@@ -2336,8 +2340,8 @@
     <button class="nav-item" onclick="switchNav('pageRefer', this)"><span class="nav-icon">👥</span><span id="navTxtRef">রেফার</span></button>
     <button class="nav-item" onclick="switchNav('pageProfile', this)"><span class="nav-icon">👤</span><span id="navTxtProf">প্রোফাইল</span></button>
     <button class="nav-item" id="adminNavBtn" style="display: none;" onclick="switchNav('pageAdmin', this)"><span class="nav-icon">👑</span><span id="navTxtAdm">অ্যাডমিন</span></button>
-  </div>
-
+                                                                                                                  </div>
+                                                                                                                  
   <script>
     const tg = window.Telegram?.WebApp;
     if (tg) { tg.ready(); tg.expand(); }
@@ -2455,7 +2459,7 @@
       }, 2400);
     })();
 
-    // সেটিংস মোডাল ও কাস্টমাইজেশন ফাংশনসমূহ (silent=false মানে শুধু ইউজার বাটনে চাপলেই টোস্ট দেখাবে, অ্যাপ লোডের সময় দেখাবে না)
+    // সেটিংস মোডাল ও কাস্টমাইজেশন ফাংশনসমূহ
     function openSettingsModal() {
       triggerHaptic();
       document.getElementById('settingsModal').classList.add('active');
@@ -2583,7 +2587,6 @@
       } catch(e) {}
     }
 
-    // অ্যাপ লোডের সময় নীরবে সেটিংস অ্যাপ্লাই করা (যাতে স্প্ল্যাশ স্ক্রিনের আগে কোনো নোটিফিকেশন না আসে)
     function applySavedSettingsOnLoad() {
       setAppTheme(appSettings.theme, false);
       setAccentColor(appSettings.accent, false);
@@ -2594,22 +2597,8 @@
       if (appSettings.lang === 'en') setAppLanguage('en', false);
     }
 
-    // লাইভ অ্যাক্টিভিটি টিকার অ্যানিমেশন ও ফ্ল্যাশ ডিল টাইমার
+    // ফ্ল্যাশ ডিল টাইমার (অপ্রয়োজনীয় ডুপ্লিকেট টিকার লুপ সরিয়ে ল্যাগমুক্ত করা হয়েছে)
     function startLiveActivityTicker() {
-      const msgs = [
-        "🔥 নতুন প্রিমিয়াম PLP ও বাংলা স্টাইলিশ ফন্ট যুক্ত হয়েছে!",
-        "💎 DIAMOND VIP মেম্বাররা সব পেইড ফাইলে পাচ্ছেন ২০% ডিসকাউন্ট!",
-        "🎡 প্রতি ২ ঘণ্টা পর পর ফ্রি লাকি হুইল স্পিন করে কয়েন জিতুন!",
-        "🏦 কয়েন ব্যাংকে কয়েন জমা রাখলেই পাচ্ছেন +২০% অতিরিক্ত বোনাস!",
-        "🤝 প্রতি সফল রেফারে পাবেন নিশ্চিত +৫০ কয়েন ও মাইলস্টোন রিওয়ার্ড!"
-      ];
-      let idx = 0;
-      setInterval(() => {
-        idx = (idx + 1) % msgs.length;
-        const el = document.getElementById('liveActivityTickerText');
-        if (el) el.innerText = msgs[idx];
-      }, 4500);
-
       setInterval(() => {
         const now = new Date();
         const remSec = 7200 - ((now.getMinutes() * 60 + now.getSeconds()) % 7200);
@@ -2699,6 +2688,7 @@
         </div>
       `).join('');
     }
+
     // প্রোফাইল পিকচার (Avatar) লোড ও এরর হ্যান্ডলার
     function handleAvatarError(imgEl, textElId) {
       imgEl.style.display = 'none';
@@ -2806,7 +2796,7 @@
       fallbackCopy(link);
     }
 
-    // টেলিগ্রাম থেকে ইউজারের আসল আইডি ও ছবি নেওয়ার ১০০% নিরাপদ লজিক
+    // টেলিগ্রাম থেকে ইউজারের আসল আইডি ও ছবি নেওয়ার নিরাপদ লজিক
     function getTelegramUser() {
       if (tg?.initDataUnsafe?.user?.id) {
         const u = tg.initDataUnsafe.user;
@@ -3554,6 +3544,7 @@
       }
       await loadGlobalStats();
       await fetchResources();
+      await refreshTickerFeedData();
       showToast("সফলভাবে আপডেট হয়েছে!", "✅");
     }
 
@@ -3607,69 +3598,8 @@
       animate();
     }
 
-    function triggerHaptic(type = 'light') {
-      playUiSound(type === 'success' ? 'win' : 'tap');
-      if (!appSettings.haptic) return;
-      if (tg && tg.HapticFeedback) {
-        if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
-        else if (type === 'warning') tg.HapticFeedback.notificationOccurred('warning');
-        else tg.HapticFeedback.impactOccurred('medium');
-      }
-    }
-
-    let toastTimeout = null;
-    function showToast(msg, icon = '💎') {
-      if (!isSplashFinished) return;
-      const toast = document.getElementById('toast');
-      document.getElementById('toastMsg').innerText = msg;
-      document.getElementById('toastIcon').innerText = icon;
-      toast.classList.add('show');
-      if (toastTimeout) clearTimeout(toastTimeout);
-      toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 3000);
-    }
-
-    function getTodayKey() {
-      const d = new Date();
-      return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
-    }
-
-    function getVipRank(coins) {
-      if (coins >= 200) return "👑 DIAMOND VIP";
-      if (coins >= 100) return "🥇 GOLD VIP";
-      if (coins >= 50) return "🥈 SILVER VIP";
-      return "⭐ BRONZE VIP";
-    }
-
-    function isYoutubeUrl(url) {
-      if (!url) return false;
-      return url.includes('youtube.com') || url.includes('youtu.be');
-    }
-
-    function getYoutubeVideoId(url) {
-      if (!url) return '';
-      let videoId = '';
-      if (url.includes('shorts/')) {
-        videoId = url.split('shorts/')[1].split('?')[0];
-      } else if (url.includes('v=')) {
-        videoId = url.split('v=')[1].split('&')[0];
-      } else if (url.includes('youtu.be/')) {
-        videoId = url.split('youtu.be/')[1].split('?')[0];
-      }
-      return videoId;
-    }
-
-    function getYoutubeEmbedUrl(url, autoplay = true) {
-      let videoId = getYoutubeVideoId(url) || '1X3jihLvjY0';
-      const ap = autoplay ? 1 : 0;
-      return `https://www.youtube.com/embed/${videoId}?autoplay=${ap}&controls=1&showinfo=0&rel=0`;
-    }
-
-    function isVideoUrl(url) {
-      if (!url) return false;
-      return isYoutubeUrl(url) || url.endsWith('.mp4') || url.endsWith('.webm') || url.includes('/video/') || url.includes('drive.google.com');
-    }
-
-    // ক্যানভাসের ভেতরে সরাসরি রোটেশন অ্যাঙ্গেল এঁকে চাকা ঘোরানোর ফাংশন (১০০% গ্যারান্টিড ঘুরবে!)
+    <script>
+    // লাকি হুইল স্পিন ক্যানভাস ড্রয়িং ইঞ্জিন
     function drawWheel(rotationDeg = 0) {
       const canvas = document.getElementById('wheelCanvas');
       if (!canvas) return;
@@ -4042,7 +3972,6 @@
       }
     }
 
-    // ১০০% গ্যারান্টিড ক্যানভাস ফিজিক্স ইঞ্জিনসহ লাকি স্পিন হুইল (চাকা প্রতি ফ্রেমে ঘুরবে এবং টিক-টিক সাউন্ড করবে!)
     async function playLuckySpin() {
       if (isWheelSpinningNow) return;
       triggerHaptic();
@@ -4128,6 +4057,7 @@
 
     function initScratchCard() {
       const canvas = document.getElementById('scratchCanvas');
+      if (!canvas) return;
       const ctx = canvas.getContext('2d');
       const today = getTodayKey();
 
@@ -4152,8 +4082,10 @@
       function scratch(e) {
         if (!isDrawing || scratchCardScratched) return;
         const rect = canvas.getBoundingClientRect();
-        const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
-        const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const x = ((e.clientX || (e.touches && e.touches[0].clientX)) - rect.left) * scaleX;
+        const y = ((e.clientY || (e.touches && e.touches[0].clientY)) - rect.top) * scaleY;
 
         ctx.globalCompositeOperation = 'destination-out';
         ctx.beginPath();
@@ -4309,7 +4241,9 @@
 
     function renderResources(searchFilter = '') {
       const container = document.getElementById('resourceGrid');
-      document.getElementById('loading').style.display = 'none';
+      const loadingEl = document.getElementById('loading');
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (!container) return;
       container.innerHTML = '';
       
       let keys = Object.keys(allResources).filter(k => allResources[k] && allResources[k].type === currentCategory);
@@ -4802,7 +4736,7 @@
       const buyersTbody = document.getElementById('adminBuyersTableBody');
       const reqContainer = document.getElementById('adminFileRequestsContainer');
 
-      tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--accent); padding: 15px;">লোড হচ্ছে... ⏳</td></tr>';
+      if (tbody) tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--accent); padding: 15px;">লোড হচ্ছে... ⏳</td></tr>';
       if (subTbody) subTbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--accent); padding: 12px;">লোড হচ্ছে... ⏳</td></tr>';
 
       try {
@@ -4817,10 +4751,12 @@
           totalSales += claims; totalCoins += revenue;
           rows += `<tr><td>${it.name}</td><td>${it.type}</td><td><span class="badge-count">${claims}</span></td><td><span class="badge-rev">${revenue}</span></td></tr>`;
         });
-        tbody.innerHTML = rows || '<tr><td colspan="4" style="text-align:center;">কোনো ডাটা নেই</td></tr>';
-        document.getElementById('adminTotalSales').innerText = `${totalSales} টি`;
-        document.getElementById('adminTotalCoinsSpent').innerText = `${totalCoins} 🪙`;
-      } catch (e) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">ফেইলড</td></tr>'; }
+        if (tbody) tbody.innerHTML = rows || '<tr><td colspan="4" style="text-align:center;">কোনো ডাটা নেই</td></tr>';
+        const tSalesEl = document.getElementById('adminTotalSales');
+        const tCoinsEl = document.getElementById('adminTotalCoinsSpent');
+        if (tSalesEl) tSalesEl.innerText = `${totalSales} টি`;
+        if (tCoinsEl) tCoinsEl.innerText = `${totalCoins} 🪙`;
+      } catch (e) { if (tbody) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">ফেইলড</td></tr>'; }
 
       if (reqContainer) {
         try {
@@ -4925,7 +4861,8 @@
             <span style="color:var(--gold); font-weight:900;">🪙 ${u.coins || 0}</span>
           </div>`;
         });
-        document.getElementById('leaderboardList').innerHTML = html || '<p style="color:var(--text-sub); text-align:center;">কোনো ডাটা পাওয়া যায়নি</p>';
+        const lList = document.getElementById('leaderboardList');
+        if (lList) lList.innerHTML = html || '<p style="color:var(--text-sub); text-align:center;">কোনো ডাটা পাওয়া যায়নি</p>';
       } catch (e) {}
     }
 
@@ -4961,13 +4898,12 @@
       }
     }
 
-    switchNav('pageHome', document.querySelector('.bottom-nav .nav-item'));
-
     function switchNav(pageId, btn) {
       triggerHaptic();
       document.querySelectorAll('.view-page').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.bottom-nav .nav-item').forEach(b => b.classList.remove('active'));
-      document.getElementById(pageId).classList.add('active');
+      const targetPage = document.getElementById(pageId);
+      if (targetPage) targetPage.classList.add('active');
       if (btn) btn.classList.add('active');
       
       if (pageId === 'pageAds') drawWheel(currentWheelRotation);
@@ -4990,54 +4926,59 @@
       else window.open(SUPPORT_URL, '_blank');
     }
 
-    // ─── রিয়েল-টাইম ডাটাবেজ বেজড লাইভ অ্যাক্টিভিটি টিকার ইঞ্জিন ───
-    async function startRealtimeDatabaseTicker() {
-      const tickerEl = document.getElementById('liveTickerScrollText');
-      if (!tickerEl) return;
+    // ─── সবগুলো ডাউনলোড ও অ্যাক্টিভিটি পর্যায়ক্রমে দেখানোর স্মার্ট লাইভ টিকার ইঞ্জিন ───
+    let tickerFeedList = [
+      "🔥 নতুন প্রিমিয়াম PLP ও বাংলা স্টাইলিশ ফন্ট যুক্ত হয়েছে!",
+      "💎 DIAMOND VIP মেম্বাররা সব পেইড ফাইলে পাচ্ছেন ২০% ছাড়!",
+      "🎡 প্রতি ২ ঘণ্টা পর পর ফ্রি লাকি হুইল স্পিন করে কয়েন জিতুন!",
+      "🏦 কয়েন ব্যাংকে কয়েন জমা রাখলেই পাচ্ছেন +২০% অতিরিক্ত বোনাস!"
+    ];
+    let currentTickerIdx = 0;
 
-      const fallbackMessages = [
-        "🔥 সার্ভার আপডেট: নতুন প্রিমিয়াম PLP ও ফন্ট যুক্ত করা হয়েছে!",
-        "💎 DIAMOND VIP মেম্বাররা সব পেইড ফাইলে ২০% ছাড় পাচ্ছেন!",
-        "🎡 প্রতি ২ ঘণ্টা পর পর ফ্রি লাকি হুইল স্পিন করে কয়েন জিতুন!"
-      ];
-
-      let logIndex = 0;
-
-      setInterval(async () => {
-        try {
-          const logs = await safeFetch(`${DB_BASE}/download_logs.json`);
-          if (logs) {
-            const logKeys = Object.keys(logs);
-            if (logKeys.length > 0) {
-              const latestLog = logs[logKeys[logKeys.length - 1]];
-              if (latestLog && latestLog.user_name && latestLog.resource_name) {
-                tickerEl.style.opacity = '0';
-                setTimeout(() => {
-                  tickerEl.innerText = `🔥 ${latestLog.user_name} এইমাত্র "${latestLog.resource_name}" ফাইলটি ডাউনলোড করেছেন! 📥`;
-                  tickerEl.style.opacity = '1';
-                  tickerEl.style.transition = 'opacity 0.4s ease';
-                }, 300);
-                return;
+    async function refreshTickerFeedData() {
+      try {
+        const logs = await safeFetch(`${DB_BASE}/download_logs.json`);
+        if (logs) {
+          const logKeys = Object.keys(logs);
+          if (logKeys.length > 0) {
+            const dynamicMsgs = [];
+            // শেষ ২০টি ডাউনলোড লগ নিয়ে একটি লুপ বা লিস্ট তৈরি করা হলো
+            logKeys.slice(-20).reverse().forEach(lk => {
+              const item = logs[lk];
+              if (item && item.user_name && item.resource_name) {
+                dynamicMsgs.push(`🔥 ${item.user_name} এইমাত্র "${item.resource_name}" ফাইলটি ডাউনলোড করেছেন! 📥`);
               }
+            });
+            if (dynamicMsgs.length > 0) {
+              tickerFeedList = dynamicMsgs;
             }
           }
-
-          tickerEl.style.opacity = '0';
-          setTimeout(() => {
-            tickerEl.innerText = fallbackMessages[logIndex % fallbackMessages.length];
-            tickerEl.style.opacity = '1';
-            tickerEl.style.transition = 'opacity 0.4s ease';
-            logIndex++;
-          }, 300);
-
-        } catch (e) {
-          console.warn("Ticker fetch err:", e);
         }
+      } catch (e) {}
+    }
+
+    function startRealtimeDatabaseTicker() {
+      refreshTickerFeedData();
+      // প্রতি ১ মিনিট পর পর ডাটাবেজ থেকে নতুন লগগুলো আপডেট করে নেবে (ল্যাগ এড়াতে)
+      setInterval(refreshTickerFeedData, 60000);
+
+      // প্রতি ৫ সেকেন্ড পর পর লিস্ট থেকে পরবর্তী ডাউনলোড বা অ্যাক্টিভিটি স্ক্রিনে দেখাবে
+      setInterval(() => {
+        const tickerEl = document.getElementById('liveTickerScrollText');
+        if (!tickerEl) return;
+        
+        currentTickerIdx = (currentTickerIdx + 1) % tickerFeedList.length;
+        tickerEl.style.opacity = '0';
+        setTimeout(() => {
+          tickerEl.innerText = tickerFeedList[currentTickerIdx];
+          tickerEl.style.opacity = '1';
+        }, 300);
       }, 5000);
     }
 
-    // অ্যাপ চালুর সাথে সাথেই অ্যাপ ইনিশিয়ালাইজ ও রিয়েল-টাইম টিকার রান হবে
+    // অ্যাপ চালুর সাথে সাথেই অ্যাপ ইনিশিয়ালাইজ ও টিকার রান হবে
     initApp();
+    switchNav('pageHome', document.querySelector('.bottom-nav .nav-item'));
     startRealtimeDatabaseTicker();
   </script>
 </body>
