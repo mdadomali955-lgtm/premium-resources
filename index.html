@@ -641,58 +641,8 @@
       <span id="noticeText">স্বাগতম! নতুন প্রিমিয়াম PLP, XML ও ফন্ট যুক্ত করা হয়েছে।</span>
     </div>
 
-    <!-- গাইড ও ইউজার ফাইল আপলোড কুইক অ্যাকশন বার -->
-    <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 8px; margin-bottom: 14px;">
-      <button class="guide-btn" id="btnMainGuide" onclick="openGuideModal()" style="margin-bottom: 0; padding: 11px 8px; font-size: 12px;">
-        <span>💡</span><span id="txtMainGuide">ব্যবহারের গাইড ও ভিডিও</span>
-      </button>
-      <button class="guide-btn" onclick="openCreatorUploadModal()" style="margin-bottom: 0; padding: 11px 8px; font-size: 12px; background: rgba(251, 191, 36, 0.15); border-color: rgba(251, 191, 36, 0.5); color: var(--gold);">
-        <span>📤</span><span>ফাইল আপলোড (+৫০🪙)</span>
-      </button>
-    </div>
-
-    <!-- ৪টি আইটেমসহ নিখুঁত লাইভ স্ট্যাটস বার -->
-    <div class="live-stats-bar">
-      <div class="live-stat-item">
-        <span class="live-stat-val" id="statVisits">0</span>
-        <span class="live-stat-lbl" id="lblStatMembers">👥 মেম্বার</span>
-      </div>
-      <div class="live-stat-item">
-        <span class="live-stat-val" id="statAdsWatched">0</span>
-        <span class="live-stat-lbl" id="lblStatViews">📺 ভিউজ</span>
-      </div>
-      <div class="live-stat-item">
-        <span class="live-stat-val" id="statClaims">0</span>
-        <span class="live-stat-lbl" id="lblStatDl">🎁 ডাউনলোড</span>
-      </div>
-      <div class="live-stat-item">
-        <span class="live-stat-val" id="statRefers">0</span>
-        <span class="live-stat-lbl" id="lblStatRef">🤝 রেফার</span>
-      </div>
-    </div>
-
-    <!-- হোমপেজ শুরু -->
+    <!-- হোমপেজ শুরু (সরাসরি রিসোর্স ও ট্যাব সামনে দেখাবে) -->
     <div id="pageHome" class="view-page active">
-      <!-- ৭ দিনের স্ট্রিক বোনাস ও নেক্সট চেক-ইন লাইভ কাউন্টডাউন সহ ডেইলি কার্ড -->
-      <div class="daily-card animated-vip-card">
-        <div class="daily-card-top">
-          <div>
-            <h4 style="font-size: 13.5px; font-weight: 800; color: #fff;" id="txtDailyTitle">🎁 দৈনিক ফ্রি রিওয়ার্ড ও ৭-দিনের স্ট্রিক</h4>
-            <p style="font-size: 11px; color: var(--text-sub); margin-top: 2px;" id="txtDailySub">টানা ৭ দিন ক্লেইম করলে ৭ম দিনে +৫০ বোনাস!</p>
-            <div style="font-size: 10px; color: var(--accent); font-weight: 800; margin-top: 3px; font-family: monospace;" id="dailyNextTimerTxt">⏳ আজকের বোনাস প্রস্তুত!</div>
-          </div>
-          <button class="daily-btn" id="btnDailyCheck" onclick="claimDailyReward()">ক্লেইম করুন</button>
-        </div>
-        <div class="streak-days-grid" id="streakGridContainer">
-          <div class="streak-day-box active" id="stBox1">১ম<br>+5🪙</div>
-          <div class="streak-day-box" id="stBox2">২য়<br>+8🪙</div>
-          <div class="streak-day-box" id="stBox3">৩য়<br>+10🪙</div>
-          <div class="streak-day-box" id="stBox4">৪র্থ<br>+12🪙</div>
-          <div class="streak-day-box" id="stBox5">৫ম<br>+15🪙</div>
-          <div class="streak-day-box" id="stBox6">৬ষ্ঠ<br>+20🪙</div>
-          <div class="streak-day-box" id="stBox7">৭ম<br>🎁50</div>
-        </div>
-      </div>
 
       <!-- রিয়েল-টাইম ফ্ল্যাশ ডিল / হ্যাপি আওয়ার টাইমার বার -->
       <div class="flash-deal-bar">
@@ -876,9 +826,61 @@
 
       <div id="loading" style="text-align:center; padding:30px; color:#fff; font-weight: 700;">লোড হচ্ছে... ⏳</div>
       <div class="grid" id="resourceGrid"></div>
-    </div>
-    <!-- টাস্ক ও আর্নিং পেজ -->
+              </div>
+              <!-- টাস্ক ও আর্নিং পেজ (এখানেই এখন গাইড, ফাইল আপলোড, লাইভ স্ট্যাটস ও ডেইলি রিওয়ার্ড থাকবে) -->
     <div id="pageAds" class="view-page">
+      
+      <!-- গাইড ও ইউজার ফাইল আপলোড কুইক অ্যাকশন বার -->
+      <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 8px; margin-bottom: 14px;">
+        <button class="guide-btn" id="btnMainGuide" onclick="openGuideModal()" style="margin-bottom: 0; padding: 11px 8px; font-size: 12px;">
+          <span>💡</span><span id="txtMainGuide">ব্যবহারের গাইড ও ভিডিও</span>
+        </button>
+        <button class="guide-btn" onclick="openCreatorUploadModal()" style="margin-bottom: 0; padding: 11px 8px; font-size: 12px; background: rgba(251, 191, 36, 0.15); border-color: rgba(251, 191, 36, 0.5); color: var(--gold);">
+          <span>📤</span><span>ফাইল আপলোড (+৫০🪙)</span>
+        </button>
+      </div>
+
+      <!-- ৪টি আইটেমসহ নিখুঁত লাইভ স্ট্যাটস বার -->
+      <div class="live-stats-bar">
+        <div class="live-stat-item">
+          <span class="live-stat-val" id="statVisits">0</span>
+          <span class="live-stat-lbl" id="lblStatMembers">👥 মেম্বার</span>
+        </div>
+        <div class="live-stat-item">
+          <span class="live-stat-val" id="statAdsWatched">0</span>
+          <span class="live-stat-lbl" id="lblStatViews">📺 ভিউজ</span>
+        </div>
+        <div class="live-stat-item">
+          <span class="live-stat-val" id="statClaims">0</span>
+          <span class="live-stat-lbl" id="lblStatDl">🎁 ডাউনলোড</span>
+        </div>
+        <div class="live-stat-item">
+          <span class="live-stat-val" id="statRefers">0</span>
+          <span class="live-stat-lbl" id="lblStatRef">🤝 রেফার</span>
+        </div>
+      </div>
+
+      <!-- ৭ দিনের স্ট্রিক বোনাস ও নেক্সট চেক-ইন লাইভ কাউন্টডাউন সহ ডেইলি কার্ড -->
+      <div class="daily-card animated-vip-card">
+        <div class="daily-card-top">
+          <div>
+            <h4 style="font-size: 13.5px; font-weight: 800; color: #fff;" id="txtDailyTitle">🎁 দৈনিক ফ্রি রিওয়ার্ড ও ৭-দিনের স্ট্রিক</h4>
+            <p style="font-size: 11px; color: var(--text-sub); margin-top: 2px;" id="txtDailySub">টানা ৭ দিন ক্লেইম করলে ৭ম দিনে +৫০ বোনাস!</p>
+            <div style="font-size: 10px; color: var(--accent); font-weight: 800; margin-top: 3px; font-family: monospace;" id="dailyNextTimerTxt">⏳ আজকের বোনাস প্রস্তুত!</div>
+          </div>
+          <button class="daily-btn" id="btnDailyCheck" onclick="claimDailyReward()">ক্লেইম করুন</button>
+        </div>
+        <div class="streak-days-grid" id="streakGridContainer">
+          <div class="streak-day-box active" id="stBox1">১ম<br>+5🪙</div>
+          <div class="streak-day-box" id="stBox2">২য়<br>+8🪙</div>
+          <div class="streak-day-box" id="stBox3">৩য়<br>+10🪙</div>
+          <div class="streak-day-box" id="stBox4">৪র্থ<br>+12🪙</div>
+          <div class="streak-day-box" id="stBox5">৫ম<br>+15🪙</div>
+          <div class="streak-day-box" id="stBox6">৬ষ্ঠ<br>+20🪙</div>
+          <div class="streak-day-box" id="stBox7">৭ম<br>🎁50</div>
+        </div>
+      </div>
+
       <div class="stat-card" style="text-align: left;">
         <h3 style="font-size: 14.5px; font-weight: 800; margin-bottom: 8px; color: #fff;">🚀 স্পেশাল চ্যানেল টাস্ক</h3>
         <div class="task-item">
@@ -921,7 +923,7 @@
         <button class="action-btn" id="btnMysteryBox" onclick="openMysteryGiftBox()" style="background: linear-gradient(135deg, #a855f7, #6366f1); color: #fff;">🔓 মিস্ট্রি বক্স খুলুন (বিজ্ঞাপন দেখুন)</button>
       </div>
 
-      <!-- ডেইলি ডিজাইন ও ফুটবল কুইজ (+১৫ কয়েন, ওয়ান-শট লকসহ) -->
+      <!-- ডেইলি ডিজাইন ও ফুটবল কুইজ (+১৫ কয়েন) -->
       <div class="stat-card" style="text-align: left;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
           <h3 style="font-size: 15px; font-weight: 800; color: var(--accent);">🧠 ডেইলি কুইজ চ্যালেঞ্জ (+১৫ কয়েন)</h3>
@@ -950,7 +952,7 @@
         <button class="action-btn" onclick="buyWeeklyLotteryTicket()" style="background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff;">🎟️ টিকিট কিনুন ও ড্র দেখুন (১০ কয়েন)</button>
       </div>
 
-      <!-- লাকি হুইল স্পিন (এখন চাকা ১০০% ঘুরবে ও ২ ঘণ্টার লাইভ কাউন্টডাউন দেখাবে!) -->
+      <!-- লাকি হুইল স্পিন -->
       <div class="stat-card animated-vip-card">
         <h2 style="font-size: 17px; font-weight: 800; color: #fff;">🎡 লাকি হুইল স্পিন (২ ঘণ্টা পর পর)</h2>
         <p style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">প্রতি ২ ঘণ্টা পর পর চাকা ঘুরিয়ে জিতুন ফ্রি কয়েন!</p>
@@ -1067,7 +1069,7 @@
         </div>
       </div>
 
-      <!-- ৭ দিনের রয়েল ভিআইপি পাস (লাইভ মেয়াদ কাউন্টডাউন সহ) -->
+      <!-- ৭ দিনের রয়েল ভিআইপি পাস -->
       <div class="stat-card" style="text-align: left; padding: 16px; border-color: rgba(251, 191, 36, 0.5);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
           <h3 style="font-size: 14.5px; font-weight: 900; color: var(--gold);">👑 ৭-দিনের Royal VIP Pass</h3>
@@ -1080,7 +1082,7 @@
         <button class="daily-btn" id="btnBuyVipPass" onclick="activateRoyalVipPass()" style="width: 100%;">👑 ৭ দিনের ভিআইপি পাস নিন (২৫০ কয়েন)</button>
       </div>
 
-      <!-- ভিআইপি কয়েন ব্যাংক (৩ দিনের লাইভ কাউন্টডাউন, প্রফিট ক্যালকুলেটর ও অটো-ম্যাচিউরিটি সহ) -->
+      <!-- ভিআইপি কয়েন ব্যাংক -->
       <div class="stat-card animated-vip-card" style="text-align: left; padding: 16px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
           <h3 style="font-size: 14.5px; font-weight: 900; color: #4ade80;">🏦 ভিআইপি কয়েন ব্যাংক (+২০% লাভ)</h3>
@@ -1105,7 +1107,7 @@
         </div>
       </div>
 
-      <!-- প্রোফাইল পেজ থেকে সরাসরি প্রোমো বা ব্যক্তিগত গিফট কোড রিডিম -->
+      <!-- গিফট কোড বক্স -->
       <div class="stat-card" style="text-align: left; padding: 16px;">
         <h3 style="font-size: 14px; font-weight: 800; margin-bottom: 6px; color: var(--gold);">🎁 গিফট ও প্রোমো কোড বক্স</h3>
         <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 8px;">শুধুমাত্র এই মিনি অ্যাপ থেকেই প্রোমো বা আপনার ব্যক্তিগত গিফট কোড রিডিম করা যাবে:</p>
@@ -1115,7 +1117,7 @@
         </div>
       </div>
 
-      <!-- ইউজার টু ইউজার কয়েন ট্রান্সফার সিস্টেম -->
+      <!-- কয়েন ট্রান্সফার -->
       <div class="stat-card" style="text-align: left; padding: 16px;">
         <h3 style="font-size: 14px; font-weight: 800; margin-bottom: 6px; color: var(--accent);">💸 বন্ধুকে কয়েন ট্রান্সফার করুন</h3>
         <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 8px;">অন্য মেম্বারের টেলিগ্রাম ইউজার আইডিতে আপনার কয়েন পাঠান (অ্যান্টি-ফার্মিং সুরক্ষিত):</p>
@@ -1126,7 +1128,7 @@
         <button class="daily-btn" onclick="transferCoinsToFriend()" style="width: 100%; background: linear-gradient(135deg, #38bdf8, #0284c7); color: #020617;">💸 কয়েন পাঠান</button>
       </div>
 
-      <!-- ক্রিয়েটর ফাইল আপলোড শর্টকাট কার্ড -->
+      <!-- ক্রিয়েটর ফাইল আপলোড শর্টকাট -->
       <div class="stat-card" style="text-align: left; padding: 16px;">
         <h3 style="font-size: 14px; font-weight: 800; margin-bottom: 4px; color: var(--gold);">📤 ক্রিয়েটর রিসোর্স সাবমিশন</h3>
         <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 10px;">নিজের তৈরি PLP, ফন্ট বা XML ফাইল জমা দিয়ে প্রতি অ্যাপ্রুভালে +৫০ কয়েন এবং আজীবন রয়্যালটি কয়েন আয় করুন:</p>
@@ -2647,6 +2649,7 @@
       }
       showToast(`💰 ব্যাংক থেকে মোট +${payout} কয়েন ওয়ালেটে যোগ হয়েছে!`, "🎉");
     }
+
     // ─── স্মার্ট র‍্যান্ডম অ্যাড ও মনিট্যাগ ইঞ্জিন (জ্যাকপট ও সব টাস্কে কখনো কখনো অ্যাড দেখাবে) ───
     async function incrementGlobalAndUserAdCount() {
       try {
